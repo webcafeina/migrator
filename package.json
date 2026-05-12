@@ -1,0 +1,23 @@
+{
+  "name": "webcafeina-migrator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Herramienta interna de Webcafeína para prospección comercial automatizada y migración de webs Wix/Hostinger/Webflow a WordPress + Bricks Builder.",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}
