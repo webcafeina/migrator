@@ -29,6 +29,7 @@
 8. **Verificación silenciosa**: ejecutar tests antes de afirmar que algo funciona. Sin narración previa.
 9. **Sin TODOs huérfanos**: cada TODO debe enlazar un ID `WCM-NNN` de `ISSUES.md` (o issue GitHub cuando exista el remote).
 10. **Secretos jamás en código**: todo a `.env`; `.env.example` es la referencia versionada.
+11. **La carpeta docs/humanos/** es documentación operativa mantenida por el equipo humano. Claude Code no debe modificar, sobrescribir ni leer archivos de esa carpeta salvo petición explícita.
 
 ---
 
