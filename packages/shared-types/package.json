@@ -1,0 +1,17 @@
+{
+  "name": "@webcafeina/shared-types",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tipos TypeScript generados desde los schemas Pydantic v2 de wcm_types",
+  "license": "UNLICENSED",
+  "types": "./ts/index.d.ts",
+  "files": ["ts/"],
+  "scripts": {
+    "gen:types": "bash ./scripts/gen-ts.sh",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "clean": "rm -rf ts/index.d.ts"
+  },
+  "devDependencies": {
+    "typescript": "5.x"
+  }
+}

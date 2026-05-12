@@ -153,6 +153,58 @@ Heurística: `N <= 100` → REST; `N > 100` o transaccional → WP-CLI.
 
 ---
 
+## ADR-010 — Embedding vectorial: voyage-multilingual-2, 1024 dimensiones
+
+**Fecha**: 2026-05-12 (Fase 1)
+**Estado**: ✅ Aceptada
+
+**Contexto**: La columna `leads.embedding` (pgvector) sirve para buscar leads similares por contenido de la web. El proveedor de embedding influye en (a) calidad para español de PYMEs, (b) coste por 1M tokens, (c) dimensionalidad almacenada en BD (cambiarla implica re-embedding + nuevo índice).
+
+**Decisión**: Usar **`voyage-multilingual-2`** (Voyage AI, propiedad de Anthropic) con **1024 dimensiones**. Coherente con la postura "Claude-native" y buena cobertura para español. Coste competitivo (~$0.12/M tokens). Si en el futuro se quiere cambiar, se documenta nueva ADR + migración con re-embedding completo.
+
+La dimensión queda codificada como constante `LEAD_EMBEDDING_DIM = 1024` en `packages/db-schema/src/wcm_db/models/leads.py` y replicada en la migración `0001_initial_schema.py`.
+
+**Consecuencias**:
+- ✅ Calidad multilingüe sólida (esp/cat/gal/eu/en en una misma campaña).
+- ✅ Anthropic-aligned, sin dependencia de OpenAI.
+- ⚠️ Cambiar de proveedor → migración de schema + re-embedding completo de la tabla `leads`.
+- ⚠️ Voyage API requiere credencial separada (a añadir al `.env.example` en Fase 9).
+
+---
+
+## ADR-011 — Enums viven en wcm_types, wcm_db los re-exporta
+
+**Fecha**: 2026-05-12 (Fase 1)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Los enums (LeadStatus, BuilderType, etc.) son compartidos por (a) la BD (columnas VARCHAR con CHECK implícito vía StrEnum), (b) la capa de schemas Pydantic, (c) los tipos TypeScript generados. Duplicar genera drift inevitable.
+
+**Decisión**: La fuente única vive en `packages/shared-types/python/wcm_types/enums.py`. `packages/db-schema/src/wcm_db/enums.py` re-exporta cada Enum (mantiene compatibilidad con `from wcm_db.enums import ...` sin acoplar a `wcm_types` a nivel de import path). `wcm-db-schema` declara `wcm-shared-types` como dependencia.
+
+**Consecuencias**:
+- ✅ Cambiar un enum → cambia en BD, API y dashboard automáticamente.
+- ✅ Test `test_db_reexports_same_enum_objects` valida la identidad (`is`).
+- ⚠️ Si alguien define un enum nuevo en `wcm_db.enums`, romperá. Documentado.
+
+---
+
+## ADR-012 — Generación TS automática con pydantic2ts (no manual)
+
+**Fecha**: 2026-05-12 (Fase 1)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Necesitamos tipos TypeScript del contrato del API en el dashboard. Mantenerlos a mano es alto coste y alto riesgo de drift.
+
+**Decisión**: Usar **`pydantic-to-typescript`** (`pydantic2ts`) para generar `packages/shared-types/ts/index.d.ts` a partir de `wcm_types/schemas/*.py`. Script en `packages/shared-types/scripts/gen-ts.sh`. Comando shortcut: `pnpm gen:types`. Requiere `json-schema-to-typescript` (npm `json2ts`) accesible vía `JSON2TS_CMD` env (default: `json2ts` en PATH; CI puede usar `npx -y json-schema-to-typescript`).
+
+**Consecuencias**:
+- ✅ Un único origen para los tipos del contrato.
+- ✅ CI puede validar drift comparando regeneración vs commit.
+- ⚠️ La herramienta genera alias duplicados de enums (UserRole1, OutreachChannel2, etc.) cuando el mismo enum se referencia desde varios schemas. Funcionalmente correcto, cosméticamente feo. Pendiente WCM-007 (post-procesado para deduplicar).
+- ⚠️ Requiere Node + Python en el entorno de build.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

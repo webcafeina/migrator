@@ -1,0 +1,164 @@
+"""Enums compartidos por todo el dominio.
+
+Fuente única de la verdad. SQLAlchemy los re-importa; pydantic2ts los
+detecta y genera los `enum` TS equivalentes.
+
+Decisión: usar StrEnum para que los valores sean strings legibles tanto
+en la BD (columna VARCHAR) como en el cliente TS (igual literal).
+"""
+
+from __future__ import annotations
+
+from enum import StrEnum
+
+
+class UserRole(StrEnum):
+    ADMIN = "admin"
+    OPERATOR = "operator"
+    VIEWER = "viewer"
+
+
+class LeadStatus(StrEnum):
+    DISCOVERED = "discovered"
+    FINGERPRINTED = "fingerprinted"
+    ENRICHED = "enriched"
+    OUTREACH_PREPARED = "outreach_prepared"
+    OUTREACH_SENT = "outreach_sent"
+    RESPONDED = "responded"
+    CONVERTED = "converted"
+    MANUAL_REVIEW = "manual_review"
+    OPTED_OUT = "opted_out"
+    DISCARDED = "discarded"
+
+
+class BuilderType(StrEnum):
+    WIX = "wix"
+    HOSTINGER_AI = "hostinger_ai"
+    WEBFLOW = "webflow"
+    WORDPRESS = "wordpress"
+    SQUARESPACE = "squarespace"
+    SHOPIFY = "shopify"
+    OTHER = "other"
+    UNKNOWN = "unknown"
+
+
+class OutreachChannel(StrEnum):
+    EMAIL = "email"
+    LINKEDIN = "linkedin"
+    FORM = "form"
+
+
+class OutreachSequenceStatus(StrEnum):
+    DRAFT_PENDING_REVIEW = "draft_pending_review"
+    READY = "ready"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    PAUSED = "paused"
+    OPTED_OUT = "opted_out"
+
+
+class OutreachSendStatus(StrEnum):
+    QUEUED = "queued"
+    SENT = "sent"
+    BOUNCED = "bounced"
+    OPENED = "opened"
+    REPLIED = "replied"
+    FAILED = "failed"
+
+
+class ProjectStatus(StrEnum):
+    QUEUED = "queued"
+    RUNNING = "running"
+    BLOCKED_HUMAN_INPUT = "blocked_human_input"
+    QA_FAILED = "qa_failed"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+
+class ProjectPhaseStatus(StrEnum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+class ScrapeStatus(StrEnum):
+    PENDING = "pending"
+    SUCCESS = "success"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+
+
+class AssetStatus(StrEnum):
+    PENDING = "pending"
+    DOWNLOADED = "downloaded"
+    OPTIMIZED = "optimized"
+    UPLOADED = "uploaded"
+    READY = "ready"
+    MISSING = "missing"
+    FAILED = "failed"
+
+
+class BlockType(StrEnum):
+    HERO = "hero"
+    TEXT = "text"
+    HEADING = "heading"
+    IMAGE = "image"
+    GALLERY = "gallery"
+    CTA = "cta"
+    FORM = "form"
+    TESTIMONIAL = "testimonial"
+    PRICING = "pricing"
+    FAQ = "faq"
+    PRODUCT_CARD = "product_card"
+    VIDEO = "video"
+    EMBED = "embed"
+    DIVIDER = "divider"
+    NAV = "nav"
+    FOOTER = "footer"
+    UNKNOWN = "unknown"
+
+
+class ContentBlockSource(StrEnum):
+    EXTRACTED = "extracted"
+    EDITED = "edited"
+    INSERTED = "inserted"
+
+
+class ResidualCategory(StrEnum):
+    BLOCKING_GO_LIVE = "blocking_go_live"
+    CLIENT_CONFIG = "client_config"
+    VISUAL_CONTENT = "visual_content"
+    POST_GO_LIVE = "post_go_live"
+    OTHER = "other"
+
+
+class ResidualStatus(StrEnum):
+    OPEN = "open"
+    IN_PROGRESS = "in_progress"
+    BLOCKED = "blocked"
+    DONE = "done"
+    SKIPPED = "skipped"
+
+
+class AuditAction(StrEnum):
+    CREATE = "create"
+    UPDATE = "update"
+    DELETE = "delete"
+    DISCOVER = "discover"
+    FINGERPRINT = "fingerprint"
+    ENRICH = "enrich"
+    SEND = "send"
+    OPT_OUT = "opt_out"
+    DEPLOY = "deploy"
+    QA = "qa"
+    SYSTEM = "system"
+
+
+class ErrorSeverity(StrEnum):
+    DEBUG = "debug"
+    INFO = "info"
+    WARNING = "warning"
+    ERROR = "error"
+    CRITICAL = "critical"

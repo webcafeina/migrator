@@ -1,0 +1,53 @@
+"""Declarative base + mixins comunes."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+
+from sqlalchemy import DateTime, MetaData, func
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+NAMING_CONVENTION = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+
+
+class Base(DeclarativeBase):
+    """Base declarativa con metadata + naming convention estable.
+
+    La naming convention permite que Alembic genere nombres de
+    constraint deterministas y que migraciones reversibles funcionen
+    sin sorpresas.
+    """
+
+    metadata = MetaData(naming_convention=NAMING_CONVENTION)
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+class TimestampMixin:
+    """Añade created_at y updated_at automáticos.
+
+    Usar en modelos que necesitan auditoría temporal. No es global: hay
+    tablas (audit_log, error_log) donde el timestamp se gestiona
+    manualmente.
+    """
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )

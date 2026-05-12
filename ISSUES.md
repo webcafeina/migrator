@@ -48,6 +48,15 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Contexto**: El prompt fija lista "Microtareas" `900102088242` por defecto, pero deberíamos confirmar si para migraciones grandes preferimos lista propia por proyecto.
 - **Acción**: Consultar con Nacho. Documentar en `docs/decisiones.md`.
 
+### WCM-007 — Deduplicar alias de enums en `ts/index.d.ts`
+- **Tipo**: chore / **Fase**: 1 (post) / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: `pydantic2ts` genera `UserRole1`, `UserRole2`, `OutreachChannel1`, etc. cuando un mismo Enum se referencia desde múltiples schemas. Funcionalmente correcto (los aliases son idénticos), pero feo en autocompletado y reviews.
+- **Acción**: Añadir paso post-gen al script `scripts/gen-ts.sh` que detecta duplicados (`type X1 = X` literal) y los reescribe como `export type X1 = X;` o los elimina si son alias triviales. O bien switching a un generador alternativo si `pydantic2ts` no resuelve.
+- **Dueño**: técnico (Samuel / Álvaro).
+
+---
+
 ### WCM-006 — Política de retención de leads sin consentimiento
 - **Tipo**: docs / **Fase**: 9 / **Prioridad**: P1
 - **Estado**: OPEN

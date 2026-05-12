@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wcm-db-schema"
+version = "0.1.0"
+description = "Webcafeína Migrator — modelos SQLAlchemy y migraciones Alembic"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "UNLICENSED" }
+authors = [{ name = "Webcafeína S.L.", email = "info@webcafeina.com" }]
+dependencies = [
+    "sqlalchemy>=2.0,<3.0",
+    "asyncpg>=0.29",
+    "psycopg[binary]>=3.1",
+    "alembic>=1.13",
+    "pgvector>=0.3",
+    "wcm-shared-types",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "aiosqlite>=0.19",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "black>=24.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "N"]
+ignore = ["S101"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "postgres: tests que requieren Postgres con extensión pgvector (skip por defecto si DATABASE_SYNC_URL no apunta a Postgres)",
+]
+# asyncio_mode = "auto" se reactivará cuando se introduzca pytest-asyncio en Fase 5 (API).

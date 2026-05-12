@@ -15,6 +15,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "type-check": "turbo run type-check",
+    "gen:types": "pnpm --filter @webcafeina/shared-types gen:types",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
