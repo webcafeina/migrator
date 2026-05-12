@@ -125,7 +125,7 @@ Heurística: `N <= 100` → REST; `N > 100` o transaccional → WP-CLI.
 ## ADR-008 — Git local sin remote durante construcción Fase 0
 
 **Fecha**: 2026-05-12 (Fase 0)
-**Estado**: ✅ Aceptada (provisional)
+**Estado**: 🟥 Superseded by ADR-013
 
 **Contexto**: Al iniciar la construcción no hay aún un repo GitHub creado. El usuario prefiere revisar el bootstrap antes de exponerlo.
 
@@ -185,6 +185,29 @@ La dimensión queda codificada como constante `LEAD_EMBEDDING_DIM = 1024` en `pa
 - ✅ Cambiar un enum → cambia en BD, API y dashboard automáticamente.
 - ✅ Test `test_db_reexports_same_enum_objects` valida la identidad (`is`).
 - ⚠️ Si alguien define un enum nuevo en `wcm_db.enums`, romperá. Documentado.
+
+---
+
+## ADR-013 — Repo GitHub diferido hasta final de Fase 15
+
+**Fecha**: 2026-05-12 (Fase 1)
+**Estado**: ✅ Aceptada — supersede ADR-008
+
+**Contexto**: ADR-008 (provisional) preveía crear el repo GitHub al inicio de Fase 1. El usuario ha decidido posponer la creación del repositorio remoto hasta que **todas las fases (0–15) estén desarrolladas y revisadas localmente**. Razones expresadas: control total durante la construcción + revisión final antes de exponer.
+
+**Decisión**: El repositorio sigue solo local (`git init` en `/Users/alvaro/Desktop/webcafeina-migrator/`) sin remote configurado. La creación del repo GitHub (privado, bajo cuenta Webcafeína) se hace al cerrar Fase 15, antes del primer despliegue. El push inicial llevará el histórico completo de los commits ya hechos.
+
+**Implicaciones por fase**:
+- **Fases 2–11, 13, 14, 15**: ninguna implicación. Trabajo 100% local.
+- **Fase 12 (Infra/Deploy)**: los workflows `.github/workflows/*.yml` se escriben con normalidad (su sintaxis y contenido se valida estáticamente), pero **no se ejecutan** hasta que exista el repo remoto. El despliegue inicial en WHM se hace manualmente con `infra/deploy/deploy.sh` antes de tener CI/CD operativo.
+- Antes del primer push: revisar y depurar el histórico si hace falta (sin amends de commits firmados como Co-Authored-By).
+
+**Consecuencias**:
+- ✅ Cero exposición durante construcción.
+- ✅ Revisión humana antes del primer push final.
+- ⚠️ Sin CI rojo/verde durante construcción — confiamos en tests locales `pnpm test`/`pytest`.
+- ⚠️ Sin Issues GitHub durante construcción — pendientes en `ISSUES.md` local con IDs `WCM-NNN`. Migración a Issues GitHub al final.
+- ⚠️ Sin Dependabot/Renovate durante construcción — auditoría de deps al inicio de Fase 15 (Hardening) revisa el snapshot completo.
 
 ---
 

@@ -103,6 +103,7 @@ Cuando el humano apruebe Fase 1, ejecutar en orden:
 - **Tipos TS auto**-generados con `pydantic2ts` + `json-schema-to-typescript` (ADR-012).
 - **No SQLite en tests**: los tipos PG-específicos (Vector, ARRAY, JSONB, UUID) no se simulan en tests; los tests Postgres se marcan con `@pytest.mark.postgres` y se skippean sin BD.
 - **Commit en `main`**: como en Fase 0, sin feature branch (revisión humana entre fases es suficiente).
+- **Repo GitHub diferido al final de Fase 15** (ADR-013, supersede ADR-008). Trabajo local hasta entonces. Fase 12 escribe los workflows pero no se ejecutan hasta el push final.
 
 ---
 
