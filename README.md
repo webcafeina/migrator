@@ -25,9 +25,9 @@ Herramienta interna de **Webcafeína** (Cáceres, España) para:
 
 Ver siempre [`STATE.md`](./STATE.md) para el cursor de avance entre sesiones de construcción.
 
-La construcción está dividida en 16 fases (0–15). **Fases 0–11 completadas** a 2026-05-13: bootstrap, DB+modelos, Bricks transpiler, scraper core, WP client, API backend, worker+subagentes, CLI, dashboard, prospección RGPD/LSSI-CE compliant, integraciones externas (ClickUp/Resend/R2) y **observabilidad** (structlog + Sentry api/worker/dashboard + Logtail opcional + Prometheus `/metrics` + `/health/deep` con verificación db/redis/r2). Próxima fase: 12 — Infra/Deploy (systemd, Nginx, WHM).
+La construcción está dividida en 16 fases (0–15). **Fases 0–12 completadas** a 2026-05-13: desde el bootstrap del monorepo hasta **infra/deploy** completo (4 systemd units con hardening, Nginx vhosts con ACL, 5 scripts WHM setup idempotentes, 4 scripts deploy con rollback, 2 workflows GitHub Actions, runbook completo). Próxima fase: 13 — Tests e2e (Playwright dashboard + e2e migración completa).
 
-Test suite total: **350 tests Python + 15 TS** pasando.
+Test suite total: **379 tests Python + 15 TS** pasando.
 
 ---
 

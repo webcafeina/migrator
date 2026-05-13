@@ -624,6 +624,76 @@ Candidatos: Datadog (caro, exagerado), Honeycomb (excelente pero $$$ para nuestr
 
 ---
 
+## ADR-030 — systemd nativo + 4 units + target agregado
+
+**Fecha**: 2026-05-13 (Fase 12)
+**Estado**: ✅ Aceptada
+
+**Contexto**: La regla #1 del proyecto prohíbe Docker (CLAUDE.md). Necesitamos un mecanismo de gestión de procesos que sea: estándar en distros Linux, integrable con journald, con hardening robusto, sin runtime adicional. Candidatos: systemd, Supervisor, OpenRC, runit, bare `nohup`.
+
+**Decisión**: **systemd** como sistema de gestión de procesos. Cuatro units:
+
+1. `wcm-api.service` — uvicorn (2 workers) sirviendo FastAPI en 127.0.0.1:8000.
+2. `wcm-worker.service` — celery worker con concurrency configurable.
+3. `wcm-beat.service` — celery beat (único en el cluster — vital).
+4. `wcm-dashboard.service` — Next.js standalone (`node server.js`) en 127.0.0.1:3000.
+5. `wcm.target` — agrega las 4 units; `systemctl start wcm.target` arranca todo.
+
+Cada `.service` aplica hardening:
+- `NoNewPrivileges=true`, `ProtectSystem=strict`, `ProtectHome=read-only`
+- `PrivateTmp=true`, `PrivateDevices=true`
+- `ProtectKernelTunables/Modules/ControlGroups=true`
+- `RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6`
+- `LockPersonality=true`, `RestrictRealtime=true`, `RestrictNamespaces=true`
+- API + worker: `SystemCallFilter=@system-service` (filtro syscalls)
+- `ReadWritePaths` explícito (solo `.cache`, `logs`, `work`)
+- `User=webcafeina` (usuario sistema sin root)
+
+Las units son **templates** con variables `${WCM_APP_DIR}`, `${WCM_USER}`, `${WCM_PORT_*}` que `infra/whm-setup/03-install-units.sh` renderiza con `envsubst` antes de copiar a `/etc/systemd/system/`.
+
+**Consecuencias**:
+- ✅ Sin runtime adicional (Docker, k8s) — systemd ya está en cualquier Linux.
+- ✅ Logs directamente en `journalctl -u wcm-api -f`.
+- ✅ Restart automático en fallo (`Restart=on-failure`).
+- ✅ Hardening contra escalada de privilegios + escapes de filesystem.
+- ⚠️ Beat NUNCA debe escalar a >1 instancia (duplicaría tasks programadas). Si en el futuro hace falta HA, migrar a `celery-redbeat` con lock en Redis.
+- ⚠️ Para deploy sin password, requiere reglas sudoers explícitas (documentadas en runbook).
+
+---
+
+## ADR-031 — Topología single-server WHM/cPanel; multi-nodo diferido
+
+**Fecha**: 2026-05-13 (Fase 12)
+**Estado**: ✅ Aceptada
+
+**Contexto**: La empresa ya tiene infra WHM/cPanel (AlmaLinux + cPanel + AutoSSL + backup nativo) en producción para otros sitios. Para Webcafeína Migrator inicial, ¿desplegar en un nodo único reutilizando esa infra, o salir a un esquema multi-nodo desde el principio (load balancer + 2× API + worker pool + DB managed)?
+
+**Decisión**: **Single-server WHM/cPanel** en MVP. Todo en un nodo:
+- Nginx (cPanel-managed) → reverse proxy a API + Dashboard.
+- API + Worker + Beat + Dashboard como systemd units en el mismo host.
+- Postgres + Redis locales.
+- Cloudflare R2 como único storage externo (assets).
+
+**Razones**:
+- Volumen MVP: <100 migraciones/mes + <10k leads/mes. Cabe holgado en un VPS de 4 vCPU / 8GB RAM.
+- Coste fijo: 1 servidor WHM (~50€/mes) vs. multi-nodo en cloud (~250€/mes para mismo SLO).
+- AutoSSL + backup managed por cPanel reducen overhead operativo.
+- Trazabilidad: todo en un journald, un Postgres, un Redis.
+
+**Cuándo abandonar este modelo**:
+- API > 200 RPS sostenidos → mover API a un segundo nodo + LB.
+- Worker queue lag persistente → escalar concurrency o nodos.
+- DB > 50GB o QPS > 200 → migrar a Postgres managed.
+
+**Consecuencias**:
+- ✅ Setup completo automatizable con 5 scripts en `infra/whm-setup/`.
+- ✅ Deploy con `bash infra/deploy/deploy.sh main` (idempotente, con rollback).
+- ✅ CI/CD via GitHub Actions: `ci.yml` (tests automáticos) + `deploy-production.yml` (trigger manual con SSH + script).
+- ⚠️ SPOF: si el nodo cae, todo cae. Mitigación: `pg_dump` diario + snapshots WHM nativos.
+- ⚠️ Beat depende de que el nodo no se reinicie en mid-task de retention sweep. Mitigación: `task_acks_late=true` + idempotencia en cada task.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

@@ -1,0 +1,54 @@
+# /etc/systemd/system/wcm-worker.service
+#
+# Webcafeína Migrator — Celery worker.
+#
+# Variables: ${WCM_APP_DIR}, ${WCM_USER}, ${WCM_WORKER_CONCURRENCY}
+[Unit]
+Description=Webcafeína Migrator — Celery worker
+After=network-online.target redis.service postgresql.service
+Wants=network-online.target
+PartOf=wcm.target
+
+[Service]
+Type=exec
+User=${WCM_USER}
+Group=${WCM_USER}
+WorkingDirectory=${WCM_APP_DIR}
+EnvironmentFile=${WCM_APP_DIR}/.env
+ExecStart=${WCM_APP_DIR}/.venv/bin/celery \
+    -A wcm_worker.celery_app:celery_app \
+    worker \
+    --loglevel=info \
+    --concurrency=${WCM_WORKER_CONCURRENCY} \
+    --queues=webcafeina \
+    --hostname=wcm-worker@%%h \
+    --max-tasks-per-child=200
+
+# Tareas pesadas (transpilado, asset opt) toman minutos: TimeoutStopSec
+# generoso para no matar mid-task en restarts.
+TimeoutStopSec=120s
+KillSignal=SIGTERM
+Restart=on-failure
+RestartSec=10s
+
+# Hardening (ver wcm-api.service)
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=true
+RestrictRealtime=true
+RestrictNamespaces=true
+
+ReadWritePaths=${WCM_APP_DIR}/.cache ${WCM_APP_DIR}/logs ${WCM_APP_DIR}/work
+
+LimitNOFILE=65535
+TasksMax=1024
+
+[Install]
+WantedBy=multi-user.target

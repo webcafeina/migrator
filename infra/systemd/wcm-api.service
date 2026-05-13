@@ -1,0 +1,60 @@
+# /etc/systemd/system/wcm-api.service
+#
+# Webcafeína Migrator — API FastAPI/uvicorn.
+#
+# Variables a sustituir antes de instalar (ver infra/deploy/install-units.sh):
+#   ${WCM_APP_DIR}   p.ej. /home/webcafeina/migrator
+#   ${WCM_USER}      p.ej. webcafeina
+#   ${WCM_PORT_API}  p.ej. 8000
+[Unit]
+Description=Webcafeína Migrator — API FastAPI
+Documentation=https://github.com/webcafeina/migrator
+After=network-online.target postgresql.service redis.service
+Wants=network-online.target
+PartOf=wcm.target
+
+[Service]
+Type=exec
+User=${WCM_USER}
+Group=${WCM_USER}
+WorkingDirectory=${WCM_APP_DIR}
+EnvironmentFile=${WCM_APP_DIR}/.env
+ExecStart=${WCM_APP_DIR}/.venv/bin/uvicorn \
+    wcm_api.main:app \
+    --host 127.0.0.1 \
+    --port ${WCM_PORT_API} \
+    --workers 2 \
+    --proxy-headers \
+    --forwarded-allow-ips 127.0.0.1 \
+    --no-server-header \
+    --log-config ${WCM_APP_DIR}/infra/systemd/uvicorn-log.json
+
+Restart=on-failure
+RestartSec=5s
+
+# ---- Hardening ----
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RestrictNamespaces=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# Directorios donde sí podemos escribir (logs y cachés)
+ReadWritePaths=${WCM_APP_DIR}/.cache ${WCM_APP_DIR}/logs
+
+# Límites de recursos
+LimitNOFILE=65535
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

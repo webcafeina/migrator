@@ -1,0 +1,48 @@
+# /etc/systemd/system/wcm-dashboard.service
+#
+# Webcafeína Migrator — Dashboard Next.js (standalone build).
+#
+# `next build` produce `apps/dashboard/.next/standalone/server.js` (output:
+# 'standalone' en next.config.mjs). Aquí se lanza con `node` directo.
+[Unit]
+Description=Webcafeína Migrator — Dashboard Next.js
+After=network-online.target wcm-api.service
+Wants=network-online.target
+PartOf=wcm.target
+
+[Service]
+Type=exec
+User=${WCM_USER}
+Group=${WCM_USER}
+WorkingDirectory=${WCM_APP_DIR}/apps/dashboard
+EnvironmentFile=${WCM_APP_DIR}/.env
+
+# Standalone server.js está en .next/standalone/. Ojo: Next copia node_modules
+# parciales también ahí, NO usar el del workspace.
+Environment=PORT=${WCM_PORT_DASHBOARD}
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/node ${WCM_APP_DIR}/apps/dashboard/.next/standalone/apps/dashboard/server.js
+
+Restart=on-failure
+RestartSec=5s
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=true
+RestrictRealtime=true
+
+# Next necesita escribir en .next/cache (ISR, fetch cache, etc.).
+ReadWritePaths=${WCM_APP_DIR}/apps/dashboard/.next/cache
+
+LimitNOFILE=16384
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

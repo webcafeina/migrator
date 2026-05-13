@@ -1,0 +1,44 @@
+# /etc/systemd/system/wcm-beat.service
+#
+# Webcafeína Migrator — Celery beat (scheduler).
+#
+# Un único proceso beat en todo el cluster (vital: dos beats programarían
+# duplicados). Si en el futuro hay HA, usar `celery-redbeat` o leader election.
+[Unit]
+Description=Webcafeína Migrator — Celery beat scheduler
+After=network-online.target redis.service
+Wants=network-online.target
+PartOf=wcm.target
+
+[Service]
+Type=exec
+User=${WCM_USER}
+Group=${WCM_USER}
+WorkingDirectory=${WCM_APP_DIR}
+EnvironmentFile=${WCM_APP_DIR}/.env
+ExecStart=${WCM_APP_DIR}/.venv/bin/celery \
+    -A wcm_worker.celery_app:celery_app \
+    beat \
+    --loglevel=info \
+    --schedule=${WCM_APP_DIR}/.cache/celerybeat-schedule \
+    --pidfile=${WCM_APP_DIR}/.cache/celerybeat.pid
+
+Restart=on-failure
+RestartSec=10s
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=true
+
+ReadWritePaths=${WCM_APP_DIR}/.cache ${WCM_APP_DIR}/logs
+
+LimitNOFILE=8192
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

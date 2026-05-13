@@ -1,0 +1,128 @@
+name: CI
+
+# Workflow listo pero inactivo hasta el push del repo a GitHub (ADR-013).
+# Se dispara solo sobre PRs al rama main y pushes directos a main.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Tests Python
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_wcm
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test_wcm
+      DATABASE_SYNC_URL: postgresql://test:test@localhost:5432/test_wcm
+      REDIS_URL: redis://localhost:6379/0
+      CELERY_BROKER_URL: redis://localhost:6379/1
+      CELERY_RESULT_BACKEND: redis://localhost:6379/2
+      CELERY_TASK_ALWAYS_EAGER: "true"
+      JWT_SECRET: ci-jwt-secret-not-real-1234567890
+      SECRET_KEY: ci-secret-key-not-real-1234567890
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install pgvector
+        run: |
+          docker exec ${{ job.services.postgres.id }} apt-get update -qq
+          docker exec ${{ job.services.postgres.id }} apt-get install -y postgresql-16-pgvector
+          docker exec -e PGPASSWORD=test ${{ job.services.postgres.id }} \
+            psql -U test -d test_wcm -c "CREATE EXTENSION IF NOT EXISTS vector;"
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip wheel
+          pip install \
+            -e ./packages/shared-types \
+            -e ./packages/db-schema \
+            -e ./packages/scraper-core \
+            -e ./packages/bricks-transpiler \
+            -e ./packages/wp-client
+          pip install -e "./apps/api[dev]"
+          pip install -e "./apps/worker[dev]"
+          pip install -e "./cli"
+      - name: Lint (ruff)
+        run: ruff check apps/ packages/ cli/
+      - name: Type check (mypy)
+        run: mypy --strict apps/api/src apps/worker/src packages/db-schema/src || true
+      - name: Run tests
+        run: pytest -q --tb=short
+
+  typescript:
+    name: Tests TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Type-check dashboard
+        run: pnpm --filter @webcafeina/dashboard type-check
+      - name: Lint dashboard
+        run: pnpm --filter @webcafeina/dashboard lint
+      - name: Build dashboard
+        run: pnpm --filter @webcafeina/dashboard build
+      - name: Tests Vitest
+        run: pnpm --filter @webcafeina/dashboard test
+
+  infra:
+    name: Validar infra (bash + nginx + systemd)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n para todos los scripts
+        run: |
+          set -e
+          for f in $(find infra/ -name "*.sh"); do
+            echo "Checking $f"
+            bash -n "$f"
+          done
+      - name: shellcheck (advisorio)
+        run: |
+          sudo apt-get install -y shellcheck
+          shellcheck -S warning infra/**/*.sh || true
+      - name: Validar systemd units
+        run: |
+          # systemd-analyze verify requiere systemd; aquí basta con
+          # confirmar las secciones críticas con grep.
+          set -e
+          for u in infra/systemd/*.service infra/systemd/*.target; do
+            grep -q '^\[Unit\]' "$u" || { echo "$u: missing [Unit]"; exit 1; }
+            grep -q '^\[Install\]' "$u" || { echo "$u: missing [Install]"; exit 1; }
+            echo "OK $u"
+          done

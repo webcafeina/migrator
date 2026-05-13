@@ -18,8 +18,9 @@
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
 - **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
 - **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
-- **Fase 11 — Observabilidad**: ✅ Completada esta sesión (commit `3863daa`)
-- **Próxima fase**: Fase 12 — Infra/Deploy (systemd units, Nginx, scripts WHM/cPanel, CI GitHub Actions)
+- **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
+- **Fase 12 — Infra/Deploy**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 13 — Tests e2e (Playwright para dashboard + flujo migración completo + CI matrix)
 
 ---
 
@@ -39,14 +40,49 @@
 | 9 | Prospección | ✅ Completada | GooglePlacesClient (legacy, ADR-024) + ProspectorAgent + EnricherAgent con embedding e5-large (ADR-023) + OutreachComposer LSSI-CE + 4 docs legales + 268 tests Python (+38 nuevos) |
 | 10 | Integraciones externas | ✅ Completada | ClickUp/Resend/R2 clients (ADR-025/26/27) + ClickupSyncer + ResendNotifier + OutreachSender + AssetOptimizer (Pillow→WebP) + retention sweep (Celery beat) + webhook Resend + 325 tests Python (+57 nuevos) |
 | 11 | Observabilidad | ✅ Completada | structlog + Sentry (api/worker/dashboard) + Logtail + Prometheus `/metrics` + `/health/deep` (db/redis/r2) — todo perezoso (ADR-028/29). 25 tests nuevos. Total 350+15. |
-| 12 | Infra/Deploy | ⏳ Pendiente | |
+| 12 | Infra/Deploy | ✅ Completada | 4 systemd units + target + Nginx vhosts + 5 scripts WHM setup + 4 scripts deploy + 2 workflows GitHub Actions + runbook completo en docs/despliegue.md (ADR-030/031). 29 tests validación. Total 379+15. |
 | 13 | Tests e2e | ⏳ Pendiente | |
 | 14 | Documentación | ⏳ Pendiente | |
 | 15 | Hardening | ⏳ Pendiente | |
 
 ---
 
-## Tareas completadas en la última sesión (Fase 11)
+## Tareas completadas en la última sesión (Fase 12)
+
+- [x] **`infra/systemd/`** — 4 unit files + target agregado (ADR-030):
+  - `wcm-api.service` (uvicorn, 2 workers, hardening completo)
+  - `wcm-worker.service` (celery, concurrency configurable, TimeoutStopSec=120s)
+  - `wcm-beat.service` (único en el cluster)
+  - `wcm-dashboard.service` (Next.js standalone)
+  - `wcm.target` (agrega las 4)
+  - `uvicorn-log.json` (log config externo)
+  - Hardening: NoNewPrivileges, ProtectSystem=strict, PrivateTmp, ProtectKernelTunables/Modules/ControlGroups, RestrictAddressFamilies, LockPersonality, SystemCallFilter=@system-service, ReadWritePaths explícito.
+- [x] **`infra/nginx/`** — 3 ficheros:
+  - `wcm-common.conf` (snippet con HSTS, CSP, X-Frame-Options, TLS 1.2/1.3, gzip)
+  - `api.migrator.webcafeina.com.conf` (reverse proxy + ACL `/metrics` y `/health/deep` con `deny all`)
+  - `migrator.webcafeina.com.conf` (dashboard standalone + cache largo en /_next/static)
+- [x] **`infra/whm-setup/`** — 5 scripts (idempotentes, `set -euo pipefail`):
+  - `00-env.sh` (variables compartidas: WCM_USER, WCM_APP_DIR, puertos, dominios)
+  - `01-system-prereqs.sh` (Python 3.14 desde fuente, Node 22, Redis, Postgres+pgvector, user sistema, swap si <2GB, fail2ban)
+  - `02-database.sh` (DB + rol + pgvector, password auto-generada)
+  - `03-install-units.sh` (envsubst + systemctl daemon-reload + enable)
+  - `04-install-nginx.sh` (envsubst + `nginx -t` + reload)
+  - `05-init-env.sh` (genera `.env` desde example con secrets aleatorios, modo 600)
+- [x] **`infra/deploy/`** — 4 scripts:
+  - `deploy.sh` (guarda SHA previo, pull, deps Python+Node, migrate, build dashboard, restart, health-check)
+  - `rollback.sh` (vuelve al SHA anterior)
+  - `migrate.sh` (alembic upgrade head)
+  - `health-check.sh` (curl /health + /ready + /health/deep + jq al status, falla con exit 1 si "fail")
+- [x] **`.github/workflows/`** — 2 workflows (listos pero inactivos hasta push del repo, ADR-013):
+  - `ci.yml` — 3 jobs (python con services Postgres+Redis+pgvector / typescript / infra validación)
+  - `deploy-production.yml` — manual SSH trigger con appleboy/ssh-action
+- [x] **`docs/despliegue.md`** runbook completo: provisión inicial → primer deploy → updates → rollback → sudoers → logs → métricas → backups → troubleshooting → escala → seguridad operativa.
+- [x] **29 tests de validación infra** en `tests/unit/test_infra.py`: `bash -n` para 13 scripts, secciones críticas en 5 systemd units, hardening directives, headers de seguridad en Nginx, ACL en `/metrics` y `/health/deep`, YAML parseable en workflows, ejecutabilidad de scripts, `set -euo pipefail` presente en críticos.
+- [x] **ADR-030** (systemd nativo + 4 units + target) y **ADR-031** (single-server WHM topology).
+- [x] Fix YAML en `ci.yml`: bloque Python heredoc reemplazado por grep simple para no romper `yaml.safe_load`.
+- [x] Total: **379 Python + 15 TS = 394 tests** pasando.
+
+## Tareas completadas en sesión anterior (Fase 11)
 
 - [x] **structlog central** en API y worker (`apps/{api,worker}/src/.../observability/logging_config.py`): JSON renderer en prod, ConsoleRenderer (sin colores) en dev. Stdlib `logging` puenteado para que libs externas (uvicorn, sqlalchemy, httpx) emitan también JSON. Silencia `httpx`/`botocore`/`urllib3` a WARNING. Idempotente.
 - [x] **Sentry SDK** integrado en 3 componentes (ADR-028):
@@ -293,20 +329,19 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 12 — Infra/Deploy)
+## Próximas tareas inmediatas (Fase 13 — Tests e2e)
 
-Cuando el humano apruebe Fase 11, ejecutar en orden:
+Cuando el humano apruebe Fase 12, ejecutar en orden:
 
 1. **PREREQ humano**:
-   - Acceso SSH root al servidor WHM/cPanel destino.
-   - Decisión del subdominio del API (`api.migrator.webcafeina.com`?) y del dashboard (`migrator.webcafeina.com`?).
-   - Certificado SSL (Let's Encrypt vía cPanel AutoSSL).
-2. **`infra/systemd/`**: 4 units (`wcm-api.service`, `wcm-worker.service`, `wcm-beat.service`, `wcm-dashboard.service`). Hardening (`ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true`, `User=webcafeina`).
-3. **`infra/nginx/`**: vhosts con reverse proxy + headers de seguridad + ACL para `/metrics` y `/health/deep`.
-4. **`infra/whm-setup/`** scripts: provisión Python 3.14, pnpm, Redis, Postgres+pgvector, usuario sistema, swap si <2GB RAM, fail2ban básico.
-5. **`infra/deploy/`** scripts: pull, install, migrate, build dashboard, restart units. Idempotentes.
-6. **GitHub Actions** `.github/workflows/` (no se ejecutan hasta Fase 15 cuando se crea el remote): tests, lint, typecheck en PRs.
-7. Commit: `feat(infra): systemd units + nginx + whm scripts`.
+   - Acceso a un sandbox real (Wix demo + WP destino) para test golden path completo.
+   - Decisión sobre coverage threshold (¿70% packages, 50% apps?).
+2. **Playwright Test** en dashboard: e2e de login → list → detail → start project. Headless en CI.
+3. **e2e Python**: `tests/e2e/test_full_migration.py` — fixture que crea un Project en BD + ejecuta orchestrator con HTML de Wix fixture + valida que se persiste BricksPage + assets + checklist. Sin red real (mocks de WP/R2).
+4. **Coverage**: añadir `pytest-cov`, configurar threshold en `pytest.ini` y reporte HTML.
+5. **CI matrix**: Python 3.13 + 3.14, Node 20 + 22 para detectar regresiones de versión.
+6. **Visual regression**: snapshot de las páginas críticas del dashboard con Playwright (header, leads table, project detail).
+7. Commit: `feat(e2e): full migration test + playwright dashboard`.
 
 ---
 
@@ -324,7 +359,18 @@ Cuando el humano apruebe Fase 11, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 11)
+## Decisiones tomadas esta sesión (Fase 12)
+
+- **systemd nativo** (ADR-030): regla #1 prohíbe Docker. systemd + journald es estándar en cualquier Linux y elimina runtime adicional. Cada unit con hardening explícito (NoNewPrivileges, ProtectSystem=strict, etc.).
+- **Single-server WHM** en MVP (ADR-031): reutiliza infra cPanel existente, ~50€/mes vs ~250€/mes en multi-nodo cloud. Cabe holgado para <100 migraciones/mes. Migración a multi-nodo cuando el volumen lo exija.
+- **Templates con `envsubst`**: los .service y .conf de Nginx tienen `${WCM_APP_DIR}`, `${WCM_USER}`, `${WCM_PORT_*}`. Un script de install renderiza con `envsubst` antes de copiar a `/etc/systemd/system/` o `/etc/nginx/conf.d/`. Permite mismas plantillas en dev/staging/prod.
+- **`/metrics` y `/health/deep` con ACL Nginx**: aunque la API permitiría exponerlos públicamente (sin auth), bloqueamos a `127.0.0.1` + IPs internas explícitas. Evita exponer la topología y métricas de uso al mundo.
+- **GitHub Actions con `on: pull_request + push:main` pero sin remote aún**: workflows escritos y validados (`yaml.safe_load`), pero ADR-013 difiere el push del repo a Fase 15. Cuando llegue, el CI ya está listo sin tocar.
+- **`deploy.sh` guarda SHA previo antes de cualquier cambio**: rollback es `deploy.sh <prev_sha>`. Idempotente.
+- **NUNCA escalar `wcm-beat` a >1**: duplicaría todas las tareas programadas (retention_sweep dos veces, etc.). Documentado en ADR-030 y en el runbook.
+- **`task_acks_late=true`** ya configurado en Celery (Fase 6): combinado con idempotencia en cada task, sobrevive a kill mid-task durante restarts del worker.
+
+## Decisiones tomadas sesión anterior (Fase 11)
 
 - **Observabilidad 100% perezosa**: ADR-028. Sin DSN, sin token, no se inicializa nada. Permite levantar la app en dev/CI sin cuentas externas.
 - **PII off por defecto** en Sentry (api/worker/dashboard): `send_default_pii=False`. No queremos que emails de leads o credenciales aparezcan en Sentry.
@@ -419,7 +465,7 @@ Cuando el humano apruebe Fase 11, ejecutar en orden:
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
 - Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-13 (tras Fase 11): **350 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
+- Test suite total a 2026-05-13 (tras Fase 12): **379 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
 - Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
 - Issues abiertos prioritarios:
   - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.

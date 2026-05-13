@@ -1,0 +1,13 @@
+# /etc/systemd/system/wcm.target
+#
+# Target agregado para gestionar todos los servicios WCM como uno solo:
+#   sudo systemctl start wcm.target   # arranca api + worker + beat + dashboard
+#   sudo systemctl stop wcm.target    # los detiene todos
+#   sudo systemctl status wcm.target
+[Unit]
+Description=Webcafeína Migrator — todos los servicios
+Requires=wcm-api.service wcm-worker.service wcm-beat.service wcm-dashboard.service
+After=wcm-api.service wcm-worker.service wcm-beat.service wcm-dashboard.service
+
+[Install]
+WantedBy=multi-user.target
