@@ -21,7 +21,7 @@
 - **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
 - **Fase 12 — Infra/Deploy**: ✅ Completada (commit `7c6b8a0`)
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
-- **Fase 14 — Documentación**: ✅ Completada esta sesión
+- **Fase 14 — Documentación**: ✅ Completada esta sesión (commit `d1b2b86`)
 - **Próxima fase**: Fase 15 — Hardening (security review final, dependency audit, performance baseline, push repo GitHub diferido por ADR-013)
 
 ---
