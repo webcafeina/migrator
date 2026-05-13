@@ -17,7 +17,7 @@
 - **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
 - **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
-- **Fase 10 — Integraciones externas**: ✅ Completada esta sesión
+- **Fase 10 — Integraciones externas**: ✅ Completada esta sesión (commit `e46d5ce`)
 - **Próxima fase**: Fase 11 — Observabilidad (Sentry, structlog, Logtail, métricas)
 
 ---
