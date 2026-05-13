@@ -6,14 +6,21 @@
 
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.errors import register_error_handlers
+from wcm_api.observability import (
+    PrometheusMiddleware,
+    configure_logging,
+    init_sentry,
+    metrics_endpoint,
+    setup_logtail_handler,
+)
 from wcm_api.routers import (
     auth,
     campaigns,
@@ -31,13 +38,21 @@ from wcm_api.routers import (
 
 @asynccontextmanager
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
-    # Aquí en futuras fases: inicializar Sentry, structlog, etc.
-    # En Fase 5 lo dejamos limpio. Fase 11 lo amplía.
     yield
 
 
 def create_app(settings: ApiSettings | None = None) -> FastAPI:
     s = settings or get_settings()
+
+    # Observabilidad. Idempotente — segundas llamadas son no-op.
+    configure_logging(level=s.log_level, env=s.env)
+    init_sentry(
+        dsn=s.sentry_dsn_api,
+        environment=s.sentry_environment,
+        traces_sample_rate=s.sentry_traces_sample_rate,
+        component="api",
+    )
+    setup_logtail_handler(source_token=s.logtail_source_token, level=s.log_level)
 
     app = FastAPI(
         title="Webcafeína Migrator API",
@@ -61,11 +76,17 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
         allow_headers=["*"],
         expose_headers=["X-Request-Id"],
     )
+    # Prometheus: añadimos después de CORS para no contar preflight OPTIONS
+    # cancelados antes de llegar a los routers.
+    app.add_middleware(PrometheusMiddleware)
 
     register_error_handlers(app)
 
-    # Health/probes — sin prefijo de versión
+    # Health/probes y /metrics — sin prefijo de versión, sin auth.
     app.include_router(health.router)
+    app.add_api_route(
+        "/metrics", metrics_endpoint, methods=["GET"], include_in_schema=False,
+    )
 
     # Opt-out RGPD — sin prefijo (URL humana, no API JSON)
     app.include_router(opt_out.router)

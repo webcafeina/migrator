@@ -569,6 +569,61 @@ Candidatos evaluados: SES (barato, complejidad operativa alta), Postmark (excele
 
 ---
 
+## ADR-028 — Observabilidad: Sentry + structlog + Logtail, todo perezoso
+
+**Fecha**: 2026-05-13 (Fase 11)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Necesitamos tres capas de observabilidad: errores con stack trace y contexto (APM/error tracking), logs estructurados para búsqueda y análisis, y métricas para alertas.
+
+Candidatos: Datadog (caro, exagerado), Honeycomb (excelente pero $$$ para nuestro volumen), OpenTelemetry self-hosted (overhead operativo alto), o el combo **Sentry (errores) + Better Stack/Logtail (logs) + Prometheus (métricas)** — coste $0 en tiers gratuitos para nuestro volumen MVP.
+
+**Decisión**:
+- **Sentry SDK** en `apps/api`, `apps/worker` y `apps/dashboard`. Tres DSNs separados (`SENTRY_DSN_API`, `SENTRY_DSN_WORKER`, `SENTRY_DSN_DASHBOARD` / `NEXT_PUBLIC_SENTRY_DSN`) para tener componentes separados en el panel.
+- **structlog** como abstracción única de logging en API y worker. JSON renderer en producción (compatible con cualquier ingester); ConsoleRenderer en dev.
+- **Logtail (Better Stack)** opcional vía `LOGTAIL_SOURCE_TOKEN`. El handler se añade al root logger si el token está; si no, no-op.
+- **Sin colores en logs** en cualquier entorno: queremos redirigir stdout a journald/archivos sin escape codes ANSI estropeando los logs.
+- **PII off** por defecto (`send_default_pii=False` en Sentry SDK). El dashboard interno no necesita enviar emails ni nombres de leads a Sentry.
+
+**Perezoso por diseño**:
+- `init_sentry(dsn=None)` devuelve `False` sin tocar nada.
+- `setup_logtail_handler(source_token=None)` devuelve `False` y no añade handler.
+- `configure_logging()` siempre se ejecuta — es el único setup que aporta valor sin credenciales externas.
+
+**Consecuencias**:
+- ✅ Producción puede activar/desactivar Sentry y Logtail con un `systemctl restart` tras editar `.env`. No requiere redeploy.
+- ✅ Tests no tocan red ni necesitan mockear servicios externos: sin DSN simplemente no inicializan.
+- ✅ Stack 100% gratuito en MVP (Sentry free tier 5k eventos/mes, Logtail free tier 1GB/mes).
+- ⚠️ structlog + stdlib logging tienen una curva de aprendizaje para el equipo. Mitigación: `logging.getLogger(...)` sigue funcionando y produce el mismo JSON.
+- ⚠️ El JSON renderer pierde colores y formato amigable en producción. Compensación: cualquier ingester (Logtail, Datadog, etc.) consume JSON directamente.
+
+---
+
+## ADR-029 — Métricas con Prometheus (registry propio, sin exporter externo)
+
+**Fecha**: 2026-05-13 (Fase 11)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Necesitamos métricas para tasa de requests, latencia, tasks Celery ejecutadas, y agent runs. Alternativas: StatsD (push), OpenTelemetry metrics (más complejo), o **prometheus-client** Python (in-process, scrape pull).
+
+**Decisión**: prometheus-client con `CollectorRegistry` propio (no el global default) en `apps/api/.../observability/metrics.py` y `apps/worker/.../observability/metrics.py`.
+
+- **Endpoint `GET /metrics`** en la API expone el dump del registry en formato OpenMetrics. Sin auth — es interno por Nginx ACL.
+- **Middleware Prometheus** en FastAPI registra `wcm_http_requests_total` (Counter) y `wcm_http_request_duration_seconds` (Histogram).
+- **Worker**: Celery signals (`task_prerun`, `task_postrun`) registran `wcm_celery_tasks_total` y `wcm_celery_task_duration_seconds`. Context managers `observe_agent` y `observe_celery_task` para instrumentación inline cuando hace falta.
+- **Cardinalidad controlada**: `path` se toma del route template (`/projects/{id}` no `/projects/42`) para no explotar Prometheus con un counter por cada ID.
+
+**Por qué registry propio**: evita conflicts en tests (las métricas del default registry persisten entre tests). El propio registry es importado donde se necesita.
+
+**Consecuencias**:
+- ✅ Setup mínimo: un endpoint y un middleware.
+- ✅ Compatible con cualquier scraper Prometheus, Grafana Agent, Datadog (con `prometheus_check`), VictoriaMetrics, etc.
+- ✅ Tests deterministas (sin métricas Python GC del default registry contaminando el output).
+- ⚠️ Modelo pull: alguien tiene que scrapeear `/metrics`. En producción (WHM, Fase 12) la opción más simple es Grafana Cloud con el Agent, o un Prometheus self-hosted en el propio servidor.
+- ⚠️ El worker no expone `/metrics` propio (no es un servidor HTTP). En Fase 12 lo expondremos vía un sidecar simple o `prometheus-client.start_http_server(9000)` dentro del proceso.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

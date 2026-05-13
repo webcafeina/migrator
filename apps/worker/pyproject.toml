@@ -29,6 +29,10 @@ dependencies = [
     "boto3>=1.40",
     "resend>=2.0",
     "Pillow>=11.0",
+    "structlog>=24.4",
+    "sentry-sdk[celery]>=2.0",
+    "prometheus-client>=0.21",
+    "logtail-python>=0.3",
 ]
 
 [project.optional-dependencies]

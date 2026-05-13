@@ -17,8 +17,9 @@
 - **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
 - **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
-- **Fase 10 — Integraciones externas**: ✅ Completada esta sesión (commit `e46d5ce`)
-- **Próxima fase**: Fase 11 — Observabilidad (Sentry, structlog, Logtail, métricas)
+- **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
+- **Fase 11 — Observabilidad**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 12 — Infra/Deploy (systemd units, Nginx, scripts WHM/cPanel, CI GitHub Actions)
 
 ---
 
@@ -37,7 +38,7 @@
 | 8 | Dashboard | ✅ Completada | Next.js 15 + shadcn/ui + JetBrains Mono (ADR-022) + paleta WCM estricta + 10 páginas + 15 tests Vitest |
 | 9 | Prospección | ✅ Completada | GooglePlacesClient (legacy, ADR-024) + ProspectorAgent + EnricherAgent con embedding e5-large (ADR-023) + OutreachComposer LSSI-CE + 4 docs legales + 268 tests Python (+38 nuevos) |
 | 10 | Integraciones externas | ✅ Completada | ClickUp/Resend/R2 clients (ADR-025/26/27) + ClickupSyncer + ResendNotifier + OutreachSender + AssetOptimizer (Pillow→WebP) + retention sweep (Celery beat) + webhook Resend + 325 tests Python (+57 nuevos) |
-| 11 | Observabilidad | ⏳ Pendiente | |
+| 11 | Observabilidad | ✅ Completada | structlog + Sentry (api/worker/dashboard) + Logtail + Prometheus `/metrics` + `/health/deep` (db/redis/r2) — todo perezoso (ADR-028/29). 25 tests nuevos. Total 350+15. |
 | 12 | Infra/Deploy | ⏳ Pendiente | |
 | 13 | Tests e2e | ⏳ Pendiente | |
 | 14 | Documentación | ⏳ Pendiente | |
@@ -45,7 +46,30 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 10)
+## Tareas completadas en la última sesión (Fase 11)
+
+- [x] **structlog central** en API y worker (`apps/{api,worker}/src/.../observability/logging_config.py`): JSON renderer en prod, ConsoleRenderer (sin colores) en dev. Stdlib `logging` puenteado para que libs externas (uvicorn, sqlalchemy, httpx) emitan también JSON. Silencia `httpx`/`botocore`/`urllib3` a WARNING. Idempotente.
+- [x] **Sentry SDK** integrado en 3 componentes (ADR-028):
+  - API: `FastApiIntegration` + `StarletteIntegration` + `SqlalchemyIntegration`.
+  - Worker: `CeleryIntegration(monitor_beat_tasks=True)` + `SqlalchemyIntegration`.
+  - Dashboard: `@sentry/nextjs@^9.0.0` con `sentry.client.config.ts`, `sentry.server.config.ts`, `sentry.edge.config.ts` + `instrumentation.ts` (Next 15).
+  - Todos perezosos: sin DSN, no se inicializan.
+  - PII off por defecto (`send_default_pii=False`).
+- [x] **Logtail (Better Stack)** handler opcional via `LOGTAIL_SOURCE_TOKEN`. Sin token = no-op.
+- [x] **Métricas Prometheus** (ADR-029) en registry propio (no global) para evitar contaminación entre tests:
+  - API: `wcm_http_requests_total{method,path,status}` y `wcm_http_request_duration_seconds{method,path}` vía middleware Starlette.
+  - Worker: `wcm_celery_tasks_total{task,status}`, `wcm_celery_task_duration_seconds{task}`, `wcm_agent_runs_total{agent,status}`, `wcm_agent_run_duration_seconds{agent}` instrumentadas via Celery signals.
+  - Endpoint `GET /metrics` en API (sin auth, formato OpenMetrics, `text/plain`).
+  - Cardinalidad controlada: `path` toma plantilla resuelta (`/projects/{id}`) o fallback truncado a 4 segmentos.
+- [x] **`/health/deep`** verifica Postgres (`SELECT 1`), Redis (`PING` con timeout 2s), R2 (`head_bucket`). Devuelve por-dependencia: `ok` | `fail` | `skipped`. Overall `ok` si críticos ok, `degraded` si solo opcionales fallan, `fail` si algún crítico falla. Útil para diagnóstico runbook y dashboards.
+- [x] **25 tests nuevos** Python (12 observability API, 5 /health/deep, 2 /metrics endpoint, 6 observability worker). Total **350 Python + 15 TS**.
+- [x] **2 ADRs**: ADR-028 (observabilidad), ADR-029 (Prometheus).
+- [x] **Deps añadidas**:
+  - Python: `sentry-sdk[fastapi,celery]>=2.0`, `prometheus-client`, `logtail-python`.
+  - JS: `@sentry/nextjs@^9.0.0`.
+- [x] Test renombrado `test_observability.py` → `test_worker_observability.py` en worker para evitar colisión con el de la API (pytest no admite duplicate basenames en la misma run).
+
+## Tareas completadas en sesión anterior (Fase 10)
 
 - [x] **Clientes de integración** en `apps/worker/src/wcm_worker/integrations/`:
   - `ClickupClient` (REST v2, retry exponencial sobre 429/5xx, no retry sobre 4xx)
@@ -269,20 +293,20 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 11 — Observabilidad)
+## Próximas tareas inmediatas (Fase 12 — Infra/Deploy)
 
-Cuando el humano apruebe Fase 10, ejecutar en orden:
+Cuando el humano apruebe Fase 11, ejecutar en orden:
 
-1. **PREREQ humano** (no bloqueantes hasta producción):
-   - **Sentry DSNs** (api/worker/dashboard) — gratis hasta 5k errores/mes.
-   - **Logtail source tokens** — log aggregation.
-   - Tokens reales para ClickUp/Resend/R2 cuando se quieran ejecutar end-to-end en staging (Fase 10 funciona en modo "skipped" sin ellos).
-2. Integrar **Sentry SDK** en API + worker + dashboard. Tag por componente y entorno. Sample rate 20% por defecto (`SENTRY_TRACES_SAMPLE_RATE`).
-3. Configurar **structlog** ya importado (CLAUDE.md): JSON renderer en prod, plano en dev, niveles por logger en `LOG_LEVEL`.
-4. Push de logs a **Logtail** vía handler dedicado.
-5. **Métricas básicas** del worker (Celery): tasks ejecutadas, latencia, fallos. Exportar a Prometheus o (más simple) endpoint `/metrics` Counter+Gauge en la API.
-6. **Health check enriquecido** `/health/deep` que verifica conectividad a Postgres, Redis, R2.
-7. Commit: `feat(obs): sentry + structlog + logtail + metrics`.
+1. **PREREQ humano**:
+   - Acceso SSH root al servidor WHM/cPanel destino.
+   - Decisión del subdominio del API (`api.migrator.webcafeina.com`?) y del dashboard (`migrator.webcafeina.com`?).
+   - Certificado SSL (Let's Encrypt vía cPanel AutoSSL).
+2. **`infra/systemd/`**: 4 units (`wcm-api.service`, `wcm-worker.service`, `wcm-beat.service`, `wcm-dashboard.service`). Hardening (`ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true`, `User=webcafeina`).
+3. **`infra/nginx/`**: vhosts con reverse proxy + headers de seguridad + ACL para `/metrics` y `/health/deep`.
+4. **`infra/whm-setup/`** scripts: provisión Python 3.14, pnpm, Redis, Postgres+pgvector, usuario sistema, swap si <2GB RAM, fail2ban básico.
+5. **`infra/deploy/`** scripts: pull, install, migrate, build dashboard, restart units. Idempotentes.
+6. **GitHub Actions** `.github/workflows/` (no se ejecutan hasta Fase 15 cuando se crea el remote): tests, lint, typecheck en PRs.
+7. Commit: `feat(infra): systemd units + nginx + whm scripts`.
 
 ---
 
@@ -300,7 +324,18 @@ Cuando el humano apruebe Fase 10, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 10)
+## Decisiones tomadas esta sesión (Fase 11)
+
+- **Observabilidad 100% perezosa**: ADR-028. Sin DSN, sin token, no se inicializa nada. Permite levantar la app en dev/CI sin cuentas externas.
+- **PII off por defecto** en Sentry (api/worker/dashboard): `send_default_pii=False`. No queremos que emails de leads o credenciales aparezcan en Sentry.
+- **Sin colores en logs** incluso en dev: stdout va a journald/archivos sin escape codes. ConsoleRenderer con `colors=False` mantiene legibilidad pero no rompe pipes.
+- **Registry Prometheus propio** (no global default): evita contaminación entre tests y deja los metrics dump limpios (sin `python_gc_objects_collected` y friends).
+- **Cardinalidad controlada en métricas HTTP**: el `path` se toma del route template (`/projects/{id}`) en lugar del path crudo, para no explotar Prometheus con un counter por cada ID.
+- **Worker sin `/metrics` HTTP en Fase 11**: el worker no es un servidor HTTP. En Fase 12 lo expondrá vía sidecar simple o `start_http_server(9000)`.
+- **Sentry SDK Next.js v9**: la última stable (sept 2025). Compatible con Next.js 15 + React 19.
+- **Dashboard Sentry con DSN público (`NEXT_PUBLIC_*`)** en cliente: es lo esperado por Sentry; el panel filtra por origin/whitelist.
+
+## Decisiones tomadas sesión anterior (Fase 10)
 
 - **Resend único proveedor email** (ADR-025). Free tier 3k/mes cubre MVP. Webhook nativo con HMAC ya soportado.
 - **R2 vía boto3** (ADR-026): S3-compat aísla el código de la decisión de proveedor; migrar a S3/B2 cuesta cambiar `endpoint_url`.
@@ -384,7 +419,7 @@ Cuando el humano apruebe Fase 10, ejecutar en orden:
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
 - Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-13 (tras Fase 10): **325 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
+- Test suite total a 2026-05-13 (tras Fase 11): **350 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
 - Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
 - Issues abiertos prioritarios:
   - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.
