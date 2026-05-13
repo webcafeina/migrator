@@ -48,6 +48,24 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Contexto**: El prompt fija lista "Microtareas" `900102088242` por defecto, pero deberíamos confirmar si para migraciones grandes preferimos lista propia por proyecto.
 - **Acción**: Consultar con Nacho. Documentar en `docs/decisiones.md`.
 
+### WCM-010 — Local by Flywheel: autodescubrir socket MySQL volátil
+- **Tipo**: chore / **Fase**: 4 (descubierto) / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: Local genera el socket de MySQL en `~/Library/Application Support/Local/run/<8-char-ID>/mysql/mysqld.sock`. El ID puede cambiar al recrear el site o actualizar Local. `WP_LOCAL_MYSQL_SOCKET` se desactualiza.
+- **Acción**: En `WpClientConfig`, si `local_mysql_socket` no está definido pero `local_php_bin` sí, intentar autodescubrir con `find ~/Library/Application\ Support/Local/run -name mysqld.sock 2>/dev/null | head -1` cacheado por sesión.
+- **Dueño**: técnico — Fase 4 post-cierre o cuando moleste.
+
+---
+
+### WCM-009 — Local by Flywheel: autodescubrir binario PHP
+- **Tipo**: chore / **Fase**: 4 (descubierto) / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: Local instala PHP en `~/Library/Application Support/Local/lightning-services/php-8.x.YY+Z/bin/darwin-arm64/bin/php`. Si Local actualiza PHP, la ruta cambia y rompe los tests integración.
+- **Acción**: Similar a WCM-010: autodescubrir con `find` la versión más reciente disponible.
+- **Dueño**: técnico — Fase 4 post-cierre.
+
+---
+
 ### WCM-008 — macOS+Python 3.14: archivos .pth en .venv heredan UF_HIDDEN
 - **Tipo**: chore / **Fase**: 2 (descubierto) / **Prioridad**: P2
 - **Estado**: OPEN (mitigado con workaround)

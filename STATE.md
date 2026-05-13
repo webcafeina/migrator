@@ -10,10 +10,11 @@
 - **Fase 0 — Bootstrap**: ✅ Completada (commit `f7aa1a7`)
 - **Fase 1 — DB y modelos**: ✅ Completada (commit `3ad2b7b`)
 - **Fase 2 — Bricks transpiler**: ✅ Completada (commit `d653557`)
-- **Fase 3 — Scraper core**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 4 — WP client
+- **Fase 3 — Scraper core**: ✅ Completada (commit `01c93d4`)
+- **Fase 4 — WP client**: ✅ Completada esta sesión, **validada contra sandbox real Local by Flywheel**
+- **Próxima fase**: Fase 5 — API backend
 
-> 🟡 **Antes de iniciar Fase 4**, el humano debe (a) revisar Fase 3, (b) preparar credenciales de un WordPress sandbox accesible vía SSH + WP-CLI (host, user, password/key, app password REST). (c) WCM-001 sigue abierto y será necesario para smoke contra Bricks real en Fase 4.
+> 🟢 **Para iniciar Fase 5** no se necesita ningún prereq humano nuevo. WCM-001 sigue abierto pero NO es bloqueante para Fase 5 (la integración wp_deployer + bricks-transpiler la haremos en Fase 6 worker).
 
 ---
 
@@ -25,7 +26,7 @@
 | 1 | DB y modelos | ✅ Completada | 17 tablas, migración 0001, pydantic schemas, tipos TS auto |
 | 2 | Bricks transpiler | ✅ Completada | Esquema observacional v1, 16 mappers, validador, theme styles, 63 tests |
 | 3 | Scraper core | ✅ Completada | Playwright wrapper + 3 extractors + proxy layered free→paid (ADR-017) + sidecar Puppeteer + 57 tests |
-| 4 | WP client | ⏳ Pendiente | Bloqueada por credenciales WP sandbox |
+| 4 | WP client | ✅ Completada | REST + WP-CLI vía paramiko + workarounds Local (ADR-018) + 29 tests (21 unit + 8 integración contra sandbox real WP 6.9.4) |
 | 5 | API backend | ⏳ Pendiente | |
 | 6 | Worker + subagentes | ⏳ Pendiente | |
 | 7 | CLI | ⏳ Pendiente | |
@@ -40,7 +41,23 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 3)
+## Tareas completadas en la última sesión (Fase 4)
+
+- [x] Verificación end-to-end del sandbox Local by Flywheel: SSH, WP-CLI, REST API, Application Password
+- [x] Workarounds documentados (ADR-018): `wp-cli.phar` descargado, PHP binario absoluto, socket MySQL volátil, user `test`
+- [x] `.env` local creado con quoting correcto para paths con espacios; verificado source-able por bash + python-dotenv
+- [x] SSH a localhost autorizado (`authorized_keys` con `id_ed25519.pub`)
+- [x] Paquete `packages/wp-client/` con módulos: `config`, `errors`, `retries`, `rest`, `ssh_cli`
+- [x] `WpClientConfig` con `from_env()` + `local_php_bin` + `local_mysql_socket` opcionales
+- [x] Jerarquía de errores tipados (9 clases: WpClientError raíz + 8 subclases por causa)
+- [x] `WpRestClient` async con basic auth + retries con backoff + verify SSL configurable + upsert idempotente por slug + bulk con BulkResult + bricks_import_page + import_redirects + upload_media + upsert_yoast_meta
+- [x] `WpCliSshClient` con paramiko + invocación PHP-absoluto + override socket MySQL + helpers high-level (core, plugin, theme, search-replace, bricks_import_content, post_create, option_get/update)
+- [x] 21 tests unit con respx para httpx + mocks paramiko
+- [x] 8 tests integración contra sandbox WP 6.9.4 real (REST GET users/me, list/create/delete/upsert pages, CLI core version+is-installed+option get+search-replace dry-run)
+- [x] ADR-018 (workarounds Local) + 2 issues nuevos (WCM-009 PHP, WCM-010 socket autodescubrir)
+- [x] Fix menor: `postgres_engine` fixture envuelve también `create_engine` en try/except para skip limpio
+
+## Tareas completadas en sesión anterior (Fase 3)
 
 - [x] Investigación de proxies gratuitos viables (Webshare, ScraperAPI, listas públicas) → ADR-017
 - [x] Paquete `packages/scraper-core/` con módulos: fetcher, browser, ua, rate_limit, cache, proxy, fingerprint, extractors, assets, sidecar
@@ -102,21 +119,21 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 4 — WP client)
+## Próximas tareas inmediatas (Fase 5 — API backend)
 
-Cuando el humano apruebe Fase 3, ejecutar en orden:
+Cuando el humano apruebe Fase 4, ejecutar en orden:
 
-1. **PREREQ humano**: WordPress sandbox accesible. Se necesita:
-   - Host + SSH key path (paramiko)
-   - WP-CLI instalado en el sandbox (`which wp` debe devolver path)
-   - Usuario REST API con Application Password (rol admin para Bricks import)
-2. Implementar `packages/wp-client/`:
-   - `WpRestClient` (skill `wp-rest-bulk`): bulk insert pages/posts, media upload, Yoast meta, Redirection, Gravity Forms, WPML
-   - `WpCliSshClient` (skill `wpcli-ssh`): `wp core install`, `wp plugin install`, `wp post update --post_meta=_bricks_page_content_2`
-   - Idempotencia por slug/SKU/source_path; retries con backoff exponencial
-3. Tests contra mocks de respuestas REST. Tests integración opt-in contra sandbox real si se proporciona.
-4. WCM-001 (export real Bricks): si el humano lo aporta antes, ajustar bricks-transpiler en paralelo.
-5. Commit: `feat(wp): client with REST and CLI`.
+1. Implementar `apps/api/` (FastAPI + uvicorn):
+   - Routers REST por dominio: `/leads`, `/projects`, `/projects/{id}/phases`, `/campaigns`, `/errors`, `/users`, `/auth`, `/webhooks/clickup`, `/opt-out` (RGPD)
+   - Auth JWT con cookies de sesión; Application Password style para CLI clients
+   - SQLAlchemy async session dependency injection
+   - Pydantic schemas ya construidos en `wcm_types` se reutilizan tal cual
+   - Endpoint `/health` y `/ready` para sondas
+2. Tests con `httpx.AsyncClient(app=app)` directo (sin levantar servidor).
+3. OpenAPI auto-generado en `/docs` y `/openapi.json`.
+4. Integración con Celery (`apps/worker`) — placeholders de `enqueue_*` que en Fase 6 se materializan.
+5. Errores: handler global que mapea `WpClientError`, `BricksTranspileError`, etc. a HTTP 4xx/5xx tipados.
+6. Commit: `feat(api): backend with celery integration`.
 
 ---
 
@@ -134,7 +151,13 @@ Cuando el humano apruebe Fase 3, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 3)
+## Decisiones tomadas esta sesión (Fase 4)
+
+- **Workarounds Local by Flywheel** (ADR-018): `WpClientConfig` añade `local_php_bin` + `local_mysql_socket` opcionales; `WpCliSshClient` invoca PHP-absoluto + override socket cuando están definidos. Producción WHM/cPanel los deja `None` y usa `wp` binario global con DB normal.
+- **Sandbox dev validado contra Local**: user admin = `test` (no `admin`), HTTPS con cert auto-firmado (`WP_VERIFY_SSL=false` en dev), `wp-cli.phar` descargado al directorio del site.
+- **`.env` con quoting estricto** para paths con espacios (necesario para `source .env` bash + python-dotenv sin sorpresas).
+
+## Decisiones tomadas sesión anterior (Fase 3)
 
 - **Proxy layered free→paid** (ADR-017, supersede ADR-005): NoProxy → Webshare → ScraperAPI → Bright Data, todos opcionales por env vars. Coste real €0 hasta volumen alto.
 
@@ -159,9 +182,12 @@ Cuando el humano apruebe Fase 3, ejecutar en orden:
 
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
-- Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016). El último install marcó hidden los .pth otra vez — el script lo corrige.
-- Para Fase 4 necesitas: WordPress sandbox con SSH + WP-CLI + Application Password REST.
-- Test suite total a 2026-05-13: **120 passed + 2 skipped** (db-schema 17, shared-types 12, bricks-transpiler 63 pero comparten fixtures con db-schema → en agregado 63 únicos, scraper-core 57). Para correr todos: `python -m pytest packages -q` desde la raíz.
-- Calibración Fase 3 con URLs reales: cuando me pases URLs reales por builder (WCM-003), comparar fingerprint output + extractor blocks vs lo capturado y ajustar selectores.
-- Validar Fase 2 contra Bricks real (WCM-001) sigue pendiente.
-- Tests Postgres siguen skippeados hasta que ejecutes `alembic upgrade head` contra Postgres+pgvector real (Fase 1).
+- Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
+- Test suite total a 2026-05-13 (tras Fase 4): **149 passed + 2 skipped** (Postgres real sin BD). Para correr: `set -a; source .env; set +a; pytest packages -q` desde la raíz.
+- Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
+- Issues abiertos prioritarios:
+  - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.
+  - WCM-002 (P1) datos legales Webcafeína.
+  - WCM-003 (P1) URLs reales por builder para calibrar scraper.
+  - WCM-008..010 (P2-P3) workarounds entorno; no bloquean.
+- Validar Fase 1 corriendo `alembic upgrade head` contra Postgres+pgvector sigue pendiente.

@@ -323,6 +323,28 @@ Bright Data (paid premium, opcional)
 
 ---
 
+## ADR-018 — Workarounds Local by Flywheel para sandbox WP en macOS
+
+**Fecha**: 2026-05-13 (Fase 4)
+**Estado**: ✅ Aceptada — solo aplica en dev sandbox, no en producción
+
+**Contexto**: Para Fase 4 (WP client) usamos Local by Flywheel como sandbox de desarrollo (gratis, sin Docker, simula bien un WP real). Durante la verificación inicial aparecieron particularidades del entorno Local que rompen la asunción de "WP-CLI estándar":
+
+1. **`wp-cli.phar` no viene preinstalado** desde versiones recientes de Local. Hay que descargarlo manualmente al directorio del site.
+2. **PHP no está en `PATH`** del shell SSH no-interactivo. Local lo instala en `~/Library/Application Support/Local/lightning-services/php-8.x/bin/darwin-arm64/bin/php`. Hay que invocar el binario absoluto.
+3. **MySQL escucha en socket Unix con ID volátil** (`~/Library/Application Support/Local/run/<8-char-ID>/mysql/mysqld.sock`). Para WP-CLI vía SSH externo hay que pasar `-d mysqli.default_socket=<sock_path>` a PHP.
+4. **El usuario admin del WP no se llama `admin`**: Local lo crea con un nombre custom (en nuestro sandbox: `test`).
+5. **`.env` con paths que contienen espacios**: requiere quoting `KEY="value with spaces"` para ser source-able por bash/zsh; `python-dotenv` lo tolera sin quoting, pero usamos `source .env` también para tests integración.
+
+**Decisión**: `WpClientConfig` añade dos campos opcionales `local_php_bin` y `local_mysql_socket`. `WpCliSshClient._build_wpcli_cmd` aplica los workarounds si están configurados; si no, asume `wp` binario global en `PATH` y DB accesible normal (caso producción WHM/cPanel).
+
+**Consecuencias**:
+- ✅ El cliente funciona transparentemente contra Local sin código condicional en el caller.
+- ✅ En producción real WHM/cPanel, `local_php_bin` y `local_mysql_socket` son `None` y el comando construido es `wp --path=... <args>`.
+- ⚠️ Paths volátiles en Local (versión PHP, ID de run) → `.env` se desactualiza si Local cambia algo. Anotado WCM-009 (autodescubrir PHP) y WCM-010 (autodescubrir socket).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

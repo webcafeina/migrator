@@ -36,11 +36,14 @@ def postgres_engine() -> Iterator[sa.Engine]:
     url = _postgres_url()
     if url is None:
         pytest.skip("DATABASE_SYNC_URL no apunta a Postgres; tests Postgres skippeados")
-    engine = create_engine(url, future=True)
+
+    # Envolvemos también create_engine porque algunos drivers fallan en su
+    # carga (psycopg no instalado, etc.) antes del primer connect().
     try:
+        engine = create_engine(url, future=True, pool_pre_ping=True, connect_args={"connect_timeout": 2})
         with engine.connect() as conn:
             conn.execute(sa.text("SELECT 1"))
     except Exception as e:  # pragma: no cover
-        pytest.skip(f"Postgres no alcanzable: {e}")
+        pytest.skip(f"Postgres no alcanzable ({type(e).__name__}): {e}")
     yield engine
     engine.dispose()
