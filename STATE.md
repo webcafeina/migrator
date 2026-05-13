@@ -11,10 +11,11 @@
 - **Fase 1 — DB y modelos**: ✅ Completada (commit `3ad2b7b`)
 - **Fase 2 — Bricks transpiler**: ✅ Completada (commit `d653557`)
 - **Fase 3 — Scraper core**: ✅ Completada (commit `01c93d4`)
-- **Fase 4 — WP client**: ✅ Completada esta sesión, **validada contra sandbox real Local by Flywheel**
-- **Próxima fase**: Fase 5 — API backend
+- **Fase 4 — WP client**: ✅ Completada (commit `db21bf6`)
+- **Fase 5 — API backend**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 6 — Worker + subagentes operativos
 
-> 🟢 **Para iniciar Fase 5** no se necesita ningún prereq humano nuevo. WCM-001 sigue abierto pero NO es bloqueante para Fase 5 (la integración wp_deployer + bricks-transpiler la haremos en Fase 6 worker).
+> 🟢 **Para iniciar Fase 6** no se necesita ningún prereq humano nuevo. Convergerá los paquetes ya construidos (db-schema, bricks-transpiler, scraper-core, wp-client) bajo Celery tasks que la API ya encola.
 
 ---
 
@@ -27,7 +28,7 @@
 | 2 | Bricks transpiler | ✅ Completada | Esquema observacional v1, 16 mappers, validador, theme styles, 63 tests |
 | 3 | Scraper core | ✅ Completada | Playwright wrapper + 3 extractors + proxy layered free→paid (ADR-017) + sidecar Puppeteer + 57 tests |
 | 4 | WP client | ✅ Completada | REST + WP-CLI vía paramiko + workarounds Local (ADR-018) + 29 tests (21 unit + 8 integración contra sandbox real WP 6.9.4) |
-| 5 | API backend | ⏳ Pendiente | |
+| 5 | API backend | ✅ Completada | FastAPI con 32 rutas + JWT + cookies + RBAC + opt-out RGPD + webhooks HMAC + 33 tests con dependency override |
 | 6 | Worker + subagentes | ⏳ Pendiente | |
 | 7 | CLI | ⏳ Pendiente | |
 | 8 | Dashboard | ⏳ Pendiente | |
@@ -41,7 +42,33 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 4)
+## Tareas completadas en la última sesión (Fase 5)
+
+- [x] Paquete `apps/api/` con FastAPI + uvicorn + pydantic-settings
+- [x] `config.py` con `ApiSettings` leyendo `.env` + `CORS_ORIGINS` parseado desde CSV (pydantic-settings no parsea list[str] desde env por defecto)
+- [x] `db/session.py` con async engine + `AsyncSession` factory + `get_session()` dependency
+- [x] `errors.py` con `ApiError` + envelope JSON `{"error": {"code", "message", "details"}}` + mapping automático para errores de paquetes (WpClient*, Bricks*)
+- [x] `security.py` con argon2 + JWT + cookie http-only + dependencies `get_current_user_payload` + `require_role(*roles)` + tokens separados para session vs opt-out RGPD
+- [x] `tasks/celery_app.py` con app Celery compartida (broker Redis) + `tasks/enqueue.py` con send_task helpers
+- [x] 10 routers montados:
+  - `/health` + `/ready` (sin auth)
+  - `/opt-out` (público RGPD, HTML con paleta Webcafeína, sin prefijo /api/v1)
+  - `/api/v1/auth/{login,logout,me}`
+  - `/api/v1/users` CRUD admin only
+  - `/api/v1/leads` con filtros + refingerprint
+  - `/api/v1/campaigns/launch`
+  - `/api/v1/projects` + start/resume/cancel/phases
+  - `/api/v1/residual-tasks` con sync ClickUp
+  - `/api/v1/errors` lectura del error_log
+  - `/api/v1/webhooks/clickup` con validación HMAC SHA-256
+- [x] Total 32 rutas registradas + `/docs` Swagger UI
+- [x] 33 tests unit con dependency override de `get_session` + `httpx.AsyncClient(ASGITransport)` (sin red, sin DB real)
+- [x] Tests por categoría: health (2), security (6), auth router (7), authorization RBAC (5), opt-out RGPD (4), webhooks HMAC (3), projects+campaigns (6)
+- [x] `pytest.ini` en raíz con `asyncio_mode = auto` para que tests asíncronos funcionen al ejecutar desde monorepo root
+- [x] ADR-019 (versionado `/api/v1/` + endpoint RGPD fuera del prefijo)
+- [x] Total repo: **182 passed + 2 skipped** (con `.env` cargado)
+
+## Tareas completadas en sesión anterior (Fase 4)
 
 - [x] Verificación end-to-end del sandbox Local by Flywheel: SSH, WP-CLI, REST API, Application Password
 - [x] Workarounds documentados (ADR-018): `wp-cli.phar` descargado, PHP binario absoluto, socket MySQL volátil, user `test`
@@ -119,21 +146,23 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 5 — API backend)
+## Próximas tareas inmediatas (Fase 6 — Worker + subagentes operativos)
 
-Cuando el humano apruebe Fase 4, ejecutar en orden:
+Cuando el humano apruebe Fase 5, ejecutar en orden:
 
-1. Implementar `apps/api/` (FastAPI + uvicorn):
-   - Routers REST por dominio: `/leads`, `/projects`, `/projects/{id}/phases`, `/campaigns`, `/errors`, `/users`, `/auth`, `/webhooks/clickup`, `/opt-out` (RGPD)
-   - Auth JWT con cookies de sesión; Application Password style para CLI clients
-   - SQLAlchemy async session dependency injection
-   - Pydantic schemas ya construidos en `wcm_types` se reutilizan tal cual
-   - Endpoint `/health` y `/ready` para sondas
-2. Tests con `httpx.AsyncClient(app=app)` directo (sin levantar servidor).
-3. OpenAPI auto-generado en `/docs` y `/openapi.json`.
-4. Integración con Celery (`apps/worker`) — placeholders de `enqueue_*` que en Fase 6 se materializan.
-5. Errores: handler global que mapea `WpClientError`, `BricksTranspileError`, etc. a HTTP 4xx/5xx tipados.
-6. Commit: `feat(api): backend with celery integration`.
+1. Implementar `apps/worker/` Celery con tasks reales que matchean los `send_task` names del API:
+   - `wcm.orchestrator.run_project` (orquestador completo)
+   - `wcm.prospector.run_campaign`
+   - `wcm.fingerprinter.run`
+   - `wcm.clickup.sync_residuals`
+2. Cada task envuelve el subagente correspondiente (definidos en `.claude/agents/`):
+   - Integra `scraper-core` para `scraper-origin` + `fingerprinter` + `enricher` + `prospector`
+   - Integra `bricks-transpiler` para `bricks-transpiler` agente
+   - Integra `wp-client` para `wp-deployer` + `woo-migrator` + `wpml-configurator` + `forms-rebuilder`
+3. Pipeline e2e en modo dry-run: crear proyecto → encolar → ver fases avanzar.
+4. Manejo de errores tipados: cada subagente lanza su `*Error`; orchestrator captura, registra en `error_log`, decide retry/escalate.
+5. Tests integración del pipeline completo (con mocks de WP/scraper en niveles bajos).
+6. Commit: `feat(worker): pipeline e2e dry-run`.
 
 ---
 
@@ -151,7 +180,15 @@ Cuando el humano apruebe Fase 4, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 4)
+## Decisiones tomadas esta sesión (Fase 5)
+
+- **Versionado `/api/v1/...`** + endpoint público RGPD fuera del prefijo (ADR-019).
+- **Auth dual**: cookie http-only `wcm_session` para dashboard + `Authorization: Bearer` / `x-wcm-token` para CLI; ambos llevan el mismo JWT.
+- **Roles**: admin (todo) / operator (read+write excepto users) / viewer (solo lectura).
+- **Tests sin DB real**: dependency override de `get_session` con `AsyncMock`. Aprobado en pregunta inicial de fase.
+- **CORS desde CSV en `.env`**: pydantic-settings no parsea `list[str]` desde env por defecto. La var es `cors_origins_raw: str` y se expone como `cors_origins` property.
+
+## Decisiones tomadas sesión anterior (Fase 4)
 
 - **Workarounds Local by Flywheel** (ADR-018): `WpClientConfig` añade `local_php_bin` + `local_mysql_socket` opcionales; `WpCliSshClient` invoca PHP-absoluto + override socket cuando están definidos. Producción WHM/cPanel los deja `None` y usa `wp` binario global con DB normal.
 - **Sandbox dev validado contra Local**: user admin = `test` (no `admin`), HTTPS con cert auto-firmado (`WP_VERIFY_SSL=false` en dev), `wp-cli.phar` descargado al directorio del site.

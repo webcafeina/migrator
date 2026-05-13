@@ -345,6 +345,26 @@ Bright Data (paid premium, opcional)
 
 ---
 
+## ADR-019 — Versionado `/api/v1/...` + endpoint público RGPD fuera del prefijo
+
+**Fecha**: 2026-05-13 (Fase 5)
+**Estado**: ✅ Aceptada
+
+**Contexto**: La API expone dos audiencias distintas: (a) el dashboard interno (JSON, JWT/cookie), (b) receptores de outreach que abren un link de opt-out (HTML, sin cookie, token RGPD). Mezclarlas bajo el mismo prefijo confunde y dificulta evolucionar la API sin tocar la página de opt-out.
+
+**Decisión**:
+- Endpoints internos de la API: **`/api/v1/...`** con OpenAPI auto en `/docs`. Prefijo de versión por previsión de breaking changes futuras.
+- `/health` y `/ready`: sin prefijo (probes para Nginx/monitoring).
+- `/opt-out`: sin prefijo, devuelve HTML formateado con paleta Webcafeína. URL pública apta para email humano (`https://migrator.webcafeina.com/opt-out?token=...`).
+- Webhooks entrantes: `/api/v1/webhooks/<source>` con HMAC del proveedor.
+
+**Consecuencias**:
+- ✅ Versionar la API sin romper opt-out URLs en emails ya enviados.
+- ✅ Separación clara máquina↔humano en routing.
+- ⚠️ En producción `/docs` y `/openapi.json` se ocultan (Fase 11 / hardening Fase 15 lo refuerza con auth gating).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
