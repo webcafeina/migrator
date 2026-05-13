@@ -417,6 +417,31 @@ Cada agent Python (`BaseAgent` subclass) implementa el contrato descrito en su `
 
 ---
 
+## ADR-022 — Dashboard Next.js 15: JetBrains Mono en toda la UI
+
+**Fecha**: 2026-05-13 (Fase 8)
+**Estado**: ✅ Aceptada
+
+**Contexto**: El stack canónico (CLAUDE.md §4) fija "shadcn/ui + Tailwind CSS con paleta Webcafeína". Para tipografía decía "sans-serif moderna (concreta se decide en Fase 8)". El operador eligió **JetBrains Mono** — fuente monoespaciada — para TODA la UI, no solo código.
+
+**Decisión**: Cargar JetBrains Mono via `next/font/google` con weights 400/500/600/700, exponer como `--font-jetbrains` y aplicarla a `body` + `font-sans` + `font-mono` en Tailwind. Sustituye a Inter/system-ui como default global.
+
+**Consecuencias**:
+- ✅ Look denso, técnico, terminal-friendly — coherente con la herramienta (mucho dato tabular).
+- ✅ Tabular nums uniformes en tablas (score, confianza, IDs).
+- ✅ Refuerza identidad de "tooling interno técnico".
+- ⚠️ Texto más ancho que sans-serif tradicional → presupuesto horizontal aumenta. Compensado con `text-sm` por defecto.
+- ⚠️ Si en el futuro hay público no-técnico, revisar. No aplica al MVP.
+
+**Otras decisiones de la fase**:
+- Logo SVG pendiente → wordmark de texto en lima ("WEBCAFEÍNA" + icono `Activity` de lucide).
+- Paleta extendida bajo namespace `wcm-*` (`bg-wcm-primary`, `text-wcm-accent`) coexistente con tokens shadcn estándar.
+- Server Components por defecto + Client Components solo para interactividad.
+- Cookie http-only `wcm_session` con `credentials: "include"` + rewrite `/api/v1/*` → API. Sin CORS en producción.
+- Build `output: "standalone"` para systemd con `node server.js`.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

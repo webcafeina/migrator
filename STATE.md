@@ -14,10 +14,11 @@
 - **Fase 4 — WP client**: ✅ Completada (commit `db21bf6`)
 - **Fase 5 — API backend**: ✅ Completada (commit `fb6bcc5`)
 - **Fase 6 — Worker + subagentes operativos**: ✅ Completada (commit `5c1767d`)
-- **Fase 7 — CLI**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 8 — Dashboard (Next.js 15 + shadcn/ui)
+- **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
+- **Fase 8 — Dashboard**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 9 — Prospección (implementación real de ProspectorAgent + OutreachComposerAgent)
 
-> 🟡 **Para iniciar Fase 8** convendría tener: (a) logo SVG de Webcafeína listo, (b) decisión de fuente sans-serif (Inter por defecto si no hay preferencia). Ambos son flexibles — se pueden cambiar después sin gran coste.
+> 🟡 **Para iniciar Fase 9** se necesita: (a) **WCM-002** datos legales de Webcafeína (CIF, dirección, URL política privacidad) para outreach LSSI-CE compliant, (b) credenciales **Google Maps API key** para descubrimiento, (c) **Voyage AI API key** para embeddings de leads (búsqueda semántica de similares).
 
 ---
 
@@ -33,7 +34,7 @@
 | 5 | API backend | ✅ Completada | FastAPI con 32 rutas + JWT + cookies + RBAC + opt-out RGPD + webhooks HMAC + 33 tests con dependency override |
 | 6 | Worker + subagentes | ✅ Completada | Orchestrator + 8 subagentes REAL + 11 STUB + 4 Celery tasks + 28 tests (ADR-020 separa descriptors .md de runtime .py) |
 | 7 | CLI | ✅ Completada | Typer + Rich, doble entrypoint webcafeina-migrator/wcm, 11 grupos de comandos, CliError=ClickException (ADR-021), 17 tests |
-| 8 | Dashboard | ⏳ Pendiente | |
+| 8 | Dashboard | ✅ Completada | Next.js 15 + shadcn/ui + JetBrains Mono (ADR-022) + paleta WCM estricta + 10 páginas + 15 tests Vitest |
 | 9 | Prospección | ⏳ Pendiente | Bloqueada por WCM-002 + Voyage API key |
 | 10 | Integraciones externas | ⏳ Pendiente | |
 | 11 | Observabilidad | ⏳ Pendiente | |
@@ -44,7 +45,36 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 7)
+## Tareas completadas en la última sesión (Fase 8)
+
+- [x] Paquete `apps/dashboard/` con Next.js 15.0 + React 19 + TypeScript 5.6 + Tailwind 3.4 + shadcn/ui
+- [x] Tipografía **JetBrains Mono** en toda la UI (ADR-022) via `next/font/google` con weights 400/500/600/700
+- [x] Paleta Webcafeína estricta en `tailwind.config.ts` con tokens `wcm-*` + aliases shadcn-compatibles
+- [x] 7 componentes UI customizados: Button, Input, Label, Card (+ subparts), Table (+ subparts), Badge (con `statusVariant()` para mapping del dominio), Skeleton
+- [x] Componentes layout: Sidebar con icons lucide-react + nav items + indicador activo, Header con `/auth/me` + LogoutButton
+- [x] **10 páginas funcionales**:
+  - `/login` form email+password
+  - `/` overview con 4 métricas + proyectos activos + errores recientes
+  - `/leads` tabla densa con filtros (sector/region/builder/status/min-score)
+  - `/leads/[id]` detalle con 4 cards (identificación, fingerprint, contacto, evidencia JSON) + RefingerprintButton
+  - `/projects` listado con badges de status
+  - `/projects/[id]` detalle + ProjectActions (start/resume/cancel) + timeline de fases
+  - `/projects/[id]/checklist` agrupado por categoría (blocking_go_live → post_go_live)
+  - `/projects/[id]/diff` placeholder con explicación de Fase 10
+  - `/campaigns` form launch + notas legales
+  - `/errors` tabla del error_log con filtros severity/component/project
+  - `/residual-tasks` tabla con MarkDoneButton (encola sync ClickUp)
+  - `/settings` user info + instrucciones SSH para editar `.env`
+- [x] `lib/api.ts` cliente fetch con cookie `credentials: "include"` + mapping del error envelope JSON → `ApiError` con `status` + `code` + `details`
+- [x] `middleware.ts` redirige a `/login?from=<path>` si no hay cookie `wcm_session`. Excluye `/api/*`, `/login`, `/_next/*`, `/opt-out`
+- [x] `next.config.mjs` con rewrites `/api/v1/*` → `${API_URL}/api/v1/*` (evita CORS en dev) + `output: "standalone"` para systemd (Fase 12)
+- [x] `pnpm install` exitoso (582 paquetes resueltos en 21.2s) — incluye workspace deps
+- [x] **Tests Vitest 15/15 passan** (cn, formatDate, truncate, ApiError shape, statusVariant para 10 estados del dominio)
+- [x] **`tsc --noEmit` pasa sin errores** con strict + noUncheckedIndexedAccess
+- [x] ADR-022 (JetBrains Mono en toda la UI)
+- [x] Total repo: **227 Python + 15 TS = 242 tests passan**
+
+## Tareas completadas en sesión anterior (Fase 7)
 
 - [x] Paquete `cli/` con Typer 0.12 + Rich 13.8 + httpx 0.27
 - [x] Dos entrypoints registrados: `webcafeina-migrator` (oficial) + `wcm` (alias). Ambos apuntan a `wcm_cli.main:main`
@@ -192,26 +222,27 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 8 — Dashboard)
+## Próximas tareas inmediatas (Fase 9 — Prospección)
 
-Cuando el humano apruebe Fase 7, ejecutar en orden:
+Cuando el humano apruebe Fase 8, ejecutar en orden:
 
-1. Implementar `apps/dashboard/` con **Next.js 15 App Router + TypeScript 5 + Tailwind + shadcn/ui**.
-2. Páginas:
-   - `/login` (auth)
-   - `/` overview (métricas, errores, proyectos activos)
-   - `/leads` listado filtrable + detalle
-   - `/projects` listado + detalle con timeline de fases
-   - `/projects/[id]/diff` visual diff interactivo (stubs hasta Fase 8+)
-   - `/projects/[id]/checklist`
-   - `/campaigns`, `/errors`, `/settings`
-3. Cliente API con consumo de `packages/shared-types/ts/index.d.ts` (generado en Fase 1).
-4. Paleta Webcafeína **estricta** + dark mode default + componentes shadcn customizados.
-5. Build standalone (`next.config.js output:"standalone"`) para systemd.
-6. Tests e2e con Playwright (algunos). Tests unit con Vitest.
-7. Commit: `feat(dashboard): full UI with brand palette`.
-
-**Prereqs livianos**: logo Webcafeína SVG (si no, uso wordmark de texto en lima). Fuente: por defecto Inter; si tienes otra preferencia me dices.
+1. **PREREQ humano** crítico:
+   - **WCM-002**: datos legales de Webcafeína S.L. (CIF, dirección postal completa, URL pública de política de privacidad). Sin esto **no se puede emitir outreach LSSI-CE compliant**.
+   - **Google Maps API key** para descubrimiento de leads (cuota generosa, $200/mes free).
+   - **Voyage AI API key** para embeddings `voyage-multilingual-2` (ADR-010).
+2. Implementar `ProspectorAgent` real:
+   - Google Maps Places API (skill `google-maps-scraper`)
+   - Directory scrapers ES (skill `directory-scraper`): páginas amarillas, axesor, etc.
+   - Google dorks de respaldo
+   - Persiste leads cualificados a `leads` table
+3. Implementar `OutreachComposerAgent` con plantillas + validación GDPR/LSSI-CE.
+4. `EnricherAgent` ampliado con datos públicos de empresa (sin scraping intrusivo).
+5. Documentos legales en `apps/api/legal/`:
+   - `tratamiento_datos_prospeccion.md` (RGPD art. 30)
+   - `plantilla_aviso_legal_outreach.md` (LSSI-CE)
+   - `procedimiento_brecha.md` (art. 33 RGPD)
+6. Función `record_consent()` + endpoint `/api/v1/leads/consent`.
+7. Commit: `feat(prospect): full prospection module with compliance`.
 
 ---
 
@@ -229,7 +260,15 @@ Cuando el humano apruebe Fase 7, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 7)
+## Decisiones tomadas esta sesión (Fase 8)
+
+- **JetBrains Mono en toda la UI** (ADR-022) por preferencia del operador. Look denso terminal-friendly coherente con la herramienta interna.
+- **Server Components por defecto** + Client Components solo para interactividad (forms, action buttons).
+- **Cookie http-only `wcm_session`** propagada con `credentials: "include"` + rewrite `/api/v1/*` → API para evitar CORS en dev y unificar dominio en prod.
+- **Build `output: "standalone"`** para que systemd arranque con `node server.js` sin necesitar `next` en el servidor (Fase 12).
+- **Logo SVG**: pendiente. Mientras: wordmark de texto "WEBCAFEÍNA" en lima + icono `Activity` de lucide.
+
+## Decisiones tomadas sesión anterior (Fase 7)
 
 - **Doble entrypoint** `webcafeina-migrator` + `wcm` (ADR-021).
 - **`CliError` hereda de `click.ClickException`** para captura automática por Typer + tests con `CliRunner`.

@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    background-color: #171009;
+    color: #f2e8d2;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-feature-settings: "ss02" on; /* JetBrains Mono ligatures sutiles */
+  }
+
+  /* Scrollbar con paleta */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #171009;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #5a3519;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #7d6552;
+  }
+
+  /* Selección con acento lima */
+  ::selection {
+    background-color: #b1f100;
+    color: #171009;
+  }
+}
