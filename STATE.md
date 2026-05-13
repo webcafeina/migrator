@@ -16,8 +16,9 @@
 - **Fase 6 — Worker + subagentes operativos**: ✅ Completada (commit `5c1767d`)
 - **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
-- **Fase 9 — Prospección**: ✅ Completada esta sesión (commit `34bb07d`)
-- **Próxima fase**: Fase 10 — Integraciones externas (ClickUp, Resend, R2)
+- **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
+- **Fase 10 — Integraciones externas**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 11 — Observabilidad (Sentry, structlog, Logtail, métricas)
 
 ---
 
@@ -35,7 +36,7 @@
 | 7 | CLI | ✅ Completada | Typer + Rich, doble entrypoint webcafeina-migrator/wcm, 11 grupos de comandos, CliError=ClickException (ADR-021), 17 tests |
 | 8 | Dashboard | ✅ Completada | Next.js 15 + shadcn/ui + JetBrains Mono (ADR-022) + paleta WCM estricta + 10 páginas + 15 tests Vitest |
 | 9 | Prospección | ✅ Completada | GooglePlacesClient (legacy, ADR-024) + ProspectorAgent + EnricherAgent con embedding e5-large (ADR-023) + OutreachComposer LSSI-CE + 4 docs legales + 268 tests Python (+38 nuevos) |
-| 10 | Integraciones externas | ⏳ Pendiente | |
+| 10 | Integraciones externas | ✅ Completada | ClickUp/Resend/R2 clients (ADR-025/26/27) + ClickupSyncer + ResendNotifier + OutreachSender + AssetOptimizer (Pillow→WebP) + retention sweep (Celery beat) + webhook Resend + 325 tests Python (+57 nuevos) |
 | 11 | Observabilidad | ⏳ Pendiente | |
 | 12 | Infra/Deploy | ⏳ Pendiente | |
 | 13 | Tests e2e | ⏳ Pendiente | |
@@ -44,7 +45,31 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 9)
+## Tareas completadas en la última sesión (Fase 10)
+
+- [x] **Clientes de integración** en `apps/worker/src/wcm_worker/integrations/`:
+  - `ClickupClient` (REST v2, retry exponencial sobre 429/5xx, no retry sobre 4xx)
+  - `ResendClient` (wrapper SDK oficial, validador HMAC para webhooks, `from_env()` perezoso)
+  - `R2Client` (boto3 S3-compat apuntando a `<account>.r2.cloudflarestorage.com`, ADR-026)
+- [x] **ClickupSyncerAgent real**: crea/actualiza/cierra tareas según `residual_tasks` del proyecto. Mapeo de prioridades por categoría. Tag `wcm-residual-<id>` para join inverso (ADR-027). Sin token devuelve `skipped` sin romper el pipeline.
+- [x] **ResendNotifierAgent real**: notificaciones internas (`@webcafeina.com` only) con guarda anti-leak. Sin API key → skip.
+- [x] **OutreachSenderAgent nuevo**: envía un `OutreachSend` concreto vía Resend. Doble-check anti-spam contra `opt_out_log` justo antes del envío. Promueve la `OutreachSequence` de READY a IN_PROGRESS en el primer envío exitoso. Persiste `provider_message_id` y `sent_at`. AuditLog `SEND` con `legal_ground=6.1.f`.
+- [x] **AssetOptimizerAgent real**: descarga assets pendientes del proyecto, sniff por magic bytes, re-encode a WebP con Pillow (quality 82, strip metadata), sube a R2 con key `wcm/projects/{pid}/{hash[:2]}/{hash}.webp`. Sin credenciales R2 deja en `OPTIMIZED`; el siguiente run lo termina.
+- [x] **Celery tasks**:
+  - `wcm.outreach.send_step` (delega en OutreachSender)
+  - `wcm.maintenance.retention_sweep` (purga leads DISCOVERED >12m sin outreach, OUTREACH_SENT>24m→DISCARDED→borrar +6m, error_log >90d)
+  - `wcm.clickup.sync_residuals` actualizado a real
+  - **Celery beat** schedule añadido: retention_sweep diario a las 03:30 Europe/Madrid
+- [x] **Endpoint** `POST /api/v1/outreach/sequences/{id}/send` (with optional `step_index`).
+- [x] **Webhook entrante** `POST /api/v1/webhooks/resend` con verificación HMAC sobre body crudo. Eventos `email.sent/delivered/opened/bounced/complained` actualizan el `OutreachSend.{status,sent_at,opened_at,bounced_at}` con regla "no retrocedemos" (`_highest_status`).
+- [x] **Tests**: 57 nuevos (10 integraciones, 8 ClickupSyncer, 10 OutreachSender, 8 AssetOptimizer, 5 ResendNotifier, 8 endpoints/webhook Fase 10, 5 retention sweep, 3 ajustes en `test_agents_stubs`). Total **325 Python + 15 TS**.
+- [x] **3 ADRs**: ADR-025 (Resend), ADR-026 (R2 vía boto3), ADR-027 (sync ClickUp con `clickup_task_id`).
+- [x] **Deps añadidas** a `apps/worker/pyproject.toml`: `boto3>=1.40`, `resend>=2.0`, `Pillow>=11.0`.
+- [x] **`.env.example`** ampliado con `RESEND_WEBHOOK_SECRET`.
+- [x] Stubs Fase 10 retirados de `test_agents_stubs.py` (Clickup/Resend/Asset son reales ahora).
+- [x] **WCM-006 cerrado parcialmente**: cron de purga implementado; queda añadir columna `retention_hold` para excepciones AEPD (WCM-013 nueva).
+
+## Tareas completadas en sesión anterior (Fase 9)
 
 - [x] **EmbeddingService** (`apps/worker/src/wcm_worker/embedding.py`): singleton lazy con `sentence-transformers` + `intfloat/multilingual-e5-large` (1024 dim), LRU cache, prefijos `passage:` / `query:` según convención e5. **100% gratuito**, sin API externa.
 - [x] **GooglePlacesClient** (`packages/scraper-core/src/wcm_scraper_core/directories/google_places.py`): cliente Places API **legacy** (ADR-024, la API key del proyecto no tiene Places New), Text Search + Place Details, field mask reducido, caché 7 días, retry 429/503 sin retry en REQUEST_DENIED, error tipado `GooglePlacesQuotaExceeded`. Cache key sanea `api_key` para no filtrar el secret.
@@ -244,20 +269,20 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 10 — Integraciones externas)
+## Próximas tareas inmediatas (Fase 11 — Observabilidad)
 
-Cuando el humano apruebe Fase 9, ejecutar en orden:
+Cuando el humano apruebe Fase 10, ejecutar en orden:
 
-1. **PREREQ humano** crítico:
-   - **ClickUp API token** (config básica ya en `.env.example`, falta token real).
-   - **Resend API key** + verificación de dominio `webcafeina.com` para envío real.
-   - **Cloudflare R2** bucket + claves (almacenamiento de assets migrados).
-2. Implementar **ClickupSyncerAgent** real (skill `clickup-sync`): crear/actualizar/cerrar tareas por residual_task. Webhook entrante ya implementado en Fase 5 → cerrar el loop bidireccional.
-3. Implementar **ResendNotifierAgent** + ejecutor del envío real de `OutreachSequence READY`. Webhook entrante para opens/bounces/replies → actualiza `OutreachSend.{opened_at, bounced_at, replied_at}`.
-4. Implementar **AssetOptimizerAgent**: descarga assets de la web origen, los sube a R2 con paths estables, reemplaza URLs en BricksPage.
-5. Cron `wcm.maintenance.retention_sweep` (política de retención en `apps/api/legal/politica_retencion.md`).
-6. Endpoint `/api/v1/outreach/sequences/{id}/send` que cambia status a `IN_PROGRESS` y dispara el primer step vía Resend.
-7. Commit: `feat(integrations): clickup + resend + r2`.
+1. **PREREQ humano** (no bloqueantes hasta producción):
+   - **Sentry DSNs** (api/worker/dashboard) — gratis hasta 5k errores/mes.
+   - **Logtail source tokens** — log aggregation.
+   - Tokens reales para ClickUp/Resend/R2 cuando se quieran ejecutar end-to-end en staging (Fase 10 funciona en modo "skipped" sin ellos).
+2. Integrar **Sentry SDK** en API + worker + dashboard. Tag por componente y entorno. Sample rate 20% por defecto (`SENTRY_TRACES_SAMPLE_RATE`).
+3. Configurar **structlog** ya importado (CLAUDE.md): JSON renderer en prod, plano en dev, niveles por logger en `LOG_LEVEL`.
+4. Push de logs a **Logtail** vía handler dedicado.
+5. **Métricas básicas** del worker (Celery): tasks ejecutadas, latencia, fallos. Exportar a Prometheus o (más simple) endpoint `/metrics` Counter+Gauge en la API.
+6. **Health check enriquecido** `/health/deep` que verifica conectividad a Postgres, Redis, R2.
+7. Commit: `feat(obs): sentry + structlog + logtail + metrics`.
 
 ---
 
@@ -275,7 +300,19 @@ Cuando el humano apruebe Fase 9, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 9)
+## Decisiones tomadas esta sesión (Fase 10)
+
+- **Resend único proveedor email** (ADR-025). Free tier 3k/mes cubre MVP. Webhook nativo con HMAC ya soportado.
+- **R2 vía boto3** (ADR-026): S3-compat aísla el código de la decisión de proveedor; migrar a S3/B2 cuesta cambiar `endpoint_url`.
+- **Sync ClickUp con `clickup_task_id`** (ADR-027): columna ya existía en schema; añadimos tag `wcm-residual-<id>` para join inverso desde ClickUp.
+- **Separación OutreachComposer vs OutreachSender**: el composer genera drafts (Fase 9), el sender los envía (Fase 10). Dos agents distintos, dos errores tipados distintos. Aporta claridad y test isolation.
+- **Doble check anti-spam en send**: aunque el composer ya verifica opt_out_log al crear el draft, el sender vuelve a verificar justo antes de enviar — pueden pasar días entre composer y sender, y un opt-out intermedio debe respetarse.
+- **Status promotion "no retrocede"** en webhook Resend: una vez OPENED, no degradamos a SENT aunque llegue otro evento `email.sent` tardío. Implementado con `_STATUS_PRIORITY` y `_highest_status`.
+- **AssetOptimizer defensivo**: si R2 no está configurado, el asset queda en `OPTIMIZED` (no `FAILED`) y un re-run lo termina cuando aparezca la config. Errores de descarga no rompen el batch — solo marcan ese asset como pendiente.
+- **Sin cwebp binario**: Pillow encoda WebP nativo si está compilado con libwebp (lo está en wheels precompiladas). Evita dep nativa adicional.
+- **Celery beat embebido en el mismo proceso**: en producción WHM, una unidad systemd separada (`wcm-beat.service`) levantará `celery beat`. La configuración del schedule vive en `celery_app.py` (un solo lugar).
+
+## Decisiones tomadas sesión anterior (Fase 9)
 
 - **sentence-transformers + multilingual-e5-large** sustituye Voyage AI (ADR-023, supersede ADR-010). Razones: 100% gratuito perpetuo, 1024 dim match exacto con el schema, mejor cobertura ES que BGE-M3, sin dep externa que pueda romper. Trade-off aceptado: ~50ms/embedding en CPU vs ~30ms con Voyage. En MVP es irrelevante; con miles de leads/min consideraremos GPU.
 - **Google Places API legacy** en vez de New (ADR-024). La API key del proyecto solo tiene la legacy habilitada; cambiar a New requeriría rehabilitar billing y migrar. El cliente está aislado en un módulo (`directories/google_places.py`) — si en el futuro se migra a New, solo cambia ese fichero.
@@ -347,7 +384,7 @@ Cuando el humano apruebe Fase 9, ejecutar en orden:
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
 - Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-13 (tras Fase 9): **268 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
+- Test suite total a 2026-05-13 (tras Fase 10): **325 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
 - Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
 - Issues abiertos prioritarios:
   - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.

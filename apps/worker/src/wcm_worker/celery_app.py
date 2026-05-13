@@ -3,12 +3,17 @@
 Comparte la misma config que `wcm_api.tasks.celery_app`, pero aquí
 **incluye** los módulos de tasks para que se registren al arrancar el
 worker. El API solo encola; el worker ejecuta.
+
+Beat schedule (Fase 10):
+- `wcm.maintenance.retention_sweep` 1×/día a las 03:30 Europe/Madrid.
 """
 
 from __future__ import annotations
 
 import os
+
 from celery import Celery
+from celery.schedules import crontab
 
 
 def _build_celery() -> Celery:
@@ -24,6 +29,9 @@ def _build_celery() -> Celery:
             "wcm_worker.tasks.prospector",
             "wcm_worker.tasks.fingerprinter",
             "wcm_worker.tasks.clickup",
+            "wcm_worker.tasks.outreach",
+            "wcm_worker.tasks.outreach_send",
+            "wcm_worker.tasks.maintenance",
         ],
     )
     app.conf.update(
@@ -36,10 +44,15 @@ def _build_celery() -> Celery:
         task_track_started=True,
         task_acks_late=True,
         worker_prefetch_multiplier=1,
-        # En tests, eager mode evita necesitar broker real:
         task_always_eager=os.environ.get("CELERY_TASK_ALWAYS_EAGER", "false").lower()
         in ("1", "true", "yes"),
         task_eager_propagates=True,
+        beat_schedule={
+            "retention-sweep-daily": {
+                "task": "wcm.maintenance.retention_sweep",
+                "schedule": crontab(hour=3, minute=30),
+            },
+        },
     )
     return app
 

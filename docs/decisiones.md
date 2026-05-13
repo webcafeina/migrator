@@ -499,6 +499,76 @@ La API key del operador tiene habilitada la **legacy** (test con Places-New devo
 
 ---
 
+## ADR-025 — Resend como proveedor único de email transaccional
+
+**Fecha**: 2026-05-13 (Fase 10)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Necesitamos enviar:
+- **Outreach a leads** (uno a uno, baja frecuencia, alta criticidad legal y reputacional).
+- **Notificaciones internas** al equipo (resúmenes, alertas, replies entrantes).
+- En el futuro: emails a clientes (avisos de go-live, checklist entregado).
+
+Candidatos evaluados: SES (barato, complejidad operativa alta), Postmark (excelente reputación, $$$ sin tier gratuito útil), Mailgun (declinando), **Resend** (DX moderna, SDK Python oficial, webhook nativo con HMAC, free tier 3k emails/mes).
+
+**Decisión**: Resend como único proveedor de email saliente.
+- SDK oficial `resend` Python.
+- Dominio remitente: `migrator@webcafeina.com` (subdomain dedicado para no contaminar la reputación del dominio principal).
+- Webhook entrante en `POST /api/v1/webhooks/resend` con HMAC SHA-256 sobre el body crudo, secret `RESEND_WEBHOOK_SECRET`.
+- Cliente envolvente en `apps/worker/src/wcm_worker/integrations/resend.py`: reintentos con backoff, `from_env()` perezoso, validador de webhook integrado.
+
+**Consecuencias**:
+- ✅ Un único proveedor: trazabilidad y observabilidad consolidadas.
+- ✅ Webhooks ya implementados para opens/bounces/replies → `OutreachSend` se actualiza automáticamente.
+- ✅ Free tier cubre todo el MVP (3000 emails/mes con holgura).
+- ⚠️ Acoplamiento: si Resend sube precios o tiene incidentes, dependemos solo de ellos. Mitigación: el `ResendClient` está aislado en un módulo único — sustituirlo por otro proveedor implica reescribir un solo fichero.
+- ⚠️ Dominio `webcafeina.com` debe estar verificado en Resend (SPF/DKIM/DMARC) antes de producción.
+
+---
+
+## ADR-026 — Cloudflare R2 vía boto3 (S3-compat) en lugar del SDK Cloudflare
+
+**Fecha**: 2026-05-13 (Fase 10)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Cloudflare R2 expone tanto un SDK propio como compatibilidad con la API S3 de AWS (recomendada en docs oficiales). Necesitamos subir assets de migración (imágenes optimizadas) a un bucket público.
+
+**Decisión**: Usar **boto3** apuntando al endpoint `https://<account_id>.r2.cloudflarestorage.com`.
+
+**Consecuencias**:
+- ✅ boto3 está bien soportado, tipado y documentado; el SDK Cloudflare-only es más joven y con menos integraciones.
+- ✅ Si en el futuro migramos a AWS S3 o Backblaze B2 (también S3-compat), cambia solo el `endpoint_url` y las credenciales.
+- ✅ Las features que usamos (`put_object`, `head_object`, `delete_object`, `Metadata`) están 100% cubiertas por R2 S3-compat.
+- ⚠️ Las features propietarias de R2 (Public URLs por bucket, lifecycle rules) requieren la API Cloudflare nativa; las configuramos vía dashboard.
+- ⚠️ boto3 añade ~7MB de dep tree; el coste de arranque del worker sube un par de cientos de ms. Aceptable.
+
+---
+
+## ADR-027 — Sync ClickUp ↔ residual_tasks con `clickup_task_id` como join key
+
+**Fecha**: 2026-05-13 (Fase 10)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Las tareas residuales que generan los subagentes viven en `residual_tasks`. El equipo trabaja en ClickUp. Necesitamos un mapping estable, bidireccional, sin duplicación.
+
+**Alternativas consideradas**:
+1. **Custom field en ClickUp con `residual_task_id`**: requiere mantener el custom field manualmente; frágil.
+2. **Columna nativa `clickup_task_id`** + tag `wcm-residual-<id>` en ClickUp.
+
+**Decisión**: Opción 2.
+- La columna `residual_tasks.clickup_task_id` ya existe en el schema (Fase 1).
+- Al crear una tarea ClickUp se añade el tag `wcm-residual-<id>` para que el operador localice la residual desde ClickUp.
+- El webhook entrante (Fase 5) ya cierra el loop: completar en ClickUp ⇒ `residual_tasks.status=DONE`.
+- El sync saliente (`ClickupSyncerAgent`) se ejecuta manualmente con `enqueue_residual_sync_clickup(project_id)` o automáticamente al final del pipeline.
+- Prioridades: BLOCKING_GO_LIVE→1, CLIENT_CONFIG→2, VISUAL_CONTENT/OTHER→3, POST_GO_LIVE→4.
+
+**Consecuencias**:
+- ✅ Mapping sencillo de razonar; sin custom fields configurables.
+- ✅ El webhook entrante ya estaba listo — Fase 10 solo añade el agent saliente.
+- ⚠️ Si alguien borra manualmente una tarea ClickUp, la `residual_task` queda con `clickup_task_id` apuntando a un id muerto. El re-sync detecta el 404 y lo loggea como warning sin bloquear.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

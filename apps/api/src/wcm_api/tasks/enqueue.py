@@ -46,6 +46,15 @@ def enqueue_lead_fingerprint(lead_id: int) -> str:
     return result.id
 
 
+def enqueue_outreach_send(outreach_send_id: int) -> str:
+    """Encola el envío real de un OutreachSend concreto."""
+    result = celery_app.send_task(
+        "wcm.outreach.send_step",
+        kwargs={"outreach_send_id": outreach_send_id},
+    )
+    return result.id
+
+
 def enqueue_outreach_compose(lead_id: int, *, opt_out_token: str) -> str:
     """Encola la composición de un draft de outreach para `lead_id`.
 

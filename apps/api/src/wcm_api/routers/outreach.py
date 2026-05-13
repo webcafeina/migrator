@@ -21,13 +21,19 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from wcm_db.models.audit import AuditLog
-from wcm_db.models.outreach import OutreachSequence
-from wcm_types.enums import AuditAction, OutreachSequenceStatus, UserRole
+from wcm_db.models.outreach import OutreachSend, OutreachSequence
+from wcm_types.enums import (
+    AuditAction,
+    OutreachSendStatus,
+    OutreachSequenceStatus,
+    UserRole,
+)
 from wcm_types.schemas.outreach import OutreachSendRead, OutreachSequenceRead
 
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import TokenPayload, get_current_user_payload, require_role
+from wcm_api.tasks.enqueue import enqueue_outreach_send
 
 router = APIRouter(prefix="/outreach", tags=["outreach"])
 
@@ -151,3 +157,66 @@ async def transition_sequence(
     await session.commit()
     await session.refresh(seq)
     return OutreachSequenceRead.model_validate(seq)
+
+
+@router.post("/sequences/{sequence_id}/send", status_code=202)
+async def send_sequence_step(
+    sequence_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+    step_index: int | None = Query(default=None, ge=0),
+) -> dict:
+    """Encola el envío del siguiente OutreachSend QUEUED de la secuencia.
+
+    Si `step_index` no se proporciona, dispara el QUEUED de menor index.
+    Requiere que la secuencia esté en READY o IN_PROGRESS.
+    """
+    seq = await session.get(OutreachSequence, sequence_id)
+    if seq is None:
+        raise NotFoundError(f"Outreach sequence {sequence_id} no encontrada")
+    if seq.status not in (
+        OutreachSequenceStatus.READY,
+        OutreachSequenceStatus.IN_PROGRESS,
+    ):
+        raise ConflictError(
+            f"Sequence {sequence_id} en {seq.status.value}, debe estar READY o IN_PROGRESS"
+        )
+
+    stmt = select(OutreachSend).where(
+        OutreachSend.sequence_id == sequence_id,
+        OutreachSend.status == OutreachSendStatus.QUEUED,
+    )
+    if step_index is not None:
+        stmt = stmt.where(OutreachSend.step_index == step_index)
+    stmt = stmt.order_by(OutreachSend.step_index.asc())
+
+    send = (await session.execute(stmt)).scalars().first()
+    if send is None:
+        raise ConflictError(
+            f"Sequence {sequence_id} no tiene ningún OutreachSend en estado QUEUED"
+        )
+
+    task_id = enqueue_outreach_send(send.id)
+
+    session.add(
+        AuditLog(
+            actor=f"user:{user.sub}",
+            action=AuditAction.SEND,
+            entity_type="outreach_send",
+            entity_id=str(send.id),
+            legal_ground="6.1.f",
+            payload={
+                "queued_task_id": task_id,
+                "sequence_id": sequence_id,
+                "step_index": send.step_index,
+            },
+        )
+    )
+    await session.commit()
+    return {
+        "task_id": task_id,
+        "status": "queued",
+        "send_id": send.id,
+        "step_index": send.step_index,
+    }

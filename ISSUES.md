@@ -85,8 +85,17 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ### WCM-006 — Política de retención de leads sin consentimiento
 - **Tipo**: docs / **Fase**: 9 / **Prioridad**: P1
-- **Estado**: PARCIAL (política redactada en `apps/api/legal/politica_retencion.md`; job Celery `wcm.maintenance.retention_sweep` pendiente — Fase 10).
-- **Resolución parcial**: TTLs definidos (12m DISCOVERED, 24m+6m OUTREACH_SENT, indefinido opt_out_log, 5y audit_log). Cron de purga pendiente de implementar en Fase 10.
+- **Estado**: DONE (cerrado en Fase 10, 2026-05-13)
+- **Resolución**: Cron `wcm.maintenance.retention_sweep` implementado en `apps/worker/src/wcm_worker/tasks/maintenance.py`, programado a las 03:30 Europe/Madrid vía Celery beat. Política documentada en `apps/api/legal/politica_retencion.md`. Excepciones (retention_hold para casos AEPD) trackeadas en WCM-013.
+
+---
+
+### WCM-013 — Columna `retention_hold` para excepciones AEPD
+- **Tipo**: feature / **Fase**: 10 (post) / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: Si la AEPD abre expediente sobre un lead concreto, hay que congelar la retención hasta resolución. Hoy el cron borraría el lead automáticamente al cumplirse el TTL.
+- **Acción**: Migración Alembic añadiendo `leads.retention_hold: bool default=false` + `leads.retention_hold_reason: text`. Modificar el cron para excluir registros con `retention_hold=true`. Endpoint admin-only `PATCH /api/v1/leads/{id}/retention-hold`.
+- **Dueño**: técnico (post-Fase 10).
 
 ---
 

@@ -98,6 +98,9 @@ class ApiSettings(BaseSettings):
     # ---- ClickUp webhook secret (para validar firmas) ----
     clickup_webhook_secret: str | None = Field(default=None, alias="CLICKUP_WEBHOOK_SECRET")
 
+    # ---- Resend webhook secret (HMAC sobre body crudo) ----
+    resend_webhook_secret: str | None = Field(default=None, alias="RESEND_WEBHOOK_SECRET")
+
     @property
     def is_production(self) -> bool:
         return self.env == "production"

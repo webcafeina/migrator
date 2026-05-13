@@ -6,7 +6,9 @@
 from wcm_worker.tasks import (  # noqa: F401
     clickup,
     fingerprinter,
+    maintenance,
     orchestrator,
     outreach,
+    outreach_send,
     prospector,
 )

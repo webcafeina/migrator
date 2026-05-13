@@ -15,6 +15,7 @@ from wcm_worker.agents.fingerprinter import FingerprinterAgent
 from wcm_worker.agents.forms_rebuilder import FormsRebuilderAgent
 from wcm_worker.agents.multilang_handler import MultilangHandlerAgent
 from wcm_worker.agents.outreach_composer import OutreachComposerAgent
+from wcm_worker.agents.outreach_sender import OutreachSenderAgent
 from wcm_worker.agents.prospector import ProspectorAgent
 from wcm_worker.agents.qa_runner import QaRunnerAgent
 from wcm_worker.agents.resend_notifier import ResendNotifierAgent
@@ -40,6 +41,7 @@ __all__ = [
     "FormsRebuilderAgent",
     "MultilangHandlerAgent",
     "OutreachComposerAgent",
+    "OutreachSenderAgent",
     "ProspectorAgent",
     "QaRunnerAgent",
     "ResendNotifierAgent",
