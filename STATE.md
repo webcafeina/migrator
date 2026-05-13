@@ -19,7 +19,7 @@
 - **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
 - **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
 - **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
-- **Fase 12 — Infra/Deploy**: ✅ Completada esta sesión
+- **Fase 12 — Infra/Deploy**: ✅ Completada esta sesión (commit `7c6b8a0`)
 - **Próxima fase**: Fase 13 — Tests e2e (Playwright para dashboard + flujo migración completo + CI matrix)
 
 ---
