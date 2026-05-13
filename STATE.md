@@ -12,10 +12,11 @@
 - **Fase 2 — Bricks transpiler**: ✅ Completada (commit `d653557`)
 - **Fase 3 — Scraper core**: ✅ Completada (commit `01c93d4`)
 - **Fase 4 — WP client**: ✅ Completada (commit `db21bf6`)
-- **Fase 5 — API backend**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 6 — Worker + subagentes operativos
+- **Fase 5 — API backend**: ✅ Completada (commit `fb6bcc5`)
+- **Fase 6 — Worker + subagentes operativos**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 7 — CLI
 
-> 🟢 **Para iniciar Fase 6** no se necesita ningún prereq humano nuevo. Convergerá los paquetes ya construidos (db-schema, bricks-transpiler, scraper-core, wp-client) bajo Celery tasks que la API ya encola.
+> 🟢 **Para iniciar Fase 7** no se necesita ningún prereq humano nuevo. CLI con Typer envuelve los endpoints del API + algunos shortcuts directos al worker.
 
 ---
 
@@ -29,7 +30,7 @@
 | 3 | Scraper core | ✅ Completada | Playwright wrapper + 3 extractors + proxy layered free→paid (ADR-017) + sidecar Puppeteer + 57 tests |
 | 4 | WP client | ✅ Completada | REST + WP-CLI vía paramiko + workarounds Local (ADR-018) + 29 tests (21 unit + 8 integración contra sandbox real WP 6.9.4) |
 | 5 | API backend | ✅ Completada | FastAPI con 32 rutas + JWT + cookies + RBAC + opt-out RGPD + webhooks HMAC + 33 tests con dependency override |
-| 6 | Worker + subagentes | ⏳ Pendiente | |
+| 6 | Worker + subagentes | ✅ Completada | Orchestrator + 8 subagentes REAL + 11 STUB + 4 Celery tasks + 28 tests (ADR-020 separa descriptors .md de runtime .py) |
 | 7 | CLI | ⏳ Pendiente | |
 | 8 | Dashboard | ⏳ Pendiente | |
 | 9 | Prospección | ⏳ Pendiente | Bloqueada por WCM-002 + Voyage API key |
@@ -42,7 +43,35 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 5)
+## Tareas completadas en la última sesión (Fase 6)
+
+- [x] Paquete `apps/worker/` con Celery 5.4 + SQLAlchemy sync (Celery es sync)
+- [x] `celery_app.py` compartido conceptualmente con la API; el worker registra las tasks via `include=[...]` + import explícito en `__init__.py`
+- [x] `db.py` con `session_scope()` context manager sync (commit/rollback automático)
+- [x] `errors.py` con 20+ errores tipados (uno por subagente + Orchestration*)
+- [x] `agents/base.py` con `BaseAgent` ABC + `AgentContext` + `AgentResult`
+- [x] **8 subagentes REAL** (envuelven paquetes ya construidos):
+  - `FingerprinterAgent` con `wcm_scraper_core.fingerprint` + persistencia en Lead
+  - `EnricherAgent` con regex emails (anti-placeholder) + teléfonos ES + socials + scoring
+  - `ScraperOriginAgent` BFS interno (httpx + BeautifulSoup), filtra a misma-host
+  - `ContentExtractorAgent` aplica los extractors Wix/Hostinger/Webflow según builder_source
+  - `SeoPreserverAgent` extrae title/meta/OG/canonical/hreflang/JSON-LD/h1 con avisos
+  - `MultilangHandlerAgent` detección por `<html lang>` + count por idioma
+  - `BricksTranspilerAgent` usa `transpile_page` + `validate_bricks_page`, persiste BricksPage
+  - `WpDeployerAgent` usa REST upsert + WP-CLI bricks_import_content (async dentro de task sync)
+- [x] **11 subagentes STUB** con `AgentNotImplementedError` + mensaje referenciando fase de implementación real
+- [x] `pipeline.py` con `Orchestrator` state machine: 15 fases en orden canónico con `required` + `condition_attr` para skip lógico
+- [x] **4 Celery tasks** registradas con `name=` matcheando los `send_task` del API:
+  - `wcm.orchestrator.run_project` → ejecuta Orchestrator
+  - `wcm.fingerprinter.run` → FingerprinterAgent (max_retries=2)
+  - `wcm.prospector.run_campaign` → stub Fase 9
+  - `wcm.clickup.sync_residuals` → stub Fase 10
+- [x] Tests: 28 unit (celery_app registration, pipeline state machine con stubs en `_PhaseSpec` parametrizables, agentes REAL con mocks de httpx, agentes STUB validan mensaje)
+- [x] Fix menor: `log.warning("...", extra={"msg": ...})` colisiona con `LogRecord.msg` reservado → renombrado a `reason`
+- [x] ADR-020: distinción descriptors `.claude/agents/*.md` (Claude Code build-time) vs runtime `apps/worker/agents/*.py` (Python en producción)
+- [x] Total repo a 2026-05-13: **210 passed + 2 skipped (Postgres)**
+
+## Tareas completadas en sesión anterior (Fase 5)
 
 - [x] Paquete `apps/api/` con FastAPI + uvicorn + pydantic-settings
 - [x] `config.py` con `ApiSettings` leyendo `.env` + `CORS_ORIGINS` parseado desde CSV (pydantic-settings no parsea list[str] desde env por defecto)
@@ -146,23 +175,24 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 6 — Worker + subagentes operativos)
+## Próximas tareas inmediatas (Fase 7 — CLI)
 
-Cuando el humano apruebe Fase 5, ejecutar en orden:
+Cuando el humano apruebe Fase 6, ejecutar en orden:
 
-1. Implementar `apps/worker/` Celery con tasks reales que matchean los `send_task` names del API:
-   - `wcm.orchestrator.run_project` (orquestador completo)
-   - `wcm.prospector.run_campaign`
-   - `wcm.fingerprinter.run`
-   - `wcm.clickup.sync_residuals`
-2. Cada task envuelve el subagente correspondiente (definidos en `.claude/agents/`):
-   - Integra `scraper-core` para `scraper-origin` + `fingerprinter` + `enricher` + `prospector`
-   - Integra `bricks-transpiler` para `bricks-transpiler` agente
-   - Integra `wp-client` para `wp-deployer` + `woo-migrator` + `wpml-configurator` + `forms-rebuilder`
-3. Pipeline e2e en modo dry-run: crear proyecto → encolar → ver fases avanzar.
-4. Manejo de errores tipados: cada subagente lanza su `*Error`; orchestrator captura, registra en `error_log`, decide retry/escalate.
-5. Tests integración del pipeline completo (con mocks de WP/scraper en niveles bajos).
-6. Commit: `feat(worker): pipeline e2e dry-run`.
+1. Implementar `cli/` con Typer + Rich:
+   - `wcm setup` — onboarding interactivo del operador
+   - `wcm prospect --sector X --region Y` (encola campaña vía API)
+   - `wcm leads list/get/score` (consulta API)
+   - `wcm new --source URL --client NAME` → crea proyecto vía API
+   - `wcm project status/resume/cancel ID`
+   - `wcm project export-checklist ID` → descarga checklist
+   - `wcm deploy --env prod` → trigger deploy scripts (Fase 12 lo amplía)
+   - `wcm doctor` → comprueba .env, conectividad API/DB/Redis, status del worker
+2. Cliente HTTP interno (httpx) con manejo de Auth Bearer + descubrimiento de URL desde `.env`.
+3. Output con Rich: tablas densas para listas, progress bars, spinners.
+4. Modo `--json` para integración con scripts.
+5. Tests con `CliRunner` de Typer.
+6. Commit: `feat(cli): operator commands`.
 
 ---
 
@@ -180,7 +210,14 @@ Cuando el humano apruebe Fase 5, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 5)
+## Decisiones tomadas esta sesión (Fase 6)
+
+- **Subagentes runtime separados de descriptors** (ADR-020): `.claude/agents/*.md` son build-time (Claude Code), `apps/worker/agents/*.py` son runtime (clases Python con `BaseAgent`).
+- **Alcance MVP con stubs `NotImplementedError`**: 8 subagentes REAL (cuyos paquetes ya existen) + 11 STUB con mensaje accionable. `AgentNotImplementedError` se trata como skip en el orchestrator.
+- **Worker sync (SQLAlchemy sync)** mientras la API es async. Comparten BD, schema y enums; cambian el driver (`asyncpg` vs `psycopg`).
+- **`CELERY_TASK_ALWAYS_EAGER=true`** en tests para que `.apply()` funcione sin broker Redis.
+
+## Decisiones tomadas sesión anterior (Fase 5)
 
 - **Versionado `/api/v1/...`** + endpoint público RGPD fuera del prefijo (ADR-019).
 - **Auth dual**: cookie http-only `wcm_session` para dashboard + `Authorization: Bearer` / `x-wcm-token` para CLI; ambos llevan el mismo JWT.

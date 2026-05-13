@@ -365,6 +365,30 @@ Bright Data (paid premium, opcional)
 
 ---
 
+## ADR-020 — Subagentes runtime en `apps/worker/agents/` distintos de los descriptors `.claude/agents/`
+
+**Fecha**: 2026-05-13 (Fase 6)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Durante Fase 0 generamos 20 ficheros `.claude/agents/*.md` con frontmatter Anthropic. Esos están pensados para que Claude Code los detecte como "subagentes" invocables vía Task tool. Sin embargo, el producto Webcafeína Migrator opera en runtime con código Python, no con Claude. Necesitamos clases Python que envuelvan la lógica de cada subagente y se invoquen desde el worker.
+
+**Decisión**: Mantener ambos planos separados:
+
+| Plano | Ubicación | Audiencia | Función |
+|---|---|---|---|
+| **Descriptors** | `.claude/agents/<name>.md` | Claude Code durante construcción | Contrato del agent (inputs/outputs/errores) + documentación |
+| **Runtime** | `apps/worker/src/wcm_worker/agents/<name>.py` | Python en producción | Implementación que el orchestrator invoca |
+
+Cada agent Python (`BaseAgent` subclass) implementa el contrato descrito en su `.md`. Los nombres se mantienen sincronizados (kebab-case en .md, snake_case en .py). Los errores tipados de cada agent viven en `wcm_worker.errors`.
+
+**Consecuencias**:
+- ✅ Los `.md` siguen siendo útiles como documentación viva durante construcción.
+- ✅ El runtime no depende de Claude para ejecutar el pipeline.
+- ✅ Tests unitarios trabajan con clases Python normales (mocks, AsyncMock, etc.).
+- ⚠️ Mantener consistencia entre .md y .py es manual; conviene revisar el .md cuando se modifique el .py (y al revés). En Fase 14 (docs) se puede automatizar un check de drift.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
