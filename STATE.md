@@ -20,8 +20,9 @@
 - **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
 - **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
 - **Fase 12 — Infra/Deploy**: ✅ Completada (commit `7c6b8a0`)
-- **Fase 13 — Tests e2e**: ✅ Completada esta sesión (commit `891553a`)
-- **Próxima fase**: Fase 14 — Documentación (arquitectura detallada, prospeccion.md, migracion.md, playbook-operativo.md)
+- **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
+- **Fase 14 — Documentación**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 15 — Hardening (security review final, dependency audit, performance baseline, push repo GitHub diferido por ADR-013)
 
 ---
 
@@ -43,12 +44,31 @@
 | 11 | Observabilidad | ✅ Completada | structlog + Sentry (api/worker/dashboard) + Logtail + Prometheus `/metrics` + `/health/deep` (db/redis/r2) — todo perezoso (ADR-028/29). 25 tests nuevos. Total 350+15. |
 | 12 | Infra/Deploy | ✅ Completada | 4 systemd units + target + Nginx vhosts + 5 scripts WHM setup + 4 scripts deploy + 2 workflows GitHub Actions + runbook completo en docs/despliegue.md (ADR-030/031). 29 tests validación. Total 379+15. |
 | 13 | Tests e2e | ✅ Completada | Playwright + 4 specs (login/leads/projects/visual) con API mockeada via page.route(); 5 e2e Python pipeline (orchestrator + stubs reales + stateful_session); coverage 74.8% con pytest-cov; CI matrix Py 3.13/3.14 × Node 20/22 (ADR-032). Total 384+15+8 Playwright. |
-| 14 | Documentación | ⏳ Pendiente | |
+| 14 | Documentación | ✅ Completada | arquitectura.md (5 diagramas Mermaid + tabla 21 agentes) + prospeccion.md (10 secciones operador) + migracion.md (13 secciones operador) + playbook-operativo.md (10 runbooks INC-NN) + glossary.md (40+ términos) + README quickstart operador. |
 | 15 | Hardening | ⏳ Pendiente | |
 
 ---
 
-## Tareas completadas en la última sesión (Fase 13)
+## Tareas completadas en la última sesión (Fase 14)
+
+- [x] **`docs/arquitectura.md`** reescrito con 5 diagramas Mermaid:
+  - Visión general productos (prospección + migración).
+  - Topología single-server WHM (flowchart con systemd units + DB + externos).
+  - Componentes lógicos del código (apps + packages + cli).
+  - Flujo de migración con 15 fases del orchestrator + estados terminales.
+  - Flujo de prospección con ciclo de vida del lead.
+  - Modelo de datos ER (entidades principales).
+  - Flujo de observabilidad (structlog → journald → Logtail; Prometheus → Grafana; Sentry).
+  - Flujo de cumplimiento legal (descubrimiento → validador → composer → sender → opt-out).
+  - Tabla de los **21 subagentes runtime** con estado real/stub.
+- [x] **`docs/prospeccion.md`** completo en 10 secciones: modelo mental, lanzar campaña (dashboard + CLI), revisar leads, generar draft, aprobar/enviar, opt-outs (auto + manual + manual review), búsqueda semántica futura, auditoría, retención automática, métricas, troubleshooting.
+- [x] **`docs/migracion.md`** completo en 13 secciones: modelo mental, crear proyecto, arrancar pipeline, **las 15 fases en tabla detallada**, seguimiento (dashboard + CLI + journalctl + Sentry), resume tras fallo, cancelar, troubleshooting por fase (scrape/extract/transpile/deploy/sync), criterios go-live ready, plugins instalados destino, interpretación visual diff con scores, rollback, métricas a vigilar.
+- [x] **`docs/playbook-operativo.md`** con **10 runbooks INC-NN** (formato Síntoma → Diagnóstico → Acción → Verificación → Escalación): proyecto atascado, lead duplicado, solicitud RGPD no-email, brecha de seguridad, deploy fallido, worker no consume, Resend rebota >5%, /metrics expuesto, migración Alembic falló, ClickUp webhook no actualiza. Más sección de tareas recurrentes (rotación credenciales, backups, auditoría mensual audit_log).
+- [x] **`docs/glossary.md`** nuevo con **40+ términos** alfabetizados: agent, asset, BricksPage, Celery, ContentBlock, embedding, fingerprinter, GDPR, hardening, idempotente, JWT, lead, LSSI-CE, opt_out_log, orchestrator, OutreachSequence/Send, pgvector, Playwright, Prometheus, resend, residual_task, scraped_page, structlog, systemd, transpiler, validador legal, webhook, WP-CLI, WPML... + referencias cruzadas.
+- [x] **README.md** ampliado con sección **"Para operadores (quickstart)"**: primer login, lectura recomendada por rol (comercial/técnico), tabla de tareas habituales con comando exacto, dónde leer runbooks de incidentes.
+- [x] Stubs antiguos de los 4 docs operativos sustituidos por versiones completas. Sin perder contenido valioso del bootstrap.
+
+## Tareas completadas en sesión anterior (Fase 13)
 
 - [x] **Playwright en dashboard** (`apps/dashboard/`):
   - `@playwright/test@^1.60` instalado como dev dep.
@@ -356,18 +376,23 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 14 — Documentación)
+## Próximas tareas inmediatas (Fase 15 — Hardening)
 
-Cuando el humano apruebe Fase 13, ejecutar en orden:
+Cuando el humano apruebe Fase 14, ejecutar en orden:
 
-1. **PREREQ humano**: ninguno (es documentación).
-2. **`docs/arquitectura.md`** detallado: diagramas Mermaid del flujo migración (15 fases) + flujo prospección + topología single-server + flujo de datos.
-3. **`docs/prospeccion.md`** completo: cómo lanzar campaña, cómo revisar drafts outreach, cómo aprobar secuencia, qué leer en `audit_log`.
-4. **`docs/migracion.md`** completo: pasos del operador (CLI o dashboard), criterios de "go-live ready", interpretación del visual diff, troubleshooting de fases.
-5. **`docs/playbook-operativo.md`**: runbooks para incidentes comunes — proyecto atascado, lead duplicado, opt-out flow, retención AEPD.
-6. **Actualizar `README.md`** con quickstart del operador (no del developer; ese ya está cubierto).
-7. **`docs/glossary.md`**: términos (BricksPage, residual_task, opt-out, fingerprint, etc.) para nuevo personal.
-8. Commit: `docs: arquitectura + flows + playbook operativo`.
+1. **PREREQ humano**:
+   - Decisión final sobre nombre + visibilidad del repo GitHub (público / privado / org `@webcafeina`).
+   - Lista de operadores definitivos para crear cuentas (con email + rol).
+   - Confirmación de subdominios productivos.
+2. **Security review final**: ejecutar `/security-review` skill sobre todo el código nuevo. Foco en RGPD, RBAC, escapes Bash en scripts infra, headers Nginx.
+3. **Dependency audit**: `pnpm audit`, `pip-audit`. Pin de versiones críticas en `pyproject.toml` (no solo `>=`).
+4. **Performance baseline**: medir latencia p95/p99 de endpoints clave + tiempo medio migración (con worker real) + ejecución retention sweep sobre dataset grande.
+5. **Rate limiting** en API: añadir `slowapi` o equivalente para `/auth/login` (5/min), `/leads/*/outreach/*` (10/min), webhooks (30/s ya cubierto en Nginx).
+6. **Idempotency keys** en endpoints POST que disparan side-effects externos.
+7. **Push del repo a GitHub** (ADR-013 cierra aquí): crear `webcafeina/migrator`, `git remote add origin`, primer push de toda la historia, habilitar branch protection en `main`.
+8. **Activar GitHub Actions**: confirmar que CI corre verde en el primer push.
+9. **Tagged release v0.1.0** + entry en `CHANGELOG.md` con todas las fases.
+10. Commit: `feat(hardening): security review + audit + rate limit + v0.1.0 release`.
 
 ---
 
@@ -385,7 +410,17 @@ Cuando el humano apruebe Fase 13, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 13)
+## Decisiones tomadas esta sesión (Fase 14)
+
+- **Docs operativos orientados a tareas, no a features**: en lugar de explicar "qué es ProspectorAgent", explico "cómo lanzar una campaña". El glosario cubre la parte conceptual; los docs de prospección y migración cubren la operativa.
+- **Diagramas Mermaid en arquitectura.md** (no PNG): renderizables en GitHub directamente, fáciles de mantener en sync con el código. 8 diagramas distintos: productos / topología / componentes / flujo migración 15 fases / flujo prospección con ciclo de vida lead / ER datos / observabilidad / cumplimiento legal.
+- **Playbook con formato INC-NN estricto**: cada incidente sigue Síntoma → Diagnóstico → Acción → Verificación → Escalación. Comandos copy-paste para SQL/bash. Esto reduce el time-to-resolution en producción.
+- **Glosario alfabético con referencias cruzadas**: 40+ entradas. Permite a un nuevo del equipo entender el vocabulario sin abrir código.
+- **README ya no menciona "para devs" vs "para ops"** explícitamente, pero la sección quickstart operador va arriba (los operadores no leen scroll largo).
+- **Sin documentación generada automáticamente** (Sphinx, pdoc): mantenemos docs como markdown plano editado a mano. La autogenerada se vuelve obsoleta pronto y nadie la mira.
+- **`docs/humanos/` sigue intocable** (regla #11): los docs que escribo son técnicos/operativos, no para el equipo humano comercial puro.
+
+## Decisiones tomadas sesión anterior (Fase 13)
 
 - **Dashboard e2e con API mockeada al 100%** (ADR-032): los Playwright tests usan `page.route()` para devolver fixtures controladas. Sin tocar el API real en ningún momento. Ventajas: tests deterministas, rápidos, no requieren Postgres ni Redis arrancados.
 - **`webServer` de Playwright lanza `next dev -p 3100`**: puerto separado del dev humano (3000) para no chocar. Reuse del server existente en local, fresh start en CI.

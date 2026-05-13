@@ -12,6 +12,7 @@ Herramienta interna de **Webcafeína** (Cáceres, España) para:
 ## Tabla de contenidos
 
 - [Estado del proyecto](#estado-del-proyecto)
+- [Para operadores (quickstart)](#para-operadores-quickstart)
 - [Arquitectura](#arquitectura)
 - [Stack técnico](#stack-técnico)
 - [Setup local](#setup-local)
@@ -25,9 +26,41 @@ Herramienta interna de **Webcafeína** (Cáceres, España) para:
 
 Ver siempre [`STATE.md`](./STATE.md) para el cursor de avance entre sesiones de construcción.
 
-La construcción está dividida en 16 fases (0–15). **Fases 0–13 completadas** a 2026-05-13: bootstrap → DB → transpilador → scraper → WP → API → worker → CLI → dashboard → prospección RGPD/LSSI-CE → integraciones (ClickUp/Resend/R2) → observabilidad (Sentry/structlog/Logtail/Prometheus) → infra/deploy (systemd + Nginx + WHM scripts) → **tests e2e** (Playwright dashboard con API mockeada + e2e pipeline Python + coverage 74.8% + CI matrix Py 3.13/3.14 × Node 20/22). Próxima fase: 14 — Documentación operativa.
+La construcción está dividida en 16 fases (0–15). **Fases 0–14 completadas** a 2026-05-13: del bootstrap al producto funcional + tests e2e + **documentación operativa completa** (arquitectura con diagramas Mermaid, runbooks por incidente, glosario, guías de prospección y migración orientadas a tareas). Próxima fase: 15 — Hardening final (security review, dependency audit, performance baseline, push del repo GitHub).
 
 Test suite total: **384 tests Python + 15 TS + 8 Playwright** = 407, coverage 74.8%.
+
+---
+
+## Para operadores (quickstart)
+
+Si eres del equipo Webcafeína y vas a **usar** la herramienta (no modificarla):
+
+### Primera vez
+
+1. Pide a Álvaro las credenciales del dashboard. Login en `https://migrator.webcafeina.com`.
+2. Lee la guía de tu rol:
+   - **Comercial / prospección**: [`docs/prospeccion.md`](./docs/prospeccion.md)
+   - **Técnico / migraciones**: [`docs/migracion.md`](./docs/migracion.md)
+3. Glosario rápido si encuentras un término que no conoces: [`docs/glossary.md`](./docs/glossary.md).
+
+### Tareas habituales
+
+| Tarea | Cómo |
+|---|---|
+| Lanzar una campaña de prospección | Dashboard → Campaigns → Nueva. O CLI: `wcm campaigns launch --sector "..." --region "..."` |
+| Revisar leads cualificados | Dashboard → Leads. Filtra por sector/score |
+| Aprobar un email de outreach | Dashboard → Outreach → Sequence detail → "Approve" |
+| Lanzar una migración | Dashboard → Projects → Nuevo. O CLI: `wcm projects new --source URL --client NAME` |
+| Seguir progreso de migración | Dashboard → Projects → click en proyecto |
+| Resume tras fallo | Dashboard → "Resume". O CLI: `wcm projects resume <id>` |
+| Registrar oposición manual (cliente llama) | CLI: `wcm leads consent <id> --action objection_received` |
+
+### Incidentes
+
+Si algo va mal, consulta [`docs/playbook-operativo.md`](./docs/playbook-operativo.md) — runbooks por tipo de incidente.
+
+Para situaciones críticas (brecha de seguridad, AEPD): notifica a Álvaro inmediatamente y abre el runbook INC-04.
 
 ---
 
