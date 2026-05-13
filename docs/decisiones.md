@@ -694,6 +694,48 @@ Las units son **templates** con variables `${WCM_APP_DIR}`, `${WCM_USER}`, `${WC
 
 ---
 
+## ADR-032 — Estrategia e2e: Playwright (dashboard) + pipeline test (worker)
+
+**Fecha**: 2026-05-13 (Fase 13)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Tests unitarios e integration sólos no detectan regresiones en flujos completos: login → list → action en el dashboard; ni pipeline orchestrator + agentes encadenados produciendo BricksPage + ResidualTasks. Necesitamos e2e sin depender de sandbox real (que se construye en Fase 14+).
+
+**Decisión**: Dos caminos paralelos:
+
+1. **Dashboard e2e con Playwright** (`apps/dashboard/tests/e2e/`):
+   - `webServer` arranca `next dev -p 3100` durante los tests.
+   - Todas las llamadas a `/api/v1/*` se interceptan con `page.route()` y se sirven fixtures controladas (`apps/dashboard/tests/e2e/fixtures/api-mocks.ts`).
+   - Sin red real, sin servidor API real.
+   - **Visual regression** con `expect(page).toHaveScreenshot()` + baseline en `__screenshots__/`, tolerance `maxDiffPixelRatio: 0.01`.
+   - CI: `playwright install --with-deps chromium` + ejecución headless. Visual specs se omiten en CI hasta tener baselines estables (`--ignore-snapshots`).
+   - Locales en español (`locale: "es-ES"`, `timezoneId: "Europe/Madrid"`).
+2. **Pipeline e2e Python** (`tests/e2e/test_full_migration_pipeline.py`):
+   - Instancia `Orchestrator` real con stub agents que replican la semántica de los reales (crean ScrapedPage / BricksPage / ResidualTask reales).
+   - Fixture `stateful_session` en memoria (no Postgres) que persiste objetos por tipo.
+   - Verifica: completado de fases en orden, fallo en required bloquea (BLOCKED_HUMAN_INPUT), fallo en opcional continúa pero outcome=QA_FAILED, conditional skip por `condition_attr`.
+   - Un test extra usa el fingerprinter real contra el HTML Wix fixture.
+
+**Lo que NO cubrimos** (post-MVP, sandbox real):
+- Migración end-to-end con WP real (REST + SSH).
+- R2 real upload + verificación.
+- Resend envío real.
+- Bricks Builder importando el JSON en una instancia WP real.
+
+**Coverage**: añadido `pytest-cov` con `--cov-config=pytest.ini` que limita el source a paquetes de producción. Threshold mínimo: **70%**. Estado actual: **74.8%**. El CI exige el threshold solo en la run con Python 3.14 (la stable usada en prod).
+
+**CI matrix**: Python `["3.13", "3.14"]` × Node `["20", "22"]`. Detecta regresiones de versión antes de actualizar el servidor.
+
+**Consecuencias**:
+- ✅ Suite e2e completa: dashboard + pipeline + fingerprint real.
+- ✅ Tests deterministas, sin flakiness por red.
+- ✅ Visual regression sirve de tripwire para cambios involuntarios de UI.
+- ✅ Coverage 74.8% sin red ni servicios externos.
+- ⚠️ Las baselines de visual regression hay que regenerarlas la primera vez en Linux x64 (CI). Para eso: `pnpm e2e:update-snapshots` desde el entorno objetivo y commit.
+- ⚠️ Python 3.13 puede empezar a fallar si alguna dep (sentence-transformers) drop support. Si la matrix 3.13 falla en CI, decidimos mantener o quitar.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
