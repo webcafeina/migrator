@@ -207,16 +207,16 @@ docs/
 
 ## 10. Anti-detección en scraping prospectivo
 
-Capas, configurables por entorno:
+Capas, configurables por entorno (ADR-017):
 
-1. Bright Data residencial con rotación por request
+1. **Proxy layered**: NoProxy (dev) → Webshare free (10 IPs + 1GB/mes) → ScraperAPI free (5k calls/mes) → Bright Data (paid premium). `build_default_rotator()` elige automáticamente según env vars.
 2. `playwright-stealth` activado siempre
-3. UA rotation con `fake-useragent`
+3. UA rotation con pool curado estático + opcional `fake-useragent`
 4. Rate limit: 1 req cada 3–8s aleatorios por dominio
 5. Respeto de `robots.txt` (en prospección sí; en migración no, porque hay consentimiento)
-6. Cache Redis TTL 7 días
-7. Detección de captcha → fallback 2captcha
-8. Cooldown: 3 × `403/429` → pausa 24 h por dominio
+6. Cache Redis TTL 7 días (o `InMemoryCache` en dev/tests)
+7. Detección de captcha → ScraperAPI lo gestiona; 2captcha como fallback raro
+8. Cooldown: 3 × `403/429/503` → pausa 24 h por dominio
 9. Logs detallados para ajustar estrategia
 
 ---

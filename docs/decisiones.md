@@ -78,7 +78,7 @@ Heurística: `N <= 100` → REST; `N > 100` o transaccional → WP-CLI.
 ## ADR-005 — Bright Data residencial como proxy default
 
 **Fecha**: 2026-05-12 (Fase 0)
-**Estado**: ✅ Aceptada
+**Estado**: 🟥 Superseded by ADR-017
 
 **Contexto**: La prospección requiere scraping fiable de Google Maps (no, lo hacemos por API oficial), directorios sectoriales y dorks. Las IPs de datacenter son bloqueadas con frecuencia. Bright Data ofrece residencial pay-as-you-go.
 
@@ -278,6 +278,48 @@ Issue tracking interno: **WCM-008**.
 - ✅ Workflow editable funciona sin tener que cambiar de Python.
 - ⚠️ Cada nuevo `pip install` requiere re-ejecutar el script. Añadir al onboarding del entorno de desarrollo.
 - ⚠️ Si upstream Python revierte o setuptools cambia la convención de naming, el workaround queda obsoleto. Bajo coste de mantenimiento.
+
+---
+
+## ADR-017 — Proxy layered con free tiers; Bright Data como premium opcional
+
+**Fecha**: 2026-05-13 (Fase 3)
+**Estado**: ✅ Aceptada — supersede ADR-005
+
+**Contexto**: ADR-005 fijaba Bright Data residencial como default. El usuario pidió evaluar opciones gratuitas. Investigación (Webshare, ScraperAPI, ScrapingBee, listas públicas, Tor) concluye:
+
+- **Listas públicas (ProxyScrape, Databay, Oxylabs free list)**: pésimas en producción — lentas, inestables, riesgo de inyección de ads/malware. Descartadas.
+- **Webshare free** ([webshare.io](https://www.webshare.io/)): 10 datacenter proxies forever-free + 1GB/mes, sin tarjeta. Soporta SOCKS5+HTTP, rotación oficial. **Mejor opción gratuita real para producción ligera.**
+- **ScraperAPI free** ([scraperapi.com](https://www.scraperapi.com/)): 5k calls/mes free con rotación + bypass de captcha + JS rendering. Buen complemento cuando Webshare se queda corto o aparece captcha.
+- **Bright Data**: premium dimensionable. Mantenido como tier opcional.
+
+**Decisión**: `ProxyRotator` layered con backends en orden creciente de capacidad:
+
+```
+NoProxy (default dev + migración cliente)
+  ↓ ENV vars activan los siguientes
+Webshare (free 10 IPs + 1GB/mes)
+  ↓
+ScraperAPI (free 5k calls/mes)
+  ↓
+Bright Data (paid premium, opcional)
+```
+
+`build_default_rotator()` lee `.env` y construye la cadena automáticamente. En `ENV=production` arranca en el primer backend free disponible; en dev arranca en NoProxy. `rotator.escalate()` pasa al siguiente backend cuando el actual se agota.
+
+**Consecuencias**:
+- ✅ Coste mensual real: 0€ hasta que la prospección crezca significativamente.
+- ✅ Sin lock-in: cualquiera de los tiers se activa solo con env vars.
+- ✅ Migración cliente sigue usando IP directa Webcafeína (sin proxy) — coherente con el principio de transparencia hacia clientes con consentimiento.
+- ⚠️ Free tiers tienen quotas: Webshare 1GB/mes ≈ 1000-5000 páginas; ScraperAPI 5k calls. Para campañas grandes (>1000 leads/mes) hay que escalar.
+- ⚠️ Webshare datacenter (no residencial) — algunos sitios protegidos pueden detectarlo. En ese caso escalar a ScraperAPI (que sí usa residencial mezclado).
+- ⚠️ `.env.example` ampliado con `WEBSHARE_USER`, `WEBSHARE_PASSWORD`, `SCRAPERAPI_KEY` (todos opcionales).
+
+**Fuentes consultadas**:
+- [Webshare features](https://www.webshare.io/features/datacenter-proxy)
+- [ScraperAPI free tier](https://www.scraperapi.com/)
+- [Best free proxies 2026 — ScrapingBee blog](https://www.scrapingbee.com/blog/best-free-proxy-list-web-scraping/)
+- [Top rotating residential proxies 2026 — Crawlbase](https://crawlbase.com/blog/rotating-residential-proxies/)
 
 ---
 

@@ -9,10 +9,11 @@
 
 - **Fase 0 — Bootstrap**: ✅ Completada (commit `f7aa1a7`)
 - **Fase 1 — DB y modelos**: ✅ Completada (commit `3ad2b7b`)
-- **Fase 2 — Bricks transpiler**: ✅ Completada esta sesión (con esquema observacional, ver ADR-014)
-- **Próxima fase**: Fase 3 — Scraper core
+- **Fase 2 — Bricks transpiler**: ✅ Completada (commit `d653557`)
+- **Fase 3 — Scraper core**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 4 — WP client
 
-> 🟡 **Antes de iniciar Fase 3**, el humano debe (a) revisar Fase 2, (b) aún pendiente WCM-001 — bloqueante para validar el transpilador contra un Bricks real (smoke en Fase 4 o Fase 12), (c) preparar credenciales Bright Data + URLs reales por builder (WCM-003).
+> 🟡 **Antes de iniciar Fase 4**, el humano debe (a) revisar Fase 3, (b) preparar credenciales de un WordPress sandbox accesible vía SSH + WP-CLI (host, user, password/key, app password REST). (c) WCM-001 sigue abierto y será necesario para smoke contra Bricks real en Fase 4.
 
 ---
 
@@ -23,7 +24,7 @@
 | 0 | Bootstrap | ✅ Completada | Estructura + agentes + skills + memoria |
 | 1 | DB y modelos | ✅ Completada | 17 tablas, migración 0001, pydantic schemas, tipos TS auto |
 | 2 | Bricks transpiler | ✅ Completada | Esquema observacional v1, 16 mappers, validador, theme styles, 63 tests |
-| 3 | Scraper core | ⏳ Pendiente | Bloqueada por credenciales Bright Data |
+| 3 | Scraper core | ✅ Completada | Playwright wrapper + 3 extractors + proxy layered free→paid (ADR-017) + sidecar Puppeteer + 57 tests |
 | 4 | WP client | ⏳ Pendiente | Bloqueada por credenciales WP sandbox |
 | 5 | API backend | ⏳ Pendiente | |
 | 6 | Worker + subagentes | ⏳ Pendiente | |
@@ -39,7 +40,26 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 2)
+## Tareas completadas en la última sesión (Fase 3)
+
+- [x] Investigación de proxies gratuitos viables (Webshare, ScraperAPI, listas públicas) → ADR-017
+- [x] Paquete `packages/scraper-core/` con módulos: fetcher, browser, ua, rate_limit, cache, proxy, fingerprint, extractors, assets, sidecar
+- [x] `ProxyRotator` layered: NoProxy → Webshare (free) → ScraperAPI (free) → Bright Data (paid)
+- [x] `BrowserSession` async (Playwright) con stealth + locale ES + UA rotation, opcional `[browser]` extra
+- [x] `UserAgentPool` con pool curado de 15 UAs reales + sticky por dominio + fallback a fake-useragent
+- [x] `DomainRateLimiter` con jitter `[3-8]s` + cooldown 24h tras 3×{403,429,503}
+- [x] `CacheBackend` Protocol + `InMemoryCache` (dev/tests)
+- [x] Fingerprinter cascada 5 niveles con `patterns.yml` mantenible (10 tecnologías cubiertas)
+- [x] Extractors Wix/Hostinger/Webflow con selectores documentados y mapeo a `BlockType`
+- [x] Sidecar Node `webflow-sidecar.js` (Puppeteer-extra + stealth) para IX2; cliente Python `sidecar/__init__.py`
+- [x] Asset discovery: imágenes (incl. srcset, picture, bg-image en CSS), fonts (@font-face, Google Fonts), vídeos (incluye iframe yt/vimeo)
+- [x] 9 tests fingerprint + 17 extractors + 9 assets + 9 proxy + 8 rate_limit + 5 ua/cache = 57 passed
+- [x] Fixtures HTML sintéticas representativas en `tests/fixtures/{wix,hostinger,webflow}/`
+- [x] ADR-017 (proxy layered free→paid) supersede ADR-005
+- [x] `.env.example` ampliado con `WEBSHARE_USER/PASSWORD`, `SCRAPERAPI_KEY`
+- [x] `CLAUDE.md` §10 actualizado con la nueva estrategia anti-detección
+
+## Tareas completadas en sesión anterior (Fase 2)
 
 - [x] Investigación documentación pública Bricks Builder (academy.bricksbuilder.io, GitHub `wpgaurav/bricks-skills`, `sabiertas/bricks-mcp-server`, BricksSync) — fuentes consultadas listadas en SKILL.md
 - [x] Esquema observacional v1 documentado en `.claude/skills/bricks-json-schema/SKILL.md` + `schema.json` (JSON Schema Draft 2020-12) + 3 examples
@@ -82,20 +102,21 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 3 — Scraper core)
+## Próximas tareas inmediatas (Fase 4 — WP client)
 
-Cuando el humano apruebe Fase 2, ejecutar en orden:
+Cuando el humano apruebe Fase 3, ejecutar en orden:
 
-1. **PREREQ humano**: credenciales Bright Data + URLs reales por builder (WCM-003).
-2. Implementar `packages/scraper-core/`:
-   - Wrapper Playwright con stealth + UA rotation
-   - Sidecar Puppeteer (Node) para Webflow IX2
-   - Rate limiter por dominio (jitter 3–8 s) + cooldown 24 h tras 3×403/429
-   - Cache Redis TTL 7 días en prospección
-3. Patterns concretos por builder en `directories/`:
-   - `wix.py`, `hostinger_ai.py`, `webflow.py` aplicando los skills documentados
-4. Tests con fixtures HTML de webs reales (calibrar con WCM-003).
-5. Commit: `feat(scraper): multi-builder extraction`.
+1. **PREREQ humano**: WordPress sandbox accesible. Se necesita:
+   - Host + SSH key path (paramiko)
+   - WP-CLI instalado en el sandbox (`which wp` debe devolver path)
+   - Usuario REST API con Application Password (rol admin para Bricks import)
+2. Implementar `packages/wp-client/`:
+   - `WpRestClient` (skill `wp-rest-bulk`): bulk insert pages/posts, media upload, Yoast meta, Redirection, Gravity Forms, WPML
+   - `WpCliSshClient` (skill `wpcli-ssh`): `wp core install`, `wp plugin install`, `wp post update --post_meta=_bricks_page_content_2`
+   - Idempotencia por slug/SKU/source_path; retries con backoff exponencial
+3. Tests contra mocks de respuestas REST. Tests integración opt-in contra sandbox real si se proporciona.
+4. WCM-001 (export real Bricks): si el humano lo aporta antes, ajustar bricks-transpiler en paralelo.
+5. Commit: `feat(wp): client with REST and CLI`.
 
 ---
 
@@ -113,7 +134,11 @@ Cuando el humano apruebe Fase 2, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 2)
+## Decisiones tomadas esta sesión (Fase 3)
+
+- **Proxy layered free→paid** (ADR-017, supersede ADR-005): NoProxy → Webshare → ScraperAPI → Bright Data, todos opcionales por env vars. Coste real €0 hasta volumen alto.
+
+## Decisiones tomadas sesión anterior (Fase 2)
 
 - **Esquema Bricks observacional v1** desde docs públicas (ADR-014). Provisional hasta WCM-001.
 - **IDs deterministas** blake2b/base36 6 chars (ADR-015) para idempotencia.
@@ -134,7 +159,9 @@ Cuando el humano apruebe Fase 2, ejecutar en orden:
 
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
-- Para Fase 3 necesitas: credenciales Bright Data, 3 URLs reales por builder (Wix/Hostinger/Webflow) — WCM-003.
-- El `.venv/` raíz tiene `wcm-db-schema`, `wcm-shared-types`, `wcm-bricks-transpiler`, `pytest`, `pydantic-to-typescript` instalados. Si haces `pip install` nuevos, ejecuta inmediatamente `bash scripts/fix-venv-hidden-pth.sh` (ver ADR-016).
-- Para validar Fase 2 contra Bricks real: cuando dispongas del export WCM-001, comparar con `.claude/skills/bricks-json-schema/examples/` y ajustar mappers.
-- Tests Postgres siguen skippeados hasta que ejecutes `alembic upgrade head` contra un Postgres+pgvector real (Fase 1 pendiente de validación humana).
+- Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016). El último install marcó hidden los .pth otra vez — el script lo corrige.
+- Para Fase 4 necesitas: WordPress sandbox con SSH + WP-CLI + Application Password REST.
+- Test suite total a 2026-05-13: **120 passed + 2 skipped** (db-schema 17, shared-types 12, bricks-transpiler 63 pero comparten fixtures con db-schema → en agregado 63 únicos, scraper-core 57). Para correr todos: `python -m pytest packages -q` desde la raíz.
+- Calibración Fase 3 con URLs reales: cuando me pases URLs reales por builder (WCM-003), comparar fingerprint output + extractor blocks vs lo capturado y ajustar selectores.
+- Validar Fase 2 contra Bricks real (WCM-001) sigue pendiente.
+- Tests Postgres siguen skippeados hasta que ejecutes `alembic upgrade head` contra Postgres+pgvector real (Fase 1).

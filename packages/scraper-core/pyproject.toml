@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wcm-scraper-core"
+version = "0.1.0"
+description = "Webcafeína Migrator — Playwright wrapper, anti-detección y extractors por builder"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "UNLICENSED" }
+authors = [{ name = "Webcafeína S.L.", email = "info@webcafeina.com" }]
+dependencies = [
+    "pydantic>=2.7,<3.0",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "tldextract>=5.1",
+    "pyyaml>=6.0",
+    "wcm-shared-types",
+]
+
+[project.optional-dependencies]
+browser = [
+    "playwright>=1.45",
+    "playwright-stealth>=1.0",
+    "fake-useragent>=1.5",
+]
+cache = [
+    "redis>=5.0",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "black>=24.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "browser: tests que requieren Playwright real instalado (skip por defecto)",
+]

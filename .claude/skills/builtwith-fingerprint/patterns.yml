@@ -1,0 +1,119 @@
+# Patterns para builtwith-fingerprint skill.
+# Sintaxis: cada item es una tecnología con N signals. Cada signal tiene un
+# type, un matcher y un weight (acumulativo, max 1.0).
+#
+# Signal types:
+#   header   — match en header HTTP. `key` lowercase, `value` regex opcional.
+#   html     — regex sobre HTML crudo (raw response body).
+#   js_global — nombre de propiedad de `window` que debe existir (solo lsr-fingerprint
+#                ya que requiere renderizado).
+#   meta     — meta name + content regex.
+#   cookie   — nombre de cookie observada.
+#
+# Mantenimiento:
+# - Cada modificación significativa debe acompañarse de fixtures en tests.
+# - Si una tecnología se retira o cambia de marca, mover a patterns-deprecated.yml.
+
+patterns_version: "2026.05.13"
+
+technologies:
+  - name: Wix
+    category: builder
+    signals:
+      - { type: header, key: x-wix-request-id, weight: 0.5 }
+      - { type: header, key: server, value: "(?i)pepyaka", weight: 0.4 }
+      - { type: html, regex: 'parastorage\.com', weight: 0.3 }
+      - { type: html, regex: 'wixstatic\.com', weight: 0.3 }
+      - { type: html, regex: 'wixui-', weight: 0.2 }
+      - { type: js_global, key: wixBiSession, weight: 0.4 }
+      - { type: js_global, key: viewerModel, weight: 0.2 }
+
+  - name: Hostinger AI Builder
+    category: builder
+    signals:
+      - { type: header, key: server, value: "(?i)hostinger", weight: 0.3 }
+      - { type: html, regex: 'data-hostai-loaded', weight: 0.5 }
+      - { type: html, regex: 'data-block-type=', weight: 0.3 }
+      - { type: html, regex: 'assets\.hostinger\.com', weight: 0.3 }
+      - { type: html, regex: 'cdn\.hostinger\.com', weight: 0.3 }
+      - { type: js_global, key: HOSTAI, weight: 0.4 }
+      # Legado Zyro (Hostinger compró Zyro):
+      - { type: html, regex: 'data-zyro-', weight: 0.4 }
+
+  - name: Webflow
+    category: builder
+    signals:
+      - { type: header, key: server, value: "(?i)webflow", weight: 0.4 }
+      - { type: html, regex: 'website-files\.com', weight: 0.4 }
+      - { type: html, regex: 'webflow\.com', weight: 0.2 }
+      - { type: html, regex: 'data-w-id=', weight: 0.3 }
+      - { type: html, regex: 'data-wf-page=', weight: 0.4 }
+      - { type: html, regex: 'data-wf-site=', weight: 0.3 }
+      - { type: js_global, key: Webflow, weight: 0.5 }
+
+  - name: WordPress
+    category: cms
+    signals:
+      - { type: header, key: x-pingback, weight: 0.4 }
+      - { type: html, regex: '/wp-content/', weight: 0.4 }
+      - { type: html, regex: '/wp-includes/', weight: 0.3 }
+      - { type: meta, name: generator, value: "(?i)wordpress", weight: 0.5 }
+      - { type: html, regex: 'wp-emoji-release', weight: 0.2 }
+
+  - name: Bricks Builder
+    category: builder
+    note: detectar si el origen YA está en Bricks (no requiere migración técnica)
+    signals:
+      - { type: html, regex: 'brxe-[a-z0-9]{6}', weight: 0.5 }
+      - { type: html, regex: '\bbricks-is-frontend\b', weight: 0.5 }
+      - { type: html, regex: 'wp-content/themes/bricks/', weight: 0.6 }
+
+  - name: Elementor
+    category: builder
+    note: WP + Elementor — migrable a Bricks pero esfuerzo distinto
+    signals:
+      - { type: html, regex: 'elementor-page', weight: 0.5 }
+      - { type: html, regex: 'elementor-section', weight: 0.4 }
+      - { type: meta, name: generator, value: "(?i)elementor", weight: 0.5 }
+
+  - name: Divi
+    category: builder
+    signals:
+      - { type: html, regex: 'et_pb_section', weight: 0.5 }
+      - { type: html, regex: 'et-divi', weight: 0.3 }
+      - { type: html, regex: '/divi/', weight: 0.3 }
+
+  - name: Squarespace
+    category: builder
+    signals:
+      - { type: html, regex: 'static1\.squarespace\.com', weight: 0.5 }
+      - { type: html, regex: 'Static\.SQUARESPACE_CONTEXT', weight: 0.4 }
+      - { type: header, key: server, value: "(?i)squarespace", weight: 0.3 }
+
+  - name: Shopify
+    category: ecommerce
+    signals:
+      - { type: header, key: x-shopify-stage, weight: 0.5 }
+      - { type: header, key: x-shopid, weight: 0.5 }
+      - { type: html, regex: 'cdn\.shopify\.com', weight: 0.4 }
+      - { type: js_global, key: Shopify, weight: 0.4 }
+
+  - name: WooCommerce
+    category: ecommerce
+    note: implica WordPress; ambos suelen detectarse a la vez
+    signals:
+      - { type: html, regex: 'wc-add-to-cart', weight: 0.4 }
+      - { type: html, regex: 'woocommerce', weight: 0.3 }
+      - { type: meta, name: generator, value: "(?i)woocommerce", weight: 0.5 }
+
+  - name: Cloudflare
+    category: cdn
+    signals:
+      - { type: header, key: server, value: "(?i)cloudflare", weight: 0.6 }
+      - { type: header, key: cf-ray, weight: 0.6 }
+
+  - name: Google Analytics
+    category: analytics
+    signals:
+      - { type: html, regex: 'googletagmanager\.com/gtag', weight: 0.4 }
+      - { type: html, regex: 'google-analytics\.com', weight: 0.4 }
