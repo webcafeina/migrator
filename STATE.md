@@ -8,10 +8,11 @@
 ## Fase actual
 
 - **Fase 0 — Bootstrap**: ✅ Completada (commit `f7aa1a7`)
-- **Fase 1 — DB y modelos**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 2 — Bricks transpiler
+- **Fase 1 — DB y modelos**: ✅ Completada (commit `3ad2b7b`)
+- **Fase 2 — Bricks transpiler**: ✅ Completada esta sesión (con esquema observacional, ver ADR-014)
+- **Próxima fase**: Fase 3 — Scraper core
 
-> 🟡 **Antes de iniciar Fase 2**, el humano debe (a) revisar Fase 1, (b) ejecutar `alembic upgrade head` contra un Postgres+pgvector y validar que la migración funciona, (c) resolver **WCM-001** (export JSON real de Bricks Builder).
+> 🟡 **Antes de iniciar Fase 3**, el humano debe (a) revisar Fase 2, (b) aún pendiente WCM-001 — bloqueante para validar el transpilador contra un Bricks real (smoke en Fase 4 o Fase 12), (c) preparar credenciales Bright Data + URLs reales por builder (WCM-003).
 
 ---
 
@@ -21,7 +22,7 @@
 |---|---|---|---|
 | 0 | Bootstrap | ✅ Completada | Estructura + agentes + skills + memoria |
 | 1 | DB y modelos | ✅ Completada | 17 tablas, migración 0001, pydantic schemas, tipos TS auto |
-| 2 | Bricks transpiler | ⏳ Pendiente | Bloqueada por revisión humana Fase 1 + WCM-001 |
+| 2 | Bricks transpiler | ✅ Completada | Esquema observacional v1, 16 mappers, validador, theme styles, 63 tests |
 | 3 | Scraper core | ⏳ Pendiente | Bloqueada por credenciales Bright Data |
 | 4 | WP client | ⏳ Pendiente | Bloqueada por credenciales WP sandbox |
 | 5 | API backend | ⏳ Pendiente | |
@@ -38,7 +39,23 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 1)
+## Tareas completadas en la última sesión (Fase 2)
+
+- [x] Investigación documentación pública Bricks Builder (academy.bricksbuilder.io, GitHub `wpgaurav/bricks-skills`, `sabiertas/bricks-mcp-server`, BricksSync) — fuentes consultadas listadas en SKILL.md
+- [x] Esquema observacional v1 documentado en `.claude/skills/bricks-json-schema/SKILL.md` + `schema.json` (JSON Schema Draft 2020-12) + 3 examples
+- [x] Paquete `packages/bricks-transpiler/` con módulos schema, ids, theme, validator, mappers, transpiler
+- [x] Tipos Pydantic del esquema Bricks (`BricksElement`, `BricksThemeStyles`)
+- [x] Generador determinista de IDs (`make_element_id` + `IdGenerator`) con blake2b/base36
+- [x] 16 mappers ContentBlock → BricksElement(s) (hero, text, heading, image, gallery, cta, form, testimonial, pricing, faq, product-card, video, embed, divider, nav, footer, unknown)
+- [x] Builder de Theme Styles con paleta Webcafeína por defecto
+- [x] Validador `validate_bricks_page` con 8 tipos de error tipados
+- [x] Transpiler orquestador que envuelve atómicos en section+container raíz
+- [x] 39 tests nuevos (ids, validator, mappers, theme, e2e) — total 63 passed + 2 skipped
+- [x] **Bug environmental descubierto**: macOS+Python 3.14 + flag UF_HIDDEN en .pth files. Workaround `scripts/fix-venv-hidden-pth.sh` + ADR-016 + WCM-008
+- [x] 3 ADRs nuevos: ADR-014 (esquema observacional), ADR-015 (IDs deterministas), ADR-016 (workaround .pth)
+- [x] 1 issue nuevo: WCM-008
+
+## Tareas completadas en sesiones anteriores (Fase 1)
 
 - [x] Commit aparte de la regla #11 añadida por el humano a CLAUDE.md (commit `4a73362`)
 - [x] Paquete `packages/db-schema/` con `pyproject.toml`, `Base` + `TimestampMixin` + naming convention estable
@@ -65,20 +82,20 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 2 — Bricks transpiler)
+## Próximas tareas inmediatas (Fase 3 — Scraper core)
 
-Cuando el humano apruebe Fase 1, ejecutar en orden:
+Cuando el humano apruebe Fase 2, ejecutar en orden:
 
-1. **PREREQ humano**: resolver WCM-001 (export JSON real de Bricks Builder mínimo).
-2. Documentar el schema Bricks observado en `.claude/skills/bricks-json-schema/reference-export.json`.
-3. Implementar `packages/bricks-transpiler/`:
-   - Tipos del esquema Bricks (validados con JSON Schema o Pydantic)
-   - Mapper `ContentBlock → BricksElement`
-   - Generación determinista de IDs únicos
-   - Theme Styles globales a partir de CSS origen
-4. Tests con fixtures: HTML → ContentBlock → BricksJSON esperado, byte-by-byte.
-5. Validador independiente: `validate_bricks_page(json) → ValidationResult`.
-6. Commit: `feat(bricks): transpiler core with 80% block coverage`.
+1. **PREREQ humano**: credenciales Bright Data + URLs reales por builder (WCM-003).
+2. Implementar `packages/scraper-core/`:
+   - Wrapper Playwright con stealth + UA rotation
+   - Sidecar Puppeteer (Node) para Webflow IX2
+   - Rate limiter por dominio (jitter 3–8 s) + cooldown 24 h tras 3×403/429
+   - Cache Redis TTL 7 días en prospección
+3. Patterns concretos por builder en `directories/`:
+   - `wix.py`, `hostinger_ai.py`, `webflow.py` aplicando los skills documentados
+4. Tests con fixtures HTML de webs reales (calibrar con WCM-003).
+5. Commit: `feat(scraper): multi-builder extraction`.
 
 ---
 
@@ -96,7 +113,13 @@ Cuando el humano apruebe Fase 1, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión
+## Decisiones tomadas esta sesión (Fase 2)
+
+- **Esquema Bricks observacional v1** desde docs públicas (ADR-014). Provisional hasta WCM-001.
+- **IDs deterministas** blake2b/base36 6 chars (ADR-015) para idempotencia.
+- **Workaround macOS+Python 3.14** para .pth con flag hidden (ADR-016): `scripts/fix-venv-hidden-pth.sh`.
+
+## Decisiones tomadas sesión anterior (Fase 1)
 
 - **Embeddings**: `voyage-multilingual-2` con **1024 dim** (ADR-010).
 - **Enums canónicos** en `wcm_types`, `wcm_db.enums` re-exporta (ADR-011).
@@ -111,6 +134,7 @@ Cuando el humano apruebe Fase 1, ejecutar en orden:
 
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
-- Para Fase 2 es **bloqueante** el export real de Bricks Builder (WCM-001).
-- Si el humano ya ejecutó `alembic upgrade head` y validó, marcar en este fichero el resultado.
-- El `.venv/` raíz tiene `wcm-db-schema`, `wcm-shared-types`, `pytest`, `pydantic-to-typescript` instalados. Reutilizable.
+- Para Fase 3 necesitas: credenciales Bright Data, 3 URLs reales por builder (Wix/Hostinger/Webflow) — WCM-003.
+- El `.venv/` raíz tiene `wcm-db-schema`, `wcm-shared-types`, `wcm-bricks-transpiler`, `pytest`, `pydantic-to-typescript` instalados. Si haces `pip install` nuevos, ejecuta inmediatamente `bash scripts/fix-venv-hidden-pth.sh` (ver ADR-016).
+- Para validar Fase 2 contra Bricks real: cuando dispongas del export WCM-001, comparar con `.claude/skills/bricks-json-schema/examples/` y ajustar mappers.
+- Tests Postgres siguen skippeados hasta que ejecutes `alembic upgrade head` contra un Postgres+pgvector real (Fase 1 pendiente de validación humana).

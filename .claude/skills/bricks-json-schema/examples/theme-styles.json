@@ -1,0 +1,43 @@
+{
+  "theme_styles": [
+    {
+      "id": "webcafeina-default",
+      "label": "Webcafeína Default",
+      "settings": {
+        "section": {
+          "_padding": {"top": "80px", "right": "24px", "bottom": "80px", "left": "24px"},
+          "_padding:mobile_portrait": {"top": "48px", "bottom": "48px"}
+        },
+        "container": {
+          "_max-width": "1200px"
+        },
+        "heading": {
+          "_typography": {"font-family": "Inter", "font-weight": "700", "color": {"raw": "var(--text)"}}
+        },
+        "text": {
+          "_typography": {"font-family": "Inter", "font-size": "var(--text-base)", "line-height": "1.6", "color": {"raw": "var(--text)"}}
+        },
+        "button": {
+          "_background": {"color": {"raw": "var(--accent)"}},
+          "_typography": {"color": {"raw": "var(--primary)"}, "font-weight": "600"},
+          "_padding": {"top": "12px", "right": "24px", "bottom": "12px", "left": "24px"},
+          "_border": {"radius": {"top": "8px", "right": "8px", "bottom": "8px", "left": "8px"}}
+        }
+      },
+      "conditions": []
+    }
+  ],
+  "colorPalette": [
+    {"name": "primary", "color": "#171009"},
+    {"name": "secondary", "color": "#2B1A0E"},
+    {"name": "text", "color": "#F2E8D2"},
+    {"name": "accent", "color": "#B1F100"},
+    {"name": "detail-brown", "color": "#5A3519"}
+  ],
+  "breakpoints": {
+    "desktop": 992,
+    "tablet_portrait": 991,
+    "mobile_landscape": 767,
+    "mobile_portrait": 478
+  }
+}

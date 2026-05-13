@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sec001",
+    "name": "section",
+    "parent": "0",
+    "children": ["con001"],
+    "settings": {
+      "_padding": {"top": "80px", "right": "24px", "bottom": "80px", "left": "24px"}
+    }
+  },
+  {
+    "id": "con001",
+    "name": "container",
+    "parent": "sec001",
+    "children": ["hed001"],
+    "settings": {
+      "_typography": {"text-align": "center"}
+    }
+  },
+  {
+    "id": "hed001",
+    "name": "heading",
+    "parent": "con001",
+    "children": [],
+    "settings": {
+      "tag": "h1",
+      "text": "Bienvenido a Webcafeína"
+    }
+  }
+]

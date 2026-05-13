@@ -48,6 +48,16 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Contexto**: El prompt fija lista "Microtareas" `900102088242` por defecto, pero deberíamos confirmar si para migraciones grandes preferimos lista propia por proyecto.
 - **Acción**: Consultar con Nacho. Documentar en `docs/decisiones.md`.
 
+### WCM-008 — macOS+Python 3.14: archivos .pth en .venv heredan UF_HIDDEN
+- **Tipo**: chore / **Fase**: 2 (descubierto) / **Prioridad**: P2
+- **Estado**: OPEN (mitigado con workaround)
+- **Contexto**: macOS marca como hidden los archivos dentro de directorios `.dotted/`. Python 3.14 ahora skipea `.pth` files con flag hidden. Sin fix, `pip install -e` parece funcionar pero los paquetes no son importables.
+- **Acción**: Ejecutar `bash scripts/fix-venv-hidden-pth.sh` tras cualquier `pip install`. Si upstream Python revierte el cambio o setuptools usa naming sin doble underscore, retirar el workaround.
+- **Dueño**: técnico — monitorear changelogs de Python 3.14 y setuptools.
+- **Ver**: ADR-016.
+
+---
+
 ### WCM-007 — Deduplicar alias de enums en `ts/index.d.ts`
 - **Tipo**: chore / **Fase**: 1 (post) / **Prioridad**: P3
 - **Estado**: OPEN

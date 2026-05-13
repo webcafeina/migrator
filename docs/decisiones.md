@@ -228,6 +228,59 @@ La dimensión queda codificada como constante `LEAD_EMBEDDING_DIM = 1024` en `pa
 
 ---
 
+## ADR-014 — Esquema Bricks observacional desde docs públicas (provisional)
+
+**Fecha**: 2026-05-13 (Fase 2)
+**Estado**: ✅ Aceptada (provisional hasta WCM-001)
+
+**Contexto**: Fase 2 (Bricks transpiler) requería el export JSON real de Bricks Builder (WCM-001). El humano no lo tenía disponible y eligió continuar usando documentación pública (Bricks Academy, repos GitHub `wpgaurav/bricks-skills`, `sabiertas/bricks-mcp-server`, BricksSync) en lugar de bloquear el trabajo.
+
+**Decisión**: El esquema documentado en `.claude/skills/bricks-json-schema/SKILL.md` (v1 observacional) refleja la mejor reconstrucción posible: estructura `id/name/parent/children/settings`, IDs `[a-z0-9]{6}`, prefijo DOM `brxe-`, settings con prefijo `_` para globales (`_typography`, `_padding`, `_background`, etc.), patrón responsive con sufijo `:tablet_portrait`/`:mobile_portrait`. Catálogo de 24 element names para Bricks 2.0+. Importación al destino vía post meta `_bricks_page_content_2` (no hay endpoint REST nativo de Bricks).
+
+Cuando llegue el export real (WCM-001), se valida y se ajusta. Mientras tanto, el transpilador puede producir output con keys/formato levemente desviados.
+
+**Consecuencias**:
+- ✅ Fase 2 no se bloquea esperando un asset humano.
+- ✅ 63 tests passed con cobertura amplia (16 BlockType mapeados).
+- ⚠️ Riesgo de keys mal nombradas que se descubrirán al probar contra un Bricks real (smoke test en Fase 4 o Fase 12).
+- ⚠️ Calibración fina queda como tarea técnica al recibir WCM-001 — se documentará ADR nuevo si el ajuste cambia decisiones de diseño.
+
+---
+
+## ADR-015 — IDs Bricks deterministas con blake2b + base36
+
+**Fecha**: 2026-05-13 (Fase 2)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Bricks Builder requiere IDs `[a-z0-9]{6}` únicos por página. Necesitamos que re-transpilar la misma página produzca el mismo JSON (idempotencia para `wp-deployer` upsert sin churn).
+
+**Decisión**: `make_element_id(project_id, page_id, order_index, block_type, sub_index, salt)` → `blake2b(digest_size=8)` truncado a 6 chars base36 minúscula. Espacio ≈ 36⁶ ≈ 2.18·10⁹. `IdGenerator` detecta colisiones intra-página y reintenta con `sub_index+1`. `salt="wcm-bricks-v1"` permite invalidar todos los IDs en bloque si en el futuro se cambia el mapping incompatible.
+
+**Consecuencias**:
+- ✅ Re-transpilar la misma página → mismo JSON. `wp-deployer` compara hashes y solo actualiza si difiere.
+- ✅ Trazabilidad: dado un ID en producción, se reconstruye su tuple lógico.
+- ⚠️ Dos páginas que compartan un mismo bloque global (p. ej. header) generan IDs distintos por tener distinto `page_id`. Aceptable para MVP; el header se gestiona como template Bricks aparte.
+
+---
+
+## ADR-016 — Workaround macOS+Python3.14 para .pth files heredando flag hidden
+
+**Fecha**: 2026-05-13 (Fase 2)
+**Estado**: ✅ Aceptada (workaround temporal)
+
+**Contexto**: En macOS, archivos creados dentro de un directorio `.venv/` heredan el flag `UF_HIDDEN`. Python 3.14 introdujo en `site.py` un skip explícito de `.pth` files con flag hidden. Resultado: `pip install -e` instala correctamente pero los paquetes editable no son importables hasta que se quite el flag manualmente.
+
+**Decisión**: Mantener `pip install -e` como mecanismo estándar y proporcionar `scripts/fix-venv-hidden-pth.sh` que ejecuta `chflags nohidden` sobre todos los `*.pth` del venv. Ejecutar tras cualquier `pip install`. No-op fuera de macOS.
+
+Issue tracking interno: **WCM-008**.
+
+**Consecuencias**:
+- ✅ Workflow editable funciona sin tener que cambiar de Python.
+- ⚠️ Cada nuevo `pip install` requiere re-ejecutar el script. Añadir al onboarding del entorno de desarrollo.
+- ⚠️ Si upstream Python revierte o setuptools cambia la convención de naming, el workaround queda obsoleto. Bajo coste de mantenimiento.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

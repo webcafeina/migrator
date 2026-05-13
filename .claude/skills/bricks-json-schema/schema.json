@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://webcafeina.com/schemas/bricks-page.json",
+  "title": "Bricks Builder Page Content",
+  "description": "Schema observacional v1 del array de elementos almacenado en post_meta _bricks_page_content_2. Derivado de docs públicas Bricks Academy + exports comunidad. Pendiente calibración fina con WCM-001.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/Element" },
+
+  "$defs": {
+    "Element": {
+      "type": "object",
+      "required": ["id", "name", "parent", "children", "settings"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{6}$",
+          "description": "6 chars alfanuméricos minúsculos, único por página"
+        },
+        "name": {
+          "type": "string",
+          "enum": [
+            "section", "container", "block", "div",
+            "heading", "text", "text-basic",
+            "image", "image-gallery", "video", "icon", "icon-box",
+            "button", "accordion", "slider-nested",
+            "nav-menu", "nav-nested", "form", "shortcode",
+            "divider", "spacer", "code",
+            "woocommerce-products", "woocommerce-product"
+          ]
+        },
+        "parent": {
+          "type": "string",
+          "description": "ID del padre, o '0' si es top-level. SIEMPRE string."
+        },
+        "children": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z0-9]{6}$" },
+          "description": "IDs de hijos en orden de aparición"
+        },
+        "settings": {
+          "type": "object",
+          "description": "Settings inline del elemento. Keys con prefijo '_' son globales (_typography, _padding, ...); el resto específicas por element name."
+        },
+        "label": {
+          "type": "string",
+          "description": "Etiqueta opcional mostrada en el builder"
+        }
+      }
+    }
+  }
+}

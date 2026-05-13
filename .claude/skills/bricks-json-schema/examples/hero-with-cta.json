@@ -1,0 +1,60 @@
+[
+  {
+    "id": "her001",
+    "name": "section",
+    "parent": "0",
+    "children": ["herc01"],
+    "settings": {
+      "_padding": {"top": "120px", "right": "24px", "bottom": "120px", "left": "24px"},
+      "_padding:tablet_portrait": {"top": "80px", "bottom": "80px"},
+      "_padding:mobile_portrait": {"top": "60px", "bottom": "60px"},
+      "_background": {"color": {"raw": "var(--primary)"}}
+    },
+    "label": "Hero"
+  },
+  {
+    "id": "herc01",
+    "name": "container",
+    "parent": "her001",
+    "children": ["herh01", "hert01", "herb01"],
+    "settings": {
+      "_typography": {"text-align": "center", "color": {"raw": "var(--text)"}}
+    }
+  },
+  {
+    "id": "herh01",
+    "name": "heading",
+    "parent": "herc01",
+    "children": [],
+    "settings": {
+      "tag": "h1",
+      "text": "Migra tu web a WordPress sin perder nada",
+      "_typography": {"font-size": "var(--text-4xl)", "font-weight": "700"}
+    }
+  },
+  {
+    "id": "hert01",
+    "name": "text",
+    "parent": "herc01",
+    "children": [],
+    "settings": {
+      "text": "<p>Pasamos tu sitio Wix, Hostinger o Webflow a WordPress + Bricks en menos de 90 minutos. Contenido, SEO y diseño preservados.</p>",
+      "_margin": {"top": "16px", "bottom": "32px"}
+    }
+  },
+  {
+    "id": "herb01",
+    "name": "button",
+    "parent": "herc01",
+    "children": [],
+    "settings": {
+      "text": "Pide tu migración",
+      "link": {"type": "internal", "url": "/contacto/"},
+      "style": "primary",
+      "_background": {"color": {"raw": "var(--accent)"}},
+      "_typography": {"color": {"raw": "var(--primary)"}, "font-weight": "600"},
+      "_padding": {"top": "12px", "right": "32px", "bottom": "12px", "left": "32px"},
+      "_border": {"radius": {"top": "8px", "right": "8px", "bottom": "8px", "left": "8px"}}
+    }
+  }
+]
