@@ -13,10 +13,11 @@
 - **Fase 3 — Scraper core**: ✅ Completada (commit `01c93d4`)
 - **Fase 4 — WP client**: ✅ Completada (commit `db21bf6`)
 - **Fase 5 — API backend**: ✅ Completada (commit `fb6bcc5`)
-- **Fase 6 — Worker + subagentes operativos**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 7 — CLI
+- **Fase 6 — Worker + subagentes operativos**: ✅ Completada (commit `5c1767d`)
+- **Fase 7 — CLI**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 8 — Dashboard (Next.js 15 + shadcn/ui)
 
-> 🟢 **Para iniciar Fase 7** no se necesita ningún prereq humano nuevo. CLI con Typer envuelve los endpoints del API + algunos shortcuts directos al worker.
+> 🟡 **Para iniciar Fase 8** convendría tener: (a) logo SVG de Webcafeína listo, (b) decisión de fuente sans-serif (Inter por defecto si no hay preferencia). Ambos son flexibles — se pueden cambiar después sin gran coste.
 
 ---
 
@@ -31,7 +32,7 @@
 | 4 | WP client | ✅ Completada | REST + WP-CLI vía paramiko + workarounds Local (ADR-018) + 29 tests (21 unit + 8 integración contra sandbox real WP 6.9.4) |
 | 5 | API backend | ✅ Completada | FastAPI con 32 rutas + JWT + cookies + RBAC + opt-out RGPD + webhooks HMAC + 33 tests con dependency override |
 | 6 | Worker + subagentes | ✅ Completada | Orchestrator + 8 subagentes REAL + 11 STUB + 4 Celery tasks + 28 tests (ADR-020 separa descriptors .md de runtime .py) |
-| 7 | CLI | ⏳ Pendiente | |
+| 7 | CLI | ✅ Completada | Typer + Rich, doble entrypoint webcafeina-migrator/wcm, 11 grupos de comandos, CliError=ClickException (ADR-021), 17 tests |
 | 8 | Dashboard | ⏳ Pendiente | |
 | 9 | Prospección | ⏳ Pendiente | Bloqueada por WCM-002 + Voyage API key |
 | 10 | Integraciones externas | ⏳ Pendiente | |
@@ -43,7 +44,23 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 6)
+## Tareas completadas en la última sesión (Fase 7)
+
+- [x] Paquete `cli/` con Typer 0.12 + Rich 13.8 + httpx 0.27
+- [x] Dos entrypoints registrados: `webcafeina-migrator` (oficial) + `wcm` (alias). Ambos apuntan a `wcm_cli.main:main`
+- [x] `config.py` con `CliConfig.load()` que autocarga `.env` del cwd + cache de credenciales en `~/.config/wcm/credentials.json` (modo 600)
+- [x] `errors.py`: `CliError` hereda de `click.ClickException` con `show()` override a stdout (excepto modo `--json`). Sub-errores: `CliConfigError` (exit 2), `CliAuthError` (exit 3), `CliApiError` (exit 4), `CliInputError` (exit 5)
+- [x] `client.py`: `ApiClient` con Bearer auth + mapping del envelope de error del API → `CliError` humano + hints accionables
+- [x] `output.py`: paleta Webcafeína con `typer.echo` (mensajes) + Rich Tables (output denso). Modo `--json` global con `WCM_JSON=1`
+- [x] **11 grupos de comandos**: setup, doctor, auth (login/logout/me), leads (list/get/refingerprint), projects (list/get/status/new/start/resume/cancel/export-checklist), campaigns (launch), residual-tasks (list/done), deploy. Plus shortcuts `wcm login` y `wcm logout`
+- [x] **17 tests** con `CliRunner` + `respx`: help, login flow (cookie → token cache), logout limpia cache, leads list (Rich table), refingerprint, projects new/start/get-404-friendly-error, campaigns launch, API connect error con hint
+- [x] Dos fixes durante desarrollo:
+  - Rich Console cachea `sys.stdout` al construir → reconstruir por llamada con `file=sys.stdout`
+  - Estado contaminado entre tests → `_isolate_state` autouse limpia `WCM_TOKEN`, `WCM_JSON`, paths
+- [x] ADR-021 (doble entrypoint + CliError=ClickException)
+- [x] Total repo: **227 passed + 2 skipped (Postgres)** con `.env` cargado
+
+## Tareas completadas en sesión anterior (Fase 6)
 
 - [x] Paquete `apps/worker/` con Celery 5.4 + SQLAlchemy sync (Celery es sync)
 - [x] `celery_app.py` compartido conceptualmente con la API; el worker registra las tasks via `include=[...]` + import explícito en `__init__.py`
@@ -175,24 +192,26 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 7 — CLI)
+## Próximas tareas inmediatas (Fase 8 — Dashboard)
 
-Cuando el humano apruebe Fase 6, ejecutar en orden:
+Cuando el humano apruebe Fase 7, ejecutar en orden:
 
-1. Implementar `cli/` con Typer + Rich:
-   - `wcm setup` — onboarding interactivo del operador
-   - `wcm prospect --sector X --region Y` (encola campaña vía API)
-   - `wcm leads list/get/score` (consulta API)
-   - `wcm new --source URL --client NAME` → crea proyecto vía API
-   - `wcm project status/resume/cancel ID`
-   - `wcm project export-checklist ID` → descarga checklist
-   - `wcm deploy --env prod` → trigger deploy scripts (Fase 12 lo amplía)
-   - `wcm doctor` → comprueba .env, conectividad API/DB/Redis, status del worker
-2. Cliente HTTP interno (httpx) con manejo de Auth Bearer + descubrimiento de URL desde `.env`.
-3. Output con Rich: tablas densas para listas, progress bars, spinners.
-4. Modo `--json` para integración con scripts.
-5. Tests con `CliRunner` de Typer.
-6. Commit: `feat(cli): operator commands`.
+1. Implementar `apps/dashboard/` con **Next.js 15 App Router + TypeScript 5 + Tailwind + shadcn/ui**.
+2. Páginas:
+   - `/login` (auth)
+   - `/` overview (métricas, errores, proyectos activos)
+   - `/leads` listado filtrable + detalle
+   - `/projects` listado + detalle con timeline de fases
+   - `/projects/[id]/diff` visual diff interactivo (stubs hasta Fase 8+)
+   - `/projects/[id]/checklist`
+   - `/campaigns`, `/errors`, `/settings`
+3. Cliente API con consumo de `packages/shared-types/ts/index.d.ts` (generado en Fase 1).
+4. Paleta Webcafeína **estricta** + dark mode default + componentes shadcn customizados.
+5. Build standalone (`next.config.js output:"standalone"`) para systemd.
+6. Tests e2e con Playwright (algunos). Tests unit con Vitest.
+7. Commit: `feat(dashboard): full UI with brand palette`.
+
+**Prereqs livianos**: logo Webcafeína SVG (si no, uso wordmark de texto en lima). Fuente: por defecto Inter; si tienes otra preferencia me dices.
 
 ---
 
@@ -210,7 +229,15 @@ Cuando el humano apruebe Fase 6, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 6)
+## Decisiones tomadas esta sesión (Fase 7)
+
+- **Doble entrypoint** `webcafeina-migrator` + `wcm` (ADR-021).
+- **`CliError` hereda de `click.ClickException`** para captura automática por Typer + tests con `CliRunner`.
+- **`output.error` a stdout** en modo humano (no stderr), salvo modo `--json` donde debe ir a stderr para mantener stdout limpio.
+- **Rich solo para tablas**, `typer.echo` para mensajes simples (Rich tiene buffering interno que pelea con `CliRunner`).
+- **Cobertura completa con stubs accionables**: comandos como `export-checklist` y `deploy` muestran un mensaje claro indicando en qué fase se materializan.
+
+## Decisiones tomadas sesión anterior (Fase 6)
 
 - **Subagentes runtime separados de descriptors** (ADR-020): `.claude/agents/*.md` son build-time (Claude Code), `apps/worker/agents/*.py` son runtime (clases Python con `BaseAgent`).
 - **Alcance MVP con stubs `NotImplementedError`**: 8 subagentes REAL (cuyos paquetes ya existen) + 11 STUB con mensaje accionable. `AgentNotImplementedError` se trata como skip en el orchestrator.

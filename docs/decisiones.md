@@ -389,6 +389,34 @@ Cada agent Python (`BaseAgent` subclass) implementa el contrato descrito en su `
 
 ---
 
+## ADR-021 — CLI: doble entrypoint y CliError = ClickException
+
+**Fecha**: 2026-05-13 (Fase 7)
+**Estado**: ✅ Aceptada
+
+**Contexto**: El prompt maestro fija `webcafeina-migrator` como nombre del binario. Es largo para uso diario. Por otro lado, durante Fase 7 descubrimos que un wrapper `main()` con `try/except CliError` no captura excepciones cuando los tests usan `CliRunner.invoke(app, ...)` (que llama directamente a `app`, no a `main`).
+
+**Decisiones**:
+
+1. **Doble entrypoint** en `[project.scripts]`:
+   - `webcafeina-migrator` — nombre oficial conforme al prompt maestro
+   - `wcm` — alias corto para uso diario
+   Ambos apuntan a `wcm_cli.main:main`.
+
+2. **`CliError` hereda de `click.ClickException`**, no de `Exception`. Click/Typer lo captura automáticamente: invoca `CliError.show()` para imprimir el mensaje y aplica `self.exit_code`. Funciona tanto en ejecución real como en `CliRunner.invoke()`.
+
+3. `CliError.show()` se sobrescribe para escribir a **stdout** (no al stderr default de Click) en modo humano — facilita inspección en tests vía `result.output`. En modo `--json` redirige a stderr (mantiene stdout JSON-limpio para `| jq`).
+
+4. Para output normal, usamos `typer.echo()` en lugar de Rich Console (excepto tablas). Rich Console tiene buffering interno que no interactúa bien con `CliRunner`. `typer.echo` pasa por `click.echo` que respeta el stream redirigido.
+
+**Consecuencias**:
+- ✅ Tests pasan sin fricción (17/17).
+- ✅ Errores se ven correctamente con `wcm` binario en terminal real.
+- ✅ Pipes a `jq` funcionan (`wcm --json ... | jq ...`).
+- ⚠️ Pierdo colores Rich en mensajes simples. Se mantienen en tablas, que es donde más valor aportan.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

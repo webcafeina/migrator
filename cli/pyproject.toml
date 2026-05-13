@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wcm-cli"
+version = "0.1.0"
+description = "Webcafeína Migrator — CLI de operador (Typer + Rich)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "UNLICENSED" }
+authors = [{ name = "Webcafeína S.L.", email = "info@webcafeina.com" }]
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.8",
+    "httpx>=0.27",
+    "pydantic>=2.7,<3.0",
+    "wcm-shared-types",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "respx>=0.21",
+    "mypy>=1.10",
+    "ruff>=0.5",
+    "black>=24.0",
+]
+
+[project.scripts]
+# Nombre oficial documentado en el prompt maestro
+webcafeina-migrator = "wcm_cli.main:main"
+# Alias corto para uso diario
+wcm = "wcm_cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+ignore = ["B008"]  # Typer usa Argument()/Option() en defaults
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
