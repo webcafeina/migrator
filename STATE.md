@@ -15,10 +15,9 @@
 - **Fase 5 — API backend**: ✅ Completada (commit `fb6bcc5`)
 - **Fase 6 — Worker + subagentes operativos**: ✅ Completada (commit `5c1767d`)
 - **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
-- **Fase 8 — Dashboard**: ✅ Completada esta sesión
-- **Próxima fase**: Fase 9 — Prospección (implementación real de ProspectorAgent + OutreachComposerAgent)
-
-> 🟡 **Para iniciar Fase 9** se necesita: (a) **WCM-002** datos legales de Webcafeína (CIF, dirección, URL política privacidad) para outreach LSSI-CE compliant, (b) credenciales **Google Maps API key** para descubrimiento, (c) **Voyage AI API key** para embeddings de leads (búsqueda semántica de similares).
+- **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
+- **Fase 9 — Prospección**: ✅ Completada esta sesión
+- **Próxima fase**: Fase 10 — Integraciones externas (ClickUp, Resend, R2)
 
 ---
 
@@ -35,7 +34,7 @@
 | 6 | Worker + subagentes | ✅ Completada | Orchestrator + 8 subagentes REAL + 11 STUB + 4 Celery tasks + 28 tests (ADR-020 separa descriptors .md de runtime .py) |
 | 7 | CLI | ✅ Completada | Typer + Rich, doble entrypoint webcafeina-migrator/wcm, 11 grupos de comandos, CliError=ClickException (ADR-021), 17 tests |
 | 8 | Dashboard | ✅ Completada | Next.js 15 + shadcn/ui + JetBrains Mono (ADR-022) + paleta WCM estricta + 10 páginas + 15 tests Vitest |
-| 9 | Prospección | ⏳ Pendiente | Bloqueada por WCM-002 + Voyage API key |
+| 9 | Prospección | ✅ Completada | GooglePlacesClient (legacy, ADR-024) + ProspectorAgent + EnricherAgent con embedding e5-large (ADR-023) + OutreachComposer LSSI-CE + 4 docs legales + 268 tests Python (+38 nuevos) |
 | 10 | Integraciones externas | ⏳ Pendiente | |
 | 11 | Observabilidad | ⏳ Pendiente | |
 | 12 | Infra/Deploy | ⏳ Pendiente | |
@@ -45,7 +44,30 @@
 
 ---
 
-## Tareas completadas en la última sesión (Fase 8)
+## Tareas completadas en la última sesión (Fase 9)
+
+- [x] **EmbeddingService** (`apps/worker/src/wcm_worker/embedding.py`): singleton lazy con `sentence-transformers` + `intfloat/multilingual-e5-large` (1024 dim), LRU cache, prefijos `passage:` / `query:` según convención e5. **100% gratuito**, sin API externa.
+- [x] **GooglePlacesClient** (`packages/scraper-core/src/wcm_scraper_core/directories/google_places.py`): cliente Places API **legacy** (ADR-024, la API key del proyecto no tiene Places New), Text Search + Place Details, field mask reducido, caché 7 días, retry 429/503 sin retry en REQUEST_DENIED, error tipado `GooglePlacesQuotaExceeded`. Cache key sanea `api_key` para no filtrar el secret.
+- [x] **ProspectorAgent real**: sustituye el stub. Construye query `{sector} en {region}`, itera resultados Google, filtra (no_website, blocked_types, exclude_domains), upsert con `ON CONFLICT DO NOTHING`, persiste `LeadEnrichment` + `AuditLog DISCOVER` con `legal_ground=6.1.f`.
+- [x] **EnricherAgent ampliado**: además de emails/teléfonos/socials, calcula embedding 1024-dim del texto del lead (business_name + sector + region + builder + snippet HTML). Defensivo: si sentence-transformers no está instalado o el modelo falla, registra `embedding.computed=False` y continúa sin bloquear el enrichment. AuditLog ENRICH añadido.
+- [x] **OutreachComposerAgent real**: plantillas Jinja2 (`wix_intro_es`, `followup_es`) en `apps/worker/src/wcm_worker/templates/outreach/`. Persiste `OutreachSequence` (status `DRAFT_PENDING_REVIEW`) + `OutreachSend` por paso. Validador legal v1.0 verifica razón social + CIF + dirección + URL opt-out en cada body. Aborta si el lead está en `opt_out_log` previo.
+- [x] **4 documentos legales** en `apps/api/legal/`: `tratamiento_datos_prospeccion.md` (art. 6.1.f RGPD + 21.2 LSSI-CE), `plantilla_aviso_legal_outreach.md`, `politica_retencion.md`, `procedimiento_brecha.md` (72h notificación AEPD).
+- [x] **Endpoints API nuevos**:
+  - `POST /api/v1/leads/{id}/opt-out-url` → genera URL firmada (JWT opt-out)
+  - `POST /api/v1/leads/{id}/consent` → registro manual de objection/manual_review en audit_log
+  - `POST /api/v1/leads/{id}/outreach/compose` → encola OutreachComposerAgent
+  - `GET /api/v1/outreach/sequences` (lista) + `/{id}` (detalle con sends)
+  - `POST /api/v1/outreach/sequences/{id}/transition` (approve/pause/cancel con validaciones)
+- [x] **Task Celery** `wcm.outreach.compose_for_lead` + helper `enqueue_outreach_compose` en API.
+- [x] **38 tests nuevos**: 10 GooglePlacesClient (con httpx MockTransport), 11 ProspectorAgent, 12 OutreachComposerAgent (incluyendo validación legal), 7 EnricherAgent embedding, 12 endpoints API.
+- [x] **Total repo: 268 tests Python pasan + 15 TS** (era 227+15, +41 nuevos Python).
+- [x] **ADR-023** sentence-transformers + e5-large (supersede ADR-010 Voyage AI).
+- [x] **ADR-024** Places API legacy vs New.
+- [x] Datos legales reales integrados en `.env` (CIF B10463990, dirección Santa Cristina s/n Edif. Embarcadero 10195 Cáceres, URL privacidad con trailing slash).
+- [x] WCM-002 cerrado (datos legales completos).
+- [x] Stubs `ProspectorAgent` + `OutreachComposerAgent` retirados de `test_agents_stubs.py`.
+
+## Tareas completadas en sesión anterior (Fase 8)
 
 - [x] Paquete `apps/dashboard/` con Next.js 15.0 + React 19 + TypeScript 5.6 + Tailwind 3.4 + shadcn/ui
 - [x] Tipografía **JetBrains Mono** en toda la UI (ADR-022) via `next/font/google` con weights 400/500/600/700
@@ -222,27 +244,20 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 9 — Prospección)
+## Próximas tareas inmediatas (Fase 10 — Integraciones externas)
 
-Cuando el humano apruebe Fase 8, ejecutar en orden:
+Cuando el humano apruebe Fase 9, ejecutar en orden:
 
 1. **PREREQ humano** crítico:
-   - **WCM-002**: datos legales de Webcafeína S.L. (CIF, dirección postal completa, URL pública de política de privacidad). Sin esto **no se puede emitir outreach LSSI-CE compliant**.
-   - **Google Maps API key** para descubrimiento de leads (cuota generosa, $200/mes free).
-   - **Voyage AI API key** para embeddings `voyage-multilingual-2` (ADR-010).
-2. Implementar `ProspectorAgent` real:
-   - Google Maps Places API (skill `google-maps-scraper`)
-   - Directory scrapers ES (skill `directory-scraper`): páginas amarillas, axesor, etc.
-   - Google dorks de respaldo
-   - Persiste leads cualificados a `leads` table
-3. Implementar `OutreachComposerAgent` con plantillas + validación GDPR/LSSI-CE.
-4. `EnricherAgent` ampliado con datos públicos de empresa (sin scraping intrusivo).
-5. Documentos legales en `apps/api/legal/`:
-   - `tratamiento_datos_prospeccion.md` (RGPD art. 30)
-   - `plantilla_aviso_legal_outreach.md` (LSSI-CE)
-   - `procedimiento_brecha.md` (art. 33 RGPD)
-6. Función `record_consent()` + endpoint `/api/v1/leads/consent`.
-7. Commit: `feat(prospect): full prospection module with compliance`.
+   - **ClickUp API token** (config básica ya en `.env.example`, falta token real).
+   - **Resend API key** + verificación de dominio `webcafeina.com` para envío real.
+   - **Cloudflare R2** bucket + claves (almacenamiento de assets migrados).
+2. Implementar **ClickupSyncerAgent** real (skill `clickup-sync`): crear/actualizar/cerrar tareas por residual_task. Webhook entrante ya implementado en Fase 5 → cerrar el loop bidireccional.
+3. Implementar **ResendNotifierAgent** + ejecutor del envío real de `OutreachSequence READY`. Webhook entrante para opens/bounces/replies → actualiza `OutreachSend.{opened_at, bounced_at, replied_at}`.
+4. Implementar **AssetOptimizerAgent**: descarga assets de la web origen, los sube a R2 con paths estables, reemplaza URLs en BricksPage.
+5. Cron `wcm.maintenance.retention_sweep` (política de retención en `apps/api/legal/politica_retencion.md`).
+6. Endpoint `/api/v1/outreach/sequences/{id}/send` que cambia status a `IN_PROGRESS` y dispara el primer step vía Resend.
+7. Commit: `feat(integrations): clickup + resend + r2`.
 
 ---
 
@@ -251,7 +266,7 @@ Cuando el humano apruebe Fase 8, ejecutar en orden:
 | ID | Descripción | Necesario para fase | Dueño |
 |---|---|---|---|
 | WCM-001 | Export JSON real de Bricks Builder mínimo | 2 | humano |
-| WCM-002 | Datos legales Webcafeína (CIF, dirección, URL privacidad) | 9 | humano |
+| ~~WCM-002~~ | ~~Datos legales Webcafeína~~ | ✅ cerrado en Fase 9 (CIF B10463990, Cáceres) | — |
 | WCM-003 | URLs reales para calibrar skills extracción Wix/Hostinger/Webflow | 3 | humano |
 | WCM-005 | Confirmar lista ClickUp por defecto para tareas residuales | 10 | humano |
 | WCM-007 | Deduplicar alias enums en `ts/index.d.ts` | post-Fase 1 | técnico (no bloquea) |
@@ -260,7 +275,16 @@ Cuando el humano apruebe Fase 8, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 8)
+## Decisiones tomadas esta sesión (Fase 9)
+
+- **sentence-transformers + multilingual-e5-large** sustituye Voyage AI (ADR-023, supersede ADR-010). Razones: 100% gratuito perpetuo, 1024 dim match exacto con el schema, mejor cobertura ES que BGE-M3, sin dep externa que pueda romper. Trade-off aceptado: ~50ms/embedding en CPU vs ~30ms con Voyage. En MVP es irrelevante; con miles de leads/min consideraremos GPU.
+- **Google Places API legacy** en vez de New (ADR-024). La API key del proyecto solo tiene la legacy habilitada; cambiar a New requeriría rehabilitar billing y migrar. El cliente está aislado en un módulo (`directories/google_places.py`) — si en el futuro se migra a New, solo cambia ese fichero.
+- **Embedding nunca bloquea el enrichment**: si sentence-transformers falla o el modelo tiene dim incorrecta, el lead se enriquece igual con emails/teléfonos/socials y `embedding.computed=False` queda registrado en el audit_log.
+- **Cache key sin api_key**: el cache de Google Places excluye explícitamente `key=` de la cache key para evitar filtraciones si el cache se serializa.
+- **Validación legal estricta**: el OutreachComposerAgent rechaza cualquier body que no contenga razón social, CIF, dirección y URL opt-out. Versión `v1.0` persistida en cada secuencia para trazabilidad.
+- **Worker no comparte JWT_SECRET con la API**: la API emite el opt-out token al encolar; el worker solo renderiza la URL. Reduce superficie de exposición del secret.
+
+## Decisiones tomadas sesión anterior (Fase 8)
 
 - **JetBrains Mono en toda la UI** (ADR-022) por preferencia del operador. Look denso terminal-friendly coherente con la herramienta interna.
 - **Server Components por defecto** + Client Components solo para interactividad (forms, action buttons).
@@ -323,7 +347,7 @@ Cuando el humano apruebe Fase 8, ejecutar en orden:
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
 - Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-13 (tras Fase 4): **149 passed + 2 skipped** (Postgres real sin BD). Para correr: `set -a; source .env; set +a; pytest packages -q` desde la raíz.
+- Test suite total a 2026-05-13 (tras Fase 9): **268 passed + 10 skipped** (Postgres real sin BD) + 15 TS. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz.
 - Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
 - Issues abiertos prioritarios:
   - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.

@@ -24,10 +24,8 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ### WCM-002 — Confirmar datos legales de Webcafeína S.L.
 - **Tipo**: docs / **Fase**: 9 / **Prioridad**: P1
-- **Estado**: OPEN
-- **Contexto**: Para outreach LSSI-CE compliant se necesitan CIF y dirección postal completos. La política de privacidad debe estar publicada en una URL estable.
-- **Acción**: Rellenar `COMPANY_CIF`, `COMPANY_ADDRESS`, `COMPANY_PRIVACY_POLICY_URL` en `.env` de producción y validar `apps/api/legal/plantilla_aviso_legal_outreach.md`.
-- **Dueño**: humano (Nacho).
+- **Estado**: DONE (cerrado en sesión Fase 9, 2026-05-13)
+- **Resolución**: CIF B10463990, dirección Santa Cristina s/n – Edificio Embarcadero 10195 Cáceres, URL privacidad https://webcafeina.com/politica-privacidad/ persistidos en `.env` + `apps/api/legal/tratamiento_datos_prospeccion.md`.
 
 ### WCM-003 — Calibrar skills de extracción con webs reales
 - **Tipo**: chore / **Fase**: 3 / **Prioridad**: P1
@@ -87,9 +85,26 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ### WCM-006 — Política de retención de leads sin consentimiento
 - **Tipo**: docs / **Fase**: 9 / **Prioridad**: P1
+- **Estado**: PARCIAL (política redactada en `apps/api/legal/politica_retencion.md`; job Celery `wcm.maintenance.retention_sweep` pendiente — Fase 10).
+- **Resolución parcial**: TTLs definidos (12m DISCOVERED, 24m+6m OUTREACH_SENT, indefinido opt_out_log, 5y audit_log). Cron de purga pendiente de implementar en Fase 10.
+
+---
+
+### WCM-011 — Revisión legal externa de la política de prospección
+- **Tipo**: docs / **Fase**: 9 (post) / **Prioridad**: P1
 - **Estado**: OPEN
-- **Contexto**: Bajo RGPD, los leads enriquecidos con datos de contacto pero sin consentimiento explícito tienen una vida útil limitada bajo interés legítimo. Definir TTL (sugerido 12 meses) y job de purga.
-- **Acción**: Documentar política en `apps/api/legal/tratamiento_datos_prospeccion.md` y crear task Celery `purge_expired_leads`.
+- **Contexto**: `apps/api/legal/tratamiento_datos_prospeccion.md` y plantillas de outreach deben revisarse por asesor legal externo antes de paso a producción. La base 6.1.f + 21.2 LSSI-CE es la lectura interna; cualquier diferencia respecto a la AEPD obligaría a replantear el modelo de contacto.
+- **Acción**: Contratar revisión legal con foco en LSSI-CE B2B + interés legítimo. Documentar el resultado en `decisiones.md`.
+- **Dueño**: humano (Álvaro).
+
+---
+
+### WCM-012 — Habilitar Places API (New) cuando sea posible
+- **Tipo**: chore / **Fase**: 9 (post) / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: La API key del proyecto solo tiene habilitada Places API legacy (ADR-024). La New tiene mejor field-mask y precio. Migrar cuando billing/google permita.
+- **Acción**: Habilitar Places API (New) en Google Cloud Console y reescribir `packages/scraper-core/src/wcm_scraper_core/directories/google_places.py` para usar `places.googleapis.com/v1/places:searchText`. Tests con MockTransport siguen valiendo.
+- **Dueño**: técnico.
 
 ---
 

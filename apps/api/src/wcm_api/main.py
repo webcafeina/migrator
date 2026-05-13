@@ -21,6 +21,7 @@ from wcm_api.routers import (
     health,
     leads,
     opt_out,
+    outreach,
     projects,
     residual_tasks,
     users,
@@ -75,6 +76,7 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     app.include_router(users.router, prefix=v1_prefix)
     app.include_router(leads.router, prefix=v1_prefix)
     app.include_router(campaigns.router, prefix=v1_prefix)
+    app.include_router(outreach.router, prefix=v1_prefix)
     app.include_router(projects.router, prefix=v1_prefix)
     app.include_router(residual_tasks.router, prefix=v1_prefix)
     app.include_router(errors_router.router, prefix=v1_prefix)

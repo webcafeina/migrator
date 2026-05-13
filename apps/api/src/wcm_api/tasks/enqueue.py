@@ -46,6 +46,19 @@ def enqueue_lead_fingerprint(lead_id: int) -> str:
     return result.id
 
 
+def enqueue_outreach_compose(lead_id: int, *, opt_out_token: str) -> str:
+    """Encola la composición de un draft de outreach para `lead_id`.
+
+    El `opt_out_token` lo emite la API con `issue_opt_out_token` y se pasa
+    al worker para renderizar el enlace en el body sin compartir el secret.
+    """
+    result = celery_app.send_task(
+        "wcm.outreach.compose_for_lead",
+        kwargs={"lead_id": lead_id, "opt_out_token": opt_out_token},
+    )
+    return result.id
+
+
 def enqueue_residual_sync_clickup(project_id: int) -> str:
     """Re-sincronizar tareas residuales ↔ ClickUp."""
     result = celery_app.send_task(

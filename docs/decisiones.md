@@ -156,7 +156,7 @@ Heurística: `N <= 100` → REST; `N > 100` o transaccional → WP-CLI.
 ## ADR-010 — Embedding vectorial: voyage-multilingual-2, 1024 dimensiones
 
 **Fecha**: 2026-05-12 (Fase 1)
-**Estado**: ✅ Aceptada
+**Estado**: 🟥 Superseded by ADR-023
 
 **Contexto**: La columna `leads.embedding` (pgvector) sirve para buscar leads similares por contenido de la web. El proveedor de embedding influye en (a) calidad para español de PYMEs, (b) coste por 1M tokens, (c) dimensionalidad almacenada en BD (cambiarla implica re-embedding + nuevo índice).
 
@@ -439,6 +439,63 @@ Cada agent Python (`BaseAgent` subclass) implementa el contrato descrito en su `
 - Server Components por defecto + Client Components solo para interactividad.
 - Cookie http-only `wcm_session` con `credentials: "include"` + rewrite `/api/v1/*` → API. Sin CORS en producción.
 - Build `output: "standalone"` para systemd con `node server.js`.
+
+---
+
+## ADR-023 — Embeddings: sentence-transformers local con `multilingual-e5-large`
+
+**Fecha**: 2026-05-13 (Fase 9)
+**Estado**: ✅ Aceptada — supersede ADR-010
+
+**Contexto**: ADR-010 fijaba Voyage AI (`voyage-multilingual-2`, 1024 dim) por ser la opción "Claude-native". El operador pidió alternativa **completamente gratuita** sin renunciar a la dimensión 1024 (que ya está fijada en el schema de Postgres + índice ivfflat).
+
+Investigadas en 2026 las opciones:
+- **`intfloat/multilingual-e5-large`** (468M params, 1024 dim, 512 tokens, ~5% mejor que BGE-M3 en español según benchmarks comparativos)
+- **`BAAI/bge-m3`** (335M params, 1024 dim, 8192 tokens, más rápido en GPU pero peor en español)
+- Listas públicas de proxies / Hugging Face Inference free tier: cuotas bajas, no aptas para producción.
+
+**Decisión**: `intfloat/multilingual-e5-large` via **sentence-transformers** local. Match exacto de dimensión con el schema actual (LEAD_EMBEDDING_DIM=1024). Sin cambios en migración Alembic.
+
+Detalles operacionales:
+- Modelo se descarga primera vez (~2.2GB) a `~/.cache/huggingface/`.
+- `EmbeddingService` lazy singleton en `wcm_worker` — solo se carga en el worker, no en el API (la API es ligera).
+- Prefijo "passage: " obligatorio para corpus (convención e5; querys usan "query: ").
+- LRU cache para textos repetidos.
+- CPU funciona para batch jobs del worker (~50ms/text en CPU moderna); GPU recomendada si > 1000 leads/h.
+
+**Consecuencias**:
+- ✅ Coste API: **0€/mes** perpetuo. Sin cuotas. Sin lock-in.
+- ✅ Sin migración del schema — dimension match exacto.
+- ✅ Calidad multilingüe alta para español (consideran B2B PYMEs).
+- ✅ Operativo offline una vez descargado el modelo.
+- ⚠️ **RAM 4GB+ recomendada** en el servidor worker (el modelo carga en memoria).
+- ⚠️ **Disco ~2.5GB** para el modelo + cache HuggingFace.
+- ⚠️ Cold start: primera llamada tras boot tarda 20-40s en cargar el modelo. Mitigamos con eager-load opcional en arranque del worker (config).
+- ⚠️ Las variables `VOYAGE_API_KEY` y `VOYAGE_EMBEDDING_MODEL` quedan en `.env.example` por compat histórica pero NO se usan. Se retirarán en Fase 15 (hardening).
+
+---
+
+## ADR-024 — Google Places API legacy (no la "New")
+
+**Fecha**: 2026-05-13 (Fase 9)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Google Cloud expone DOS APIs distintas:
+- **Places API (legacy)**: `maps.googleapis.com/maps/api/place/*` — la "clásica" desde 2015+, estable, ampliamente integrada en SDKs.
+- **Places API (New)**: `places.googleapis.com/v1/*` — anunciada en 2024 con esquema gRPC-style, field masks obligatorios, distinto pricing.
+
+La API key del operador tiene habilitada la **legacy** (test con Places-New devolvió `API_KEY_SERVICE_BLOCKED`).
+
+**Decisión**: Usar **Places API legacy** (`maps.googleapis.com/maps/api/place/*`). Endpoints:
+- Text Search: `/textsearch/json?query=...&language=es&region=es`
+- Place Details: `/details/json?place_id=...&fields=...` (field mask reduce coste)
+
+**Consecuencias**:
+- ✅ Funciona con la API key actual sin cambios en Google Cloud Console.
+- ✅ SDK `googlemaps` Python oficial está pensado para legacy (compat directa si se quiere usar).
+- ✅ Más documentación, ejemplos y madurez que la New.
+- ⚠️ Google ha comunicado que la legacy entrará en deprecation en futuro indefinido. Si Google la retira (estimación >18 meses), migrar a Places-New requiere habilitar la API + adaptar el cliente. Bajo riesgo para el horizonte MVP.
+- ⚠️ Field mask en Place Details es opcional en legacy pero **lo aplicamos** para minimizar coste (solo `name,formatted_address,website,international_phone_number,business_status,types,place_id`).
 
 ---
 

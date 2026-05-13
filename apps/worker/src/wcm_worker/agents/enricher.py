@@ -1,23 +1,30 @@
-"""EnricherAgent — extracción básica de emails/teléfonos del HTML del lead.
+"""EnricherAgent — extracción de emails/teléfonos/socials + embedding semántico.
 
-MVP funcional sin servicios externos. Se llama tras fingerprinter para
-poblar `lead.emails`, `lead.phones`, `lead.social_links`.
+Pobla `lead.emails`, `lead.phones`, `lead.social_links`, `lead.score` y el
+vector `lead.embedding` (1024 dim, sentence-transformers e5-large).
 
-Fase 9 (Prospección) lo ampliará con datos públicos de empresa
-(LinkedIn público, estimación de empleados, etc.) bajo base jurídica
-RGPD documentada (skill gdpr-compliance).
+Fase 9 amplió la versión MVP con:
+- Cálculo de embedding para búsqueda semántica de leads similares.
+- AuditLog ENRICH con legal_ground 6.1.f.
+
+El embedding se puede desactivar en tests con `ctx.extra["skip_embedding"]=True`.
 """
 
 from __future__ import annotations
 
+import logging
 import re
+from datetime import datetime, timezone
 
 import httpx
+from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead
-from wcm_types.enums import LeadStatus
+from wcm_types.enums import AuditAction, LeadStatus
 
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import EnricherError
+
+log = logging.getLogger("wcm.worker.enricher")
 
 #: Regex de email con guardas anti-placeholder.
 _EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
@@ -62,17 +69,88 @@ class EnricherAgent(BaseAgent):
         lead.status = LeadStatus.ENRICHED
         lead.score = _compute_score(lead)
 
+        embedding_info: dict[str, object] = {"computed": False}
+        if not ctx.extra.get("skip_embedding"):
+            try:
+                embedding_info = self._compute_embedding(lead, html_blob)
+            except Exception as e:  # noqa: BLE001
+                # Embedding nunca debe tirar el enrichment entero abajo.
+                log.warning("embedding_unexpected_error", extra={"error": str(e)})
+                embedding_info = {"computed": False, "reason": f"unexpected: {e}"}
+
+        ctx.session.add(
+            AuditLog(
+                actor="enricher",
+                action=AuditAction.ENRICH,
+                entity_type="lead",
+                entity_id=str(lead.id),
+                legal_ground="6.1.f",
+                payload={
+                    "emails_count": len(lead.emails),
+                    "phones_count": len(lead.phones),
+                    "socials": list(social_links.keys()),
+                    "score": lead.score,
+                    "embedding": embedding_info,
+                },
+            )
+        )
+
         ctx.session.flush()
         return AgentResult(
             summary=f"{lead.url}: {len(emails)} emails, {len(phones)} phones, "
-                    f"{len(social_links)} socials, score={lead.score}",
+                    f"{len(social_links)} socials, score={lead.score}, "
+                    f"embedding={'yes' if embedding_info.get('computed') else 'no'}",
             outputs={
                 "emails": lead.emails,
                 "phones": lead.phones,
                 "socials": list(social_links.keys()),
                 "score": lead.score,
+                "embedding": embedding_info,
             },
         )
+
+    def _compute_embedding(self, lead: Lead, html_blob: str) -> dict[str, object]:
+        """Calcula y persiste el embedding del lead.
+
+        El texto fuente combina business_name + sector + region + un snippet
+        del HTML (primeros 1500 chars de texto plano aprox). Si el servicio
+        falla por dep no instalada o error transitorio, se loggea y se
+        continúa sin embedding (no es bloqueante).
+        """
+        try:
+            from wcm_worker.embedding import (  # import perezoso
+                DEFAULT_MODEL,
+                EmbeddingService,
+                get_embedding_service,
+            )
+        except Exception as e:  # noqa: BLE001
+            log.warning("embedding_import_failed", extra={"error": str(e)})
+            return {"computed": False, "reason": f"import_error: {e}"}
+
+        text = _build_embedding_text(lead, html_blob)
+        if not text.strip():
+            return {"computed": False, "reason": "empty_text"}
+
+        try:
+            service = get_embedding_service()
+            vec = service.embed_text(text)
+        except Exception as e:  # noqa: BLE001
+            log.warning("embedding_compute_failed", extra={"error": str(e)})
+            return {"computed": False, "reason": f"compute_error: {e}"}
+
+        if len(vec) != 1024:
+            log.error("embedding_dim_mismatch", extra={"dim": len(vec)})
+            return {"computed": False, "reason": f"dim_mismatch_{len(vec)}"}
+
+        lead.embedding = vec
+        lead.embedding_model = service.model_name or DEFAULT_MODEL
+        lead.embedding_at = datetime.now(timezone.utc)
+        return {
+            "computed": True,
+            "model": lead.embedding_model,
+            "dim": len(vec),
+            "source_chars": len(text),
+        }
 
     # ---------- helpers ----------
 
@@ -104,6 +182,51 @@ class EnricherAgent(BaseAgent):
             if m:
                 out[net] = "https://" + m.group(0)
         return out
+
+
+#: Regex grosera para extraer texto visible del HTML. No es un parser DOM
+#: real — para enriquecimiento basta con quitar tags y compactar espacios.
+_TAG_RE = re.compile(r"<(script|style)[^>]*>.*?</\1>", re.DOTALL | re.IGNORECASE)
+_HTML_RE = re.compile(r"<[^>]+>")
+_WS_RE = re.compile(r"\s+")
+
+
+def _build_embedding_text(lead: Lead, html_blob: str) -> str:
+    """Construye el texto fuente para el embedding.
+
+    Formato: `<business> | <sector> en <region> | builder=<x> | <snippet>`.
+    El builder ayuda a clusterizar leads por origen tecnológico.
+    """
+    parts: list[str] = []
+    if lead.business_name:
+        parts.append(lead.business_name)
+    if lead.sector:
+        parts.append(f"sector: {lead.sector}")
+    if lead.region:
+        parts.append(f"región: {lead.region}")
+    if lead.builder_detected:
+        builder_name = (
+            lead.builder_detected.value
+            if hasattr(lead.builder_detected, "value")
+            else str(lead.builder_detected)
+        )
+        parts.append(f"builder: {builder_name}")
+    snippet = _html_to_text_snippet(html_blob, max_chars=1500)
+    if snippet:
+        parts.append(snippet)
+    return " | ".join(parts)
+
+
+def _html_to_text_snippet(html: str, *, max_chars: int) -> str:
+    """Strip de tags + colapso de whitespace. Conserva el primer párrafo
+    visible — suficiente para captura semántica del lead.
+    """
+    if not html:
+        return ""
+    no_scripts = _TAG_RE.sub(" ", html)
+    text = _HTML_RE.sub(" ", no_scripts)
+    text = _WS_RE.sub(" ", text).strip()
+    return text[:max_chars]
 
 
 def _normalize_phone(raw: str) -> str:

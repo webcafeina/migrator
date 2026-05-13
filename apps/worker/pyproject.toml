@@ -22,6 +22,10 @@ dependencies = [
     "wcm-scraper-core",
     "wcm-bricks-transpiler",
     "wcm-wp-client",
+    "sentence-transformers>=3.0",
+    "jinja2>=3.1",
+    "httpx>=0.27",
+    "pgvector>=0.3",
 ]
 
 [project.optional-dependencies]

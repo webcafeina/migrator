@@ -7,19 +7,27 @@ disparar re-fingerprint, etc.).
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, status
+from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead
-from wcm_types.enums import BuilderType, LeadStatus, UserRole
+from wcm_types.enums import AuditAction, BuilderType, LeadStatus, UserRole
 from wcm_types.schemas.leads import LeadRead, LeadUpdate
 
+from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
-from wcm_api.errors import NotFoundError
-from wcm_api.security import require_role
-from wcm_api.tasks.enqueue import enqueue_lead_fingerprint
+from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.security import (
+    TokenPayload,
+    get_current_user_payload,
+    issue_opt_out_token,
+    require_role,
+)
+from wcm_api.tasks.enqueue import enqueue_lead_fingerprint, enqueue_outreach_compose
 
 router = APIRouter(prefix="/leads", tags=["leads"])
 
@@ -106,3 +114,127 @@ async def refingerprint_lead(
         raise NotFoundError(f"Lead {lead_id} no encontrado")
     task_id = enqueue_lead_fingerprint(lead_id)
     return {"task_id": task_id, "status": "queued"}
+
+
+# ---------- RGPD: opt-out URL, consent, outreach compose ----------
+
+class OptOutUrlResponse(BaseModel):
+    lead_id: int
+    email: str
+    url: str = Field(description="URL pública firmada para opt-out con un clic")
+
+
+@router.post("/{lead_id}/opt-out-url", response_model=OptOutUrlResponse)
+async def generate_opt_out_url(
+    lead_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    settings: Annotated[ApiSettings, Depends(get_settings)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+    email: str | None = Query(default=None, description="Email destino; si vacío usa el primero del lead"),
+) -> OptOutUrlResponse:
+    """Genera la URL firmada de opt-out para incluir en outreach.
+
+    No persiste nada — el token JWT es self-contained. El operador puede
+    generar la URL para previsualizar o copiarla manualmente.
+    """
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+    target_email = email or (lead.emails[0] if lead.emails else None)
+    if not target_email:
+        raise ConflictError(
+            "Lead sin emails — enriquecimiento previo necesario antes de generar opt-out URL"
+        )
+    token = issue_opt_out_token(email=target_email, lead_id=lead.id, settings=settings)
+    url = f"{settings.outreach_opt_out_url_base}?token={token}"
+    return OptOutUrlResponse(lead_id=lead.id, email=target_email, url=url)
+
+
+class ConsentRecord(BaseModel):
+    """Registro manual de consent/oposición por parte de un operador.
+
+    Para casos donde el lead nos responde por teléfono/whatsapp/email
+    pidiendo NO ser contactado, o cuando consiente explícitamente.
+    """
+
+    action: Literal["consent_granted", "objection_received", "manual_review"]
+    legal_ground: str = Field(default="6.1.f", max_length=40)
+    note: str | None = Field(default=None, max_length=1000)
+
+
+@router.post("/{lead_id}/consent", status_code=status.HTTP_201_CREATED)
+async def record_consent_action(
+    lead_id: int,
+    payload: ConsentRecord,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """Persiste una acción manual de consent/oposición en `audit_log`.
+
+    Si la acción es `objection_received`, también marca el lead como
+    OPTED_OUT (y lo borra cascadamente como hace `/opt-out` público —
+    diferencia: aquí mantenemos el lead en `MANUAL_REVIEW` para que el
+    operador decida si borrarlo o solo pausar la secuencia).
+    """
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+
+    audit_action = {
+        "consent_granted": AuditAction.UPDATE,
+        "objection_received": AuditAction.OPT_OUT,
+        "manual_review": AuditAction.UPDATE,
+    }[payload.action]
+
+    if payload.action == "objection_received":
+        lead.status = LeadStatus.OPTED_OUT
+    elif payload.action == "manual_review":
+        lead.status = LeadStatus.MANUAL_REVIEW
+
+    session.add(
+        AuditLog(
+            actor=f"user:{user.sub}",
+            action=audit_action,
+            entity_type="lead",
+            entity_id=str(lead.id),
+            legal_ground=payload.legal_ground,
+            payload={
+                "manual_action": payload.action,
+                "note": payload.note,
+                "operator_role": user.role,
+            },
+        )
+    )
+    await session.commit()
+    return {
+        "lead_id": lead.id,
+        "action": payload.action,
+        "new_status": lead.status.value if hasattr(lead.status, "value") else str(lead.status),
+    }
+
+
+@router.post("/{lead_id}/outreach/compose", status_code=status.HTTP_202_ACCEPTED)
+async def compose_outreach_for_lead(
+    lead_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    settings: Annotated[ApiSettings, Depends(get_settings)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """Encola el OutreachComposerAgent para generar el draft del lead.
+
+    La API emite aquí el `opt_out_token` para no compartir `JWT_SECRET`
+    con el worker. El worker solo renderiza la URL final.
+    """
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+    if not lead.emails:
+        raise ConflictError(
+            "Lead sin emails — enriquecimiento previo necesario antes de componer outreach"
+        )
+    token = issue_opt_out_token(
+        email=lead.emails[0], lead_id=lead.id, settings=settings
+    )
+    task_id = enqueue_outreach_compose(lead.id, opt_out_token=token)
+    return {"task_id": task_id, "status": "queued", "lead_id": lead.id}

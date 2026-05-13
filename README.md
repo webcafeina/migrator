@@ -25,7 +25,9 @@ Herramienta interna de **Webcafeína** (Cáceres, España) para:
 
 Ver siempre [`STATE.md`](./STATE.md) para el cursor de avance entre sesiones de construcción.
 
-La construcción está dividida en 16 fases (0–15). La Fase 0 (Bootstrap) genera la estructura del monorepo, las definiciones de subagentes y skills, y la memoria de proyecto.
+La construcción está dividida en 16 fases (0–15). **Fases 0–9 completadas** a 2026-05-13: bootstrap, DB+modelos, Bricks transpiler, scraper core, WP client, API backend, worker+subagentes, CLI, dashboard, **prospección RGPD/LSSI-CE compliant**. Próxima fase: 10 — Integraciones externas (ClickUp, Resend, R2).
+
+Test suite total: **268 tests Python + 15 TS** pasando.
 
 ---
 

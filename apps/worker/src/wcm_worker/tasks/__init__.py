@@ -3,4 +3,10 @@
 """
 
 # Import side-effect: registra las tasks en celery_app
-from wcm_worker.tasks import clickup, fingerprinter, orchestrator, prospector  # noqa: F401
+from wcm_worker.tasks import (  # noqa: F401
+    clickup,
+    fingerprinter,
+    orchestrator,
+    outreach,
+    prospector,
+)

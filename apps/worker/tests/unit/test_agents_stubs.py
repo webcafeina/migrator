@@ -15,8 +15,6 @@ from wcm_worker.agents import (
     ChecklistGeneratorAgent,
     ClickupSyncerAgent,
     FormsRebuilderAgent,
-    OutreachComposerAgent,
-    ProspectorAgent,
     QaRunnerAgent,
     ResendNotifierAgent,
     VisualDiffAgent,
@@ -26,9 +24,10 @@ from wcm_worker.agents import (
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.errors import AgentNotImplementedError
 
+# ProspectorAgent y OutreachComposerAgent fueron promocionados de stub a
+# real en Fase 9 — sus tests están en test_prospector.py y
+# test_outreach_composer.py.
 _STUB_AGENTS = [
-    ProspectorAgent,
-    OutreachComposerAgent,
     AssetOptimizerAgent,
     WooMigratorAgent,
     WpmlConfiguratorAgent,
