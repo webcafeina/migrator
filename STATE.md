@@ -18,7 +18,7 @@
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
 - **Fase 9 — Prospección**: ✅ Completada (commit `34bb07d`)
 - **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
-- **Fase 11 — Observabilidad**: ✅ Completada esta sesión
+- **Fase 11 — Observabilidad**: ✅ Completada esta sesión (commit `3863daa`)
 - **Próxima fase**: Fase 12 — Infra/Deploy (systemd units, Nginx, scripts WHM/cPanel, CI GitHub Actions)
 
 ---
