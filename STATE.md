@@ -16,7 +16,7 @@
 - **Fase 6 — Worker + subagentes operativos**: ✅ Completada (commit `5c1767d`)
 - **Fase 7 — CLI**: ✅ Completada (commit `0d3b528`)
 - **Fase 8 — Dashboard**: ✅ Completada (commit `17944a2`)
-- **Fase 9 — Prospección**: ✅ Completada esta sesión
+- **Fase 9 — Prospección**: ✅ Completada esta sesión (commit `34bb07d`)
 - **Próxima fase**: Fase 10 — Integraciones externas (ClickUp, Resend, R2)
 
 ---
