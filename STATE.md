@@ -20,7 +20,7 @@
 - **Fase 10 — Integraciones externas**: ✅ Completada (commit `e46d5ce`)
 - **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
 - **Fase 12 — Infra/Deploy**: ✅ Completada (commit `7c6b8a0`)
-- **Fase 13 — Tests e2e**: ✅ Completada esta sesión
+- **Fase 13 — Tests e2e**: ✅ Completada esta sesión (commit `891553a`)
 - **Próxima fase**: Fase 14 — Documentación (arquitectura detallada, prospeccion.md, migracion.md, playbook-operativo.md)
 
 ---
