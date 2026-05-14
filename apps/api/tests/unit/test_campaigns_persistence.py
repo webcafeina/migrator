@@ -37,10 +37,13 @@ def _campaign(
 
 @pytest.mark.asyncio
 async def test_launch_creates_campaign_row(client, fake_session, operator_token) -> None:
-    """POST /launch encola task y persiste Campaign(status=queued)."""
+    """POST /launch persiste Campaign(status=queued) ANTES de encolar y
+    genera el task_id en el API (no en Celery) para evitar race condition
+    con el worker.
+    """
     fake_session.refresh.side_effect = lambda c: setattr(c, "id", 42)
 
-    with patch("wcm_api.routers.campaigns.enqueue_prospect_campaign", return_value="task-xyz") as enq:
+    with patch("wcm_api.routers.campaigns.enqueue_prospect_campaign", return_value="ignored") as enq:
         resp = await client.post(
             "/api/v1/campaigns/launch",
             json={"sector": "bar", "region": "Madrid", "target_count": 5},
@@ -48,18 +51,56 @@ async def test_launch_creates_campaign_row(client, fake_session, operator_token)
         )
     assert resp.status_code == 202
     body = resp.json()
-    assert body["task_id"] == "task-xyz"
+    # task_id es UUID v4 generado por el endpoint
+    assert len(body["task_id"]) == 36
+    assert body["task_id"].count("-") == 4
     assert body["campaign_id"] == 42
     assert body["status"] == "queued"
-    enq.assert_called_once()
 
-    # Verificar que se llamó a session.add con un Campaign correctamente formado
+    # El task_id se pasa a enqueue como kwarg (orden: commit primero, encolar después).
+    enq.assert_called_once()
+    assert enq.call_args.kwargs.get("task_id") == body["task_id"]
+
+    # Y la Campaign persistida lleva el mismo task_id.
     added = fake_session.add.call_args.args[0]
-    assert added.task_id == "task-xyz"
+    assert added.task_id == body["task_id"]
     assert added.sector == "bar"
     assert added.region == "Madrid"
     assert added.target_count == 5
     assert added.status == CampaignStatus.QUEUED
+
+
+@pytest.mark.asyncio
+async def test_launch_commits_before_enqueue(client, fake_session, operator_token) -> None:
+    """Regresión del race condition: la Campaign debe estar committed
+    ANTES de encolar la task. Si no, el worker puede ejecutarse antes de
+    que la fila esté en BD y `_find_campaign_by_task_id` devolverá None
+    → Campaign atascada en QUEUED.
+
+    Verificamos que cuando enqueue es invocado, fake_session.commit YA
+    se llamó al menos una vez (snapshot del await_count al momento de
+    enqueue vs al final del request).
+    """
+    fake_session.refresh.side_effect = lambda c: setattr(c, "id", 1)
+
+    commits_when_enqueued: list[int] = []
+
+    def _enqueue_side_effect(*a, **kw):
+        commits_when_enqueued.append(fake_session.commit.await_count)
+        return "any"
+
+    with patch("wcm_api.routers.campaigns.enqueue_prospect_campaign", side_effect=_enqueue_side_effect):
+        resp = await client.post(
+            "/api/v1/campaigns/launch",
+            json={"sector": "bar", "region": "Madrid", "target_count": 5},
+            headers=_auth(operator_token),
+        )
+
+    assert resp.status_code == 202
+    assert commits_when_enqueued, "enqueue nunca se llamó"
+    assert commits_when_enqueued[0] >= 1, (
+        f"commit debe haber corrido antes de enqueue, await_count={commits_when_enqueued[0]}"
+    )
 
 
 @pytest.mark.asyncio

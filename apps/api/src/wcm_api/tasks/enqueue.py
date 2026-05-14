@@ -23,17 +23,30 @@ def enqueue_project_pipeline(project_id: int, *, resume: bool = False) -> str:
 
 
 def enqueue_prospect_campaign(
-    sector: str, region: str, *, target_count: int = 50, exclude_domains: list[str] | None = None
+    sector: str,
+    region: str,
+    *,
+    target_count: int = 50,
+    exclude_domains: list[str] | None = None,
+    task_id: str | None = None,
 ) -> str:
-    result = celery_app.send_task(
-        "wcm.prospector.run_campaign",
-        kwargs={
-            "sector": sector,
-            "region": region,
-            "target_count": target_count,
-            "exclude_domains": exclude_domains or [],
-        },
-    )
+    """Encola la task del prospector. Si se pasa `task_id`, fuerza ese ID
+    en Celery — útil para evitar race conditions cuando el caller necesita
+    persistir una fila `campaigns` antes de que el worker pueda buscarse a
+    sí mismo por task_id.
+    """
+    kwargs = {
+        "sector": sector,
+        "region": region,
+        "target_count": target_count,
+        "exclude_domains": exclude_domains or [],
+    }
+    if task_id is not None:
+        result = celery_app.send_task(
+            "wcm.prospector.run_campaign", kwargs=kwargs, task_id=task_id
+        )
+    else:
+        result = celery_app.send_task("wcm.prospector.run_campaign", kwargs=kwargs)
     return result.id
 
 

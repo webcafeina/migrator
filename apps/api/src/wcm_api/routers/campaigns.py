@@ -59,16 +59,16 @@ async def launch_campaign(
     """
     import uuid
 
-    # Encolar primero para obtener task_id real, luego persistir Campaign
-    # con ese task_id. El worker hará lookup `SELECT FROM campaigns WHERE
-    # task_id = self.request.id` para encontrarse a sí mismo.
-    task_id = enqueue_prospect_campaign(
-        sector=payload.sector,
-        region=payload.region,
-        target_count=payload.target_count,
-        exclude_domains=payload.exclude_domains,
-    )
+    # Generamos el task_id nosotros para evitar race condition: si
+    # encoláramos primero y luego insertáramos la Campaign, el worker
+    # podría ejecutar la task ANTES de que el commit del row terminara
+    # → `_find_campaign_by_task_id` devolvería None → la Campaign se
+    # quedaría en QUEUED con created_lead_ids vacío para siempre.
+    # Generando el task_id antes, commiteamos la fila primero y luego
+    # encolamos con `apply_async(task_id=...)`.
+    task_id = str(uuid.uuid4())
     user_uuid = uuid.UUID(user.sub) if user.sub else None
+
     campaign = Campaign(
         task_id=task_id,
         sector=payload.sector,
@@ -80,6 +80,14 @@ async def launch_campaign(
     session.add(campaign)
     await session.commit()
     await session.refresh(campaign)
+
+    enqueue_prospect_campaign(
+        sector=payload.sector,
+        region=payload.region,
+        target_count=payload.target_count,
+        exclude_domains=payload.exclude_domains,
+        task_id=task_id,
+    )
 
     return {
         "task_id": task_id,
