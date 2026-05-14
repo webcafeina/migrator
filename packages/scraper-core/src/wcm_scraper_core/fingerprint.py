@@ -52,11 +52,23 @@ class FingerprintResult:
     raw_signals_count: int
 
     def best_builder(self) -> TechMatch | None:
-        """Devuelve el match con `category=builder` de mayor confianza."""
-        builders = [m for m in self.matches if m.category == "builder"]
-        if not builders:
-            return None
-        return max(builders, key=lambda m: m.confidence)
+        """Devuelve la "plataforma base" del sitio para fines de clasificación.
+
+        Orden de prioridad: **cms > ecommerce > builder**. Cuando coexisten
+        un CMS (WordPress) y un builder dependiente (Elementor, Divi,
+        Bricks), gana el CMS — la plataforma base es lo que importa para
+        migración, no el builder visual encima. Mismo principio con
+        Shopify (ecommerce) sobre cualquier builder visual del tema.
+
+        Antes solo consideraba `category=builder`, lo cual hacía que sitios
+        WordPress+Elementor se clasificaran como "Elementor" (no presente
+        en `BuilderType` → caía a OTHER), perdiendo la información útil.
+        """
+        for category in ("cms", "ecommerce", "builder"):
+            matches = [m for m in self.matches if m.category == category]
+            if matches:
+                return max(matches, key=lambda m: m.confidence)
+        return None
 
     def by_category(self, category: str) -> list[TechMatch]:
         return [m for m in self.matches if m.category == category]

@@ -11,6 +11,24 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.2.2] — 2026-05-14
+
+### Fixed
+
+- **`FingerprintResult.best_builder()` clasificaba mal WordPress + Elementor
+  como `OTHER`**: la función filtraba solo `category == "builder"`, por lo
+  que sitios WP+Elementor (caso real `aolcomunicacion.com`) devolvían
+  Elementor como "best builder" — y Elementor no está en `BuilderType`, así
+  que caía a OTHER. Ahora `best_builder()` aplica prioridad
+  **cms > ecommerce > builder**: cuando coexisten un CMS (WordPress) y un
+  builder dependiente (Elementor, Divi, Bricks), gana el CMS, porque la
+  plataforma base es lo que importa para clasificar de cara a migración.
+  Verificado: lead 13 (aolcomunicacion.com) re-clasificado de `OTHER` →
+  `WORDPRESS` (conf 1.0) tras refingerprint. 2 tests nuevos en
+  `test_fingerprint.py`.
+
+---
+
 ## [0.2.1] — 2026-05-14
 
 Hotfix: dos archivos polish que estaban en el working tree de la sesión

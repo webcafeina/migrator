@@ -58,6 +58,32 @@ def test_wordpress_detected_alongside_bricks() -> None:
     names = [m.name for m in result.matches]
     assert "WordPress" in names
     assert "Bricks Builder" in names
+    # cms gana sobre builder cuando coexisten
+    best = result.best_builder()
+    assert best is not None
+    assert best.name == "WordPress"
+
+
+def test_best_builder_prefers_wordpress_over_elementor() -> None:
+    """Caso real: WP+Elementor (aolcomunicacion.com). Antes devolvía
+    Elementor → OTHER. Ahora WordPress gana porque cms > builder."""
+    html = """
+    <html>
+    <head><meta name="generator" content="WordPress 6.5"></head>
+    <body>
+      <link rel="stylesheet" href="/wp-content/themes/foo/style.css">
+      <script src="/wp-includes/js/jquery.js"></script>
+      <div class="elementor-page elementor-section">contenido</div>
+    </body>
+    </html>
+    """
+    result = fingerprint_url(html=html, headers={})
+    names = [m.name for m in result.matches]
+    assert "WordPress" in names
+    assert "Elementor" in names
+    best = result.best_builder()
+    assert best is not None
+    assert best.name == "WordPress", f"esperado WordPress, fue {best.name}"
 
 
 def test_js_globals_optional() -> None:
