@@ -33,10 +33,14 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm dev -- -p ${PORT}`,
+    // Invocamos `next` directamente (no `pnpm dev`) porque el script
+    // dev del package.json tiene `-p 3000` hardcoded, y `pnpm dev -- -p 3100`
+    // se expande a `next dev -p 3000 -- -p 3100` que Next interpreta
+    // como project dir y rompe en CI.
+    command: `pnpm exec next dev -p ${PORT}`,
     url: `http://127.0.0.1:${PORT}/login`,
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: 120_000,
     stdout: "pipe",
     stderr: "pipe",
     env: {
