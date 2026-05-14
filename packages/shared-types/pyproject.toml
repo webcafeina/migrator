@@ -11,7 +11,9 @@ requires-python = ">=3.12"
 license = { text = "UNLICENSED" }
 authors = [{ name = "Webcafeína S.L.", email = "info@webcafeina.com" }]
 dependencies = [
-    "pydantic>=2.7,<3.0",
+    # `[email]` extra trae `email-validator`, requerido por `EmailStr` en
+    # los schemas Lead/User.
+    "pydantic[email]>=2.7,<3.0",
 ]
 
 [project.optional-dependencies]

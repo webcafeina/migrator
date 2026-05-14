@@ -63,15 +63,16 @@ jobs:
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip wheel
-          pip install \
-            -e ./packages/shared-types \
-            -e ./packages/db-schema \
-            -e ./packages/scraper-core \
-            -e ./packages/bricks-transpiler \
-            -e ./packages/wp-client
+          # Instalamos todos los paquetes con sus dev deps incluidas
+          # (`[dev]` trae pytest-cov, respx, freezegun, etc.).
+          pip install -e "./packages/shared-types[dev]"
+          pip install -e "./packages/db-schema[dev]"
+          pip install -e "./packages/scraper-core[dev]"
+          pip install -e "./packages/bricks-transpiler[dev]"
+          pip install -e "./packages/wp-client[dev]"
           pip install -e "./apps/api[dev]"
           pip install -e "./apps/worker[dev]"
-          pip install -e "./cli"
+          pip install -e "./cli[dev]"
       - name: Lint (ruff)
         run: ruff check apps/ packages/ cli/
       - name: Type check (mypy)

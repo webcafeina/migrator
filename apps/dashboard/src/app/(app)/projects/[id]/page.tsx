@@ -5,7 +5,7 @@ import { ArrowLeft, ClipboardCheck, GitCompare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
-import { formatDate, truncate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 import { ProjectActions } from "./actions";
 

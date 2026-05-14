@@ -1,4 +1,3 @@
-import { LogOut } from "lucide-react";
 import { api } from "@/lib/api";
 import type { UserRead } from "@/types/api";
 import { LogoutButton } from "./logout-button";

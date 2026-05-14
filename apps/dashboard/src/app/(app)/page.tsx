@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import type { ErrorLogRead, LeadRead, ProjectRead, ResidualTaskRead } from "@/types/api";
+import type { ErrorLogRead, ProjectRead, ResidualTaskRead } from "@/types/api";
 
 interface CountResponse {
   total: number;
