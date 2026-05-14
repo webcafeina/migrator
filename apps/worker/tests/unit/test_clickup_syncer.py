@@ -59,9 +59,9 @@ def test_clickup_syncer_skipped_without_client(fake_session, monkeypatch) -> Non
 def test_clickup_syncer_creates_new_tasks(fake_session) -> None:
     fake_client = MagicMock()
     fake_client.create_task.return_value = {"id": "new-task-1"}
-    fake_client.find_member.return_value = 32553086
+    fake_client.find_member.return_value = 11111111
 
-    residual = _residual(assignee_hint="nacho")
+    residual = _residual(assignee_hint="operador")
     ctx = _ctx_with_residuals(fake_session, [residual])
 
     result = ClickupSyncerAgent(client=fake_client).run(ctx)
@@ -70,7 +70,7 @@ def test_clickup_syncer_creates_new_tasks(fake_session) -> None:
     assert residual.clickup_task_id == "new-task-1"
     fake_client.create_task.assert_called_once()
     kwargs = fake_client.create_task.call_args.kwargs
-    assert kwargs["assignees"] == [32553086]
+    assert kwargs["assignees"] == [11111111]
     assert kwargs["priority"] == 2  # CLIENT_CONFIG → high
 
 

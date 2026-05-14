@@ -80,25 +80,9 @@ def render_project_description(p: Project) -> str:
 """.strip()
 ```
 
-## Asignación automática de subtareas
+## Asignación
 
-```python
-ASSIGNEE_BY_CATEGORY = {
-    "visual": SAMUEL_ID,
-    "seo": SAMUEL_ID,
-    "content": SAMUEL_ID,
-    "ecommerce": ALVARO_ID,
-    "payment_gateway": ALVARO_ID,
-    "dns": NACHO_ID,
-    "email": NACHO_ID,
-    "client_config": NACHO_ID,
-    "client_onboarding": ADRIAN_ID,
-    "communication": ADRIAN_ID,
-    "default": NACHO_ID,
-}
-```
-
-IDs concretos viven en `.env`. Nacho = `32553086` ya conocido.
+**Sin assignee individual** por convención del proyecto. Las subtareas se crean en ClickUp con `assignees=[]` (o con `CLICKUP_DEFAULT_ASSIGNEE` si el operador define uno común). El equipo Webcafeína decide internamente quién toma cada tarea según disponibilidad. La categoría se incluye como tag para que el equipo pueda filtrar/agrupar en ClickUp.
 
 ## Webhook
 
@@ -126,7 +110,7 @@ ClickUp API: 100 requests / minuto / token. Implementar rate limiter en el clien
 ## Tests
 
 - Mock de ClickUp API (responses fixture)
-- Test asignación: residual de categoría "payment_gateway" → Álvaro
+- Test: subtareas creadas sin assignee individual (o con `CLICKUP_DEFAULT_ASSIGNEE` si está definido)
 - Test webhook signature
 
 ## Dependencias

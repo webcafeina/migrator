@@ -140,7 +140,7 @@ Primer release del MVP. Cubre el alcance completo de las **16 fases de construcc
 
 ### Equipo
 
-Webcafeína S.L. (CIF B10463990). Cáceres, España. Equipo de 9 personas; project leads: Álvaro, Samuel, Adrián, Nacho.
+Webcafeína S.L. (CIF B10463990). Cáceres, España. Equipo de 9 personas; el proyecto se mantiene como equipo único sin roles individuales asignados.
 
 ---
 

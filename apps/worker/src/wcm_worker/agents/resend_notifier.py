@@ -6,7 +6,7 @@ a leads — ese flujo es OutreachSendDispatcher (otro agent, otro task).
 Casos de uso:
 - Avisar al operador asignado cuando un proyecto cambia a `failed`.
 - Resumen diario del scoreboard de leads/migraciones.
-- Notificar a Nacho cuando llega una pregunta de un cliente vía webhook
+- Notificar al equipo cuando llega una pregunta de un cliente vía webhook
   (Resend reply → audit_log entrada → notify).
 
 Sin `RESEND_API_KEY` configurada devuelve summary "skipped" (igual que

@@ -9,7 +9,7 @@
 
 - **Nombre**: Webcafeína Migrator
 - **Empresa**: Webcafeína S.L. (Cáceres, España, fundada 1997)
-- **Equipo**: Álvaro, Samuel, Adrián, Nacho (9 personas en total)
+- **Equipo**: Webcafeína S.L. (9 personas en total). El proyecto se mantiene como un equipo único, sin roles individuales asignados nominalmente. Cualquier referencia operativa va a "Webcafeína" / "equipo" / "operador", nunca a personas concretas.
 - **Tipo**: herramienta interna propietaria, no se distribuye fuera de Webcafeína
 - **Misión**: automatizar dos procesos comerciales conectados — (a) prospección comercial de webs Wix/Hostinger/Webflow, (b) migración técnica a WordPress + Bricks Builder
 
@@ -201,7 +201,7 @@ docs/
 
 - Team ID: `20483773`
 - Lista "Microtareas" (default): `900102088242`
-- Usuario Nacho: `32553086`
+- Sin assignee individual por defecto: residual_tasks se crean unassigned. El equipo Webcafeína decide en cada caso quién la toma.
 
 ---
 

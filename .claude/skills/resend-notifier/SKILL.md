@@ -26,16 +26,18 @@ class ResendNotifier:
 
 ## Tipos de evento soportados
 
-| Event | Recipients default | Plantilla |
+Todas las notificaciones van al equipo Webcafeína (env `RESEND_NOTIFY_OPERATIONS`, default `info@webcafeina.com`). Sin escalación a personas concretas.
+
+| Event | Recipients | Plantilla |
 |---|---|---|
 | `project.completed` | NOTIFY_OPERATIONS | `project_completed.html` |
-| `project.qa_failed` | NOTIFY_OPERATIONS, ALVARO, SAMUEL | `qa_failed.html` |
-| `project.blocked_human_input` | dueño del proyecto | `human_input_needed.html` |
-| `error.critical` | NACHO | `error_critical.html` |
+| `project.qa_failed` | NOTIFY_OPERATIONS | `qa_failed.html` |
+| `project.blocked_human_input` | NOTIFY_OPERATIONS | `human_input_needed.html` |
+| `error.critical` | NOTIFY_OPERATIONS | `error_critical.html` |
 | `prospect.campaign_completed` | NOTIFY_OPERATIONS | `campaign_completed.html` |
 | `prospect.budget_exceeded` | NOTIFY_OPERATIONS | `budget_exceeded.html` |
 | `system.deploy_started` | NOTIFY_OPERATIONS | `deploy_started.html` |
-| `system.deploy_failed` | ALVARO | `deploy_failed.html` |
+| `system.deploy_failed` | NOTIFY_OPERATIONS | `deploy_failed.html` |
 
 ## Plantillas HTML
 

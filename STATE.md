@@ -413,7 +413,7 @@ Pasos pendientes (todos manuales, no bloqueantes — pospuestos hasta que toque 
 - **Paso 7 del release-v0.1.0.md** (secrets GitHub Actions para deploy): crear `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` en Settings → Secrets → Actions cuando se vaya a usar `deploy-production.yml`. Requiere servidor WHM provisionado primero (ver `docs/despliegue.md` §1).
 - **Sudoers WHM** (en `docs/despliegue.md` §4): configurar `/etc/sudoers.d/wcm-deploy` para que `webcafeina` pueda reiniciar las units sin password. Necesario para que `deploy.sh` no se cuelgue pidiendo password en CI.
 - Paso 8: `gh release create v0.1.0 --notes-file CHANGELOG.md --verify-tag` para que aparezca en Releases del repo.
-- Paso 10: añadir miembros del equipo (Álvaro admin, Samuel/Adrián/Nacho write).
+- Paso 10: añadir al equipo Webcafeína al repo (Settings → Collaborators and teams). Sin roles individuales — todos al mismo team con el permiso que aplique.
 - Paso 11: post-release (notificar al equipo, planificar roadmap post-v0.1.0).
 
 Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):

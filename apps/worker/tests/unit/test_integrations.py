@@ -82,12 +82,12 @@ def test_clickup_no_retry_on_4xx() -> None:
 def test_clickup_find_member_returns_user_id() -> None:
     http = httpx.Client(transport=_MockTransport([
         httpx.Response(200, json={"members": [
-            {"user": {"id": 32553086, "username": "nacho", "email": "n@webcafeina.com"}}
+            {"user": {"id": 11111111, "username": "operador", "email": "ops@webcafeina.com"}}
         ]}),
     ]))
     client = ClickupClient(api_token="pk", team_id="20483773", http_client=http,
                            retry_base_delay_s=0.001)
-    assert client.find_member("Nacho") == 32553086
+    assert client.find_member("operador") == 11111111
 
 
 # ---------- ResendClient ----------

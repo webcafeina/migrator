@@ -66,7 +66,7 @@ class OutreachComposerAgent(BaseAgent):
         self,
         *,
         templates_dir: str | Path | None = None,
-        sender_name: str = "Álvaro",
+        sender_name: str = "Equipo Webcafeína",
     ) -> None:
         self.sender_name = sender_name
         if templates_dir is None:

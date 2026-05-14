@@ -1,7 +1,7 @@
 # Security audit — release v0.1.0
 
 **Fecha**: 2026-05-14.
-**Auditor**: Claude Opus 4.7 (audit asistido) + Álvaro (review final).
+**Auditor**: Claude Opus 4.7 (audit asistido) + equipo Webcafeína (review final).
 **Versión**: v0.1.0 (commit `f0b1ea0` previo al audit).
 
 Audit antes del primer push a GitHub. Objetivo: identificar vulnerabilidades y validar que las mitigaciones implementadas siguen activas tras 14 fases de construcción.

@@ -38,7 +38,9 @@ class ResidualTask(Base, TimestampMixin):
     generated_by: Mapped[str | None] = mapped_column(String(64))  # subagente que la generó
 
     clickup_task_id: Mapped[str | None] = mapped_column(String(40), index=True)
-    assignee_hint: Mapped[str | None] = mapped_column(String(64))  # Álvaro, Samuel, ...
+    # Hint opcional para que el sync ClickUp intente find_member sobre este
+    # username. Null = sin assignee, el equipo Webcafeína decide en ClickUp.
+    assignee_hint: Mapped[str | None] = mapped_column(String(64))
 
     status: Mapped[ResidualStatus] = mapped_column(
         Enum(ResidualStatus, name="residual_status", native_enum=False, length=16),

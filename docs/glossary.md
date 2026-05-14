@@ -65,7 +65,7 @@ Aplicación Next.js 15 que viven en `apps/dashboard/`. UI para operadores. JetBr
 Comparación pixel-a-pixel entre el screenshot del origen y el screenshot del WP destino, por página. Score 0-1. Threshold mínimo `VISUAL_DIFF_THRESHOLD=0.85`. (Implementación post-MVP por `VisualDiffAgent`.)
 
 ### DPO
-Data Protection Officer. Webcafeína no tiene uno formalmente designado todavía; Álvaro asume la función internamente.
+Data Protection Officer. Webcafeína no tiene uno formalmente designado todavía; el equipo Webcafeína asume la función internamente como conjunto (decisiones colegiadas, sin lead nominal).
 
 ---
 

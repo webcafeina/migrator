@@ -20,7 +20,7 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Estado**: OPEN
 - **Contexto**: El skill `bricks-json-schema` necesita un export real de Bricks (header + hero + texto + CTA + section + container) como referencia canónica del esquema. Sin esto no se puede empezar la Fase 2 (transpilador).
 - **Acción**: Instalar Bricks Builder en sandbox WP, crear una página de prueba con los bloques anteriores, exportar JSON, guardar en `.claude/skills/bricks-json-schema/reference-export.json`.
-- **Dueño**: humano (Álvaro o Samuel).
+- **Dueño**: equipo Webcafeína.
 
 ### WCM-002 — Confirmar datos legales de Webcafeína S.L.
 - **Tipo**: docs / **Fase**: 9 / **Prioridad**: P1
@@ -32,7 +32,7 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Estado**: OPEN
 - **Contexto**: Los skills `wix-extraction`, `hostinger-ai-extraction` y `webflow-extraction` parten con patrones documentados teóricos. Requieren validación con al menos 3 webs reales por constructor.
 - **Acción**: Recolectar 3 URLs públicas representativas por builder, ejecutar el scraper, ajustar selectores, añadir fixtures a `tests/integration/scraper/`.
-- **Dueño**: técnico (Samuel).
+- **Dueño**: equipo Webcafeína (técnico).
 
 ### WCM-004 — Decidir hosting de R2 vs uploads locales por defecto
 - **Tipo**: feature / **Fase**: 9 / **Prioridad**: P2
@@ -44,7 +44,7 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Tipo**: chore / **Fase**: 10 / **Prioridad**: P2
 - **Estado**: OPEN
 - **Contexto**: El prompt fija lista "Microtareas" `900102088242` por defecto, pero deberíamos confirmar si para migraciones grandes preferimos lista propia por proyecto.
-- **Acción**: Consultar con Nacho. Documentar en `docs/decisiones.md`.
+- **Acción**: Decidir en equipo Webcafeína. Documentar en `docs/decisiones.md`.
 
 ### WCM-010 — Local by Flywheel: autodescubrir socket MySQL volátil
 - **Tipo**: chore / **Fase**: 4 (descubierto) / **Prioridad**: P3
@@ -79,7 +79,7 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Estado**: OPEN
 - **Contexto**: `pydantic2ts` genera `UserRole1`, `UserRole2`, `OutreachChannel1`, etc. cuando un mismo Enum se referencia desde múltiples schemas. Funcionalmente correcto (los aliases son idénticos), pero feo en autocompletado y reviews.
 - **Acción**: Añadir paso post-gen al script `scripts/gen-ts.sh` que detecta duplicados (`type X1 = X` literal) y los reescribe como `export type X1 = X;` o los elimina si son alias triviales. O bien switching a un generador alternativo si `pydantic2ts` no resuelve.
-- **Dueño**: técnico (Samuel / Álvaro).
+- **Dueño**: equipo Webcafeína (técnico).
 
 ---
 
@@ -104,7 +104,7 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Estado**: OPEN
 - **Contexto**: `apps/api/legal/tratamiento_datos_prospeccion.md` y plantillas de outreach deben revisarse por asesor legal externo antes de paso a producción. La base 6.1.f + 21.2 LSSI-CE es la lectura interna; cualquier diferencia respecto a la AEPD obligaría a replantear el modelo de contacto.
 - **Acción**: Contratar revisión legal con foco en LSSI-CE B2B + interés legítimo. Documentar el resultado en `decisiones.md`.
-- **Dueño**: humano (Álvaro).
+- **Dueño**: equipo Webcafeína.
 
 ---
 

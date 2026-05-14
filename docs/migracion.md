@@ -97,7 +97,7 @@ Encola `wcm.orchestrator.run_project` con `project_id=42`. El worker:
 | 12 | qa | QaRunnerAgent | no | — | (post-MVP) batería de checks (broken links, perf, a11y) |
 | 13 | generate_checklist | ChecklistGeneratorAgent | no | — | (post-MVP) crea `ResidualTask` por gap detectado |
 | 14 | sync_clickup | ClickupSyncerAgent | no | — | Crea/actualiza tareas ClickUp con `clickup_task_id` |
-| 15 | notify | ResendNotifierAgent | no | — | Email a Nacho/operador asignado |
+| 15 | notify | ResendNotifierAgent | no | — | Email al equipo Webcafeína (`RESEND_NOTIFY_OPERATIONS` en `.env`) |
 
 **"Required"** significa: si falla, el proyecto pasa a `BLOCKED_HUMAN_INPUT` y el pipeline para.
 **"No required"** que falla: el proyecto se completa pero queda como `QA_FAILED` (revisión recomendada).

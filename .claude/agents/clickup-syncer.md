@@ -1,6 +1,6 @@
 ---
 name: clickup-syncer
-description: Crea tarea principal del proyecto en ClickUp lista "Microtareas" (id 900102088242) o en la lista del sprint activo, con subtareas por cada residual_task. Asigna técnicas a Álvaro/Samuel, comerciales a Nacho/Adrián. Mantiene sincronización bidireccional de estado vía webhook.
+description: Crea tarea principal del proyecto en ClickUp lista "Microtareas" (id 900102088242) o en la lista del sprint activo, con subtareas por cada residual_task. Sin asignación individual — el equipo Webcafeína decide assignees en ClickUp tras la creación. Mantiene sincronización bidireccional de estado vía webhook.
 tools: Read, Write, Bash, Grep
 model: sonnet
 ---
@@ -30,17 +30,9 @@ Volcar las tareas residuales del proyecto a ClickUp donde el equipo Webcafeína 
 
 - `clickup-task-creator` — wrapper sobre ClickUp API
 
-## Asignación automática
+## Asignación
 
-| Categoría tarea residual | Asignado a |
-|---|---|
-| Visual / contenido / SEO técnico | Samuel |
-| Configuración cliente / DNS / Email | Nacho (32553086) |
-| WooCommerce / pasarela pago | Álvaro |
-| Onboarding / comunicación cliente | Adrián |
-| Otros / sin clasificar | Nacho por defecto |
-
-(la asignación se puede sobreescribir manualmente desde el dashboard antes del sync)
+**Sin asignación automática**. Las tareas se crean en ClickUp sin assignee (o con el valor de `CLICKUP_DEFAULT_ASSIGNEE` si está configurado). El equipo Webcafeína decide en ClickUp quién toma cada tarea según disponibilidad y carga de trabajo. La columna `residual_tasks.category` se sube como etiqueta para que el equipo pueda filtrar/agrupar.
 
 ## Sincronización bidireccional
 

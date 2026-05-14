@@ -1,6 +1,6 @@
 # Release v0.1.0 — instrucciones de publicación
 
-> Documento dirigido a **Álvaro** (o quien tenga permisos en `github.com/webcafeina`). Pasos para llevar el repo local a GitHub y publicar el tag `v0.1.0`.
+> Documento dirigido al **equipo Webcafeína** (quien tenga permisos en `github.com/webcafeina`). Pasos para llevar el repo local a GitHub y publicar el tag `v0.1.0`.
 
 ---
 
@@ -193,9 +193,7 @@ Si algún job falla:
 
 ## 10. Equipo
 
-Añadir al equipo en **Settings → Collaborators and teams**:
-- Álvaro (admin)
-- Samuel, Adrián, Nacho (write)
+Añadir al equipo Webcafeína en **Settings → Collaborators and teams**. Convención: **sin roles individuales** — todo el equipo se gestiona como una unidad con los permisos que corresponda al uso del repo (admin para los que necesiten publicar releases / mergear, write para el resto). Cualquier cambio puede hacerlo cualquier miembro del equipo; no hay assignees personales en el código.
 
 ---
 

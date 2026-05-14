@@ -62,7 +62,7 @@ Categorías ordenadas por prioridad típica:
 ### [PROJECT-XX-task-007] Configurar pasarela Stripe en WooCommerce
 - **Categoría**: 🔴 Bloqueantes para go-live
 - **Tiempo estimado**: 30 min
-- **Asignado a**: Samuel
+- **Asignado a**: equipo Webcafeína (sin assignee individual)
 - **Generado por**: woo-migrator
 - **Descripción**: La pasarela de pago no se migra automáticamente por seguridad...
 - **Pasos**:

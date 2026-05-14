@@ -65,6 +65,9 @@ local-data/
 *.sqlite
 *.sqlite-journal
 
+# ---- Claude Code ----
+.claude/scheduled_tasks.lock
+
 # ---- Build artifacts ----
 *.whl
 *.tar.gz

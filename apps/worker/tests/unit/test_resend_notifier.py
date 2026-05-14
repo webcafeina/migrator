@@ -14,7 +14,7 @@ from wcm_worker.integrations.resend import ResendSendResult
 
 def _ctx(fake_session, **overrides) -> AgentContext:
     extra = {
-        "recipients": ["nacho@webcafeina.com"],
+        "recipients": ["ops@webcafeina.com"],
         "subject": "Resumen",
         "body_text": "Hola",
     }
@@ -38,7 +38,7 @@ def test_notifier_skipped_without_resend_key(fake_session, monkeypatch) -> None:
     monkeypatch.delenv("RESEND_API_KEY", raising=False)
     result = ResendNotifierAgent().run(_ctx(fake_session))
     assert result.outputs["skipped"] is True
-    assert "nacho@webcafeina.com" in result.outputs["would_send_to"]
+    assert "ops@webcafeina.com" in result.outputs["would_send_to"]
 
 
 def test_notifier_sends_via_client(fake_session) -> None:
@@ -49,5 +49,5 @@ def test_notifier_sends_via_client(fake_session) -> None:
     assert result.outputs["message_id"] == "m-1"
     fake_client.send.assert_called_once()
     args = fake_client.send.call_args.kwargs
-    assert args["to"] == ["nacho@webcafeina.com"]
+    assert args["to"] == ["ops@webcafeina.com"]
     assert args["subject"] == "Resumen"

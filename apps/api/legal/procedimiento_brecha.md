@@ -27,8 +27,8 @@ Fuentes que pueden disparar el procedimiento:
 ### T+0 — Contención (primeros 30 min)
 
 1. **Quien detecta** notifica inmediatamente al **operador de guardia** (canal #seguridad-interno).
-2. Operador de guardia eleva al **DPO interno** (Álvaro hasta nombramiento formal).
-3. DPO designa el **responsable del incidente** (puede ser él mismo).
+2. Operador de guardia eleva al **DPO interno** (equipo Webcafeína, decisión colegiada hasta nombramiento formal).
+3. El equipo designa el **responsable del incidente** entre sus miembros.
 4. Responsable del incidente:
    - Revoca tokens potencialmente comprometidos (`UPDATE users SET token_version = token_version + 1`).
    - Rota secrets afectados (JWT_SECRET, GOOGLE_MAPS_API_KEY si aplica).
@@ -63,6 +63,6 @@ Todo incidente queda registrado en `apps/api/legal/registro_incidentes.md` (no v
 
 ## 6. Contactos
 
-- DPO interno: Álvaro · info@webcafeina.com.
+- DPO interno: equipo Webcafeína (decisión colegiada) · info@webcafeina.com.
 - Asesor legal externo: pendiente designación (WCM-LEGAL-001).
 - Punto de contacto AEPD: www.aepd.es/derechos-y-deberes/canal-prioritario.

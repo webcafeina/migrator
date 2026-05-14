@@ -38,10 +38,10 @@ Si eres del equipo Webcafeína y vas a **usar** la herramienta (no modificarla):
 
 ### Primera vez
 
-1. Pide a Álvaro las credenciales del dashboard. Login en `https://migrator.webcafeina.com`.
-2. Lee la guía de tu rol:
-   - **Comercial / prospección**: [`docs/prospeccion.md`](./docs/prospeccion.md)
-   - **Técnico / migraciones**: [`docs/migracion.md`](./docs/migracion.md)
+1. Pide al equipo Webcafeína las credenciales del dashboard. Login en `https://migrator.webcafeina.com`.
+2. Lee las dos guías operativas:
+   - **Prospección**: [`docs/prospeccion.md`](./docs/prospeccion.md)
+   - **Migraciones**: [`docs/migracion.md`](./docs/migracion.md)
 3. Glosario rápido si encuentras un término que no conoces: [`docs/glossary.md`](./docs/glossary.md).
 
 ### Tareas habituales
@@ -60,7 +60,7 @@ Si eres del equipo Webcafeína y vas a **usar** la herramienta (no modificarla):
 
 Si algo va mal, consulta [`docs/playbook-operativo.md`](./docs/playbook-operativo.md) — runbooks por tipo de incidente.
 
-Para situaciones críticas (brecha de seguridad, AEPD): notifica a Álvaro inmediatamente y abre el runbook INC-04.
+Para situaciones críticas (brecha de seguridad, AEPD): notifica al equipo Webcafeína inmediatamente y abre el runbook INC-04.
 
 ---
 
@@ -247,4 +247,4 @@ Releases por tags semver (`v0.1.0`, `v0.2.0`, ...) sobre `main`. Deploy a produc
 ## Contacto
 
 - **Email proyecto**: info@webcafeina.com
-- **Equipo**: Álvaro, Samuel, Adrián, Nacho
+- **Equipo**: Webcafeína S.L. (sin roles individuales — todo se gestiona como equipo)

@@ -2,7 +2,7 @@
 
 Runbooks para incidentes y operaciones recurrentes. Cada sección sigue el formato: **Síntoma → Diagnóstico → Acción → Verificación → Escalación**.
 
-Audiencia: equipo de operaciones (Álvaro, Samuel, Adrián, Nacho).
+Audiencia: equipo Webcafeína. **Convención**: las escalaciones se dirigen al equipo en conjunto (canal interno habitual), no a personas concretas. El equipo decide internamente quién toma cada incidente.
 
 ---
 
@@ -59,7 +59,7 @@ wcm projects resume 42
 
 **Verificación**: `project_phases.updated_at` avanza en los próximos 5 minutos.
 
-**Escalación**: Si tras dos resumes sigue atascado, abrir incidente en Sentry y avisar a Álvaro.
+**Escalación**: Si tras dos resumes sigue atascado, abrir incidente en Sentry y avisar al equipo Webcafeína.
 
 ---
 
@@ -130,7 +130,7 @@ wcm audit anonymize --entity lead --entity-id <id>
 
 **Verificación**: el solicitante no debe aparecer en `SELECT * FROM leads WHERE ...`. En `audit_log` queda el trail anonimizado.
 
-**Escalación**: si el solicitante invoca AEPD o exige plazos cortos, avisar a Álvaro inmediatamente.
+**Escalación**: si el solicitante invoca AEPD o exige plazos cortos, avisar al equipo Webcafeína inmediatamente.
 
 **Plazo legal**: máximo 1 mes desde la solicitud (extensible a 2 meses con justificación).
 
@@ -147,7 +147,7 @@ wcm audit anonymize --entity lead --entity-id <id>
 **Procedimiento completo**: [`apps/api/legal/procedimiento_brecha.md`](../apps/api/legal/procedimiento_brecha.md).
 
 **T+0 (primeros 30 min)**:
-1. Notificar al DPO interno (Álvaro hasta nombramiento formal).
+1. Notificar al DPO interno (equipo Webcafeína, decisión colegiada hasta nombramiento formal).
 2. Pausar el worker si el vector incluye prospección activa:
    ```bash
    sudo systemctl stop wcm-worker
@@ -270,7 +270,7 @@ Causas:
 
 **Verificación**: bounce rate baja del 5% en las próximas 48h.
 
-**Escalación**: si Resend amenaza con suspender la cuenta por reputation, escalar a Álvaro.
+**Escalación**: si Resend amenaza con suspender la cuenta por reputation, escalar al equipo Webcafeína.
 
 ---
 
