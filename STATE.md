@@ -409,8 +409,9 @@ Pasos del `docs/release-v0.1.0.md` completados:
 - ✅ Paso 6 (branch protection en `main` — hecho manualmente por el operador).
 - ✅ Paso 9 implícito (CI verde tras 5 fixes iterativos sobre el primer run).
 
-Pasos pendientes (todos manuales, no bloqueantes):
-- Paso 7: configurar **sudoers** en el servidor WHM para que `webcafeina` pueda reiniciar las units WCM sin password (necesario para deploy desde Actions).
+Pasos pendientes (todos manuales, no bloqueantes — pospuestos hasta que toque el primer deploy):
+- **Paso 7 del release-v0.1.0.md** (secrets GitHub Actions para deploy): crear `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` en Settings → Secrets → Actions cuando se vaya a usar `deploy-production.yml`. Requiere servidor WHM provisionado primero (ver `docs/despliegue.md` §1).
+- **Sudoers WHM** (en `docs/despliegue.md` §4): configurar `/etc/sudoers.d/wcm-deploy` para que `webcafeina` pueda reiniciar las units sin password. Necesario para que `deploy.sh` no se cuelgue pidiendo password en CI.
 - Paso 8: `gh release create v0.1.0 --notes-file CHANGELOG.md --verify-tag` para que aparezca en Releases del repo.
 - Paso 10: añadir miembros del equipo (Álvaro admin, Samuel/Adrián/Nacho write).
 - Paso 11: post-release (notificar al equipo, planificar roadmap post-v0.1.0).
