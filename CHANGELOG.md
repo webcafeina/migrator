@@ -7,6 +7,17 @@ Versionado [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+Cambios todavía sin tag.
+
+---
+
+## [0.2.0] — 2026-05-14
+
+Primera iteración tras testeo funcional real. Trae visualización rica del
+progreso de campaña, indicador global multiventana, internacionalización,
+nuevo modelo de datos `Campaign`, paleta de marca rediseñada y varios
+fixes P0 detectados al usar el producto.
+
 ### Added
 
 - **`scripts/README.md`**: documentación de los controles del stack local
@@ -28,56 +39,70 @@ Versionado [SemVer](https://semver.org/lang/es/).
   Cualquier rol. Sirve al indicador global del dashboard.
 - **`ActiveCampaignsIndicator`** en el header del dashboard: pildora lima
   con loader + sector/región que aparece cuando hay 1+ campañas en curso.
-  Polea cada 5s. Multiventana real (lee de BD, no localStorage).
-- **Sidebar y status traducidos a español** vía `lib/labels.ts`. 8
+  Polea cada 5s. **Multiventana real** (lee de BD, no localStorage).
+- **Sidebar y status traducidos a castellano** vía `lib/labels.ts`. 8
   ubicaciones afectadas: overview, leads (list+detail), projects (list+
-  detail+checklist), residual-tasks, run-status.
-- 12 tests nuevos en `test_campaigns_runs_endpoint`, `test_tasks_pipeline`,
-  `test_campaigns_persistence` y `test_leads_pipeline_endpoints`.
+  detail+checklist), residual-tasks, run-status. Helper centralizado
+  cubre `LeadStatus`, `ProjectStatus`, `ProjectPhaseStatus`,
+  `ResidualStatus`, `OutreachSequenceStatus`.
+- 18 tests nuevos: `test_campaigns_runs_endpoint`, `test_tasks_pipeline`,
+  `test_campaigns_persistence`, `test_leads_pipeline_endpoints`, +
+  ampliación en `test_prospector` (created_lead_ids, place_details) y
+  `test_imports` (campaigns).
 
 ### Changed
 
-- **Paleta de marca**: sustituida la paleta marrón original por azul marino
-  casi gris. Mejor contraste para tablas densas + look técnico (Linear /
-  JetBrains dark como referencia). El acento lima `#B1F100` se mantiene.
+- **Paleta de marca**: sustituida la paleta marrón original por azul
+  marino casi gris (`#0E1218` / `#1A222D` / `#E2E8F0` / `#3D4A5C`). Mejor
+  contraste para tablas densas + look técnico (referencia visual: Linear
+  / JetBrains dark). El acento lima `#B1F100` se mantiene intacto.
   `tailwind.config.ts`, `globals.css` y `CLAUDE.md §3` actualizados.
 - **Pipeline de enrich**: `tasks/prospector.run_campaign` ya no usa
   `celery.chain(fingerprint, enrich)` sino dos `send_task` independientes
-  por lead. Motivo: si fingerprint fallaba (URL inalcanzable), el chain
-  rompía y enrich nunca corría → lead atascado en DISCOVERED para
-  siempre → Campaign atascada en RUNNING. Ahora enrich corre aunque
-  fingerprint falle (con el coste de que el score no contará el
-  builder detectado para ese lead).
+  por lead. Motivo: si fingerprint fallaba (URL inalcanzable, timeout),
+  el chain rompía y enrich nunca corría → lead atascado en `DISCOVERED`
+  → Campaign atascada en `RUNNING` para siempre. Ahora `enrich` corre
+  aunque fingerprint falle (coste: el score no contará builder detectado
+  en ese lead).
+- **CI**: `tsconfig` con `noUncheckedIndexedAccess` ya forzaba narrowing
+  estricto; el código nuevo lo respeta. Tests Python con cobertura
+  86.87% (umbral 70%).
 
 ### Fixed
 
 - **WCM-026 (P0)**: `ProspectorAgent` no encadenaba fingerprint + enrich
   tras crear leads. Ahora `tasks/prospector.run_campaign` itera
   `outputs["created_lead_ids"]` y encola fingerprint+enrich por lead.
-- **WCM-028**: warning estático obsoleto en `wcm campaigns launch`.
-- **WCM-032 (P0)**: dashboard no podía autenticar contra el API porque
-  `get_current_user_payload` no leía la cookie `wcm_session`. Ahora la
-  dependency recibe `Request` y lee la cookie como fallback.
-- **WCM-033**: worker Celery hacía SIGSEGV al cargar `multilingual-e5-large`
-  en macOS con `--pool=prefork`. `dev-up.sh` arranca con `--pool=threads`.
-
-### Fixed
-
-- **WCM-026 (P0)**: `ProspectorAgent` no encadenaba fingerprint + enrich
-  tras crear leads. Ahora `tasks/prospector.run_campaign` itera
-  `outputs["created_lead_ids"]` y por cada lead encola un `chain(
-  wcm.fingerprinter.run, wcm.enricher.run)` con signatures immutable.
 - **WCM-028**: warning estático obsoleto en `wcm campaigns launch`
   ("ProspectorAgent es stub en Fase 6") reemplazado por mensaje real.
 - **WCM-032 (P0)**: dashboard no podía autenticar contra el API
   ("Credenciales no proporcionadas") porque `get_current_user_payload`
   no leía la cookie `wcm_session` — el middleware que el comentario
-  prometía nunca se implementó. Ahora la dependency recibe `Request` y
+  prometía nunca se implementó. La dependency ahora recibe `Request` y
   lee `request.cookies.get(settings.session_cookie_name)` como fallback.
 - **WCM-033**: worker Celery hacía SIGSEGV al cargar
-  `intfloat/multilingual-e5-large` en macOS con `--pool=prefork`.
-  `scripts/dev-up.sh` arranca ahora con `--pool=threads --concurrency=2`.
-  En Linux/prod sigue siendo prefork.
+  `intfloat/multilingual-e5-large` en macOS con `--pool=prefork`
+  (PyTorch + `fork()` no se llevan bien). `scripts/dev-up.sh` arranca
+  ahora con `--pool=threads --concurrency=2`. En Linux/prod sigue siendo
+  prefork.
+- **Race condition `POST /launch` ↔ worker**: el worker podía coger la
+  task **antes** de que la fila `campaigns` estuviera committed, dejando
+  la Campaign atascada en `QUEUED` con `created_lead_ids={}` y los leads
+  sin `campaign_id`. Fix: el endpoint genera el `task_id` con
+  `uuid.uuid4()`, commitea la fila primero y luego encola con
+  `celery_app.send_task(..., task_id=task_id)` que fuerza ese ID. Test de
+  regresión basado en `await_count` de `session.commit`.
+
+### Operational notes
+
+- Cobertura: 86.87% (407 passed, 10 skipped).
+- Stack canónico confirmado: Node 22 LTS (`@node@22` brew formula), Python
+  3.14, Postgres 16 + pgvector 0.8.0, Redis 8, sin Docker.
+- Repo movido a `~/Desktop/` y desactivado el evict de iCloud Drive
+  ("Conservar en este dispositivo") para evitar archivos `dataless` —
+  raíz del incidente de pack git corrupto + venv `.pth` re-ocultando.
+
+---
 
 ---
 
