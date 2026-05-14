@@ -150,14 +150,17 @@ export async function installBaseMocks(page: Page): Promise<void> {
  * directamente sin pasar por la UI de login. Útil cuando el flujo no
  * incluye el login y solo queremos verificar páginas internas.
  */
-export async function loginViaCookie(page: Page, baseURL = "http://127.0.0.1:3100"): Promise<void> {
+export async function loginViaCookie(page: Page, _baseURL = "http://127.0.0.1:3100"): Promise<void> {
+  // Playwright addCookies requiere `url` SOLO (de donde infiere domain+path)
+  // o bien `domain` + `path` juntos. Combinar `url` + `path` lanza:
+  // "Cookie should have either url or path".
   await page.context().addCookies([
     {
       name: "wcm_session",
       value: "fake-jwt",
-      url: baseURL,
-      httpOnly: true,
+      domain: "127.0.0.1",
       path: "/",
+      httpOnly: true,
     },
   ]);
 }

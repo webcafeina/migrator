@@ -7,7 +7,9 @@ test.describe("Login", () => {
 
     await page.goto("/login");
     await expect(page.getByText("WEBCAFEÍNA MIGRATOR")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
+    // CardTitle es un <div>, no un heading semántico — usar getByText
+    // en lugar de getByRole("heading", ...).
+    await expect(page.getByText("Iniciar sesión")).toBeVisible();
 
     await page.getByLabel(/email/i).fill("ops@webcafeina.com");
     await page.getByLabel(/password|contraseña/i).fill("hunter2");
