@@ -24,7 +24,11 @@ from wcm_api.security import (
     issue_opt_out_token,
     require_role,
 )
-from wcm_api.tasks.enqueue import enqueue_lead_fingerprint, enqueue_outreach_compose
+from wcm_api.tasks.enqueue import (
+    enqueue_lead_enrich,
+    enqueue_lead_fingerprint,
+    enqueue_outreach_compose,
+)
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead
 from wcm_types.enums import AuditAction, BuilderType, LeadStatus, UserRole
@@ -114,6 +118,21 @@ async def refingerprint_lead(
     if lead is None:
         raise NotFoundError(f"Lead {lead_id} no encontrado")
     task_id = enqueue_lead_fingerprint(lead_id)
+    return {"task_id": task_id, "status": "queued"}
+
+
+@router.post("/{lead_id}/enrich", status_code=status.HTTP_202_ACCEPTED)
+async def enrich_lead(
+    lead_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+    skip_embedding: bool = Query(default=False, description="Saltar embedding (útil para tests/dev)"),
+) -> dict:
+    """Encola re-enrichment del lead (emails / phones / socials / embedding)."""
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+    task_id = enqueue_lead_enrich(lead_id, skip_embedding=skip_embedding)
     return {"task_id": task_id, "status": "queued"}
 
 

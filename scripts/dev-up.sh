@@ -73,9 +73,12 @@ tmux send-keys -t "$SESSION:api" \
     "$ENV_PRELUDE && .venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload" C-m
 
 # Ventana 2 — Worker Celery
+# pool=threads: evita SIGSEGV de PyTorch + fork() en macOS al cargar el
+# modelo de embeddings (sentence-transformers). En Linux/prod se puede
+# volver a prefork sin problema. WCM-033.
 tmux new-window -t "$SESSION" -n worker -c "$REPO_ROOT"
 tmux send-keys -t "$SESSION:worker" \
-    "$ENV_PRELUDE && .venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --concurrency=2" C-m
+    "$ENV_PRELUDE && .venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --pool=threads --concurrency=2" C-m
 
 # Ventana 3 — Beat (opcional)
 if ! $SKIP_BEAT; then

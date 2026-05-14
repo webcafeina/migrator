@@ -91,3 +91,17 @@ def refingerprint_lead(lead_id: Annotated[int, typer.Argument()]) -> None:
     client = ApiClient()
     result = client.post(f"/api/v1/leads/{lead_id}/refingerprint")
     output.success(f"Encolada task {result['task_id']} para lead {lead_id}")
+
+
+@app.command("enrich")
+def enrich_lead(
+    lead_id: Annotated[int, typer.Argument(help="ID del lead a enriquecer")],
+    skip_embedding: Annotated[
+        bool, typer.Option("--skip-embedding", help="Saltar embedding (más rápido)")
+    ] = False,
+) -> None:
+    """Encola enriquecimiento (emails, phones, socials, embedding) de un lead."""
+    client = ApiClient()
+    params = {"skip_embedding": "true"} if skip_embedding else None
+    result = client.post(f"/api/v1/leads/{lead_id}/enrich", params=params)
+    output.success(f"Encolada task {result['task_id']} para lead {lead_id}")

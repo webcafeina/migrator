@@ -48,18 +48,31 @@ def _place(
 
 
 class _FakeClient:
-    """Cliente fake del Google Places que sirve una lista predefinida."""
+    """Cliente fake del Google Places que sirve una lista predefinida.
+
+    `place_details(id)` devuelve el mismo PlaceResult (Text Search legacy
+    no incluye `website`/`phone`, en producción se piden con un segundo
+    call; el fake simplifica devolviendo el ya enriquecido).
+    """
 
     def __init__(self, places: list[PlaceResult] | Iterator[PlaceResult] | None = None,
                  *, raises: Exception | None = None) -> None:
         self._places = list(places) if places else []
         self._raises = raises
         self.closed = False
+        self.details_calls: list[str] = []
 
     def text_search(self, query: str, *, max_pages: int = 3):
         if self._raises:
             raise self._raises
         yield from self._places
+
+    def place_details(self, place_id: str) -> PlaceResult | None:
+        self.details_calls.append(place_id)
+        for p in self._places:
+            if p.place_id == place_id:
+                return p
+        return None
 
     def close(self) -> None:
         self.closed = True
@@ -103,7 +116,7 @@ def test_prospector_creates_one_lead_per_unique_website(fake_session) -> None:
 
 
 def test_prospector_skips_places_without_website(fake_session) -> None:
-    places = [_place(website=None), _place(website="https://x.com")]
+    places = [_place(place_id="p1", website=None), _place(place_id="p2", website="https://x.com")]
     _setup_upsert_mock(fake_session, returned_ids=[1])
 
     agent = ProspectorAgent(client=_FakeClient(places))
@@ -199,6 +212,39 @@ def test_prospector_missing_env_when_no_client_injected(fake_session, monkeypatc
         agent.run(
             AgentContext(session=fake_session, extra={"sector": "x", "region": "y"})
         )
+
+
+def test_prospector_returns_created_lead_ids(fake_session) -> None:
+    """WCM-026: outputs incluye la lista de lead_ids creados para que la
+    task pueda encadenar fingerprint + enrich por cada uno."""
+    places = [_place(place_id="p1", website="https://a.com"),
+              _place(place_id="p2", website="https://b.com")]
+    _setup_upsert_mock(fake_session, returned_ids=[10, 11])
+
+    agent = ProspectorAgent(client=_FakeClient(places))
+    result = agent.run(
+        AgentContext(
+            session=fake_session,
+            extra={"sector": "x", "region": "y", "target_count": 10},
+        )
+    )
+
+    assert result.outputs["created_lead_ids"] == [10, 11]
+
+
+def test_prospector_skips_when_details_returns_no_website(fake_session) -> None:
+    """Place sin website tras consultar place_details → se descarta."""
+    places = [_place(place_id="p1", website=None)]  # ni base ni details devolverán website
+    _setup_upsert_mock(fake_session, returned_ids=[])
+
+    agent = ProspectorAgent(client=_FakeClient(places))
+    result = agent.run(
+        AgentContext(session=fake_session, extra={"sector": "x", "region": "y"})
+    )
+
+    assert result.outputs["skipped_no_website"] == 1
+    assert result.outputs["created"] == 0
+    assert result.outputs["created_lead_ids"] == []
 
 
 def test_normalize_url_drops_www_and_trailing_slash() -> None:

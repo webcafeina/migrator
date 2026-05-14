@@ -13,6 +13,31 @@ Versionado [SemVer](https://semver.org/lang/es/).
   (`dev-up.sh`, `dev-down.sh`, `fix-venv-hidden-pth.sh`) con atajos `tmux`,
   patrones de uso típicos y troubleshooting. Complementa a `docs/dev-local.md`
   (setup) con el uso diario.
+- **Task Celery `wcm.enricher.run`**: expone `EnricherAgent` como task
+  reutilizable (WCM-027). Acepta `skip_embedding` opcional.
+- **Endpoint `POST /api/v1/leads/{id}/enrich`** + helper `enqueue_lead_enrich`
+  (WCM-027). Rol operator/admin. Query param `skip_embedding` opcional.
+- **CLI `wcm leads enrich <id> [--skip-embedding]`** (WCM-027).
+- 5 tests del enricher task + chain prospector, 7 tests del endpoint API,
+  2 tests adicionales del prospector (`created_lead_ids`, place_details).
+
+### Fixed
+
+- **WCM-026 (P0)**: `ProspectorAgent` no encadenaba fingerprint + enrich
+  tras crear leads. Ahora `tasks/prospector.run_campaign` itera
+  `outputs["created_lead_ids"]` y por cada lead encola un `chain(
+  wcm.fingerprinter.run, wcm.enricher.run)` con signatures immutable.
+- **WCM-028**: warning estático obsoleto en `wcm campaigns launch`
+  ("ProspectorAgent es stub en Fase 6") reemplazado por mensaje real.
+- **WCM-032 (P0)**: dashboard no podía autenticar contra el API
+  ("Credenciales no proporcionadas") porque `get_current_user_payload`
+  no leía la cookie `wcm_session` — el middleware que el comentario
+  prometía nunca se implementó. Ahora la dependency recibe `Request` y
+  lee `request.cookies.get(settings.session_cookie_name)` como fallback.
+- **WCM-033**: worker Celery hacía SIGSEGV al cargar
+  `intfloat/multilingual-e5-large` en macOS con `--pool=prefork`.
+  `scripts/dev-up.sh` arranca ahora con `--pool=threads --concurrency=2`.
+  En Linux/prod sigue siendo prefork.
 
 ---
 

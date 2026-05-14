@@ -1,13 +1,19 @@
 """Task Celery `wcm.prospector.run_campaign`.
 
 Construye un AgentContext con los parámetros de la campaña y delega en
-ProspectorAgent. Devuelve el resumen serializable al backend de
-resultados Celery.
+ProspectorAgent. Tras crear los leads, encadena para cada uno
+`wcm.fingerprinter.run` → `wcm.enricher.run` (WCM-026). El chain se lanza
+asíncrono: cada lead se procesa en paralelo según slots libres del worker.
+
+Devuelve el resumen serializable al backend de resultados Celery,
+añadiendo `chained_pipelines` con el número de cadenas encoladas.
 """
 
 from __future__ import annotations
 
 import logging
+
+from celery import chain
 
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.prospector import ProspectorAgent
@@ -43,13 +49,39 @@ def run_campaign(
                 },
             )
             result = agent.run(ctx)
-            return {
-                "status": "ok",
-                "summary": result.summary,
-                "outputs": result.outputs,
-                "warnings": result.warnings,
-            }
+            created_lead_ids: list[int] = result.outputs.get("created_lead_ids", [])
+
+        chained = _enqueue_pipeline_for_leads(created_lead_ids)
+        log.info(
+            "prospect_pipeline_chained",
+            extra={"leads": len(created_lead_ids), "pipelines_enqueued": chained},
+        )
+
+        return {
+            "status": "ok",
+            "summary": result.summary,
+            "outputs": result.outputs,
+            "chained_pipelines": chained,
+            "warnings": result.warnings,
+        }
     except ProspectorError as e:
         # No reintentamos errores definitivos (API key inválida etc.).
         log.error("prospect_campaign_failed", extra={"error": str(e)})
         return {"status": "error", "error": str(e)}
+
+
+def _enqueue_pipeline_for_leads(lead_ids: list[int]) -> int:
+    """Encola fingerprint → enrich para cada lead. Devuelve cuántas cadenas
+    se enviaron. Encolar fuera de session_scope para no retener la sesión
+    mientras se hace el round-trip al broker.
+    """
+    sent = 0
+    for lead_id in lead_ids:
+        # `.si()` (signature_immutable): la salida del fingerprint NO se
+        # pasa como argumento al enricher — ambos reciben solo lead_id.
+        chain(
+            celery_app.signature("wcm.fingerprinter.run", kwargs={"lead_id": lead_id}, immutable=True),
+            celery_app.signature("wcm.enricher.run", kwargs={"lead_id": lead_id}, immutable=True),
+        ).apply_async()
+        sent += 1
+    return sent

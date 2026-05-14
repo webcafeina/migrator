@@ -19,7 +19,7 @@ from typing import Annotated
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import Cookie, Depends, Header
+from fastapi import Cookie, Depends, Header, Request
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.errors import ForbiddenError, UnauthorizedError
@@ -142,6 +142,7 @@ async def get_token_from_request(
 
 
 async def get_current_user_payload(
+    request: Request,
     request_state_token: Annotated[str | None, Header(alias="x-wcm-token")] = None,
     authorization: Annotated[str | None, Header()] = None,
     settings: Annotated[ApiSettings, Depends(get_settings)] = None,  # type: ignore[assignment]
@@ -149,9 +150,9 @@ async def get_current_user_payload(
     """Dependency principal de autenticación.
 
     Acepta token en (orden de preferencia):
-    1. Cookie `<session_cookie_name>` (vía middleware que la inyecta como header)
-    2. Header `Authorization: Bearer <token>`
-    3. Header `x-wcm-token` (uso CLI sin Bearer)
+    1. Header `Authorization: Bearer <token>` (uso CLI / API directa)
+    2. Header `x-wcm-token` (uso CLI sin Bearer)
+    3. Cookie `<settings.session_cookie_name>` (uso dashboard, cookie http-only)
     """
     token: str | None = None
 
@@ -159,6 +160,9 @@ async def get_current_user_payload(
         token = authorization.split(" ", 1)[1].strip()
     elif request_state_token:
         token = request_state_token.strip()
+    else:
+        # Nombre de cookie dinámico → no podemos usar `Cookie()` en la firma.
+        token = request.cookies.get(settings.session_cookie_name)
 
     if not token:
         raise UnauthorizedError("Credenciales no proporcionadas")

@@ -32,6 +32,7 @@ def launch_campaign(
         f"Campaña encolada: task {result['task_id']} "
         f"(sector={sector}, region={region}, target={target})"
     )
-    output.warning(
-        "ProspectorAgent es stub en Fase 6. Implementación real en Fase 9."
+    output.info(
+        "El worker descubrirá leads vía Google Places y los pasará por "
+        "fingerprint + enrich automáticamente."
     )

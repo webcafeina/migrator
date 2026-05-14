@@ -86,6 +86,7 @@ class ProspectorAgent(BaseAgent):
 
         discovered = 0
         created = 0
+        created_lead_ids: list[int] = []
         skipped_no_website = 0
         skipped_excluded = 0
         skipped_blocked_type = 0
@@ -126,6 +127,7 @@ class ProspectorAgent(BaseAgent):
                     skipped_duplicate += 1
                     continue
                 created += 1
+                created_lead_ids.append(lead_id)
 
                 _insert_enrichment(ctx, lead_id, place_full)
                 _audit_discover(ctx, lead_id, query, place_full)
@@ -151,6 +153,7 @@ class ProspectorAgent(BaseAgent):
                 "query": query,
                 "discovered": discovered,
                 "created": created,
+                "created_lead_ids": created_lead_ids,
                 "skipped_duplicate": skipped_duplicate,
                 "skipped_no_website": skipped_no_website,
                 "skipped_excluded": skipped_excluded,

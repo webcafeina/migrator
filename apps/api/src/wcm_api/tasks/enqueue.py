@@ -44,6 +44,15 @@ def enqueue_lead_fingerprint(lead_id: int) -> str:
     return result.id
 
 
+def enqueue_lead_enrich(lead_id: int, *, skip_embedding: bool = False) -> str:
+    """Encola enriquecimiento (emails, phones, socials, embedding) de un lead."""
+    result = celery_app.send_task(
+        "wcm.enricher.run",
+        kwargs={"lead_id": lead_id, "skip_embedding": skip_embedding},
+    )
+    return result.id
+
+
 def enqueue_outreach_send(outreach_send_id: int) -> str:
     """Encola el envío real de un OutreachSend concreto."""
     result = celery_app.send_task(

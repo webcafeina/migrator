@@ -163,30 +163,31 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 ---
 
 ### WCM-026 (CRÍTICO) — `ProspectorAgent` no encadena fingerprint + enrich
-- **Tipo**: bug / **Fase**: 9 (descubierto en dev-local 2026-05-14) / **Prioridad**: **P0**
-- **Estado**: OPEN
-- **Contexto**: la task `wcm.prospector.run_campaign` solo crea leads `DISCOVERED`. NO encola fingerprint ni enrich después. En producción los leads se quedan colgados sin contacto/score. El operador tendría que hacerlo manual lead-a-lead.
-- **Acción**: tras `_upsert_lead`, encolar `wcm.fingerprinter.run.delay(lead_id)`. El fingerprinter task encadena enrich (ver WCM-027). Test e2e que verifique status `ENRICHED` tras campaña.
+- **Tipo**: bug / **Fase**: 9 (descubierto en dev-local 2026-05-14, fix aplicado) / **Prioridad**: **P0**
+- **Estado**: RESUELTO (2026-05-14)
+- **Contexto**: la task `wcm.prospector.run_campaign` solo creaba leads `DISCOVERED`. No encolaba fingerprint ni enrich después. Los leads se quedaban colgados sin contacto/score.
+- **Resolución**: `ProspectorAgent.run()` ahora devuelve `outputs["created_lead_ids"]`. La task `tasks/prospector.run_campaign` itera esa lista y por cada lead encola un `chain(wcm.fingerprinter.run, wcm.enricher.run)` (signatures immutable). Verificado e2e: campaña "cafetería"/"Mérida"/target=3 → 2 leads creados → fingerprint+enrich automáticos.
 
 ---
 
 ### WCM-027 (CRÍTICO) — Falta task Celery + endpoint + CLI para enrich
-- **Tipo**: feature / **Fase**: 9 (descubierto en dev-local 2026-05-14) / **Prioridad**: **P0**
-- **Estado**: OPEN
-- **Contexto**: existe `EnricherAgent` pero **no se expone**: no hay task Celery `wcm.enricher.run`, ni endpoint API `/leads/{id}/enrich`, ni comando CLI `wcm leads enrich`. Solo se puede usar via script Python ad-hoc.
-- **Acción**:
-  - `apps/worker/src/wcm_worker/tasks/enricher.py` con `@celery_app.task(name="wcm.enricher.run")`.
-  - `apps/api/src/wcm_api/routers/leads.py` añadir `POST /leads/{id}/enrich`.
-  - `cli/src/wcm_cli/commands/leads.py` añadir `wcm leads enrich <id>`.
-  - El fingerprinter task lo encola automáticamente tras fingerprint.
+- **Tipo**: feature / **Fase**: 9 (descubierto en dev-local 2026-05-14, fix aplicado) / **Prioridad**: **P0**
+- **Estado**: RESUELTO (2026-05-14)
+- **Contexto**: existía `EnricherAgent` pero no se exponía: sin task Celery, sin endpoint, sin CLI.
+- **Resolución**:
+  - `apps/worker/src/wcm_worker/tasks/enricher.py` con `@celery_app.task(name="wcm.enricher.run")` (acepta `skip_embedding` opcional).
+  - `enqueue_lead_enrich(lead_id, *, skip_embedding=False)` en `apps/api/src/wcm_api/tasks/enqueue.py`.
+  - `POST /api/v1/leads/{id}/enrich?skip_embedding=true` con rol operator/admin.
+  - `wcm leads enrich <id> [--skip-embedding]` en el CLI.
+  - 7 tests del endpoint + 5 del task chain.
 
 ---
 
 ### WCM-028 — Warning estático obsoleto en `wcm campaigns launch`
 - **Tipo**: bug / **Fase**: 7 (CLI) / **Prioridad**: P3
-- **Estado**: OPEN
-- **Contexto**: el comando imprime `⚠ ProspectorAgent es stub en Fase 6. Implementación real en Fase 9.` — texto hardcodeado obsoleto desde que ProspectorAgent es real en Fase 9.
-- **Acción**: eliminar el `typer.echo` en `cli/src/wcm_cli/commands/campaigns.py`.
+- **Estado**: RESUELTO (2026-05-14)
+- **Contexto**: el comando imprimía `⚠ ProspectorAgent es stub en Fase 6. Implementación real en Fase 9.` — texto hardcodeado obsoleto.
+- **Resolución**: reemplazado por `output.info(...)` con mensaje real ("El worker descubrirá leads vía Google Places y los pasará por fingerprint + enrich automáticamente").
 
 ---
 
@@ -212,6 +213,23 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - **Contexto**: Google Places Text Search legacy NO devuelve `website` ni `phone` en sus resultados — solo `place_id`, `name`, `address`, `types`. El `ProspectorAgent` filtraba con `if not place.website` que SIEMPRE era None → todos los places descartados como `no_website` → 0 leads creados nunca. **El producto MVP no producía leads en producción**.
 - **Resolución parcial**: fix aplicado en sesión 2026-05-14. Ahora se hace `place_details(place_id)` por cada place tras el filtro de tipo. Verificado: campaña "restaurante" / "Cáceres" / target=5 → 5 leads creados con URLs reales.
 - **Pendiente**: commit + push del fix; test unit en `test_prospector.py` que cubra el flujo Text Search devolviendo `website=None` y place_details devolviendo `website` real; documentar coste extra (~N+1 calls Places por campaña).
+
+---
+
+### WCM-032 (CRÍTICO) — Dashboard no podía autenticar contra el API
+- **Tipo**: bug / **Fase**: 5 (API auth) / **Prioridad**: **P0**
+- **Estado**: RESUELTO (2026-05-14)
+- **Contexto**: `get_current_user_payload` en `apps/api/src/wcm_api/security.py` solo aceptaba `Authorization: Bearer` o `x-wcm-token`. Un comentario decía *"Cookie `<session_cookie_name>` (vía middleware que la inyecta como header)"* pero **ese middleware nunca se implementó**. Resultado: cualquier acción desde el dashboard que llamara al API daba "Credenciales no proporcionadas" — incluido lanzar campaña, listar leads, etc.
+- **Resolución**: la dependency ahora recibe `request: Request` y, como tercer fallback, lee `request.cookies.get(settings.session_cookie_name)`. Respeta el nombre configurable de la cookie sin necesidad de middleware. 19 tests de auth siguen verdes.
+
+---
+
+### WCM-033 — Worker Celery con SIGSEGV al cargar embeddings en macOS
+- **Tipo**: bug / **Fase**: 9 (descubierto en dev-local 2026-05-14, fix aplicado) / **Prioridad**: P1
+- **Estado**: RESUELTO en dev (2026-05-14)
+- **Contexto**: `EnricherAgent` carga el modelo `intfloat/multilingual-e5-large` (sentence-transformers/PyTorch). En macOS, Celery con `--pool=prefork --concurrency=2` hace `fork()` después de inicializar PyTorch → `WorkerLostError: signal 11 (SIGSEGV)`. Confirmado en macOS 25.5 Darwin con Python 3.14.4.
+- **Resolución**: `scripts/dev-up.sh` arranca el worker con `--pool=threads --concurrency=2`. Sin fork, sin segfault. En Linux/prod (systemd) se puede volver a prefork sin problema porque ahí PyTorch sí tolera fork.
+- **Pendiente**: añadir nota en `docs/dev-local.md` sobre esta diferencia macOS/Linux; considerar flag `WCM_WORKER_POOL` en `infra/systemd/webcafeina-worker.service` para parametrizar (no ahora, no urgente).
 
 ---
 
