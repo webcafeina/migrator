@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { formatDate, truncate } from "@/lib/utils";
 import type { ProjectRead } from "@/types/api";
 
@@ -74,7 +75,7 @@ export default async function ProjectsPage() {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusVariant(p.status)}>{p.status}</Badge>
+                  <Badge variant={statusVariant(p.status)}>{statusLabel(p.status)}</Badge>
                 </TableCell>
                 <TableCell className="text-xs text-wcm-detail">
                   {formatDate(p.started_at)}

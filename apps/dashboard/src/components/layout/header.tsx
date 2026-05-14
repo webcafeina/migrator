@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
 import type { UserRead } from "@/types/api";
+import { ActiveCampaignsIndicator } from "./active-campaigns-indicator";
 import { LogoutButton } from "./logout-button";
 
 /**
@@ -22,6 +23,7 @@ export async function Header() {
       </div>
 
       <div className="flex items-center gap-3 text-sm">
+        <ActiveCampaignsIndicator />
         {user ? (
           <>
             <span className="text-wcm-text">{user.email}</span>

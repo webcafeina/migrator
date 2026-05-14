@@ -90,6 +90,14 @@ class ScrapeStatus(StrEnum):
     SKIPPED = "skipped"
 
 
+class CampaignStatus(StrEnum):
+    QUEUED = "queued"          # encolada, worker aún no la ha cogido
+    RUNNING = "running"        # prospector + chain enrich corriendo
+    COMPLETED = "completed"    # todos los leads pasaron por enrich (o 0 leads)
+    FAILED = "failed"          # error definitivo
+    CANCELLED = "cancelled"    # operador la canceló manualmente
+
+
 class AssetStatus(StrEnum):
     PENDING = "pending"
     DOWNLOADED = "downloaded"

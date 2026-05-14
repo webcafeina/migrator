@@ -5,6 +5,7 @@ import { ArrowLeft, ClipboardCheck, GitCompare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 import { ProjectActions } from "./actions";
@@ -96,7 +97,7 @@ export default async function ProjectDetailPage({
           <CardContent className="space-y-2 text-sm">
             <Row label="Status">
               <Badge variant={statusVariant(project.status)}>
-                {project.status}
+                {statusLabel(project.status)}
               </Badge>
             </Row>
             <Row label="Iniciado">{formatDate(project.started_at)}</Row>
@@ -135,7 +136,7 @@ export default async function ProjectDetailPage({
                   className="flex items-center justify-between border-b border-wcm-detail/30 py-2 text-sm last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <Badge variant={statusVariant(ph.status)}>{ph.status}</Badge>
+                    <Badge variant={statusVariant(ph.status)}>{statusLabel(ph.status)}</Badge>
                     <span className="font-medium">{ph.phase_name}</span>
                     {ph.attempt > 1 && (
                       <span className="text-xs text-wcm-detail">

@@ -75,3 +75,29 @@ export interface EnqueueResponse {
   status: "queued" | "not_implemented";
   [key: string]: unknown;
 }
+
+/**
+ * Snapshot de progreso de una campaña, retornado por
+ * GET /api/v1/campaigns/runs/{task_id}.
+ */
+export interface CampaignRunStatus {
+  task_id: string;
+  state: "PENDING" | "STARTED" | "SUCCESS" | "FAILURE" | "RETRY";
+  ready: boolean;
+  prospect: {
+    query: string | null;
+    discovered: number;
+    created: number;
+    skipped_duplicate: number;
+    skipped_no_website: number;
+    skipped_excluded: number;
+    skipped_blocked_type: number;
+    warnings: string[];
+  } | null;
+  pipeline: {
+    total: number;
+    by_status: Record<string, number>;
+    lead_ids: number[];
+  } | null;
+  error: string | null;
+}

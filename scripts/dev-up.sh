@@ -88,9 +88,18 @@ if ! $SKIP_BEAT; then
 fi
 
 # Ventana 4 — Dashboard Next.js
+# Forzamos Node 22 si está instalado: Next 15.5.18 crashea en Node 25+
+# ("_semver.default.satisfies is not a function"). El stack canónico es
+# Node 22 LTS (CLAUDE.md §4); el CI valida 20/22. WCM-034.
 tmux new-window -t "$SESSION" -n dashboard -c "$REPO_ROOT"
+NODE22_BIN="/opt/homebrew/opt/node@22/bin"
+if [[ -d "$NODE22_BIN" ]]; then
+    DASHBOARD_PRELUDE="export PATH=\"$NODE22_BIN:\$PATH\""
+else
+    DASHBOARD_PRELUDE="echo '[WARN] Node 22 no instalado; usando Node del sistema (puede crashear Next 15.5.18 si >24).'"
+fi
 tmux send-keys -t "$SESSION:dashboard" \
-    "pnpm --filter @webcafeina/dashboard exec next dev -p 3000" C-m
+    "$DASHBOARD_PRELUDE && pnpm --filter @webcafeina/dashboard exec next dev -p 3000" C-m
 
 echo ""
 echo "✓ Stack arrancada en sesión tmux '$SESSION'"

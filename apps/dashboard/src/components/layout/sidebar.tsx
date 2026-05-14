@@ -22,13 +22,13 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { href: "/", label: "Overview", icon: LayoutGrid },
+  { href: "/", label: "Panel", icon: LayoutGrid },
   { href: "/leads", label: "Leads", icon: Users },
-  { href: "/projects", label: "Projects", icon: Briefcase },
-  { href: "/campaigns", label: "Campaigns", icon: Target },
-  { href: "/residual-tasks", label: "Residual", icon: CheckSquare },
-  { href: "/errors", label: "Errors", icon: AlertTriangle },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/projects", label: "Proyectos", icon: Briefcase },
+  { href: "/campaigns", label: "Campañas", icon: Target },
+  { href: "/residual-tasks", label: "Tareas pendientes", icon: CheckSquare },
+  { href: "/errors", label: "Errores", icon: AlertTriangle },
+  { href: "/settings", label: "Ajustes", icon: Settings },
 ];
 
 export function Sidebar() {

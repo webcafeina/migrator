@@ -4,6 +4,7 @@ import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 import type { ResidualTaskRead } from "@/types/api";
 
@@ -84,7 +85,7 @@ export default async function ChecklistPage({
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="text-sm font-medium">{t.title}</span>
                         <Badge variant={statusVariant(t.status)}>
-                          {t.status}
+                          {statusLabel(t.status)}
                         </Badge>
                       </div>
                       <p className="mt-1 text-xs text-wcm-detail whitespace-pre-wrap">

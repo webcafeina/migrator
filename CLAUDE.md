@@ -37,12 +37,14 @@
 
 ### Paleta obligatoria
 
+Refactor 2026-05-14: se sustituyó la paleta marrón original por azul marino casi gris para mejorar contraste en tablas densas y dar look técnico (referencia visual: Linear / JetBrains dark). El acento lima se mantiene intacto.
+
 | Uso | Hex |
 |---|---|
-| Background primario | `#171009` |
-| Background secundario | `#2B1A0E` |
-| Texto claro | `#F2E8D2` |
-| Detalle marrón | `#5A3519` |
+| Background primario | `#0E1218` (azul marino casi negro) |
+| Background secundario | `#1A222D` (azul marino oscuro) |
+| Texto claro | `#E2E8F0` (gris claro azulado) |
+| Detalle | `#3D4A5C` (azul gris medio — bordes, separadores) |
 | Acento (lima) | `#B1F100` ← **solo para CTAs, numeración, iconos, subrayados, datos clave** |
 
 ### Tono visual

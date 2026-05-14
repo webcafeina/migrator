@@ -29,47 +29,47 @@ const config: Config = {
     extend: {
       colors: {
         wcm: {
-          primary: "#171009",   // Background primario
-          secondary: "#2B1A0E", // Background secundario
-          text: "#F2E8D2",      // Texto claro
-          detail: "#5A3519",    // Detalle marrón (bordes, separadores)
+          primary: "#0E1218",   // Background primario (azul marino casi negro)
+          secondary: "#1A222D", // Background secundario (azul marino oscuro)
+          text: "#E2E8F0",      // Texto claro (gris claro azulado)
+          detail: "#3D4A5C",    // Detalle (azul gris medio: bordes, separadores)
           accent: "#B1F100",    // Lima — solo CTAs/numeración/datos clave
           danger: "#FF5252",
           warning: "#FFAB00",
         },
         // Aliases shadcn-compatible para los componentes generados
-        border: "#5A3519",
-        input: "#2B1A0E",
+        border: "#3D4A5C",
+        input: "#1A222D",
         ring: "#B1F100",
-        background: "#171009",
-        foreground: "#F2E8D2",
+        background: "#0E1218",
+        foreground: "#E2E8F0",
         primary: {
           DEFAULT: "#B1F100",
-          foreground: "#171009",
+          foreground: "#0E1218",
         },
         secondary: {
-          DEFAULT: "#2B1A0E",
-          foreground: "#F2E8D2",
+          DEFAULT: "#1A222D",
+          foreground: "#E2E8F0",
         },
         destructive: {
           DEFAULT: "#FF5252",
-          foreground: "#F2E8D2",
+          foreground: "#E2E8F0",
         },
         muted: {
-          DEFAULT: "#2B1A0E",
+          DEFAULT: "#1A222D",
           foreground: "#7d6552",
         },
         accent: {
           DEFAULT: "#B1F100",
-          foreground: "#171009",
+          foreground: "#0E1218",
         },
         popover: {
-          DEFAULT: "#2B1A0E",
-          foreground: "#F2E8D2",
+          DEFAULT: "#1A222D",
+          foreground: "#E2E8F0",
         },
         card: {
-          DEFAULT: "#2B1A0E",
-          foreground: "#F2E8D2",
+          DEFAULT: "#1A222D",
+          foreground: "#E2E8F0",
         },
       },
       fontFamily: {

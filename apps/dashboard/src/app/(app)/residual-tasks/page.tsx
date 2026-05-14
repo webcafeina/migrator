@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { truncate } from "@/lib/utils";
 import type { ResidualTaskRead } from "@/types/api";
 import { MarkDoneButton } from "./mark-done-button";
@@ -80,7 +81,7 @@ export default async function ResidualTasksPage({
                   {t.estimated_minutes ?? "—"}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusVariant(t.status)}>{t.status}</Badge>
+                  <Badge variant={statusVariant(t.status)}>{statusLabel(t.status)}</Badge>
                 </TableCell>
                 <TableCell>
                   {t.status !== "done" && t.status !== "skipped" && (

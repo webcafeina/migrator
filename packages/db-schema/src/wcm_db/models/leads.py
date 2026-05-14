@@ -58,6 +58,12 @@ class Lead(Base, TimestampMixin):
         index=True,
     )
     score: Mapped[int] = mapped_column(Integer, nullable=False, default=0, index=True)
+
+    # Campaña que descubrió este lead (NULL para leads importados a mano o
+    # heredados de antes de la tabla `campaigns`).
+    campaign_id: Mapped[int | None] = mapped_column(
+        ForeignKey("campaigns.id"), index=True
+    )
     last_crawl_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     # Embedding semántico para búsqueda de leads similares (pgvector). Ver ADR-010.

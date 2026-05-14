@@ -72,6 +72,7 @@ class ProspectorAgent(BaseAgent):
         target_count = int(ctx.extra.get("target_count", 50))
         exclude_domains = {d.lower().lstrip(".") for d in ctx.extra.get("exclude_domains", [])}
         query_template = ctx.extra.get("query_template", "{sector} en {region}")
+        campaign_id: int | None = ctx.extra.get("campaign_id")
 
         if not sector or not region:
             raise ProspectorError("ProspectorAgent requiere sector y region en ctx.extra")
@@ -122,7 +123,7 @@ class ProspectorAgent(BaseAgent):
                     skipped_excluded += 1
                     continue
 
-                lead_id = _upsert_lead(ctx, normalized_url, place_full, sector, region)
+                lead_id = _upsert_lead(ctx, normalized_url, place_full, sector, region, campaign_id)
                 if lead_id is None:
                     skipped_duplicate += 1
                     continue
@@ -207,22 +208,26 @@ def _is_blocked_type(place: PlaceResult) -> bool:
 
 
 def _upsert_lead(
-    ctx: AgentContext, url: str, place: PlaceResult, sector: str, region: str
+    ctx: AgentContext, url: str, place: PlaceResult, sector: str, region: str,
+    campaign_id: int | None,
 ) -> int | None:
     """INSERT ON CONFLICT DO NOTHING. Devuelve lead_id si nuevo, None si dup."""
+    values = {
+        "url": url,
+        "business_name": place.name or None,
+        "sector": sector,
+        "country": "ES",
+        "region": region,
+        "status": LeadStatus.DISCOVERED,
+        "emails": [],
+        "phones": [place.phone] if place.phone else [],
+        "social_links": {},
+    }
+    if campaign_id is not None:
+        values["campaign_id"] = campaign_id
     stmt = (
         pg_insert(Lead)
-        .values(
-            url=url,
-            business_name=place.name or None,
-            sector=sector,
-            country="ES",
-            region=region,
-            status=LeadStatus.DISCOVERED,
-            emails=[],
-            phones=[place.phone] if place.phone else [],
-            social_links={},
-        )
+        .values(**values)
         .on_conflict_do_nothing(index_elements=["url"])
         .returning(Lead.id)
     )

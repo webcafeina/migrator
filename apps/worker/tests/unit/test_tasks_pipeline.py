@@ -57,8 +57,11 @@ def test_enricher_task_propagates_skip_embedding(monkeypatch) -> None:
 
 # ---------- wcm.prospector.run_campaign: chain encolado ----------
 
-def test_prospector_task_chains_fingerprint_and_enrich_per_lead(monkeypatch) -> None:
-    """Por cada lead creado se encola un chain(fingerprint, enrich)."""
+def test_prospector_task_enqueues_fingerprint_and_enrich_per_lead(monkeypatch) -> None:
+    """Por cada lead creado se encolan dos tasks (fingerprint + enrich)
+    independientes — sin chain — para que si fingerprint falla, enrich
+    igual corra y la campaña no quede atascada.
+    """
     from wcm_worker.tasks import prospector as prospector_task
 
     fake_agent_result = MagicMock(
@@ -70,23 +73,13 @@ def test_prospector_task_chains_fingerprint_and_enrich_per_lead(monkeypatch) -> 
     monkeypatch.setattr(prospector_task, "ProspectorAgent", MagicMock(return_value=fake_agent))
     _patch_session_scope(monkeypatch, prospector_task)
 
-    created_signatures: list[tuple[str, dict]] = []
-    sent_chains: list[tuple] = []
+    sent_tasks: list[tuple[str, dict]] = []
 
-    def fake_signature(name, kwargs, immutable):
-        created_signatures.append((name, kwargs))
-        sig = MagicMock(name=f"sig:{name}")
-        return sig
+    def fake_send_task(name, kwargs=None, **_kw):
+        sent_tasks.append((name, kwargs or {}))
+        return MagicMock(id=f"task-{name}-{kwargs}")
 
-    def fake_chain(*sigs):
-        chain_mock = MagicMock(name="chain")
-        chain_mock.apply_async = MagicMock(
-            side_effect=lambda *a, **kw: (sent_chains.append(sigs), MagicMock(id="task-xyz"))[1]
-        )
-        return chain_mock
-
-    monkeypatch.setattr(prospector_task.celery_app, "signature", fake_signature)
-    monkeypatch.setattr(prospector_task, "chain", fake_chain)
+    monkeypatch.setattr(prospector_task.celery_app, "send_task", fake_send_task)
 
     out = prospector_task.run_campaign.apply(
         kwargs={"sector": "restauración", "region": "Madrid", "target_count": 10}
@@ -102,11 +95,10 @@ def test_prospector_task_chains_fingerprint_and_enrich_per_lead(monkeypatch) -> 
         ("wcm.fingerprinter.run", {"lead_id": 102}),
         ("wcm.enricher.run", {"lead_id": 102}),
     ]
-    assert created_signatures == expected
-    assert len(sent_chains) == 3
+    assert sent_tasks == expected
 
 
-def test_prospector_task_no_chains_when_zero_leads(monkeypatch) -> None:
+def test_prospector_task_no_enqueue_when_zero_leads(monkeypatch) -> None:
     """Si la campaña no crea leads, no se encola nada."""
     from wcm_worker.tasks import prospector as prospector_task
 
@@ -116,19 +108,19 @@ def test_prospector_task_no_chains_when_zero_leads(monkeypatch) -> None:
     monkeypatch.setattr(prospector_task, "ProspectorAgent", MagicMock(return_value=fake_agent))
     _patch_session_scope(monkeypatch, prospector_task)
 
-    fake_chain = MagicMock(name="chain")
-    monkeypatch.setattr(prospector_task, "chain", fake_chain)
+    fake_send = MagicMock(name="send_task")
+    monkeypatch.setattr(prospector_task.celery_app, "send_task", fake_send)
 
     out = prospector_task.run_campaign.apply(
         kwargs={"sector": "x", "region": "y"}
     ).get()
 
     assert out["chained_pipelines"] == 0
-    fake_chain.assert_not_called()
+    fake_send.assert_not_called()
 
 
 def test_prospector_task_handles_prospector_error(monkeypatch) -> None:
-    """Errores definitivos del agent → status=error, sin reintento ni chain."""
+    """Errores definitivos del agent → status=error, sin reintento ni enqueue."""
     from wcm_worker.errors import ProspectorError
     from wcm_worker.tasks import prospector as prospector_task
 
@@ -136,8 +128,8 @@ def test_prospector_task_handles_prospector_error(monkeypatch) -> None:
     monkeypatch.setattr(prospector_task, "ProspectorAgent", MagicMock(return_value=fake_agent))
     _patch_session_scope(monkeypatch, prospector_task)
 
-    fake_chain = MagicMock(name="chain")
-    monkeypatch.setattr(prospector_task, "chain", fake_chain)
+    fake_send = MagicMock(name="send_task")
+    monkeypatch.setattr(prospector_task.celery_app, "send_task", fake_send)
 
     out = prospector_task.run_campaign.apply(
         kwargs={"sector": "x", "region": "y"}
@@ -145,4 +137,4 @@ def test_prospector_task_handles_prospector_error(monkeypatch) -> None:
 
     assert out["status"] == "error"
     assert "API key" in out["error"]
-    fake_chain.assert_not_called()
+    fake_send.assert_not_called()

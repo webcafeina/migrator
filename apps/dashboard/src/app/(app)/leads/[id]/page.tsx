@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 import { RefingerprintButton } from "./refingerprint-button";
@@ -53,7 +54,7 @@ export default async function LeadDetailPage({
             <Row label="Región">{lead.region ?? "—"}</Row>
             <Row label="País">{lead.country}</Row>
             <Row label="Status">
-              <Badge variant={statusVariant(lead.status)}>{lead.status}</Badge>
+              <Badge variant={statusVariant(lead.status)}>{statusLabel(lead.status)}</Badge>
             </Row>
             <Row label="Score">
               <span className="text-wcm-accent font-semibold tabular-nums">

@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { formatDate } from "@/lib/utils";
 import type { ErrorLogRead, ProjectRead, ResidualTaskRead } from "@/types/api";
 
@@ -79,7 +80,7 @@ export default async function OverviewPage() {
                     #{p.id} {p.client_name}{" "}
                     <span className="text-wcm-detail">— {p.source_url}</span>
                   </Link>
-                  <Badge variant={statusVariant(p.status)}>{p.status}</Badge>
+                  <Badge variant={statusVariant(p.status)}>{statusLabel(p.status)}</Badge>
                 </li>
               ))}
             </ul>

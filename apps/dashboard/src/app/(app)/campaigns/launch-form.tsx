@@ -31,7 +31,11 @@ export function LaunchCampaignForm() {
         );
         setSector("");
         setRegion("");
-        router.refresh();
+        if (res.task_id) {
+          router.push(`/campaigns/runs/${res.task_id}`);
+        } else {
+          router.refresh();
+        }
       } catch (err) {
         toast.error(err instanceof ApiError ? err.message : "Error inesperado");
       }

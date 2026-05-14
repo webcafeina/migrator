@@ -9,8 +9,8 @@
 
   html,
   body {
-    background-color: #171009;
-    color: #f2e8d2;
+    background-color: #0E1218;
+    color: #E2E8F0;
     font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-feature-settings: "ss02" on; /* JetBrains Mono ligatures sutiles */
   }
@@ -21,19 +21,37 @@
     height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: #171009;
+    background: #0E1218;
   }
   ::-webkit-scrollbar-thumb {
-    background: #5a3519;
+    background: #3D4A5C;
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #7d6552;
+    background: #56657A;
   }
 
   /* Selección con acento lima */
   ::selection {
-    background-color: #b1f100;
-    color: #171009;
+    background-color: #B1F100;
+    color: #0E1218;
   }
+}
+
+/* ------------------------------------------------------------------- */
+/* Animaciones del PipelineDiagram (página /campaigns/runs/[task_id]). */
+/* ------------------------------------------------------------------- */
+
+@keyframes wcm-glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(177, 241, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(177, 241, 0, 0);
+  }
+}
+
+.wcm-node-active {
+  animation: wcm-glow-pulse 1.8s ease-in-out infinite;
 }

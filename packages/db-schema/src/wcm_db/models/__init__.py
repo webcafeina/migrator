@@ -5,6 +5,7 @@ al cargar `wcm_db.models`.
 from wcm_db.models.assets import Asset
 from wcm_db.models.audit import AuditLog, ErrorLog
 from wcm_db.models.bricks_pages import BricksPage
+from wcm_db.models.campaigns import Campaign
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead, LeadEnrichment, OptOutLog
 from wcm_db.models.outreach import OutreachSend, OutreachSequence
@@ -19,6 +20,7 @@ __all__ = [
     "Asset",
     "AuditLog",
     "BricksPage",
+    "Campaign",
     "ContentBlock",
     "ErrorLog",
     "Lead",

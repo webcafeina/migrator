@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { statusLabel } from "@/lib/labels";
 import { truncate } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
@@ -104,7 +105,7 @@ export default async function LeadsPage({
                 </TableCell>
                 <TableCell>
                   <Badge variant={statusVariant(lead.status)}>
-                    {lead.status}
+                    {statusLabel(lead.status)}
                   </Badge>
                 </TableCell>
               </TableRow>

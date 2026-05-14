@@ -11,15 +11,55 @@ Versionado [SemVer](https://semver.org/lang/es/).
 
 - **`scripts/README.md`**: documentación de los controles del stack local
   (`dev-up.sh`, `dev-down.sh`, `fix-venv-hidden-pth.sh`) con atajos `tmux`,
-  patrones de uso típicos y troubleshooting. Complementa a `docs/dev-local.md`
-  (setup) con el uso diario.
+  patrones de uso típicos y troubleshooting.
 - **Task Celery `wcm.enricher.run`**: expone `EnricherAgent` como task
   reutilizable (WCM-027). Acepta `skip_embedding` opcional.
-- **Endpoint `POST /api/v1/leads/{id}/enrich`** + helper `enqueue_lead_enrich`
-  (WCM-027). Rol operator/admin. Query param `skip_embedding` opcional.
-- **CLI `wcm leads enrich <id> [--skip-embedding]`** (WCM-027).
-- 5 tests del enricher task + chain prospector, 7 tests del endpoint API,
-  2 tests adicionales del prospector (`created_lead_ids`, place_details).
+- **Endpoint `POST /api/v1/leads/{id}/enrich`** + CLI `wcm leads enrich`
+  (WCM-027). Rol operator/admin.
+- **Página `/campaigns/runs/[task_id]`**: progreso vivo de una campaña con
+  endpoint `GET /api/v1/campaigns/runs/{task_id}` + componente cliente con
+  polling cada 2s. Visualización rica con 3 nodos animados (Descubrimiento
+  → Identificación → Enriquecimiento), conectores con flujo y stats.
+- **Tabla `campaigns`** en BD + modelo SQLAlchemy `Campaign`. Persiste
+  cada lanzamiento con `task_id`, parámetros, estado agregado,
+  `created_lead_ids`, timestamps y `created_by_user_id`. FK
+  `lead.campaign_id`. Migración Alembic `c8e1dc21716b`.
+- **Endpoint `GET /api/v1/campaigns/active`**: lista campañas no terminadas.
+  Cualquier rol. Sirve al indicador global del dashboard.
+- **`ActiveCampaignsIndicator`** en el header del dashboard: pildora lima
+  con loader + sector/región que aparece cuando hay 1+ campañas en curso.
+  Polea cada 5s. Multiventana real (lee de BD, no localStorage).
+- **Sidebar y status traducidos a español** vía `lib/labels.ts`. 8
+  ubicaciones afectadas: overview, leads (list+detail), projects (list+
+  detail+checklist), residual-tasks, run-status.
+- 12 tests nuevos en `test_campaigns_runs_endpoint`, `test_tasks_pipeline`,
+  `test_campaigns_persistence` y `test_leads_pipeline_endpoints`.
+
+### Changed
+
+- **Paleta de marca**: sustituida la paleta marrón original por azul marino
+  casi gris. Mejor contraste para tablas densas + look técnico (Linear /
+  JetBrains dark como referencia). El acento lima `#B1F100` se mantiene.
+  `tailwind.config.ts`, `globals.css` y `CLAUDE.md §3` actualizados.
+- **Pipeline de enrich**: `tasks/prospector.run_campaign` ya no usa
+  `celery.chain(fingerprint, enrich)` sino dos `send_task` independientes
+  por lead. Motivo: si fingerprint fallaba (URL inalcanzable), el chain
+  rompía y enrich nunca corría → lead atascado en DISCOVERED para
+  siempre → Campaign atascada en RUNNING. Ahora enrich corre aunque
+  fingerprint falle (con el coste de que el score no contará el
+  builder detectado para ese lead).
+
+### Fixed
+
+- **WCM-026 (P0)**: `ProspectorAgent` no encadenaba fingerprint + enrich
+  tras crear leads. Ahora `tasks/prospector.run_campaign` itera
+  `outputs["created_lead_ids"]` y encola fingerprint+enrich por lead.
+- **WCM-028**: warning estático obsoleto en `wcm campaigns launch`.
+- **WCM-032 (P0)**: dashboard no podía autenticar contra el API porque
+  `get_current_user_payload` no leía la cookie `wcm_session`. Ahora la
+  dependency recibe `Request` y lee la cookie como fallback.
+- **WCM-033**: worker Celery hacía SIGSEGV al cargar `multilingual-e5-large`
+  en macOS con `--pool=prefork`. `dev-up.sh` arranca con `--pool=threads`.
 
 ### Fixed
 
