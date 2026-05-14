@@ -11,6 +11,31 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.2.1] — 2026-05-14
+
+Hotfix: dos archivos polish que estaban en el working tree de la sesión
+v0.2.0 pero **no llegaron a `git add`** al construir el commit del
+release. CI y tests funcionaban porque el primero es cosmético y el
+segundo está aislado de la suite que CI recorre.
+
+### Added
+
+- **`apps/api/tests/unit/test_campaigns_runs_endpoint.py`**: 8 tests
+  unitarios del endpoint `GET /api/v1/campaigns/runs/{task_id}` con
+  `AsyncResult` mockeado (estados PENDING, STARTED, FAILURE, SUCCESS
+  con/sin leads, payload `status=error`, auth viewer ok, 401 sin auth).
+  Mencionados en el changelog de v0.2.0 pero el archivo no estaba en
+  el repo.
+
+### Fixed
+
+- **`tailwind.config.ts` `muted.foreground`**: quedó como `#7d6552`
+  (marrón de la paleta antigua) cuando todo el resto pasó a azul marino
+  en v0.2.0. Corregido a `#56657A` (azul gris medio). Detectado al ver
+  componentes shadcn-style con foreground marrón sobre fondo oscuro.
+
+---
+
 ## [0.2.0] — 2026-05-14
 
 Primera iteración tras testeo funcional real. Trae visualización rica del

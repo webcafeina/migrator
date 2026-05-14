@@ -57,7 +57,7 @@ const config: Config = {
         },
         muted: {
           DEFAULT: "#1A222D",
-          foreground: "#7d6552",
+          foreground: "#56657A",
         },
         accent: {
           DEFAULT: "#B1F100",
