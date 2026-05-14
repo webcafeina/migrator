@@ -25,6 +25,7 @@ EXPECTED_TABLES = {
     "residual_tasks",
     "audit_log",
     "error_log",
+    "campaigns",
 }
 
 
@@ -42,6 +43,7 @@ def test_models_module_exports_all_entities() -> None:
         "Asset",
         "AuditLog",
         "BricksPage",
+        "Campaign",
         "ContentBlock",
         "ErrorLog",
         "Lead",
