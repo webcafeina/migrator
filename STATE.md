@@ -22,7 +22,7 @@
 - **Fase 12 — Infra/Deploy**: ✅ Completada (commit `7c6b8a0`)
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
-- **Fase 15 — Hardening**: ✅ Completada esta sesión
+- **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
 - **MVP v0.1.0 LISTO** — pendiente acción humana: push del repo a GitHub (ver `docs/release-v0.1.0.md`).
 
 ---
