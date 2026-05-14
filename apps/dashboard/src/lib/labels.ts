@@ -64,7 +64,8 @@ const ALL_LABELS: Record<string, string> = {
 };
 
 function capitalize(s: string): string {
-  return s.length === 0 ? s : s[0].toUpperCase() + s.slice(1);
+  const first = s[0];
+  return first ? first.toUpperCase() + s.slice(1) : s;
 }
 
 /**

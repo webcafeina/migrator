@@ -49,9 +49,9 @@ export function ActiveCampaignsIndicator() {
     };
   }, []);
 
-  if (active.length === 0) return null;
-
   const first = active[0];
+  if (!first) return null;
+
   const extra = active.length - 1;
 
   return (

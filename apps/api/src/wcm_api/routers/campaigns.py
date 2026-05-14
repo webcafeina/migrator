@@ -25,7 +25,7 @@ from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wcm_api.db import get_session
-from wcm_api.security import TokenPayload, get_current_user_payload, require_role
+from wcm_api.security import TokenPayload, require_role
 from wcm_api.tasks.celery_app import celery_app
 from wcm_api.tasks.enqueue import enqueue_prospect_campaign
 from wcm_db.models.campaigns import Campaign

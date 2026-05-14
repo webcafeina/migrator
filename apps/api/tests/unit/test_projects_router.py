@@ -110,8 +110,9 @@ async def test_start_project_already_running_returns_409(client, operator_token,
 
 @pytest.mark.asyncio
 async def test_launch_campaign_enqueues_job(client, operator_token) -> None:
+    """El task_id es UUID v4 generado por el endpoint (no por Celery) para
+    evitar race condition con el worker. Se pasa a enqueue como kwarg."""
     with patch("wcm_api.routers.campaigns.enqueue_prospect_campaign") as mock_enqueue:
-        mock_enqueue.return_value = "task-uuid-abc"
         response = await client.post(
             "/api/v1/campaigns/launch",
             headers={"Authorization": f"Bearer {operator_token}"},
@@ -119,8 +120,13 @@ async def test_launch_campaign_enqueues_job(client, operator_token) -> None:
         )
 
     assert response.status_code == 202
-    assert response.json()["task_id"] == "task-uuid-abc"
+    body = response.json()
+    # UUID v4 (36 chars con 4 guiones)
+    assert len(body["task_id"]) == 36
+    assert body["task_id"].count("-") == 4
     mock_enqueue.assert_called_once()
+    # El task_id se inyecta como kwarg para que celery.send_task lo fuerce
+    assert mock_enqueue.call_args.kwargs.get("task_id") == body["task_id"]
 
 
 @pytest.mark.asyncio
