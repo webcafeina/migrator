@@ -23,7 +23,7 @@
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
-- **MVP v0.1.0 PUBLICADO** (2026-05-14) — repo en `github.com/webcafeina/migrator`, tag `v0.1.0` anclado a commit `adb95a7`. Branch protection activado en `main`. CI verde tras 5 fixes iterativos (pnpm version, ruff config, eslint config, email-validator dep, next/headers dynamic import + Suspense + cookie domain/path + skip 3 e2e Server Components → WCM-021). Pasos restantes runbook: 7 (sudoers para deploy sin password), 8 (release público), 9 (verificar CI verde — ✅ ya hecho), 10 (equipo), 11 (post-release).
+- **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada (https://github.com/webcafeina/migrator/releases/tag/v0.1.0). Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021. Pendientes solo para cuando toque deploy real: secrets Actions + sudoers WHM.
 
 ---
 
@@ -396,25 +396,29 @@
 
 ---
 
-## Release v0.1.0 publicado — estado del runbook
+## Release v0.1.0 CERRADO — 2026-05-14
 
-Las 16 fases (0–15) están completadas y el MVP **está publicado en GitHub**.
+Las 16 fases (0–15) están completadas y el MVP **está publicado en GitHub como repo público** en https://github.com/webcafeina/migrator. Release v0.1.0 visible en https://github.com/webcafeina/migrator/releases/tag/v0.1.0.
 
 Pasos del `docs/release-v0.1.0.md` completados:
 - ✅ Paso 1 (pre-flight checks: tests verdes, audit, sin secretos).
-- ✅ Paso 2 (repo `webcafeina/migrator` privado creado en GitHub).
+- ✅ Paso 2 (repo `webcafeina/migrator` creado en GitHub — público).
 - ✅ Paso 3 (`git remote add origin` + `git branch -M main`).
 - ✅ Paso 4 (primer `git push -u origin main` — 25 commits iniciales).
 - ✅ Paso 5 (tag `v0.1.0` anclado a `adb95a7` + `git push origin v0.1.0`).
 - ✅ Paso 6 (branch protection en `main` — hecho manualmente por el operador).
-- ✅ Paso 9 implícito (CI verde tras 5 fixes iterativos sobre el primer run).
+- ✅ Paso 8 (`gh release create v0.1.0 --title "v0.1.0 — primer MVP" --notes-file CHANGELOG.md` — release pública con todo el CHANGELOG).
+- ✅ Paso 9 (CI verde en `main` tras 5 fixes iterativos sobre el primer run).
+- ✅ Paso 11.1 (STATE.md actualizado con SHA del tag).
+- ⏭️ Paso 10 (collaborators): saltado por decisión — sin roles individuales, el operador único gestiona el repo. Si en el futuro otros miembros del equipo necesitan permiso de escritura, se añaden como Collaborators 1-a-1 (repo público sin org-team).
+- ⏭️ Paso 11.2/11.3: notificación al equipo + planificación de roadmap los hace el operador internamente.
 
-Pasos pendientes (todos manuales, no bloqueantes — pospuestos hasta que toque el primer deploy):
-- **Paso 7 del release-v0.1.0.md** (secrets GitHub Actions para deploy): crear `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` en Settings → Secrets → Actions cuando se vaya a usar `deploy-production.yml`. Requiere servidor WHM provisionado primero (ver `docs/despliegue.md` §1).
-- **Sudoers WHM** (en `docs/despliegue.md` §4): configurar `/etc/sudoers.d/wcm-deploy` para que `webcafeina` pueda reiniciar las units sin password. Necesario para que `deploy.sh` no se cuelgue pidiendo password en CI.
-- Paso 8: `gh release create v0.1.0 --notes-file CHANGELOG.md --verify-tag` para que aparezca en Releases del repo.
-- Paso 10: añadir al equipo Webcafeína al repo (Settings → Collaborators and teams). Sin roles individuales — todos al mismo team con el permiso que aplique.
-- Paso 11: post-release (notificar al equipo, planificar roadmap post-v0.1.0).
+Pendientes para cuando toque el primer deploy real al servidor WHM (no bloqueantes para el MVP):
+- **Paso 7 del release-v0.1.0.md** (secrets GitHub Actions): `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` en Settings → Secrets → Actions. Requiere servidor WHM provisionado primero.
+- **Sudoers WHM** (`docs/despliegue.md` §4): `/etc/sudoers.d/wcm-deploy` para que `webcafeina` pueda reiniciar units sin password.
+
+Post-release fix aplicado (commit `89c8469`):
+- Refactor "equipo Webcafeína sin roles individuales": eliminadas todas las menciones a personas concretas en código, docs y subagentes. Convención: el equipo se trata como conjunto, sin assignees nominales.
 
 Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):
 - WCM-011: revisión legal externa antes de outreach masivo.
