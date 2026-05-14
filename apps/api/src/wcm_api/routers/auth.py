@@ -16,7 +16,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,6 +26,7 @@ from wcm_types.schemas.users import UserRead
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
 from wcm_api.errors import UnauthorizedError
+from wcm_api.rate_limit import limiter
 from wcm_api.security import (
     TokenPayload,
     get_current_user_payload,
@@ -42,7 +43,9 @@ class LoginPayload(BaseModel):
 
 
 @router.post("/login", response_model=UserRead)
+@limiter.limit("5/minute")
 async def login(
+    request: Request,
     payload: LoginPayload,
     response: Response,
     session: Annotated[AsyncSession, Depends(get_session)],

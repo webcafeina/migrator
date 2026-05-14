@@ -736,6 +736,59 @@ Las units son **templates** con variables `${WCM_APP_DIR}`, `${WCM_USER}`, `${WC
 
 ---
 
+## ADR-033 — Hardening philosophy: defensa en profundidad + audit programado
+
+**Fecha**: 2026-05-14 (Fase 15)
+**Estado**: ✅ Aceptada
+
+**Contexto**: Antes del primer release a producción, formalizamos cómo pensamos sobre seguridad operativa para que las próximas versiones no degraden la postura actual.
+
+**Filosofía**:
+
+1. **Defensa en profundidad**, no en perímetro. Cada capa asume que la anterior puede fallar:
+   - Nginx ACL + rate-limit por dominio (capa 1).
+   - FastAPI middleware con rate-limit por endpoint vía `slowapi` (capa 2).
+   - Validación de payload con Pydantic (capa 3).
+   - RBAC con `require_role` (capa 4).
+   - Doble-check anti-spam en send (lead pudo opted-out entre compose y send) (capa 5).
+   - Validador legal v1.0 en composer (capa 6 — no enviamos algo no-conforme aunque las anteriores fallen).
+2. **Audit programado** (no reactivo):
+   - `pip-audit` y `pnpm audit` cada release.
+   - Audit doc en `docs/security/audit-vX.Y.Z.md` por cada bump de versión.
+   - Manual review checklist: secrets, HMAC `compare_digest`, `set -euo pipefail`, `require_role`.
+3. **Default seguro, opt-in para riesgo**:
+   - Sentry `send_default_pii=False` por defecto.
+   - `/metrics` y `/health/deep` deny-all + allow internos.
+   - Cookie `HttpOnly`, `Secure`, `SameSite=Lax` (a confirmar en deploy WCM-016).
+   - CORS lista explícita (nunca `*`).
+4. **Trazabilidad sobre prevención**:
+   - Todo lo que toca datos personales genera `audit_log` con `legal_ground`.
+   - `opt_out_log` permanente.
+   - Versión de validador legal persistida en cada `OutreachSequence`.
+5. **Rate limiting con `enabled=False` en tests**: para no tener que resetear buckets entre tests. Producción los usa con valores en `apps/api/src/wcm_api/rate_limit.py`. Si rotamos a Redis storage (WCM-017), seguir el mismo patrón.
+
+**Decisión sobre rotación**:
+- Secrets (`JWT_SECRET`, `SECRET_KEY`): cada 6 meses.
+- API keys externas (Google, Resend, ClickUp): cada 12 meses o tras incidente.
+- Bricks license: gestión humana, no auto-rotar.
+
+**Decisión sobre dependencias**:
+- Vulnerabilidades **high/critical**: parchar en <72h (override pnpm / pin pip).
+- Vulnerabilidades **moderate**: parchar en próximo release.
+- Vulnerabilidades **low**: documentar en audit doc, parchar oportunista.
+
+**Decisión sobre revisión legal**:
+- WCM-011 abierto: revisión externa por asesor antes de outreach masivo en producción.
+- Las plantillas actuales se consideran "borradores aprobados internamente, pendientes de validación externa".
+
+**Consecuencias**:
+- ✅ Postura clara para el equipo: cualquier nueva feature debe respetar las 5 capas.
+- ✅ Audit doc por release: histórico verificable (regla #11 docs/humanos no aplica a estos).
+- ⚠️ Auditoría manual mensual de `audit_log` (runbook §"tareas recurrentes") sigue siendo responsabilidad humana — no automatizamos detección de anomalías en MVP.
+- ⚠️ La rotación de secrets requiere coordinación con el equipo (forzar re-login de operadores). Documentado en runbook.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

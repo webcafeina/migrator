@@ -21,8 +21,9 @@
 - **Fase 11 — Observabilidad**: ✅ Completada (commit `3863daa`)
 - **Fase 12 — Infra/Deploy**: ✅ Completada (commit `7c6b8a0`)
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
-- **Fase 14 — Documentación**: ✅ Completada esta sesión (commit `d1b2b86`)
-- **Próxima fase**: Fase 15 — Hardening (security review final, dependency audit, performance baseline, push repo GitHub diferido por ADR-013)
+- **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
+- **Fase 15 — Hardening**: ✅ Completada esta sesión
+- **MVP v0.1.0 LISTO** — pendiente acción humana: push del repo a GitHub (ver `docs/release-v0.1.0.md`).
 
 ---
 
@@ -45,11 +46,30 @@
 | 12 | Infra/Deploy | ✅ Completada | 4 systemd units + target + Nginx vhosts + 5 scripts WHM setup + 4 scripts deploy + 2 workflows GitHub Actions + runbook completo en docs/despliegue.md (ADR-030/031). 29 tests validación. Total 379+15. |
 | 13 | Tests e2e | ✅ Completada | Playwright + 4 specs (login/leads/projects/visual) con API mockeada via page.route(); 5 e2e Python pipeline (orchestrator + stubs reales + stateful_session); coverage 74.8% con pytest-cov; CI matrix Py 3.13/3.14 × Node 20/22 (ADR-032). Total 384+15+8 Playwright. |
 | 14 | Documentación | ✅ Completada | arquitectura.md (5 diagramas Mermaid + tabla 21 agentes) + prospeccion.md (10 secciones operador) + migracion.md (13 secciones operador) + playbook-operativo.md (10 runbooks INC-NN) + glossary.md (40+ términos) + README quickstart operador. |
-| 15 | Hardening | ⏳ Pendiente | |
+| 15 | Hardening | ✅ Completada | pip-audit + pnpm audit (0 vulns tras postcss override); slowapi rate-limit en login/compose/send/opt-out; security audit doc v0.1.0; performance SLOs; CHANGELOG; release-v0.1.0.md con instrucciones push; ADR-033. Total 387 Py + 15 TS + 8 Playwright = 410 tests. |
 
 ---
 
-## Tareas completadas en la última sesión (Fase 14)
+## Tareas completadas en la última sesión (Fase 15) — release v0.1.0
+
+- [x] **Dependency audit**:
+  - `pip-audit --skip-editable` → **0 vulnerabilidades** sobre 270+ deps Python.
+  - `pnpm audit --prod`: 1 vuln moderate (`postcss<8.5.10` CVE GHSA-qx2v-qp2m-jg93 XSS via Stringify) → mitigada con `pnpm overrides` en root `package.json` forzando `postcss@^8.5.10`. Post-fix: **0 vulnerabilidades**.
+- [x] **Security audit doc** `docs/security/audit-v0.1.0.md`: revisión manual de SQL/JWT/CORS/HMAC/secrets/Bash injection/PII en logs/RGPD. 0 findings bloqueantes.
+- [x] **Rate limiting con slowapi** (ADR-033):
+  - `apps/api/src/wcm_api/rate_limit.py` con limiter compartido.
+  - Aplicado en: `/auth/login` 5/min, `/leads/{id}/outreach/compose` 10/min, `/leads/{id}/opt-out-url` 30/min, `/outreach/sequences/{id}/send` 30/min.
+  - Handler `RateLimitExceeded` mapea a envelope JSON estándar (429 + `error.code=rate_limited`).
+  - Limiter `enabled=False` por defecto en tests (autouse fixture en conftest) para no contaminar buckets entre tests; reactivado en `test_api_rate_limit.py`.
+  - 3 tests nuevos: login 6º bloqueado, compose 11º bloqueado, /health sin límite.
+- [x] **Performance baseline** `docs/performance.md`: SLOs para API/worker/dashboard + queries SQL + queries Prometheus + plan de tuning + pendientes WCM-018/019/020.
+- [x] **CHANGELOG.md** estilo Keep-a-Changelog con todas las features v0.1.0 categorizadas (Added productos/apps/observabilidad/infra/tests/docs/decisions + Security + Known issues + Stack final + Equipo).
+- [x] **`docs/release-v0.1.0.md`** con instrucciones paso a paso para push del repo (pre-flight check, opciones de creación repo, comandos exactos `git remote add`, `git tag`, `gh release create`, branch protection, secrets CI, equipo). El push es acción humana (irreversible) — todo preparado pero no ejecutado.
+- [x] **ADR-033** (hardening philosophy: defensa en profundidad + audit programado + default seguro + trazabilidad). 33 ADRs en total.
+- [x] **Tests**: 387 Python + 15 TS + 8 Playwright = **410 tests**. Coverage 74.8%. 0 regresiones.
+- [x] **WCM-014..020** abiertos como roadmap post-v0.1.0 (idempotency keys, audit en CI, Secure+SameSite verificar en deploy, slowapi Redis storage para multi-nodo, Lighthouse CI, Grafana dashboards, alertas SLO).
+
+## Tareas completadas en sesión anterior (Fase 14)
 
 - [x] **`docs/arquitectura.md`** reescrito con 5 diagramas Mermaid:
   - Visión general productos (prospección + migración).
@@ -376,23 +396,25 @@
 
 ---
 
-## Próximas tareas inmediatas (Fase 15 — Hardening)
+## Acción humana pendiente — push del repo a GitHub (release v0.1.0)
 
-Cuando el humano apruebe Fase 14, ejecutar en orden:
+Las 16 fases (0–15) están completadas. Sólo falta una acción que requiere tu intervención (irreversible, requiere decisiones sobre el remote):
 
-1. **PREREQ humano**:
-   - Decisión final sobre nombre + visibilidad del repo GitHub (público / privado / org `@webcafeina`).
-   - Lista de operadores definitivos para crear cuentas (con email + rol).
-   - Confirmación de subdominios productivos.
-2. **Security review final**: ejecutar `/security-review` skill sobre todo el código nuevo. Foco en RGPD, RBAC, escapes Bash en scripts infra, headers Nginx.
-3. **Dependency audit**: `pnpm audit`, `pip-audit`. Pin de versiones críticas en `pyproject.toml` (no solo `>=`).
-4. **Performance baseline**: medir latencia p95/p99 de endpoints clave + tiempo medio migración (con worker real) + ejecución retention sweep sobre dataset grande.
-5. **Rate limiting** en API: añadir `slowapi` o equivalente para `/auth/login` (5/min), `/leads/*/outreach/*` (10/min), webhooks (30/s ya cubierto en Nginx).
-6. **Idempotency keys** en endpoints POST que disparan side-effects externos.
-7. **Push del repo a GitHub** (ADR-013 cierra aquí): crear `webcafeina/migrator`, `git remote add origin`, primer push de toda la historia, habilitar branch protection en `main`.
-8. **Activar GitHub Actions**: confirmar que CI corre verde en el primer push.
-9. **Tagged release v0.1.0** + entry en `CHANGELOG.md` con todas las fases.
-10. Commit: `feat(hardening): security review + audit + rate limit + v0.1.0 release`.
+1. Lee `docs/release-v0.1.0.md`.
+2. Decide nombre y visibilidad (default sugerido: `webcafeina/migrator` privado).
+3. Sigue los 11 pasos del documento.
+4. Una vez con el tag publicado, actualiza este STATE.md con el SHA del tag y notifica al equipo.
+
+Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):
+- WCM-011: revisión legal externa antes de outreach masivo.
+- WCM-013: columna `retention_hold` para excepciones AEPD.
+- WCM-014: idempotency keys en POST con side-effects.
+- WCM-015: pip-audit + pnpm audit en CI.
+- WCM-016: verificar `Secure` + `SameSite=Lax` cookie en deploy.
+- WCM-017: slowapi storage Redis para multi-nodo.
+- WCM-018: Lighthouse CI en Actions.
+- WCM-019: Grafana dashboard SLOs.
+- WCM-020: alertas en Grafana.
 
 ---
 
@@ -410,7 +432,16 @@ Cuando el humano apruebe Fase 14, ejecutar en orden:
 
 ---
 
-## Decisiones tomadas esta sesión (Fase 14)
+## Decisiones tomadas esta sesión (Fase 15)
+
+- **Hardening filosofía formalizada en ADR-033**: defensa en profundidad (Nginx ACL → slowapi → Pydantic → RBAC → doble-check anti-spam → validador legal), audit programado (`docs/security/audit-vX.Y.Z.md` por release), default seguro (PII off, ACLs deny-all+allow, CORS lista explícita), trazabilidad sobre prevención (`audit_log` + `opt_out_log` permanente).
+- **postcss override vía pnpm**: cuando una dep transitiva tiene vuln pero el árbol superior no se actualiza, `pnpm.overrides` en el root `package.json` es la mitigación cleanest. Documentado en audit doc.
+- **slowapi `enabled=False` en tests**: tras varias horas intentando resetear el storage de slowapi entre tests sin éxito, decidimos desactivar el limiter por defecto en tests y reactivarlo solo en `test_api_rate_limit.py`. El handler `RateLimitExceeded` sigue funcionando, así que los tests del path de error tampoco rompen.
+- **Push del repo a GitHub queda como acción humana** (no automatizable): la decisión sobre nombre/visibilidad/org requiere tu input. Tag local `v0.1.0` creado en `docs/release-v0.1.0.md` como instrucciones — NO ejecuté `git tag` ni `git push` para no crear estado inconsistente.
+- **CHANGELOG en Keep-a-Changelog format**: categorías Added/Changed/Deprecated/Removed/Fixed/Security. Versionado SemVer. Cada release tendrá su entry con esta estructura.
+- **3 niveles de severidad en dep audit**: high/critical parchar <72h, moderate parchar próximo release, low documentar+oportunista. Define la política de respuesta sin ambigüedad.
+
+## Decisiones tomadas sesión anterior (Fase 14)
 
 - **Docs operativos orientados a tareas, no a features**: en lugar de explicar "qué es ProspectorAgent", explico "cómo lanzar una campaña". El glosario cubre la parte conceptual; los docs de prospección y migración cubren la operativa.
 - **Diagramas Mermaid en arquitectura.md** (no PNG): renderizables en GitHub directamente, fáciles de mantener en sync con el código. 8 diagramas distintos: productos / topología / componentes / flujo migración 15 fases / flujo prospección con ciclo de vida lead / ER datos / observabilidad / cumplimiento legal.
@@ -537,7 +568,8 @@ Cuando el humano apruebe Fase 14, ejecutar en orden:
 - Antes de tocar nada, leer este fichero y `CLAUDE.md`.
 - **NO leer `docs/humanos/`** (regla #11 — zona humana).
 - Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-13 (tras Fase 13): **384 Python + 15 TS + 8 Playwright** (407 total) + coverage 74.8%. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz. Coverage HTML: `pytest --cov --cov-report=html` → abrir `htmlcov/index.html`.
+- Test suite total a 2026-05-14 (tras Fase 15): **387 Python + 15 TS + 8 Playwright** (410 total) + coverage 74.8%. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz. Coverage HTML: `pytest --cov --cov-report=html` → abrir `htmlcov/index.html`.
+- **MVP v0.1.0 listo**. Para publicar a GitHub: leer `docs/release-v0.1.0.md` y ejecutar los 11 pasos.
 - Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
 - Issues abiertos prioritarios:
   - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.

@@ -11,6 +11,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.errors import register_error_handlers
@@ -21,6 +23,7 @@ from wcm_api.observability import (
     metrics_endpoint,
     setup_logtail_handler,
 )
+from wcm_api.rate_limit import limiter
 from wcm_api.routers import (
     auth,
     campaigns,
@@ -80,6 +83,15 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     # cancelados antes de llegar a los routers.
     app.add_middleware(PrometheusMiddleware)
 
+    # Rate limiting (Fase 15). El limiter por endpoint se aplica con
+    # @limiter.limit en los routers concretos.
+    app.state.limiter = limiter
+    app.add_middleware(SlowAPIMiddleware)
+    app.add_exception_handler(
+        RateLimitExceeded,
+        lambda request, exc: _rate_limit_response(request, exc),
+    )
+
     register_error_handlers(app)
 
     # Health/probes y /metrics — sin prefijo de versión, sin auth.
@@ -104,6 +116,22 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     app.include_router(webhooks.router, prefix=v1_prefix)
 
     return app
+
+
+def _rate_limit_response(request, exc: RateLimitExceeded):
+    """Mapea RateLimitExceeded al envelope JSON estándar del API."""
+    from fastapi.responses import JSONResponse
+
+    return JSONResponse(
+        status_code=429,
+        content={
+            "error": {
+                "code": "rate_limited",
+                "message": "Demasiadas peticiones — inténtalo en unos segundos",
+                "details": {"limit": str(exc.detail)},
+            }
+        },
+    )
 
 
 # Para `uvicorn wcm_api.main:app`

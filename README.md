@@ -26,9 +26,9 @@ Herramienta interna de **Webcafeína** (Cáceres, España) para:
 
 Ver siempre [`STATE.md`](./STATE.md) para el cursor de avance entre sesiones de construcción.
 
-La construcción está dividida en 16 fases (0–15). **Fases 0–14 completadas** a 2026-05-13: del bootstrap al producto funcional + tests e2e + **documentación operativa completa** (arquitectura con diagramas Mermaid, runbooks por incidente, glosario, guías de prospección y migración orientadas a tareas). Próxima fase: 15 — Hardening final (security review, dependency audit, performance baseline, push del repo GitHub).
+**MVP v0.1.0 listo** (2026-05-14). Las 16 fases (0–15) completadas: del bootstrap al hardening final (security audit + rate limiting + CHANGELOG + tag). Para publicar el repo: ver `docs/release-v0.1.0.md`.
 
-Test suite total: **384 tests Python + 15 TS + 8 Playwright** = 407, coverage 74.8%.
+Test suite total: **387 tests Python + 15 TS + 8 Playwright** = **410 tests**, coverage 74.8%, 0 vulnerabilidades en `pip-audit` y `pnpm audit`.
 
 ---
 

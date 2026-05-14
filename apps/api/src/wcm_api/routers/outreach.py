@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,6 +32,7 @@ from wcm_types.schemas.outreach import OutreachSendRead, OutreachSequenceRead
 
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.rate_limit import limiter
 from wcm_api.security import TokenPayload, get_current_user_payload, require_role
 from wcm_api.tasks.enqueue import enqueue_outreach_send
 
@@ -160,7 +161,9 @@ async def transition_sequence(
 
 
 @router.post("/sequences/{sequence_id}/send", status_code=202)
+@limiter.limit("30/minute")
 async def send_sequence_step(
+    request: Request,
     sequence_id: int,
     session: Annotated[AsyncSession, Depends(get_session)],
     user: Annotated[TokenPayload, Depends(get_current_user_payload)],

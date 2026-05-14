@@ -26,6 +26,7 @@ dependencies = [
     "sentry-sdk[fastapi]>=2.0",
     "prometheus-client>=0.21",
     "logtail-python>=0.3",
+    "slowapi>=0.1.9",
     "wcm-shared-types",
     "wcm-db-schema",
 ]

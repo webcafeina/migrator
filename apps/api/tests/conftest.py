@@ -102,5 +102,21 @@ def viewer_token() -> str:
     return token
 
 
+@pytest.fixture(autouse=True)
+def _disable_rate_limiter_by_default():
+    """Desactiva slowapi en TODOS los tests por defecto. El handler
+    `app.add_exception_handler(RateLimitExceeded, ...)` sigue funcionando,
+    pero los buckets no se incrementan ni bloquean.
+
+    Los tests específicos de rate limiting (`test_api_rate_limit.py`)
+    reactivan el limiter con su propio fixture.
+    """
+    from wcm_api.rate_limit import limiter
+
+    limiter.enabled = False
+    yield
+    limiter.enabled = True
+
+
 def auth_headers(token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}

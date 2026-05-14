@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,6 +21,7 @@ from wcm_types.schemas.leads import LeadRead, LeadUpdate
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.rate_limit import limiter
 from wcm_api.security import (
     TokenPayload,
     get_current_user_payload,
@@ -125,7 +126,9 @@ class OptOutUrlResponse(BaseModel):
 
 
 @router.post("/{lead_id}/opt-out-url", response_model=OptOutUrlResponse)
+@limiter.limit("30/minute")
 async def generate_opt_out_url(
+    request: Request,
     lead_id: int,
     session: Annotated[AsyncSession, Depends(get_session)],
     settings: Annotated[ApiSettings, Depends(get_settings)],
@@ -215,7 +218,9 @@ async def record_consent_action(
 
 
 @router.post("/{lead_id}/outreach/compose", status_code=status.HTTP_202_ACCEPTED)
+@limiter.limit("10/minute")
 async def compose_outreach_for_lead(
+    request: Request,
     lead_id: int,
     session: Annotated[AsyncSession, Depends(get_session)],
     settings: Annotated[ApiSettings, Depends(get_settings)],
