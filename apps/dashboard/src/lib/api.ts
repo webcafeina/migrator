@@ -5,9 +5,11 @@
  * Server-side (React Server Components) usa fetch directamente al
  * API_URL. Client-side usa el rewrite `/api/v1/...` configurado en
  * next.config.mjs.
+ *
+ * Nota: `next/headers` se importa dinámicamente dentro de `buildHeaders`
+ * para que el bundler no lo arrastre al bundle cliente (causa error de
+ * compilación con `next build`).
  */
-
-import { cookies } from "next/headers";
 
 export class ApiError extends Error {
   status: number;
@@ -41,8 +43,11 @@ async function buildHeaders(extra?: HeadersInit): Promise<HeadersInit> {
   };
   // En server-side, leer la cookie del request y reenviarla manualmente
   // (fetch en Server Components no hereda cookies automáticamente).
+  // Dynamic import: `next/headers` solo existe en server runtime y
+  // hacerlo dinámico evita que el bundler lo incluya en cliente.
   if (isServer()) {
     try {
+      const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
       const session = cookieStore.get("wcm_session");
       if (session) {
