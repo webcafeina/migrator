@@ -7,7 +7,12 @@ Versionado [SemVer](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
-Cambios todavía sin tag.
+### Added
+
+- **`scripts/README.md`**: documentación de los controles del stack local
+  (`dev-up.sh`, `dev-down.sh`, `fix-venv-hidden-pth.sh`) con atajos `tmux`,
+  patrones de uso típicos y troubleshooting. Complementa a `docs/dev-local.md`
+  (setup) con el uso diario.
 
 ---
 
