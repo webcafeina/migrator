@@ -23,7 +23,7 @@
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
-- **MVP v0.1.0 LISTO** — pendiente acción humana: push del repo a GitHub (ver `docs/release-v0.1.0.md`).
+- **MVP v0.1.0 PUBLICADO** (2026-05-14) — repo en `github.com/webcafeina/migrator`, tag `v0.1.0` anclado a commit `adb95a7`. Branch protection activado en `main`. CI verde tras 5 fixes iterativos (pnpm version, ruff config, eslint config, email-validator dep, next/headers dynamic import + Suspense + cookie domain/path + skip 3 e2e Server Components → WCM-021). Pasos restantes runbook: 7 (sudoers para deploy sin password), 8 (release público), 9 (verificar CI verde — ✅ ya hecho), 10 (equipo), 11 (post-release).
 
 ---
 
@@ -396,14 +396,24 @@
 
 ---
 
-## Acción humana pendiente — push del repo a GitHub (release v0.1.0)
+## Release v0.1.0 publicado — estado del runbook
 
-Las 16 fases (0–15) están completadas. Sólo falta una acción que requiere tu intervención (irreversible, requiere decisiones sobre el remote):
+Las 16 fases (0–15) están completadas y el MVP **está publicado en GitHub**.
 
-1. Lee `docs/release-v0.1.0.md`.
-2. Decide nombre y visibilidad (default sugerido: `webcafeina/migrator` privado).
-3. Sigue los 11 pasos del documento.
-4. Una vez con el tag publicado, actualiza este STATE.md con el SHA del tag y notifica al equipo.
+Pasos del `docs/release-v0.1.0.md` completados:
+- ✅ Paso 1 (pre-flight checks: tests verdes, audit, sin secretos).
+- ✅ Paso 2 (repo `webcafeina/migrator` privado creado en GitHub).
+- ✅ Paso 3 (`git remote add origin` + `git branch -M main`).
+- ✅ Paso 4 (primer `git push -u origin main` — 25 commits iniciales).
+- ✅ Paso 5 (tag `v0.1.0` anclado a `adb95a7` + `git push origin v0.1.0`).
+- ✅ Paso 6 (branch protection en `main` — hecho manualmente por el operador).
+- ✅ Paso 9 implícito (CI verde tras 5 fixes iterativos sobre el primer run).
+
+Pasos pendientes (todos manuales, no bloqueantes):
+- Paso 7: configurar **sudoers** en el servidor WHM para que `webcafeina` pueda reiniciar las units WCM sin password (necesario para deploy desde Actions).
+- Paso 8: `gh release create v0.1.0 --notes-file CHANGELOG.md --verify-tag` para que aparezca en Releases del repo.
+- Paso 10: añadir miembros del equipo (Álvaro admin, Samuel/Adrián/Nacho write).
+- Paso 11: post-release (notificar al equipo, planificar roadmap post-v0.1.0).
 
 Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):
 - WCM-011: revisión legal externa antes de outreach masivo.
@@ -414,6 +424,8 @@ Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):
 - WCM-017: slowapi storage Redis para multi-nodo.
 - WCM-018: Lighthouse CI en Actions.
 - WCM-019: Grafana dashboard SLOs.
+- WCM-020: alertas en Grafana cuando p95 > critical.
+- WCM-021: e2e con mock server real para Server Components (3 tests skipped).
 - WCM-020: alertas en Grafana.
 
 ---
