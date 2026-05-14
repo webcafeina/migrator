@@ -117,6 +117,17 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-021 — E2E con mock server real para Server Components
+- **Tipo**: test / **Fase**: 13 (post) / **Prioridad**: P2
+- **Estado**: OPEN (3 tests skipped tras primer CI run)
+- **Contexto**: `page.route()` de Playwright intercepta requests del **browser**, no de los Server Components que hacen fetch en Node. Las páginas `/leads`, `/leads/[id]`, `/projects`, `/projects/[id]` son Server Components y por eso sus fetch van directos al API real → ECONNREFUSED en CI sin API levantada. 3 tests skipped: `Leads`/`acceso a detalle del lead`, `Proyectos`/`listado y navegación al detalle`.
+- **Acción**: Una de estas opciones:
+  - (a) Levantar **MSW node** en el `webServer.command` de Playwright para interceptar el fetch a nivel Node.
+  - (b) Levantar un mini servidor HTTP en otro puerto que sirva fixtures, y apuntar `API_URL=http://127.0.0.1:<puerto-mock>` en el webServer env.
+  - (c) Levantar la API real (FastAPI con Postgres+Redis) como service en el job e2e — complejo.
+- Recomendado: opción (a) MSW node. Mantenibilidad alta y compartido con vitest si hace falta.
+- **Dueño**: técnico — abordable en Fase 16+ (post-v0.1.0).
+
 ## Plantilla para nuevos issues
 
 ```
