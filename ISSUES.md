@@ -128,6 +128,93 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 - Recomendado: opción (a) MSW node. Mantenibilidad alta y compartido con vitest si hace falta.
 - **Dueño**: técnico — abordable en Fase 16+ (post-v0.1.0).
 
+---
+
+### WCM-022 — Comando `wcm users create` para seed admin sin script ad-hoc
+- **Tipo**: feature / **Fase**: post-v0.1.0 / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: el dev local actual requiere ejecutar un script Python ad-hoc para crear el primer admin. Tener `wcm users create --email --name --role --password` simplifica el setup.
+- **Acción**: nuevo módulo `cli/src/wcm_cli/commands/users.py` con subcomandos `create`, `list`, `set-role`, `deactivate`. Hash con argon2 reusando `wcm_api.security.hash_password`.
+
+---
+
+### WCM-023 — `scripts/dev-up.sh` para arrancar la stack con un solo comando
+- **Tipo**: chore / **Fase**: post-v0.1.0 / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: actualmente el dev local requiere 4 terminales (API + worker + beat + dashboard). Mala DX.
+- **Acción**: script bash con `concurrently` (npm) o `tmux` que arranque los 4 procesos con sus envs y logs separados por color. Trap SIGINT para parar todo en cascada con Ctrl+C.
+
+---
+
+### WCM-024 — `infra/whm-setup/02-database.sh` con flag `--macos-local`
+- **Tipo**: chore / **Fase**: post-v0.1.0 / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: el script asume Linux con `sudo -u postgres`. En macOS brew, el superusuario es el usuario actual; los comandos son `psql postgres -c "CREATE ROLE..."` directos. Documentado en `docs/dev-local.md`.
+- **Acción**: añadir flag `--macos-local` al script que detecta plataforma y usa el equivalente sin sudo.
+
+---
+
+### WCM-025 — ADR-034 documentando GlitchTip como backend error tracking
+- **Tipo**: docs / **Fase**: post-v0.1.0 / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: en testeo local 2026-05-14 se eligió GlitchTip hosted como alternativa gratuita a Sentry (free 1k eventos/mes perpetuo, API 100% compatible con sentry-sdk — drop-in). ADR-028 menciona Sentry sin diferenciar backend.
+- **Acción**: redactar ADR-034 "GlitchTip hosted en vez de Sentry SaaS". Marcar ADR-028 con nota cruzada.
+
+---
+
+### WCM-026 (CRÍTICO) — `ProspectorAgent` no encadena fingerprint + enrich
+- **Tipo**: bug / **Fase**: 9 (descubierto en dev-local 2026-05-14) / **Prioridad**: **P0**
+- **Estado**: OPEN
+- **Contexto**: la task `wcm.prospector.run_campaign` solo crea leads `DISCOVERED`. NO encola fingerprint ni enrich después. En producción los leads se quedan colgados sin contacto/score. El operador tendría que hacerlo manual lead-a-lead.
+- **Acción**: tras `_upsert_lead`, encolar `wcm.fingerprinter.run.delay(lead_id)`. El fingerprinter task encadena enrich (ver WCM-027). Test e2e que verifique status `ENRICHED` tras campaña.
+
+---
+
+### WCM-027 (CRÍTICO) — Falta task Celery + endpoint + CLI para enrich
+- **Tipo**: feature / **Fase**: 9 (descubierto en dev-local 2026-05-14) / **Prioridad**: **P0**
+- **Estado**: OPEN
+- **Contexto**: existe `EnricherAgent` pero **no se expone**: no hay task Celery `wcm.enricher.run`, ni endpoint API `/leads/{id}/enrich`, ni comando CLI `wcm leads enrich`. Solo se puede usar via script Python ad-hoc.
+- **Acción**:
+  - `apps/worker/src/wcm_worker/tasks/enricher.py` con `@celery_app.task(name="wcm.enricher.run")`.
+  - `apps/api/src/wcm_api/routers/leads.py` añadir `POST /leads/{id}/enrich`.
+  - `cli/src/wcm_cli/commands/leads.py` añadir `wcm leads enrich <id>`.
+  - El fingerprinter task lo encola automáticamente tras fingerprint.
+
+---
+
+### WCM-028 — Warning estático obsoleto en `wcm campaigns launch`
+- **Tipo**: bug / **Fase**: 7 (CLI) / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: el comando imprime `⚠ ProspectorAgent es stub en Fase 6. Implementación real en Fase 9.` — texto hardcodeado obsoleto desde que ProspectorAgent es real en Fase 9.
+- **Acción**: eliminar el `typer.echo` en `cli/src/wcm_cli/commands/campaigns.py`.
+
+---
+
+### WCM-029 — `.env.example` debe usar `postgresql+psycopg://` para DATABASE_SYNC_URL
+- **Tipo**: bug / **Fase**: post-v0.1.0 / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: `.env.example` tiene `DATABASE_SYNC_URL=postgresql://...` sin prefix de driver. SQLAlchemy intenta `psycopg2` (no instalado — usamos `psycopg` v3). Alembic falla con `ModuleNotFoundError: psycopg2`. Prefix `+psycopg` necesario.
+- **Acción**: actualizar `.env.example` línea de `DATABASE_SYNC_URL` con el prefix correcto.
+
+---
+
+### WCM-030 — `greenlet` no estaba en deps explícitas del API
+- **Tipo**: bug / **Fase**: 5 (API) / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: SQLAlchemy async (asyncpg) requiere `greenlet`. Sin él, `/health/deep` falla con `the greenlet library is required to use this function`. Funcionó en CI porque algún transitivo lo arrastra, en venv limpio no.
+- **Acción**: añadir `greenlet>=3.0` a `apps/api/pyproject.toml` deps.
+
+---
+
+### WCM-031 (CRÍTICO) — `ProspectorAgent` no llamaba a `place_details`; ningún lead se creaba
+- **Tipo**: bug / **Fase**: 9 (descubierto en dev-local 2026-05-14, fix aplicado) / **Prioridad**: **P0**
+- **Estado**: PARCIALMENTE RESUELTO (fix local aplicado en commit pendiente)
+- **Contexto**: Google Places Text Search legacy NO devuelve `website` ni `phone` en sus resultados — solo `place_id`, `name`, `address`, `types`. El `ProspectorAgent` filtraba con `if not place.website` que SIEMPRE era None → todos los places descartados como `no_website` → 0 leads creados nunca. **El producto MVP no producía leads en producción**.
+- **Resolución parcial**: fix aplicado en sesión 2026-05-14. Ahora se hace `place_details(place_id)` por cada place tras el filtro de tipo. Verificado: campaña "restaurante" / "Cáceres" / target=5 → 5 leads creados con URLs reales.
+- **Pendiente**: commit + push del fix; test unit en `test_prospector.py` que cubra el flujo Text Search devolviendo `website=None` y place_details devolviendo `website` real; documentar coste extra (~N+1 calls Places por campaña).
+
+---
+
 ## Plantilla para nuevos issues
 
 ```

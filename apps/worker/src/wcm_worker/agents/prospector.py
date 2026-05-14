@@ -98,27 +98,37 @@ class ProspectorAgent(BaseAgent):
                     break
                 discovered += 1
 
-                if not place.website:
-                    skipped_no_website += 1
-                    continue
+                # Text Search legacy NO devuelve `website` ni `phone` —
+                # solo place_id, name, address, types, rating. Para esos
+                # campos hace falta llamar a place_details. Filtramos
+                # por tipo PRIMERO (sin call extra), luego details.
                 if _is_blocked_type(place):
                     skipped_blocked_type += 1
                     continue
 
-                normalized_url = _normalize_url(place.website)
+                details = client.place_details(place.place_id)
+                # `details` puede ser None si Google devolvió NOT_FOUND.
+                # Usamos el merge: detalles completos si los hay, place
+                # base si no (sin website, se descartará).
+                place_full = details or place
+                if not place_full.website:
+                    skipped_no_website += 1
+                    continue
+
+                normalized_url = _normalize_url(place_full.website)
                 domain = _domain_of(normalized_url)
                 if not domain or domain in exclude_domains:
                     skipped_excluded += 1
                     continue
 
-                lead_id = _upsert_lead(ctx, normalized_url, place, sector, region)
+                lead_id = _upsert_lead(ctx, normalized_url, place_full, sector, region)
                 if lead_id is None:
                     skipped_duplicate += 1
                     continue
                 created += 1
 
-                _insert_enrichment(ctx, lead_id, place)
-                _audit_discover(ctx, lead_id, query, place)
+                _insert_enrichment(ctx, lead_id, place_full)
+                _audit_discover(ctx, lead_id, query, place_full)
         except GooglePlacesQuotaExceeded as e:
             warnings.append(f"Quota Google alcanzada: {e}")
             log.warning("prospect_quota_exceeded", extra={"error": str(e)})

@@ -68,6 +68,11 @@ local-data/
 # ---- Claude Code ----
 .claude/scheduled_tasks.lock
 
+# ---- Celery beat runtime state ----
+celerybeat-schedule
+celerybeat-schedule-*
+celerybeat.pid
+
 # ---- Build artifacts ----
 *.whl
 *.tar.gz
