@@ -71,7 +71,7 @@ class WpCliSshClient:
         self._known_hosts_strict = known_hosts_strict
         self._ssh: paramiko.SSHClient | None = None
 
-    async def __aenter__(self) -> "WpCliSshClient":
+    async def __aenter__(self) -> WpCliSshClient:
         client = paramiko.SSHClient()
         if self._known_hosts_strict:
             client.load_system_host_keys()

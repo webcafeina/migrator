@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from wcm_types.enums import BuilderType
-
 from wcm_scraper_core.extractors.base import (
     BuilderExtractor,
     ExtractedBlock,
@@ -12,6 +10,7 @@ from wcm_scraper_core.extractors.base import (
 from wcm_scraper_core.extractors.hostinger import HostingerExtractor
 from wcm_scraper_core.extractors.webflow import WebflowExtractor
 from wcm_scraper_core.extractors.wix import WixExtractor
+from wcm_types.enums import BuilderType
 
 _REGISTRY: dict[BuilderType, type[BuilderExtractor]] = {
     BuilderType.WIX: WixExtractor,

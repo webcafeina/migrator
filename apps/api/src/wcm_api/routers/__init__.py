@@ -3,7 +3,6 @@
 from wcm_api.routers import (
     auth,
     campaigns,
-    errors as errors_router,
     health,
     leads,
     opt_out,
@@ -12,6 +11,9 @@ from wcm_api.routers import (
     residual_tasks,
     users,
     webhooks,
+)
+from wcm_api.routers import (
+    errors as errors_router,
 )
 
 __all__ = [

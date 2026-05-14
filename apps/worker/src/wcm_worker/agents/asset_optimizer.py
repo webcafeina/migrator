@@ -24,14 +24,12 @@ from __future__ import annotations
 import hashlib
 import io
 import logging
-import os
-from typing import Any
 
 import httpx
 from sqlalchemy import select
+
 from wcm_db.models.assets import Asset
 from wcm_types.enums import AssetStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import AssetOptimizerError
 from wcm_worker.integrations.r2 import R2Client, R2UploadError

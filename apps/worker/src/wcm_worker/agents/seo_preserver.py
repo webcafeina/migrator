@@ -11,14 +11,13 @@ destino, lo hace wp-deployer). NO se aplica plan de mejoras SEO (Fase 14).
 from __future__ import annotations
 
 import json
-import re
 from typing import Any
 
 from bs4 import BeautifulSoup
 from sqlalchemy import select
+
 from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_types.enums import ScrapeStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import SeoPreserverError
 

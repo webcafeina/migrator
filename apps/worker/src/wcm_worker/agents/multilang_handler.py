@@ -13,12 +13,11 @@ quedan como tareas residuales y se resuelven en Fase 9+.
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any
 
 from sqlalchemy import select
+
 from wcm_db.models.projects import Project
 from wcm_db.models.scraped_pages import ScrapedPage
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import MultilangHandlerError
 
@@ -44,7 +43,7 @@ class MultilangHandlerAgent(BaseAgent):
                 short = page.lang[:2].lower()
                 langs_seen[short] += 1
 
-        langs_list = sorted(langs_seen, key=lambda l: -langs_seen[l])
+        langs_list = sorted(langs_seen, key=lambda lang: -langs_seen[lang])
         is_multilang = len(langs_list) > 1
         primary_lang = langs_list[0] if langs_list else None
 

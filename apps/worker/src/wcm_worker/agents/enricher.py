@@ -14,13 +14,13 @@ from __future__ import annotations
 
 import logging
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import httpx
+
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead
 from wcm_types.enums import AuditAction, LeadStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import EnricherError
 
@@ -120,7 +120,6 @@ class EnricherAgent(BaseAgent):
         try:
             from wcm_worker.embedding import (  # import perezoso
                 DEFAULT_MODEL,
-                EmbeddingService,
                 get_embedding_service,
             )
         except Exception as e:  # noqa: BLE001
@@ -144,7 +143,7 @@ class EnricherAgent(BaseAgent):
 
         lead.embedding = vec
         lead.embedding_model = service.model_name or DEFAULT_MODEL
-        lead.embedding_at = datetime.now(timezone.utc)
+        lead.embedding_at = datetime.now(UTC)
         return {
             "computed": True,
             "model": lead.embedding_model,

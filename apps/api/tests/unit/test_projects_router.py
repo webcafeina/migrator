@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -30,8 +30,8 @@ def _make_project_mock(project_id: int = 1, status_val: str = "queued"):
     p.started_at = None
     p.completed_at = None
     p.estimated_go_live_at = None
-    p.created_at = datetime.now(timezone.utc)
-    p.updated_at = datetime.now(timezone.utc)
+    p.created_at = datetime.now(UTC)
+    p.updated_at = datetime.now(UTC)
     return p
 
 
@@ -43,8 +43,8 @@ async def test_create_project(client, operator_token, fake_session) -> None:
         # Simula los server defaults de Postgres (id autoincrement, timestamps, status)
         obj.id = 1
         obj.status = ProjectStatus.QUEUED
-        obj.created_at = datetime.now(timezone.utc)
-        obj.updated_at = datetime.now(timezone.utc)
+        obj.created_at = datetime.now(UTC)
+        obj.updated_at = datetime.now(UTC)
 
     fake_session.refresh.side_effect = _refresh_side_effect
 

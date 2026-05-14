@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import uuid
+from datetime import UTC
 from unittest.mock import MagicMock
 
 import pytest
-from wcm_types.enums import UserRole
 
 from wcm_api.security import hash_password
+from wcm_types.enums import UserRole
 
 
 def _make_user_row(*, email: str = "test@webcafeina.com", password: str = "test1234", role=UserRole.ADMIN, active: bool = True):
@@ -20,9 +21,9 @@ def _make_user_row(*, email: str = "test@webcafeina.com", password: str = "test1
     u.role = role
     u.is_active = active
     u.hashed_password = hash_password(password)
-    from datetime import datetime, timezone
-    u.created_at = datetime.now(timezone.utc)
-    u.updated_at = datetime.now(timezone.utc)
+    from datetime import datetime
+    u.created_at = datetime.now(UTC)
+    u.updated_at = datetime.now(UTC)
     return u
 
 

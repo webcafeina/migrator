@@ -12,10 +12,9 @@ section/container y se insertan tal cual.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
-
-from wcm_types.enums import BlockType
+from typing import Any
 
 from wcm_bricks_transpiler.ids import IdGenerator
 from wcm_bricks_transpiler.mappers import MapperContext, MapperResult, get_mapper
@@ -24,6 +23,7 @@ from wcm_bricks_transpiler.schema import (
     BRICKS_SCHEMA_VERSION,
     BricksElement,
 )
+from wcm_types.enums import BlockType
 
 
 @dataclass

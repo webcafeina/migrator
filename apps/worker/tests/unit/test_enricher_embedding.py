@@ -5,8 +5,6 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from wcm_types.enums import LeadStatus
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.enricher import (

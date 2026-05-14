@@ -5,6 +5,7 @@ implementaciones reales (envuelven los paquetes ya construidos), otros
 son stubs documentados que se implementan en fases posteriores.
 """
 
+from wcm_worker.agents.asset_optimizer import AssetOptimizerAgent
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.agents.bricks_transpiler import BricksTranspilerAgent
 from wcm_worker.agents.checklist_generator import ChecklistGeneratorAgent
@@ -22,10 +23,9 @@ from wcm_worker.agents.resend_notifier import ResendNotifierAgent
 from wcm_worker.agents.scraper_origin import ScraperOriginAgent
 from wcm_worker.agents.seo_preserver import SeoPreserverAgent
 from wcm_worker.agents.visual_diff import VisualDiffAgent
+from wcm_worker.agents.woo_migrator import WooMigratorAgent
 from wcm_worker.agents.wp_deployer import WpDeployerAgent
 from wcm_worker.agents.wpml_configurator import WpmlConfiguratorAgent
-from wcm_worker.agents.woo_migrator import WooMigratorAgent
-from wcm_worker.agents.asset_optimizer import AssetOptimizerAgent
 
 __all__ = [
     "AgentContext",

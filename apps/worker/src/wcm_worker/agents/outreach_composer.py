@@ -29,6 +29,7 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 from sqlalchemy import select
+
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead, OptOutLog
 from wcm_db.models.outreach import OutreachSend, OutreachSequence
@@ -39,7 +40,6 @@ from wcm_types.enums import (
     OutreachSendStatus,
     OutreachSequenceStatus,
 )
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import OutreachComposerError
 

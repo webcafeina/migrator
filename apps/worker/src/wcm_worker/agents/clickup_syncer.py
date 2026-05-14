@@ -24,10 +24,10 @@ from __future__ import annotations
 import logging
 
 from sqlalchemy import select
+
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.residual_tasks import ResidualTask
 from wcm_types.enums import AuditAction, ResidualCategory, ResidualStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ClickupSyncerError
 from wcm_worker.integrations.clickup import ClickupApiError, ClickupClient

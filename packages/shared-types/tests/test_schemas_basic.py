@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 import pytest
 from pydantic import ValidationError
@@ -24,7 +23,7 @@ from wcm_types import (
 from wcm_types.schemas.content_blocks import ContentBlockCreate
 from wcm_types.schemas.leads import LeadCreate, LeadEnrichmentCreate, LeadRead
 from wcm_types.schemas.outreach import OutreachSequenceCreate, OutreachStep
-from wcm_types.schemas.projects import ProjectCreate, ProjectRead
+from wcm_types.schemas.projects import ProjectCreate
 from wcm_types.schemas.users import UserCreate
 
 
@@ -61,11 +60,11 @@ def test_lead_read_serialization_excludes_embedding() -> None:
         "social_links": {"linkedin": "https://linkedin.com/company/ejemplo"},
         "status": LeadStatus.ENRICHED,
         "score": 45,
-        "last_crawl_at": datetime.now(timezone.utc),
+        "last_crawl_at": datetime.now(UTC),
         "embedding_model": "voyage-multilingual-2",
-        "embedding_at": datetime.now(timezone.utc),
-        "created_at": datetime.now(timezone.utc),
-        "updated_at": datetime.now(timezone.utc),
+        "embedding_at": datetime.now(UTC),
+        "created_at": datetime.now(UTC),
+        "updated_at": datetime.now(UTC),
     }
     lead = LeadRead.model_validate(payload)
     dump = lead.model_dump()

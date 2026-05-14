@@ -24,14 +24,13 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Type
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_types.enums import ProjectPhaseStatus, ProjectStatus
-
 from wcm_worker.agents import (
     AssetOptimizerAgent,
     BaseAgent,
@@ -54,7 +53,6 @@ from wcm_worker.agents.base import AgentContext
 from wcm_worker.errors import (
     AgentError,
     AgentNotImplementedError,
-    OrchestrationError,
     UnrecoverableProjectError,
 )
 
@@ -64,7 +62,7 @@ log = logging.getLogger("wcm.worker.pipeline")
 @dataclass(frozen=True)
 class _PhaseSpec:
     phase_name: str
-    agent_class: Type[BaseAgent]
+    agent_class: type[BaseAgent]
     required: bool = True
     #: Nombre de atributo del Project que debe ser True para ejecutar esta
     #: fase. None = se ejecuta siempre. Ejemplos: "has_ecommerce",
@@ -131,7 +129,7 @@ class Orchestrator:
         # primera fase no completada.
         project.status = ProjectStatus.RUNNING
         if not project.started_at:
-            project.started_at = datetime.now(timezone.utc)
+            project.started_at = datetime.now(UTC)
         self.session.flush()
 
         outcome = OrchestrationOutcome(project_id=project_id, completed_phases=[], skipped_phases=[])
@@ -173,7 +171,7 @@ class Orchestrator:
         # Si llegamos aquí sin failed_phase requerido, el proyecto se completa
         if outcome.failed_phase is None:
             project.status = ProjectStatus.COMPLETED
-            project.completed_at = datetime.now(timezone.utc)
+            project.completed_at = datetime.now(UTC)
             outcome.final_status = ProjectStatus.COMPLETED
         else:
             project.status = ProjectStatus.QA_FAILED
@@ -220,7 +218,7 @@ class Orchestrator:
             )
         ).scalar_one_or_none()
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         if existing is None:
             phase = ProjectPhase(
                 project_id=project_id,

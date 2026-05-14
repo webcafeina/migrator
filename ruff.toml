@@ -1,0 +1,65 @@
+# Configuración ruff a nivel de monorepo.
+# Se aplica cuando se ejecuta `ruff check` desde la raíz.
+# Cada paquete puede tener su propia config en pyproject.toml para overrides
+# locales si fuera necesario.
+
+line-length = 100
+target-version = "py312"
+
+extend-exclude = [
+    ".venv",
+    "node_modules",
+    ".next",
+    "apps/dashboard",      # frontend, ruff no aplica
+    "docs/humanos",        # zona humana, regla #11
+    "**/__pycache__",
+    "**/.pytest_cache",
+]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+ignore = [
+    # E501 line-too-long: el límite 100 es indicativo. Muchas líneas
+    # largas son JSON inline o strings de error que son más legibles
+    # en una sola línea que partidas con paréntesis.
+    "E501",
+    # N818 error-suffix-on-exception-name: nuestras excepciones siguen
+    # convención `XxxError` (no `XxxException`). Es un estilo válido y
+    # coherente con todo el código.
+    "N818",
+    # B019 cached-instance-method: usamos `@lru_cache` sobre instance
+    # methods conscientemente en EmbeddingService (singleton + cache de
+    # texto). Documentado.
+    "B019",
+    # B008 function-call-in-default-argument: `Query(default=None)` y
+    # `Depends(...)` en defaults son el patrón estándar de FastAPI.
+    # Ruff no debería marcarlos.
+    "B008",
+    # UP047 non-pep695-generic-function: la nueva sintaxis `def foo[T]()`
+    # requiere Python 3.12+, pero no aporta sobre `TypeVar` clásico.
+    # Decisión: dejamos el estilo histórico mientras parte del código
+    # usa typevar. Migrar todo a la nueva sintaxis es un refactor aparte.
+    "UP047",
+    # E702 multi-statement-on-one-line-semicolon: el patrón
+    # `assign; counter += 1` es legible y conciso. La regla está
+    # pensada contra `a=1; b=2; c=3` (sí feo), pero generaliza en exceso.
+    "E702",
+]
+
+[lint.per-file-ignores]
+# Tests pueden tener:
+# - `class StubX: ...` en una línea (E701)
+# - `class A: ...; class B: ...` (E702)
+# - variables `l`, `e`, `I` ambiguas en parametrized (E741)
+# - loops `for i in range(N)` sin usar i (B007)
+# - F841 unused-variable común en tests con fixtures
+# - F401 unused-import en re-exports y conftests
+"**/tests/**" = ["E701", "E702", "E741", "B007", "F841", "F401", "B904"]
+"**/test_*.py" = ["E701", "E702", "E741", "B007", "F841", "F401", "B904"]
+# Conftests permiten imports re-exportados sin usar localmente
+"**/conftest.py" = ["F401"]
+# alembic migrations: auto-generadas, no las tocamos
+"**/alembic/versions/*.py" = ["E501", "F401", "I001", "UP", "N"]
+
+[lint.isort]
+known-first-party = ["wcm_api", "wcm_worker", "wcm_db", "wcm_types", "wcm_scraper_core", "wcm_bricks_transpiler", "wcm_wp_client", "wcm_cli"]

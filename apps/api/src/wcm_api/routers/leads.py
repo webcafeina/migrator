@@ -13,10 +13,6 @@ from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.audit import AuditLog
-from wcm_db.models.leads import Lead
-from wcm_types.enums import AuditAction, BuilderType, LeadStatus, UserRole
-from wcm_types.schemas.leads import LeadRead, LeadUpdate
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
@@ -29,6 +25,10 @@ from wcm_api.security import (
     require_role,
 )
 from wcm_api.tasks.enqueue import enqueue_lead_fingerprint, enqueue_outreach_compose
+from wcm_db.models.audit import AuditLog
+from wcm_db.models.leads import Lead
+from wcm_types.enums import AuditAction, BuilderType, LeadStatus, UserRole
+from wcm_types.schemas.leads import LeadRead, LeadUpdate
 
 router = APIRouter(prefix="/leads", tags=["leads"])
 
@@ -62,7 +62,7 @@ async def list_leads(
     stmt = stmt.order_by(Lead.created_at.desc()).limit(limit).offset(offset)
 
     leads = (await session.execute(stmt)).scalars().all()
-    return [LeadRead.model_validate(l) for l in leads]
+    return [LeadRead.model_validate(lead) for lead in leads]
 
 
 @router.get("/count")

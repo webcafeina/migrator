@@ -113,7 +113,7 @@ def render_table(
         if json_payload is not None:
             emit_json(json_payload)
         else:
-            emit_json([dict(zip(columns, r)) for r in rows])
+            emit_json([dict(zip(columns, r, strict=False)) for r in rows])
         return
 
     table = Table(title=title, title_style="accent", border_style="secondary")

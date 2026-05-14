@@ -26,6 +26,3 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["python"]
 
-[tool.ruff]
-line-length = 100
-target-version = "py312"

@@ -14,8 +14,7 @@ import pytest
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.enricher import EnricherAgent, _compute_score, _normalize_phone
 from wcm_worker.agents.fingerprinter import FingerprinterAgent
-from wcm_worker.errors import EnricherError, FingerprinterError
-
+from wcm_worker.errors import FingerprinterError
 
 # ---------- helpers ----------
 

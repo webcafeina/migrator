@@ -29,8 +29,8 @@ import logging
 import os
 from urllib.parse import urlparse
 
-from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead, LeadEnrichment
 from wcm_scraper_core.directories import (
@@ -40,7 +40,6 @@ from wcm_scraper_core.directories import (
     PlaceResult,
 )
 from wcm_types.enums import AuditAction, LeadStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ProspectorError
 

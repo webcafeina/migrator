@@ -13,15 +13,13 @@ clients usar `Authorization: Bearer <token>` o `x-wcm-token`.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, Response, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.users import User
-from wcm_types.schemas.users import UserRead
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
@@ -33,6 +31,8 @@ from wcm_api.security import (
     issue_session_token,
     verify_password,
 )
+from wcm_db.models.users import User
+from wcm_types.schemas.users import UserRead
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -67,7 +67,7 @@ async def login(
         httponly=True,
         secure=settings.is_production,
         samesite="lax",
-        expires=int((expires - datetime.now(timezone.utc)).total_seconds()),
+        expires=int((expires - datetime.now(UTC)).total_seconds()),
         path="/",
     )
     return UserRead.model_validate(user)

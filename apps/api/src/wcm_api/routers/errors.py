@@ -11,12 +11,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.audit import ErrorLog
-from wcm_types.enums import ErrorSeverity, UserRole
-from wcm_types.schemas.audit import ErrorLogRead
 
 from wcm_api.db import get_session
 from wcm_api.security import require_role
+from wcm_db.models.audit import ErrorLog
+from wcm_types.enums import ErrorSeverity, UserRole
+from wcm_types.schemas.audit import ErrorLogRead
 
 router = APIRouter(prefix="/errors", tags=["errors"])
 

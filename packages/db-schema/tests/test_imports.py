@@ -7,7 +7,6 @@ from __future__ import annotations
 from wcm_db import Base
 from wcm_db import models as wcm_models
 
-
 EXPECTED_TABLES = {
     "users",
     "leads",

@@ -8,13 +8,13 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.users import User
-from wcm_types.enums import UserRole
-from wcm_types.schemas.users import UserCreate, UserRead
 
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import hash_password, require_role
+from wcm_db.models.users import User
+from wcm_types.enums import UserRole
+from wcm_types.schemas.users import UserCreate, UserRead
 
 router = APIRouter(prefix="/users", tags=["users"])
 

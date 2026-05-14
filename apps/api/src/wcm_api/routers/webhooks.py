@@ -12,20 +12,20 @@ from __future__ import annotations
 import hashlib
 import hmac
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.audit import AuditLog
-from wcm_db.models.outreach import OutreachSend
-from wcm_db.models.residual_tasks import ResidualTask
-from wcm_types.enums import AuditAction, OutreachSendStatus, ResidualStatus
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
 from wcm_api.errors import UnauthorizedError
+from wcm_db.models.audit import AuditLog
+from wcm_db.models.outreach import OutreachSend
+from wcm_db.models.residual_tasks import ResidualTask
+from wcm_types.enums import AuditAction, OutreachSendStatus, ResidualStatus
 
 log = logging.getLogger("wcm.api.webhooks")
 
@@ -149,7 +149,7 @@ async def resend_webhook(
         log.debug("resend_webhook_no_send_match", extra={"message_id": message_id})
         return None
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     field = _RESEND_EVENT_FIELD.get(event_type)
     if field and getattr(send, field, None) is None:
         setattr(send, field, now)

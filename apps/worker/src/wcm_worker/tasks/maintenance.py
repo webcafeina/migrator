@@ -17,14 +17,14 @@ escribe un audit_log con `actor='retention-sweep'`.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import and_, delete, exists, or_, select, update
+from sqlalchemy import and_, delete, exists, update
+
 from wcm_db.models.audit import AuditLog, ErrorLog
 from wcm_db.models.leads import Lead
 from wcm_db.models.outreach import OutreachSequence
 from wcm_types.enums import AuditAction, LeadStatus
-
 from wcm_worker.celery_app import celery_app
 from wcm_worker.db import session_scope
 
@@ -39,7 +39,7 @@ ERROR_LOG_TTL_DAYS = 90
 @celery_app.task(name="wcm.maintenance.retention_sweep", bind=True, max_retries=0)
 def retention_sweep(self) -> dict:
     """Aplica la política de retención. Llamada por Celery beat 1x/día."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     with session_scope() as session:
         stats = {
             "leads_discovered_purged": _purge_stale_discovered(session, now),

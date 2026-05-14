@@ -10,10 +10,10 @@ amplía en futuras fases con Playwright.
 from __future__ import annotations
 
 import httpx
+
 from wcm_db.models.leads import Lead
 from wcm_scraper_core.fingerprint import fingerprint_url
 from wcm_types.enums import BuilderType
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import FingerprinterError
 

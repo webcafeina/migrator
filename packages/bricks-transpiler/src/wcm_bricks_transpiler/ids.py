@@ -21,7 +21,6 @@ from __future__ import annotations
 import hashlib
 import string
 
-
 _ALPHA = string.digits + string.ascii_lowercase  # 36 chars
 
 

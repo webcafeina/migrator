@@ -24,7 +24,6 @@ from typing import Any
 
 import yaml
 
-
 # Resolución del patterns.yml siguiendo el repo desde el módulo instalado.
 # Cadena: fingerprint.py → wcm_scraper_core/ → src/ → scraper-core/ → packages/ → REPO_ROOT
 # parents[4] = REPO_ROOT (con install editable). Si se instalara como wheel real,

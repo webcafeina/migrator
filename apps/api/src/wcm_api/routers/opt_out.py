@@ -21,12 +21,12 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.leads import Lead, OptOutLog
-from wcm_types.enums import LeadStatus
 
 from wcm_api.config import ApiSettings, get_settings
 from wcm_api.db import get_session
 from wcm_api.security import decode_opt_out_token
+from wcm_db.models.leads import Lead, OptOutLog
+from wcm_types.enums import LeadStatus
 
 router = APIRouter(tags=["opt-out"])
 

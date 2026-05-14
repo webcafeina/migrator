@@ -12,9 +12,9 @@ from __future__ import annotations
 import re
 
 from bs4 import BeautifulSoup, Tag
-from wcm_types.enums import BlockType
 
 from wcm_scraper_core.extractors.base import ExtractedBlock, ExtractionResult
+from wcm_types.enums import BlockType
 
 #: Mapping directo Hostinger data-block-type → nuestro BlockType.
 HOSTINGER_BLOCK_MAP: dict[str, BlockType] = {

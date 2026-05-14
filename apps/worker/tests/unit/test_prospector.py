@@ -7,8 +7,8 @@ manejo de quota como warning no-bloqueante.
 
 from __future__ import annotations
 
-from typing import Iterator
-from unittest.mock import MagicMock, patch
+from collections.abc import Iterator
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -23,7 +23,6 @@ from wcm_worker.agents.prospector import (
     _normalize_url,
 )
 from wcm_worker.errors import ProspectorError
-
 
 # ---------- helpers ----------
 

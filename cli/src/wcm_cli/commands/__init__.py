@@ -8,6 +8,8 @@ from wcm_cli.commands import (
     leads,
     projects,
     residual_tasks,
+)
+from wcm_cli.commands import (
     setup as setup_cmd,
 )
 

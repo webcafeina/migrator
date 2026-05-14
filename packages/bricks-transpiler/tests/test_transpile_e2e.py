@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from wcm_types.enums import BlockType
-
 from wcm_bricks_transpiler import (
     TranspileContext,
     transpile_page,
     validate_bricks_page,
 )
+from wcm_types.enums import BlockType
 
 
 def _resolver(asset_id: int) -> dict[str, Any]:

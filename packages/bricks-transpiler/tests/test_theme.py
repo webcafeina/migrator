@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from wcm_bricks_transpiler.theme import DEFAULT_PALETTE, build_theme_styles
+from wcm_bricks_transpiler.theme import build_theme_styles
 
 
 def test_default_palette_is_webcafeina() -> None:

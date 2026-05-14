@@ -35,8 +35,9 @@ import hashlib
 import json
 import logging
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Any, Iterator
+from typing import Any
 from urllib.parse import urlencode
 
 import httpx
@@ -133,7 +134,7 @@ class GooglePlacesClient:
         if self._owns_http:
             self._http.close()
 
-    def __enter__(self) -> "GooglePlacesClient":
+    def __enter__(self) -> GooglePlacesClient:
         return self
 
     def __exit__(self, *exc: object) -> None:
@@ -157,7 +158,7 @@ class GooglePlacesClient:
         Si `location` y `radius_m` se proporcionan, restringe el área.
         """
         next_token: str | None = None
-        for page_idx in range(max_pages):
+        for _ in range(max_pages):
             params: dict[str, str | int | float] = {
                 "query": query,
                 "language": self.language,

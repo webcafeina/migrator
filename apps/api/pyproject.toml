@@ -46,14 +46,6 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "N"]
-ignore = ["B008"]  # FastAPI usa Depends() en defaults, es idiomático
-
 [tool.black]
 line-length = 100
 

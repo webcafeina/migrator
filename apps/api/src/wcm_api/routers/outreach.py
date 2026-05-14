@@ -20,6 +20,12 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
+from wcm_api.db import get_session
+from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.rate_limit import limiter
+from wcm_api.security import TokenPayload, get_current_user_payload, require_role
+from wcm_api.tasks.enqueue import enqueue_outreach_send
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.outreach import OutreachSend, OutreachSequence
 from wcm_types.enums import (
@@ -29,12 +35,6 @@ from wcm_types.enums import (
     UserRole,
 )
 from wcm_types.schemas.outreach import OutreachSendRead, OutreachSequenceRead
-
-from wcm_api.db import get_session
-from wcm_api.errors import ConflictError, NotFoundError
-from wcm_api.rate_limit import limiter
-from wcm_api.security import TokenPayload, get_current_user_payload, require_role
-from wcm_api.tasks.enqueue import enqueue_outreach_send
 
 router = APIRouter(prefix="/outreach", tags=["outreach"])
 

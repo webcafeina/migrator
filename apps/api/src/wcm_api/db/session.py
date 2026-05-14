@@ -19,7 +19,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from wcm_api.config import ApiSettings, get_settings
+from wcm_api.config import get_settings
 
 
 @lru_cache(maxsize=1)

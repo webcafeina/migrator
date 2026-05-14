@@ -65,7 +65,7 @@ class ClickupClient:
         self.retry_base_delay_s = retry_base_delay_s
 
     @classmethod
-    def from_env(cls) -> "ClickupClient | None":
+    def from_env(cls) -> ClickupClient | None:
         """Construye desde env. Devuelve None si falta el token (skip)."""
         token = os.environ.get("CLICKUP_API_TOKEN", "").strip()
         if not token:
@@ -80,7 +80,7 @@ class ClickupClient:
         if self._owns_http:
             self._http.close()
 
-    def __enter__(self) -> "ClickupClient":
+    def __enter__(self) -> ClickupClient:
         return self
 
     def __exit__(self, *exc: object) -> None:

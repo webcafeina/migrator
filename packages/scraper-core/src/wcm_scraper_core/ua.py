@@ -12,7 +12,7 @@ En producción se prefiere el dinámico; en desarrollo y tests el estático.
 from __future__ import annotations
 
 import random
-from typing import Iterable
+from collections.abc import Iterable
 
 #: Lista curada actualizada manualmente (2026-05). Mezclas Chrome/Firefox/Safari
 #: en Windows/macOS/Linux/Android/iOS. Mantener ~25 entradas reales.

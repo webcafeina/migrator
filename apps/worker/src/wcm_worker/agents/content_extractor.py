@@ -7,13 +7,13 @@ extractor de wcm_scraper_core. Persiste content_blocks por página.
 from __future__ import annotations
 
 from sqlalchemy import select
+
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.projects import Project
 from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_scraper_core.extractors import get_extractor
 from wcm_scraper_core.extractors.wix import WixExtractor
 from wcm_types.enums import BuilderType, ContentBlockSource, ScrapeStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ContentExtractorError
 

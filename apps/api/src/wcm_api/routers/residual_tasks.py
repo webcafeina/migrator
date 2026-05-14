@@ -7,21 +7,21 @@ marcarlos como done (que dispara sync a ClickUp).
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from wcm_db.models.residual_tasks import ResidualTask
-from wcm_types.enums import ResidualCategory, ResidualStatus, UserRole
-from wcm_types.schemas.residual_tasks import ResidualTaskRead
 
 from wcm_api.db import get_session
 from wcm_api.errors import NotFoundError
 from wcm_api.security import require_role
 from wcm_api.tasks.enqueue import enqueue_residual_sync_clickup
+from wcm_db.models.residual_tasks import ResidualTask
+from wcm_types.enums import ResidualCategory, ResidualStatus, UserRole
+from wcm_types.schemas.residual_tasks import ResidualTaskRead
 
 router = APIRouter(prefix="/residual-tasks", tags=["residual-tasks"])
 
@@ -64,7 +64,7 @@ async def update_residual_status(
         raise NotFoundError(f"ResidualTask {task_id} no encontrado")
     task.status = payload.status
     if payload.status == ResidualStatus.DONE:
-        task.closed_at = datetime.now(timezone.utc)
+        task.closed_at = datetime.now(UTC)
     await session.commit()
     await session.refresh(task)
     # Encolar sync con ClickUp (Fase 10 lo implementará realmente)

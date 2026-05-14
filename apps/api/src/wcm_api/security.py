@@ -13,17 +13,15 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import Cookie, Depends, Header, status
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Cookie, Depends, Header
 
 from wcm_api.config import ApiSettings, get_settings
-from wcm_api.db import get_session
 from wcm_api.errors import ForbiddenError, UnauthorizedError
 
 _hasher = PasswordHasher()
@@ -58,7 +56,7 @@ def issue_session_token(
 ) -> tuple[str, datetime]:
     """Emite un JWT de sesión. Devuelve (token, expires_at)."""
     s = settings or get_settings()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expires = now + timedelta(minutes=s.jwt_expiry_minutes)
     payload = {
         "sub": str(user_id),
@@ -82,8 +80,8 @@ def decode_session_token(token: str, *, settings: ApiSettings | None = None) -> 
     return TokenPayload(
         sub=decoded["sub"],
         role=decoded["role"],
-        exp=datetime.fromtimestamp(decoded["exp"], tz=timezone.utc),
-        iat=datetime.fromtimestamp(decoded["iat"], tz=timezone.utc),
+        exp=datetime.fromtimestamp(decoded["exp"], tz=UTC),
+        iat=datetime.fromtimestamp(decoded["iat"], tz=UTC),
         jti=decoded["jti"],
     )
 
@@ -104,7 +102,7 @@ def issue_opt_out_token(
         "purpose": "opt_out",
         "email": email,
         "lead_id": lead_id,
-        "iat": int(datetime.now(timezone.utc).timestamp()),
+        "iat": int(datetime.now(UTC).timestamp()),
         "jti": uuid.uuid4().hex,
     }
     return jwt.encode(payload, s.jwt_secret, algorithm=s.jwt_algorithm)

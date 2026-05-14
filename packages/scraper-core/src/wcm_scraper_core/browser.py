@@ -58,7 +58,7 @@ class BrowserSession:
         self._browser: Browser | None = None
         self._context: BrowserContext | None = None
 
-    async def __aenter__(self) -> "BrowserSession":
+    async def __aenter__(self) -> BrowserSession:
         try:
             from playwright.async_api import async_playwright
         except ImportError as e:  # pragma: no cover — depende del extra opcional
@@ -95,7 +95,7 @@ class BrowserSession:
         if self._playwright is not None:
             await self._playwright.stop()
 
-    async def new_page(self, url: str | None = None) -> "Page":
+    async def new_page(self, url: str | None = None) -> Page:
         if self._context is None:  # pragma: no cover
             raise RuntimeError("BrowserSession no inicializada (usar con `async with`)")
         page = await self._context.new_page()
@@ -112,5 +112,5 @@ class BrowserSession:
             await page.goto(url, wait_until="networkidle")
         return page
 
-    async def screenshot_full_page(self, page: "Page", path: str) -> None:
+    async def screenshot_full_page(self, page: Page, path: str) -> None:
         await page.screenshot(path=path, full_page=True)

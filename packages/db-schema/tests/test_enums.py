@@ -7,7 +7,6 @@ from __future__ import annotations
 import wcm_db.enums as db_enums
 import wcm_types.enums as types_enums
 
-
 ENUM_NAMES = [
     "AssetStatus",
     "AuditAction",

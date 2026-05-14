@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from wcm_types.schemas._base import TimestampedRead, WcmModel
+from wcm_types.schemas._base import TimestampedRead
 
 
 class SeoRedirectRead(TimestampedRead):

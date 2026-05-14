@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from wcm_worker.tasks.maintenance import (
     _move_outreach_to_discarded,
@@ -24,7 +22,7 @@ def _result_with_rowcount(n: int) -> MagicMock:
 def test_purge_stale_discovered_returns_rowcount() -> None:
     session = MagicMock()
     session.execute.return_value = _result_with_rowcount(7)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert _purge_stale_discovered(session, now) == 7
     session.execute.assert_called_once()
 
@@ -32,26 +30,27 @@ def test_purge_stale_discovered_returns_rowcount() -> None:
 def test_move_outreach_to_discarded_returns_rowcount() -> None:
     session = MagicMock()
     session.execute.return_value = _result_with_rowcount(3)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert _move_outreach_to_discarded(session, now) == 3
 
 
 def test_purge_old_discarded_returns_rowcount() -> None:
     session = MagicMock()
     session.execute.return_value = _result_with_rowcount(2)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert _purge_old_discarded(session, now) == 2
 
 
 def test_purge_error_logs_returns_rowcount() -> None:
     session = MagicMock()
     session.execute.return_value = _result_with_rowcount(10)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert _purge_error_logs(session, now) == 10
 
 
 def test_retention_sweep_task_returns_aggregated_stats() -> None:
     from contextlib import contextmanager
+
     from wcm_worker.tasks import maintenance as mod
 
     session = MagicMock()

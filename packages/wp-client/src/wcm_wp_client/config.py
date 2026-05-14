@@ -36,7 +36,7 @@ class WpClientConfig:
     local_mysql_socket: str | None = None
 
     @classmethod
-    def from_env(cls, env: dict[str, str] | None = None) -> "WpClientConfig":
+    def from_env(cls, env: dict[str, str] | None = None) -> WpClientConfig:
         e = env if env is not None else os.environ
 
         def _req(name: str) -> str:

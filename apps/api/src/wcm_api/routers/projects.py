@@ -9,12 +9,17 @@ Operaciones expuestas:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from wcm_api.db import get_session
+from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.security import require_role
+from wcm_api.tasks.enqueue import enqueue_project_pipeline
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_types.enums import ProjectStatus, UserRole
 from wcm_types.schemas.projects import (
@@ -23,11 +28,6 @@ from wcm_types.schemas.projects import (
     ProjectRead,
     ProjectUpdate,
 )
-
-from wcm_api.db import get_session
-from wcm_api.errors import ConflictError, NotFoundError
-from wcm_api.security import require_role
-from wcm_api.tasks.enqueue import enqueue_project_pipeline
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -107,7 +107,7 @@ async def start_project(
     if project.status == ProjectStatus.RUNNING:
         raise ConflictError(f"Project {project_id} ya está en ejecución")
     project.status = ProjectStatus.RUNNING
-    project.started_at = datetime.now(timezone.utc)
+    project.started_at = datetime.now(UTC)
     await session.commit()
     task_id = enqueue_project_pipeline(project_id, resume=False)
     return {"task_id": task_id, "status": "queued", "project_id": project_id}

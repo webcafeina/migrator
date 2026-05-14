@@ -44,7 +44,7 @@ class EmbeddingService:
         vec = get_embedding_service().embed_text("texto del lead")
     """
 
-    _instance: "EmbeddingService | None" = None
+    _instance: EmbeddingService | None = None
     _lock = threading.Lock()
 
     def __init__(self, model_name: str | None = None, device: str | None = None) -> None:
@@ -53,7 +53,7 @@ class EmbeddingService:
         self._model: SentenceTransformer | None = None
 
     @classmethod
-    def get(cls) -> "EmbeddingService":
+    def get(cls) -> EmbeddingService:
         with cls._lock:
             if cls._instance is None:
                 cls._instance = cls()

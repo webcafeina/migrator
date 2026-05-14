@@ -26,9 +26,10 @@ secuencia a READY (validado en /transition con el flag
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
+
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead, OptOutLog
 from wcm_db.models.outreach import OutreachSend, OutreachSequence
@@ -37,7 +38,6 @@ from wcm_types.enums import (
     OutreachSendStatus,
     OutreachSequenceStatus,
 )
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import OutreachSenderError
 from wcm_worker.integrations.resend import ResendApiError, ResendClient
@@ -126,7 +126,7 @@ class OutreachSenderAgent(BaseAgent):
             raise OutreachSenderError(f"Resend send falló: {e}") from e
 
         send.status = OutreachSendStatus.SENT
-        send.sent_at = datetime.now(timezone.utc)
+        send.sent_at = datetime.now(UTC)
         send.provider_message_id = result.message_id
 
         # Si la secuencia estaba READY y este es el primer envío exitoso,

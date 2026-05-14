@@ -5,9 +5,9 @@ o migración inline.
 
 from wcm_api.tasks.celery_app import celery_app
 from wcm_api.tasks.enqueue import (
+    enqueue_lead_fingerprint,
     enqueue_project_pipeline,
     enqueue_prospect_campaign,
-    enqueue_lead_fingerprint,
     enqueue_residual_sync_clickup,
 )
 

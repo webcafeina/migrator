@@ -52,8 +52,8 @@ class OutreachSequence(Base, TimestampMixin):
     )
     legal_validator_version: Mapped[str | None] = mapped_column(String(16))
 
-    lead: Mapped["Lead"] = relationship(back_populates="outreach_sequences")  # noqa: F821
-    sends: Mapped[list["OutreachSend"]] = relationship(
+    lead: Mapped[Lead] = relationship(back_populates="outreach_sequences")  # noqa: F821
+    sends: Mapped[list[OutreachSend]] = relationship(
         back_populates="sequence", cascade="all, delete-orphan"
     )
 

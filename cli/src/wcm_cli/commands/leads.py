@@ -44,16 +44,18 @@ def list_leads(
         ["id", "url", "sector", "region", "builder", "conf", "score", "status"],
         [
             [
-                l["id"],
-                l["url"],
-                l.get("sector") or "—",
-                l.get("region") or "—",
-                (l.get("builder_detected") or "—"),
-                f"{l['builder_confidence']:.2f}" if l.get("builder_confidence") is not None else "—",
-                l["score"],
-                l["status"],
+                lead["id"],
+                lead["url"],
+                lead.get("sector") or "—",
+                lead.get("region") or "—",
+                (lead.get("builder_detected") or "—"),
+                f"{lead['builder_confidence']:.2f}"
+                if lead.get("builder_confidence") is not None
+                else "—",
+                lead["score"],
+                lead["status"],
             ]
-            for l in leads
+            for lead in leads
         ],
         json_payload=leads,
     )

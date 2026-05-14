@@ -63,7 +63,7 @@ class ResendClient:
         self._sdk = sdk_module  # inyectable para tests
 
     @classmethod
-    def from_env(cls) -> "ResendClient | None":
+    def from_env(cls) -> ResendClient | None:
         key = os.environ.get("RESEND_API_KEY", "").strip()
         if not key:
             return None

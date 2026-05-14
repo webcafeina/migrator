@@ -45,4 +45,4 @@ class ContentBlock(Base, TimestampMixin):
         default=ContentBlockSource.EXTRACTED,
     )
 
-    page: Mapped["ScrapedPage"] = relationship(back_populates="content_blocks")  # noqa: F821
+    page: Mapped[ScrapedPage] = relationship(back_populates="content_blocks")  # noqa: F821

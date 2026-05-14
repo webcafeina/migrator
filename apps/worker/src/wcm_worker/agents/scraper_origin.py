@@ -10,15 +10,15 @@ estado y assets básicos referenciados.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from urllib.parse import urljoin, urlparse
 
 import httpx
 from bs4 import BeautifulSoup
+
 from wcm_db.models.projects import Project
 from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_types.enums import ScrapeStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ScraperOriginError
 
@@ -78,7 +78,7 @@ class ScraperOriginAgent(BaseAgent):
                     html_raw=response.text,
                     html_clean=_sanitize_html(soup),
                     status=ScrapeStatus.SUCCESS,
-                    scraped_at=datetime.now(timezone.utc),
+                    scraped_at=datetime.now(UTC),
                 )
                 results.append(page)
 
@@ -108,7 +108,7 @@ class ScraperOriginAgent(BaseAgent):
             url=url,
             status=ScrapeStatus.FAILED,
             error_message=error[:500],
-            scraped_at=datetime.now(timezone.utc),
+            scraped_at=datetime.now(UTC),
         )
 
     @staticmethod

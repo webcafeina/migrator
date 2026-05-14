@@ -25,7 +25,6 @@ from wcm_worker.agents.outreach_composer import (
 )
 from wcm_worker.errors import OutreachComposerError
 
-
 _COMPANY = {
     "legal_name": "Webcafeína S.L.",
     "cif": "B10463990",

@@ -26,7 +26,7 @@ class CliConfig:
     verify_ssl: bool = True
 
     @classmethod
-    def load(cls) -> "CliConfig":
+    def load(cls) -> CliConfig:
         _autoload_dotenv()
         api_url = os.environ.get("API_URL", "http://localhost:8000").rstrip("/")
         verify = os.environ.get("WP_VERIFY_SSL", "true").lower() not in ("0", "false", "no")

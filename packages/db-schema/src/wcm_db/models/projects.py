@@ -65,7 +65,7 @@ class Project(Base, TimestampMixin):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     estimated_go_live_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    phases: Mapped[list["ProjectPhase"]] = relationship(
+    phases: Mapped[list[ProjectPhase]] = relationship(
         back_populates="project", cascade="all, delete-orphan"
     )
 

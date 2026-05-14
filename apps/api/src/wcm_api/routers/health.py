@@ -41,7 +41,7 @@ async def ready(session: Annotated[AsyncSession, Depends(get_session)]) -> dict:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={"db": "unavailable", "error": str(e)[:200]},
-        )
+        ) from e
     return {"status": "ready", "db": "ok"}
 
 
@@ -61,12 +61,12 @@ async def health_deep(session: Annotated[AsyncSession, Depends(get_session)]) ->
     optional = {"r2": r2}
 
     overall = "ok"
-    for name, check in critical.items():
+    for check in critical.values():
         if check["status"] not in ("ok", "skipped"):
             overall = "fail"
             break
     if overall == "ok":
-        for name, check in optional.items():
+        for check in optional.values():
             if check["status"] == "fail":
                 overall = "degraded"
                 break

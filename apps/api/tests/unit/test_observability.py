@@ -12,7 +12,6 @@ from wcm_api.observability.logtail import reset_logtail, setup_logtail_handler
 from wcm_api.observability.metrics import (
     HTTP_REQUEST_DURATION,
     HTTP_REQUESTS_TOTAL,
-    REGISTRY,
     metrics_endpoint,
 )
 from wcm_api.observability.sentry import init_sentry, reset_sentry

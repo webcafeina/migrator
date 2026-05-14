@@ -111,7 +111,8 @@ class BricksThemeStyles(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     theme_styles: list[BricksThemeStylesEntry] = Field(default_factory=list)
-    colorPalette: list[BricksColorEntry] = Field(default_factory=list)
+    # Nombre exacto requerido por el JSON schema de Bricks Builder.
+    colorPalette: list[BricksColorEntry] = Field(default_factory=list)  # noqa: N815
     breakpoints: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_BREAKPOINTS))
 
 

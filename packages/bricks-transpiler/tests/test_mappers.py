@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from wcm_types.enums import BlockType
-
 from wcm_bricks_transpiler.ids import IdGenerator
 from wcm_bricks_transpiler.mappers import (
     MapperContext,
     get_mapper,
 )
+from wcm_types.enums import BlockType
 
 
 def _stub_resolver(asset_id: int) -> dict[str, Any]:

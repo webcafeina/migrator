@@ -36,14 +36,6 @@ wcm = "wcm_cli.main:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "N"]
-ignore = ["B008"]  # Typer usa Argument()/Option() en defaults
-
 [tool.black]
 line-length = 100
 

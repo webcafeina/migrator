@@ -12,8 +12,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from wcm_db.base import Base
 from wcm_db import models  # noqa: F401 — registra todos los modelos en metadata
+from wcm_db.base import Base
 
 config = context.config
 

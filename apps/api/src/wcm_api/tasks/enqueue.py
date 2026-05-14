@@ -7,8 +7,6 @@ del worker (Fase 6). Si cambian, romper aquí también.
 
 from __future__ import annotations
 
-from typing import Any
-
 from wcm_api.tasks.celery_app import celery_app
 
 

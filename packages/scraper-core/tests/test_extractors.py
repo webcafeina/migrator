@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-from wcm_types.enums import BlockType, BuilderType
-
 from wcm_scraper_core.extractors import (
     HostingerExtractor,
     WebflowExtractor,
     WixExtractor,
     get_extractor,
 )
-
+from wcm_types.enums import BlockType, BuilderType
 
 # ---------- registry ----------
 

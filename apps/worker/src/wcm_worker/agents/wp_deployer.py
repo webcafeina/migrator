@@ -14,17 +14,17 @@ from __future__ import annotations
 import asyncio
 
 from sqlalchemy import select
+
 from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.projects import Project
 from wcm_types.enums import ScrapeStatus
+from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
+from wcm_worker.errors import WpDeployerError
 from wcm_wp_client import (
     WpClientConfig,
     WpCliSshClient,
     WpRestClient,
 )
-
-from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
-from wcm_worker.errors import WpDeployerError
 
 
 class WpDeployerAgent(BaseAgent):

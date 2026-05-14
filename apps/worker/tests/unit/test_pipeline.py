@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
 from unittest.mock import MagicMock
 
 import pytest
-from wcm_types.enums import ProjectPhaseStatus, ProjectStatus
 
+from wcm_types.enums import ProjectStatus
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import (
-    AgentError,
     AgentNotImplementedError,
     BricksTranspilerError,
     UnrecoverableProjectError,
 )
 from wcm_worker.pipeline import Orchestrator, _PhaseSpec
-
 
 # ---------- helpers ----------
 

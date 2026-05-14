@@ -53,6 +53,6 @@ class ScrapedPage(Base, TimestampMixin):
     scraped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error_message: Mapped[str | None] = mapped_column(Text)
 
-    content_blocks: Mapped[list["ContentBlock"]] = relationship(  # noqa: F821
+    content_blocks: Mapped[list[ContentBlock]] = relationship(  # noqa: F821
         back_populates="page", cascade="all, delete-orphan"
     )

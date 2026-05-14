@@ -65,10 +65,10 @@ class Lead(Base, TimestampMixin):
     embedding_model: Mapped[str | None] = mapped_column(String(80))
     embedding_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    enrichments: Mapped[list["LeadEnrichment"]] = relationship(
+    enrichments: Mapped[list[LeadEnrichment]] = relationship(
         back_populates="lead", cascade="all, delete-orphan"
     )
-    outreach_sequences: Mapped[list["OutreachSequence"]] = relationship(  # noqa: F821
+    outreach_sequences: Mapped[list[OutreachSequence]] = relationship(  # noqa: F821
         back_populates="lead", cascade="all, delete-orphan"
     )
 

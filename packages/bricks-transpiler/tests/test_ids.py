@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import re
 
-import pytest
-
 from wcm_bricks_transpiler.ids import IdGenerator, make_element_id
 
 ID_PATTERN = re.compile(r"^[a-z0-9]{6}$")

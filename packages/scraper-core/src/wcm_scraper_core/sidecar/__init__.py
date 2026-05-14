@@ -69,7 +69,7 @@ async def run_webflow_sidecar(
         stdout, stderr = await asyncio.wait_for(
             process.communicate(), timeout=timeout_s + 5.0
         )
-    except asyncio.TimeoutError as e:
+    except TimeoutError as e:
         process.kill()
         raise WebflowSidecarError(f"sidecar timeout ({timeout_s}s) sobre {url}") from e
 

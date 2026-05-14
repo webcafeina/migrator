@@ -5,7 +5,7 @@ from typing import Any
 
 from pydantic import Field
 
-from wcm_types.schemas._base import TimestampedRead, WcmModel
+from wcm_types.schemas._base import TimestampedRead
 
 
 class WooProductRead(TimestampedRead):

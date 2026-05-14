@@ -7,6 +7,7 @@ observacional v1, ADR-014), valida y persiste en `bricks_pages`.
 from __future__ import annotations
 
 from sqlalchemy import select
+
 from wcm_bricks_transpiler import (
     TranspileContext,
     transpile_page,
@@ -17,7 +18,6 @@ from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.projects import Project
 from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_types.enums import ScrapeStatus
-
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import BricksTranspilerError
 

@@ -12,10 +12,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel, Field
-from wcm_types.enums import UserRole
 
 from wcm_api.security import require_role
 from wcm_api.tasks.enqueue import enqueue_prospect_campaign
+from wcm_types.enums import UserRole
 
 router = APIRouter(prefix="/campaigns", tags=["campaigns"])
 

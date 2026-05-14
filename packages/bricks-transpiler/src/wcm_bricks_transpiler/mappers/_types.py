@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable
-
-from wcm_types.enums import BlockType
+from typing import Any
 
 from wcm_bricks_transpiler.ids import IdGenerator
 from wcm_bricks_transpiler.schema import BricksElement
+from wcm_types.enums import BlockType
 
 
 @dataclass

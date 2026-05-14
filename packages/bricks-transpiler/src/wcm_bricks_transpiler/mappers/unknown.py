@@ -7,13 +7,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from wcm_types.enums import BlockType
-
 from wcm_bricks_transpiler.mappers._types import (
     MapperContext,
     MapperResult,
     ResidualHint,
 )
+from wcm_types.enums import BlockType
 
 
 def map_unknown(

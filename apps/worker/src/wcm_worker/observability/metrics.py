@@ -13,8 +13,8 @@ Helpers:
 from __future__ import annotations
 
 import time
-from contextlib import contextmanager
 from collections.abc import Iterator
+from contextlib import contextmanager
 
 from prometheus_client import CollectorRegistry, Counter, Histogram
 

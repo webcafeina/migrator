@@ -5,7 +5,7 @@ from datetime import datetime
 from pydantic import Field, HttpUrl
 
 from wcm_types.enums import ScrapeStatus
-from wcm_types.schemas._base import TimestampedRead, WcmModel
+from wcm_types.schemas._base import TimestampedRead
 
 
 class ScrapedPageRead(TimestampedRead):

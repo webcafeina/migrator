@@ -11,7 +11,7 @@ fingerprinter y crawl ligero.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from wcm_scraper_core.proxy import ProxyConfig, ProxyRotator
 from wcm_scraper_core.rate_limit import DomainRateLimiter

@@ -52,7 +52,7 @@ class R2Client:
         )
 
     @classmethod
-    def from_env(cls) -> "R2Client | None":
+    def from_env(cls) -> R2Client | None:
         account = os.environ.get("R2_ACCOUNT_ID", "").strip()
         ak = os.environ.get("R2_ACCESS_KEY_ID", "").strip()
         sk = os.environ.get("R2_SECRET_ACCESS_KEY", "").strip()

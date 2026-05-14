@@ -78,7 +78,7 @@ class WpRestClient:
         self._max_retry_attempts = max_retry_attempts
         self._client: httpx.AsyncClient | None = None
 
-    async def __aenter__(self) -> "WpRestClient":
+    async def __aenter__(self) -> WpRestClient:
         token = base64.b64encode(
             f"{self.config.rest_user}:{self.config.normalized_app_password}".encode()
         ).decode()
@@ -274,7 +274,7 @@ class WpRestClient:
             try:
                 tasks = [self.upsert_page_by_slug(p) for p in batch]
                 outcomes = await asyncio.gather(*tasks, return_exceptions=True)
-                for src, outcome in zip(batch, outcomes):
+                for src, outcome in zip(batch, outcomes, strict=True):
                     if isinstance(outcome, Exception):
                         if strict:
                             raise outcome

@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import logging
 import traceback
-from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse

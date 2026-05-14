@@ -15,7 +15,6 @@ from wcm_worker.integrations.resend import (
     ResendSendResult,
 )
 
-
 # ---------- ClickupClient ----------
 
 class _MockTransport(httpx.MockTransport):
@@ -134,7 +133,8 @@ def test_resend_send_requires_recipients() -> None:
 
 
 def test_resend_verify_webhook_signature_ok() -> None:
-    import hashlib, hmac
+    import hashlib
+    import hmac
     client = ResendClient(api_key="key", webhook_secret="topsecret",
                           sdk_module=MagicMock())
     body = b'{"foo":"bar"}'

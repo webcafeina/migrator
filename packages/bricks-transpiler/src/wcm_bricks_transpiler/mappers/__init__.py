@@ -8,11 +8,7 @@ añade una tarea residual al output.
 
 from __future__ import annotations
 
-from typing import Callable
-
-from wcm_types.enums import BlockType
-
-from wcm_bricks_transpiler.mappers._types import MapperContext, MapperResult, BlockMapper
+from wcm_bricks_transpiler.mappers._types import BlockMapper, MapperContext, MapperResult
 from wcm_bricks_transpiler.mappers.atomic import (
     map_cta,
     map_divider,
@@ -34,6 +30,7 @@ from wcm_bricks_transpiler.mappers.composite import (
     map_testimonial,
 )
 from wcm_bricks_transpiler.mappers.unknown import map_unknown
+from wcm_types.enums import BlockType
 
 REGISTRY: dict[BlockType, BlockMapper] = {
     BlockType.HERO: map_hero,
