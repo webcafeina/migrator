@@ -35,7 +35,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-56 shrink-0 flex-col border-r border-wcm-detail bg-wcm-primary">
+    <aside className="hidden md:flex w-[220px] shrink-0 flex-col border-r border-wcm-detail bg-wcm-primary">
       {/* Wordmark — logo SVG pendiente; placeholder texto en lima */}
       <div className="flex items-center gap-2 border-b border-wcm-detail px-4 py-4">
         <Activity className="h-5 w-5 text-wcm-accent" strokeWidth={2.5} />
@@ -70,7 +70,7 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-wcm-detail p-3 text-xs text-wcm-detail">
-        <div>migrator v0.1</div>
+        <div>migrator v0.3.0</div>
         <div className="opacity-60">interno · {new Date().getFullYear()}</div>
       </div>
     </aside>

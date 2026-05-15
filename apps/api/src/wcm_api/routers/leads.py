@@ -78,6 +78,78 @@ async def count_leads(
     return {"total": int(total)}
 
 
+class LeadStats(BaseModel):
+    """Agregados del pipeline de leads para alimentar topbar/overview.
+
+    `uncontacted` cuenta los leads en estado previo al outreach
+    (`DISCOVERED`, `FINGERPRINTED`, `ENRICHED`). Los siguientes (`OUTREACH_*`,
+    `RESPONDED`, `CONVERTED`, terminales) ya han recibido al menos una acción.
+    `avg_score` excluye filas con `score=0` (típicamente leads recién
+    descubiertos sin fingerprint). `distinct_builders` excluye `null` y
+    `unknown`, que no aportan información de stack.
+    """
+
+    total: int = Field(description="Leads totales en el pipeline.")
+    uncontacted: int = Field(description="Leads en estado pre-outreach.")
+    avg_score: float | None = Field(description="Score medio (0..100); null si no hay datos.")
+    distinct_builders: int = Field(description="Builders únicos detectados, sin contar unknown/null.")
+    distinct_sectors: int
+    distinct_regions: int
+
+
+_UNCONTACTED_STATUSES = (
+    LeadStatus.DISCOVERED,
+    LeadStatus.FINGERPRINTED,
+    LeadStatus.ENRICHED,
+)
+
+
+@router.get("/stats", response_model=LeadStats)
+async def lead_stats(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> LeadStats:
+    """Devuelve agregados del pipeline para el topbar de `/leads` y el panel."""
+    total = (await session.execute(select(func.count()).select_from(Lead))).scalar_one()
+    uncontacted = (
+        await session.execute(
+            select(func.count())
+            .select_from(Lead)
+            .where(Lead.status.in_(_UNCONTACTED_STATUSES))
+        )
+    ).scalar_one()
+    avg_score_raw = (
+        await session.execute(
+            select(func.avg(Lead.score)).where(Lead.score > 0)
+        )
+    ).scalar_one_or_none()
+    distinct_builders = (
+        await session.execute(
+            select(func.count(func.distinct(Lead.builder_detected)))
+            .where(Lead.builder_detected.is_not(None))
+            .where(Lead.builder_detected != BuilderType.UNKNOWN)
+        )
+    ).scalar_one()
+    distinct_sectors = (
+        await session.execute(
+            select(func.count(func.distinct(Lead.sector))).where(Lead.sector.is_not(None))
+        )
+    ).scalar_one()
+    distinct_regions = (
+        await session.execute(
+            select(func.count(func.distinct(Lead.region))).where(Lead.region.is_not(None))
+        )
+    ).scalar_one()
+    return LeadStats(
+        total=int(total),
+        uncontacted=int(uncontacted),
+        avg_score=float(avg_score_raw) if avg_score_raw is not None else None,
+        distinct_builders=int(distinct_builders),
+        distinct_sectors=int(distinct_sectors),
+        distinct_regions=int(distinct_regions),
+    )
+
+
 @router.get("/{lead_id}", response_model=LeadRead)
 async def get_lead(
     lead_id: int,
