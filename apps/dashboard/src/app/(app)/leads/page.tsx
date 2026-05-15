@@ -1,18 +1,8 @@
-import Link from "next/link";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge, statusVariant } from "@/components/ui/badge";
 import { api } from "@/lib/api";
-import { statusLabel } from "@/lib/labels";
-import { truncate } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
+
+import { LeadsWorkspace } from "./_components/leads-workspace";
+import type { TopbarStatsData } from "./_components/topbar-stats";
 
 interface SearchParams {
   sector?: string;
@@ -20,99 +10,102 @@ interface SearchParams {
   builder?: string;
   status?: string;
   min_score?: string;
+  /** ID del lead seleccionado en el panel detalle. Lo gestiona el workspace. */
+  selected?: string;
 }
 
+interface LeadStatsResponse {
+  total: number;
+  uncontacted: number;
+  avg_score: number | null;
+  distinct_builders: number;
+  distinct_sectors: number;
+  distinct_regions: number;
+}
+
+/**
+ * `/leads` — vista master-detail (ADR diseño rediseño 2026-05-15).
+ *
+ * Server Component: fetcha en paralelo `/api/v1/leads` (lista filtrada
+ * por los chips presentes en searchParams) y `/api/v1/leads/stats`
+ * (agregados globales para topbar y empty state). Pasa todo a
+ * `LeadsWorkspace` (Client) que gestiona la selección reactiva por URL
+ * sin re-fetch.
+ *
+ * `selected` y demás searchParams se mantienen sincronizados desde el
+ * cliente vía `router.replace(?...)`.
+ */
 export default async function LeadsPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const leads = await api
-    .get<LeadRead[]>("/api/v1/leads", {
-      searchParams: {
-        sector: params.sector,
-        region: params.region,
-        builder: params.builder,
-        status: params.status,
-        min_score: params.min_score ?? "0",
-        limit: 200,
-      },
-    })
-    .catch(() => [] as LeadRead[]);
+  const [leads, stats] = await Promise.all([
+    api
+      .get<LeadRead[]>("/api/v1/leads", {
+        searchParams: {
+          sector: params.sector,
+          region: params.region,
+          builder: params.builder,
+          status: params.status,
+          min_score: params.min_score ?? "0",
+          limit: 200,
+        },
+      })
+      .catch(() => [] as LeadRead[]),
+    api
+      .get<LeadStatsResponse>("/api/v1/leads/stats")
+      .catch(
+        () =>
+          ({
+            total: 0,
+            uncontacted: 0,
+            avg_score: null,
+            distinct_builders: 0,
+            distinct_sectors: 0,
+            distinct_regions: 0,
+          }) satisfies LeadStatsResponse,
+      ),
+  ]);
+
+  const topbarStats: TopbarStatsData = {
+    total: stats.total,
+    uncontacted: stats.uncontacted,
+    avgScore: stats.avg_score,
+    distinctBuilders: stats.distinct_builders,
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-lg font-semibold">Leads</h1>
-        <span className="text-xs text-wcm-detail uppercase tracking-wider">
-          {leads.length} resultado{leads.length === 1 ? "" : "s"}
-        </span>
-      </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">ID</TableHead>
-            <TableHead>URL</TableHead>
-            <TableHead>Sector</TableHead>
-            <TableHead>Región</TableHead>
-            <TableHead>Builder</TableHead>
-            <TableHead className="w-16 text-right">Conf</TableHead>
-            <TableHead className="w-16 text-right">Score</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {leads.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={8} className="py-8 text-center text-wcm-detail">
-                Sin leads. Lanza una campaña desde /campaigns.
-              </TableCell>
-            </TableRow>
-          ) : (
-            leads.map((lead) => (
-              <TableRow key={lead.id}>
-                <TableCell className="tabular-nums text-wcm-detail">
-                  {lead.id}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/leads/${lead.id}`}
-                    className="hover:text-wcm-accent"
-                  >
-                    {truncate(String(lead.url), 60)}
-                  </Link>
-                </TableCell>
-                <TableCell className="text-wcm-detail">
-                  {lead.sector ?? "—"}
-                </TableCell>
-                <TableCell className="text-wcm-detail">
-                  {lead.region ?? "—"}
-                </TableCell>
-                <TableCell>
-                  {lead.builder_detected ? (
-                    <Badge variant="default">{lead.builder_detected}</Badge>
-                  ) : (
-                    <span className="text-wcm-detail">—</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {lead.builder_confidence?.toFixed(2) ?? "—"}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {lead.score}
-                </TableCell>
-                <TableCell>
-                  <Badge variant={statusVariant(lead.status)}>
-                    {statusLabel(lead.status)}
-                  </Badge>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <LeadsWorkspace
+      leads={leads}
+      stats={topbarStats}
+      sectorMedians={computeSectorMedians(leads)}
+    />
   );
+}
+
+/**
+ * Mediana del score por sector dentro del set actual de leads. Server-side
+ * para ahorrar trabajo al cliente. Para datasets grandes (>1k) habría que
+ * mover esto a un endpoint dedicado con GROUP BY en SQL.
+ */
+function computeSectorMedians(leads: LeadRead[]): Record<string, number> {
+  const bySector = new Map<string, number[]>();
+  for (const lead of leads) {
+    if (!lead.sector || lead.score <= 0) continue;
+    const arr = bySector.get(lead.sector) ?? [];
+    arr.push(lead.score);
+    bySector.set(lead.sector, arr);
+  }
+  const out: Record<string, number> = {};
+  for (const [sector, scores] of bySector) {
+    scores.sort((a, b) => a - b);
+    const mid = Math.floor(scores.length / 2);
+    out[sector] =
+      scores.length % 2 === 0
+        ? Math.round((scores[mid - 1]! + scores[mid]!) / 2)
+        : scores[mid]!;
+  }
+  return out;
 }
