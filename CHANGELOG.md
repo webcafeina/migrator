@@ -11,6 +11,91 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.3.0] — 2026-05-15
+
+Release de DX local. Trae el comando `dev-status.sh` que faltaba para
+diagnosticar la stack y, durante su primer uso, descubrió y resolvió el
+bug raíz del venv en macOS — que llevaba dándonos guerra desde Fase 2
+(ADR-016 atribuía la causa al sistema, pero el verdadero culpable era
+iCloud Drive sincronizando el Desktop).
+
+### Added
+
+- **`scripts/dev-status.sh`** — comando de tipo `status` para la stack
+  local. 3 modos:
+  - Humano: tabla por secciones (servicios base / sesión tmux / procesos
+    del stack / procesos sueltos) + resumen con totales OK/FAIL/WARN/SKIP.
+  - `--quiet`: silencioso, solo exit code (útil en `&&`, cron o CI local).
+  - `--json`: array de objetos `{status,section,service,detail}` para
+    scripting.
+
+  Comprobaciones:
+  - `brew services` para `redis` y `postgresql@16`, con verificación de
+    `redis-cli ping` y `pg_isready` (detecta el caso "started pero socket
+    roto").
+  - Existencia y nº de ventanas de la sesión tmux `wcm-dev`.
+  - Por cada servicio (api/worker/beat/dashboard): ventana tmux viva +
+    pid del proceso vía `pgrep -f` + HTTP probe en api y dashboard (acepta
+    2xx/3xx — el dashboard redirige a `/login` con 307).
+  - Detección de duplicados fuera de tmux (no chequea `next dev` porque
+    arranca padre + hijo legítimos).
+
+  Exit `0` si no hay FAIL; `1` si hay alguno; `2` si flag desconocido.
+  Complementa a `wcm doctor` (que valida `.env` y TCP/HTTP a servicios
+  externos) sin solaparlo.
+
+### Changed
+
+- **Venv local en macOS pasa a `venv.nosync/` con symlink `venv`**
+  (ADR-035, supersede ADR-016). Todos los scripts y docs usan
+  `venv/bin/python`, `venv/bin/uvicorn`, etc. — el symlink es
+  transparente. En Linux/prod el cambio es cosmético: el venv se llama
+  `venv/` directamente sin symlink y la doc de despliegue ya lo refleja.
+- Referencias `.venv/` → `venv/` en `scripts/dev-up.sh`,
+  `scripts/README.md`, `README.md`, `cli/README.md`, `docs/dev-local.md`,
+  `docs/despliegue.md`, `docs/playbook-operativo.md`,
+  `docs/release-v0.1.0.md`, `docs/security/audit-v0.1.0.md`,
+  `infra/deploy/{deploy,migrate,rollback}.sh`,
+  `.claude/agents/deployer-systemd.md`, `ruff.toml`. Un único nombre por
+  toda la doc.
+- `.gitignore` añade `venv.nosync/` y el symlink `venv`.
+
+### Deprecated
+
+- **`scripts/fix-venv-hidden-pth.sh`** queda como aviso de obsolescencia.
+  Ya no aplica `chflags nohidden`: imprime una nota explicando ADR-035 y
+  sale con exit 0. No se borra para no romper memoria muscular ni docs
+  externas.
+
+### Fixed
+
+- **WCM-008 (`ModuleNotFoundError` en venv macOS, llevaba abierto desde
+  Fase 2)** — diagnóstico real corregido. La causa no era la heurística
+  "dot dir = hidden" de macOS, sino **iCloud Drive sincronizando
+  `~/Desktop/`**: iCloud reaplicaba `UF_HIDDEN` sobre los `.pth` de
+  editables cada <5 s, anulando el `chflags nohidden` antes de que
+  arrancasen uvicorn/celery. Verificado empíricamente: un `.pth` en
+  `/tmp/` mantiene el flag indefinidamente; el mismo `.pth` dentro de
+  `.venv/` lo recupera en <5 s. xattrs `com.apple.fileprovider.dir#N`
+  y `com.apple.fileprovider.pinned#PX` confirmaban la presencia del
+  FileProvider de iCloud. Resuelto con `venv.nosync/` (sufijo .nosync =
+  convención iCloud para excluir) + nombre sin punto (evita la heurística
+  Finder). Tras el cambio, `dev-status.sh` da `8/8 OK, exit 0` desde el
+  primer arranque sin pasos manuales.
+
+### Decisions
+
+- **ADR-035** "`venv.nosync/` con symlink `venv` para evitar el bug
+  iCloud + dotted dir" (supersede ADR-016). Contexto, diagnóstico
+  empírico y pasos de remediación en `docs/decisiones.md`.
+
+### Tests
+
+- **427 tests pasan** sin regresiones tras el rename del venv (suite
+  completa en 22.78 s).
+
+---
+
 ## [0.2.2] — 2026-05-14
 
 ### Fixed
