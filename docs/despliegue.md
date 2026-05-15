@@ -99,7 +99,7 @@ Vuelve al SHA guardado en `.cache/last-deploy-sha`. **Cuidado**: no revierte mig
 
 ```bash
 cd /home/webcafeina/migrator
-.venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
+venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
 ```
 
 ## 4. Sudoers para deploy sin password

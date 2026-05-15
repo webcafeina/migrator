@@ -66,11 +66,8 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ### WCM-008 — macOS+Python 3.14: archivos .pth en .venv heredan UF_HIDDEN
 - **Tipo**: chore / **Fase**: 2 (descubierto) / **Prioridad**: P2
-- **Estado**: OPEN (mitigado con workaround)
-- **Contexto**: macOS marca como hidden los archivos dentro de directorios `.dotted/`. Python 3.14 ahora skipea `.pth` files con flag hidden. Sin fix, `pip install -e` parece funcionar pero los paquetes no son importables.
-- **Acción**: Ejecutar `bash scripts/fix-venv-hidden-pth.sh` tras cualquier `pip install`. Si upstream Python revierte el cambio o setuptools usa naming sin doble underscore, retirar el workaround.
-- **Dueño**: técnico — monitorear changelogs de Python 3.14 y setuptools.
-- **Ver**: ADR-016.
+- **Estado**: DONE (cerrado 2026-05-15, ADR-035)
+- **Resolución**: el diagnóstico original era incompleto. La causa real no es la heurística "dot dir = hidden" del propio macOS sino **iCloud Drive sincronizando `~/Desktop/`**: iCloud reaplica `UF_HIDDEN` sobre los ficheros dentro de cualquier directorio dotted cada pocos segundos, anulando el `chflags nohidden` en menos de 5 s. Esto hacía que `scripts/fix-venv-hidden-pth.sh` fuera ineficaz en la práctica (gana la carrera a veces, pierde otras). Solución actual: el venv se llama `venv.nosync/` (sufijo `.nosync` = convención iCloud para excluir) con symlink `venv -> venv.nosync`. El nombre sin punto evita la heurística + el sufijo evita la sincronización iCloud. Verificado: tras 8 s los `.pth` siguen sin flag hidden y los imports funcionan en frío. `fix-venv-hidden-pth.sh` ahora imprime aviso y sale (no se borra para no romper memoria muscular). Doc nueva en `docs/dev-local.md §1`.
 
 ---
 

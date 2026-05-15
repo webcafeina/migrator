@@ -1,43 +1,34 @@
 #!/usr/bin/env bash
-# fix-venv-hidden-pth.sh
+# OBSOLETO desde 2026-05-15 (ADR-035 supersede ADR-016).
 #
-# Workaround para un bug environmental en macOS + Python 3.14:
-# - El venv vive en `.venv/` (directorio "dot")
-# - Cuando setuptools instala paquetes con `pip install -e`, los archivos
-#   `__editable__.*.pth` heredan el flag `UF_HIDDEN` del filesystem macOS
-# - Python 3.14 introdujo en `site.py` un skip explícito de archivos `.pth`
-#   con flag hidden (commit cpython c1a89a6, abril 2026)
-# - Resultado: los paquetes editable se "instalan" pero no son importables
+# El bug de los .pth marcados como UF_HIDDEN no era solo un comportamiento
+# de macOS sobre directorios dotted: lo causaba la sincronización iCloud
+# Drive del Desktop. iCloud Drive reaplicaba el flag hidden cada pocos
+# segundos sobre cualquier fichero dentro de `.venv/`, haciendo este
+# workaround inútil (el flag desaparecía y volvía antes de que arrancase
+# uvicorn/celery).
 #
-# Este script quita el flag hidden de cualquier `.pth` dentro del venv.
-# Ejecutar tras CUALQUIER `pip install`, `pip install -e`, o reinstalación.
+# Solución actual:
+#   1) El venv vive en `venv.nosync/` con un symlink `venv -> venv.nosync`
+#      (sufijo .nosync = convención reconocida por iCloud para excluir).
+#   2) El nombre sin punto evita la heurística "dot dir = hidden".
 #
-# Issue tracking interno: WCM-008.
-# Tracking upstream: ver discussion en cpython issue tracker
-# (filtrar por "UF_HIDDEN .pth").
-#
-# Plataformas: macOS only. En Linux/Windows este flag no existe; el script
-# es un no-op.
+# Ver: docs/dev-local.md §1 + ADR-035.
 
-set -euo pipefail
+cat <<'EOF' >&2
+[fix-venv] OBSOLETO. Este script ya no es necesario.
 
-VENV_DIR="${1:-.venv}"
+El bug que arreglaba (UF_HIDDEN sobre .pth) era causado por iCloud Drive
+sincronizando el Desktop. El venv vive ahora en venv.nosync/ con symlink
+'venv', lo que excluye el directorio de iCloud y evita el problema raíz.
 
-if [[ ! -d "${VENV_DIR}" ]]; then
-  echo "[fix-venv] no encuentro ${VENV_DIR}/ — pasa la ruta como argumento si no es la default" >&2
-  exit 1
-fi
+Si crees que tienes el bug, comprueba:
+  ls -lO venv/lib/python3.14/site-packages/__editable__*.pth | head -1
+Debe mostrar '-' en la columna de flags. Si muestra 'hidden', mira:
+  - ¿El venv se llama venv (no .venv)? Renómbralo.
+  - ¿El symlink venv apunta a venv.nosync? Recreálo:
+      rm venv && mv venv venv.nosync && ln -s venv.nosync venv
 
-# Solo macOS tiene chflags. En Linux no hace falta.
-if [[ "$(uname)" != "Darwin" ]]; then
-  echo "[fix-venv] no-op fuera de macOS"
-  exit 0
-fi
-
-count=0
-while IFS= read -r -d '' pth; do
-  chflags nohidden "${pth}"
-  count=$((count + 1))
-done < <(find "${VENV_DIR}" -name "*.pth" -print0)
-
-echo "[fix-venv] ${count} ficheros .pth desocultados en ${VENV_DIR}"
+Para crear un venv nuevo correctamente, sigue docs/dev-local.md §1.
+EOF
+exit 0

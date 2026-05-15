@@ -139,7 +139,7 @@ $EDITOR .env
 
 # Dependencias
 pnpm install
-python -m venv .venv && source .venv/bin/activate
+python -m venv venv && source venv/bin/activate
 pip install -e ./apps/api -e ./apps/worker -e ./cli
 
 # Base de datos

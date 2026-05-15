@@ -32,7 +32,7 @@ Audit antes del primer push a GitHub. Objetivo: identificar vulnerabilidades y v
 ### Python (`pip-audit`)
 
 ```bash
-.venv/bin/pip-audit --skip-editable
+venv/bin/pip-audit --skip-editable
 ```
 
 **Resultado**: `No known vulnerabilities found` sobre 270+ deps.
@@ -227,7 +227,7 @@ Tras cada release o cada 3 meses (lo que llegue primero):
 
 ```bash
 # Python
-.venv/bin/pip-audit --skip-editable
+venv/bin/pip-audit --skip-editable
 
 # Node
 pnpm audit --prod

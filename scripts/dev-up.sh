@@ -37,8 +37,8 @@ done
 
 # ---------- Pre-checks ----------
 [[ -f .env ]] || { echo "ERROR: $REPO_ROOT/.env no existe. Copia .env.example y rellénalo (ver docs/dev-local.md §3)."; exit 1; }
-[[ -x .venv/bin/uvicorn ]] || { echo "ERROR: .venv/bin/uvicorn no existe. Crea el venv (ver docs/dev-local.md §1)."; exit 1; }
-[[ -x .venv/bin/celery ]] || { echo "ERROR: .venv/bin/celery no existe."; exit 1; }
+[[ -x venv/bin/uvicorn ]] || { echo "ERROR: venv/bin/uvicorn no existe. Crea el venv (ver docs/dev-local.md §1)."; exit 1; }
+[[ -x venv/bin/celery ]] || { echo "ERROR: venv/bin/celery no existe."; exit 1; }
 command -v tmux >/dev/null || { echo "ERROR: tmux no instalado. Ejecuta: brew install tmux"; exit 1; }
 command -v pnpm >/dev/null || { echo "ERROR: pnpm no instalado."; exit 1; }
 
@@ -70,7 +70,7 @@ ENV_PRELUDE='set -a; source .env; set +a'
 # Ventana 1 — API
 tmux new-session -d -s "$SESSION" -n api -c "$REPO_ROOT"
 tmux send-keys -t "$SESSION:api" \
-    "$ENV_PRELUDE && .venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload" C-m
+    "$ENV_PRELUDE && venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload" C-m
 
 # Ventana 2 — Worker Celery
 # pool=threads: evita SIGSEGV de PyTorch + fork() en macOS al cargar el
@@ -78,13 +78,13 @@ tmux send-keys -t "$SESSION:api" \
 # volver a prefork sin problema. WCM-033.
 tmux new-window -t "$SESSION" -n worker -c "$REPO_ROOT"
 tmux send-keys -t "$SESSION:worker" \
-    "$ENV_PRELUDE && .venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --pool=threads --concurrency=2" C-m
+    "$ENV_PRELUDE && venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --pool=threads --concurrency=2" C-m
 
 # Ventana 3 — Beat (opcional)
 if ! $SKIP_BEAT; then
     tmux new-window -t "$SESSION" -n beat -c "$REPO_ROOT"
     tmux send-keys -t "$SESSION:beat" \
-        "$ENV_PRELUDE && .venv/bin/celery -A wcm_worker.celery_app beat --loglevel=info" C-m
+        "$ENV_PRELUDE && venv/bin/celery -A wcm_worker.celery_app beat --loglevel=info" C-m
 fi
 
 # Ventana 4 — Dashboard Next.js
@@ -114,7 +114,7 @@ echo "URLs:"
 echo "  API:        http://127.0.0.1:8000  (docs: /docs)"
 echo "  Dashboard:  http://localhost:3000/login"
 echo ""
-echo "Espera ~10s y verifica con: .venv/bin/wcm doctor"
+echo "Espera ~10s y verifica con: venv/bin/wcm doctor"
 
 if $ATTACH; then
     exec tmux attach -t "$SESSION"

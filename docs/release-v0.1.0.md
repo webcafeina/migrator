@@ -10,11 +10,11 @@
 cd /Users/alvaro/Desktop/webcafeina-migrator
 
 # Tests verdes
-.venv/bin/python -m pytest -q --tb=no
+venv/bin/python -m pytest -q --tb=no
 # → 387 passed + 10 skipped
 
 # Coverage
-.venv/bin/python -m pytest -q --cov --cov-fail-under=70 --tb=no
+venv/bin/python -m pytest -q --cov --cov-fail-under=70 --tb=no
 # → > 70% threshold cumplido
 
 # Dashboard
@@ -22,7 +22,7 @@ cd apps/dashboard && pnpm type-check && pnpm test && cd ../..
 # → tsc clean + 15/15 vitest
 
 # Audit
-.venv/bin/pip-audit --skip-editable    # → No vulnerabilities
+venv/bin/pip-audit --skip-editable    # → No vulnerabilities
 pnpm audit --prod                       # → No vulnerabilities (tras postcss override)
 
 # Sin secretos en git
@@ -102,7 +102,7 @@ Si el push falla por tamaño (>100 MB en algún fichero):
 git ls-files | xargs -I {} ls -la {} 2>/dev/null | sort -k5 -n -r | head -10
 ```
 
-(No debería haber problema — `node_modules`, `.venv`, `.next` están todos gitignored.)
+(No debería haber problema — `node_modules`, `venv`, `.next` están todos gitignored.)
 
 ---
 

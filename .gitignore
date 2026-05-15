@@ -11,6 +11,9 @@ __pycache__/
 .Python
 .venv/
 venv/
+venv.nosync/
+# symlink local a venv.nosync (ADR-035, macOS+iCloud)
+venv
 env/
 ENV/
 .pytest_cache/

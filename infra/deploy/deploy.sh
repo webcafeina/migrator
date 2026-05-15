@@ -3,7 +3,7 @@
 #
 # Pasos:
 # 1. Pull del repo a ${WCM_APP_DIR}
-# 2. Instalar deps Python (.venv) + nodes (pnpm)
+# 2. Instalar deps Python (venv) + nodes (pnpm)
 # 3. Aplicar migraciones Alembic
 # 4. Build del dashboard standalone
 # 5. Restart de las units (systemctl restart wcm.target o por servicio)
@@ -41,21 +41,21 @@ NEW_SHA="$(git rev-parse HEAD)"
 wcm_log "Nuevo commit: $NEW_SHA"
 
 # ---- 2) Python deps ----
-PY_BIN="${WCM_APP_DIR}/.venv/bin/python"
+PY_BIN="${WCM_APP_DIR}/venv/bin/python"
 if [[ ! -x "$PY_BIN" ]]; then
     wcm_log "Creando venv..."
-    /opt/python-${WCM_PYTHON_VERSION}/bin/python3 -m venv .venv
+    /opt/python-${WCM_PYTHON_VERSION}/bin/python3 -m venv venv
 fi
 wcm_log "Instalando deps Python..."
-.venv/bin/pip install --upgrade --quiet pip wheel
-.venv/bin/pip install --quiet \
+venv/bin/pip install --upgrade --quiet pip wheel
+venv/bin/pip install --quiet \
     -e ./packages/shared-types \
     -e ./packages/db-schema \
     -e ./packages/scraper-core \
     -e ./packages/bricks-transpiler \
     -e ./packages/wp-client \
     -e ./packages/ui 2>/dev/null || true
-.venv/bin/pip install --quiet \
+venv/bin/pip install --quiet \
     -e ./apps/api \
     -e ./apps/worker \
     -e ./cli

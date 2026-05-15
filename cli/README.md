@@ -12,7 +12,7 @@ Materializado en **Fase 7**. 17 tests con `CliRunner` + `respx`. Dos entrypoints
 
 ```bash
 # desde la raíz del repo
-source .venv/bin/activate
+source venv/bin/activate
 pip install -e ./cli
 # ya están disponibles `wcm` y `webcafeina-migrator` en el PATH del venv
 ```

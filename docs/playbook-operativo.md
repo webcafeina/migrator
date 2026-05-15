@@ -187,7 +187,7 @@ cat /home/webcafeina/migrator/.cache/last-deploy-sha   # SHA al que volver
 2. Si la migración Alembic ya corrió y rompió compat:
    ```bash
    cd /home/webcafeina/migrator
-   sudo -u webcafeina .venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
+   sudo -u webcafeina venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
    ```
 3. Verificar:
    ```bash
@@ -313,8 +313,8 @@ curl -sI https://api.migrator.webcafeina.com/metrics    # debe ser 403
 **Diagnóstico**:
 ```bash
 cd /home/webcafeina/migrator
-sudo -u webcafeina .venv/bin/alembic -c packages/db-schema/alembic.ini current
-sudo -u webcafeina .venv/bin/alembic -c packages/db-schema/alembic.ini history --indicate-current
+sudo -u webcafeina venv/bin/alembic -c packages/db-schema/alembic.ini current
+sudo -u webcafeina venv/bin/alembic -c packages/db-schema/alembic.ini history --indicate-current
 ```
 
 Causas típicas:
@@ -331,7 +331,7 @@ Causas típicas:
    ```
 2. Si es schema conflict, downgrade y arreglar la migración en código:
    ```bash
-   sudo -u webcafeina .venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
+   sudo -u webcafeina venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1
    ```
 3. Si es pgvector ausente (raro):
    ```bash

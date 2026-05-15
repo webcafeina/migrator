@@ -15,4 +15,4 @@ wcm_log "Rollback a $PREV_SHA"
 bash "${WCM_APP_DIR}/infra/deploy/deploy.sh" "$PREV_SHA"
 
 wcm_warn "Si la migración del deploy fallido modificó el schema, ejecuta a mano:"
-wcm_warn "  cd ${WCM_APP_DIR} && .venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1"
+wcm_warn "  cd ${WCM_APP_DIR} && venv/bin/alembic -c packages/db-schema/alembic.ini downgrade -1"

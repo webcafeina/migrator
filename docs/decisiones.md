@@ -266,18 +266,17 @@ Cuando llegue el export real (WCM-001), se valida y se ajusta. Mientras tanto, e
 ## ADR-016 — Workaround macOS+Python3.14 para .pth files heredando flag hidden
 
 **Fecha**: 2026-05-13 (Fase 2)
-**Estado**: ✅ Aceptada (workaround temporal)
+**Estado**: ❌ SUPERSEDED por ADR-035 (2026-05-15)
 
-**Contexto**: En macOS, archivos creados dentro de un directorio `.venv/` heredan el flag `UF_HIDDEN`. Python 3.14 introdujo en `site.py` un skip explícito de `.pth` files con flag hidden. Resultado: `pip install -e` instala correctamente pero los paquetes editable no son importables hasta que se quite el flag manualmente.
+**Contexto** (lectura inicial, parcialmente errónea): En macOS, archivos creados dentro de un directorio `.venv/` heredan el flag `UF_HIDDEN`. Python 3.14 introdujo en `site.py` un skip explícito de `.pth` files con flag hidden. Resultado: `pip install -e` instala correctamente pero los paquetes editable no son importables hasta que se quite el flag manualmente.
 
-**Decisión**: Mantener `pip install -e` como mecanismo estándar y proporcionar `scripts/fix-venv-hidden-pth.sh` que ejecuta `chflags nohidden` sobre todos los `*.pth` del venv. Ejecutar tras cualquier `pip install`. No-op fuera de macOS.
+**Decisión** (ineficaz en la práctica): Mantener `pip install -e` como mecanismo estándar y proporcionar `scripts/fix-venv-hidden-pth.sh` que ejecuta `chflags nohidden` sobre todos los `*.pth` del venv.
 
-Issue tracking interno: **WCM-008**.
+**Por qué se invalida**: el diagnóstico atribuyó el bug a una heurística inexistente del propio macOS. La causa real es **iCloud Drive sincronizando `~/Desktop/`** y reaplicando `UF_HIDDEN` sobre los ficheros bajo cualquier directorio dotted cada pocos segundos. Verificado empíricamente: `chflags nohidden` sobre un `.pth` dentro de `.venv/` queda revertido en <5 s; el mismo `chflags` sobre un `.pth` en `/tmp/` se mantiene indefinidamente. Por eso el script funcionaba en pruebas aisladas pero fallaba al arrancar la stack.
 
-**Consecuencias**:
-- ✅ Workflow editable funciona sin tener que cambiar de Python.
-- ⚠️ Cada nuevo `pip install` requiere re-ejecutar el script. Añadir al onboarding del entorno de desarrollo.
-- ⚠️ Si upstream Python revierte o setuptools cambia la convención de naming, el workaround queda obsoleto. Bajo coste de mantenimiento.
+Issue tracking interno: **WCM-008** (cerrado).
+
+Ver ADR-035 para la solución actual (`venv.nosync/` + symlink `venv`).
 
 ---
 
@@ -786,6 +785,42 @@ Las units son **templates** con variables `${WCM_APP_DIR}`, `${WCM_USER}`, `${WC
 - ✅ Audit doc por release: histórico verificable (regla #11 docs/humanos no aplica a estos).
 - ⚠️ Auditoría manual mensual de `audit_log` (runbook §"tareas recurrentes") sigue siendo responsabilidad humana — no automatizamos detección de anomalías en MVP.
 - ⚠️ La rotación de secrets requiere coordinación con el equipo (forzar re-login de operadores). Documentado en runbook.
+
+---
+
+## ADR-035 — `venv.nosync/` con symlink `venv` para evitar el bug iCloud + dotted dir
+
+**Fecha**: 2026-05-15
+**Estado**: ✅ Aceptada (supersede ADR-016)
+
+**Contexto**: en macOS, cuando el repo vive bajo un directorio sincronizado con iCloud Drive (típicamente `~/Desktop/` o `~/Documents/` con "Desktop & Documents Folders" activado), iCloud reaplica el flag `UF_HIDDEN` sobre cualquier fichero dentro de directorios cuyo nombre empiece por `.` (incluido `.venv/`). Python 3.14 introdujo en `site.py` un skip explícito de `.pth` files con flag hidden — y como iCloud restaura el flag en <5 s, el workaround `chflags nohidden` documentado en ADR-016 fallaba al arrancar la stack: los procesos Python ven los `.pth` como hidden y no importan los paquetes editable.
+
+Diagnóstico empírico (ver WCM-008 cerrado): un `.pth` copiado a `/tmp/test.pth` mantiene el flag `nohidden` indefinidamente; el mismo `.pth` dentro de `.venv/` lo reaplica en <5 s. xattr `com.apple.fileprovider.dir#N` y `com.apple.fileprovider.pinned#PX` confirman que el FileProvider (iCloud Drive) está vigilando el directorio.
+
+**Decisión**: el venv se llama `venv.nosync/` y se expone como `venv/` vía symlink:
+
+```
+venv -> venv.nosync
+```
+
+- Sufijo `.nosync`: convención reconocida por iCloud Drive para excluir un fichero o directorio de la sincronización. `com.apple.fileprovider` no toca lo que termine en `.nosync`.
+- Sin punto inicial: evita la heurística "dot dir = hidden" que macOS aplica para Finder.
+- Symlink `venv`: deja todos los scripts (`venv/bin/uvicorn`, `venv/bin/celery`, `venv/bin/python`...) y docs intactos. El usuario y los scripts no necesitan saber del trickery.
+
+**Pasos de remediación aplicados en repo**:
+1. `.venv/` borrado, recreado como `venv.nosync/` + symlink `venv`.
+2. Reinstalación de los 8 paquetes editables + `greenlet`.
+3. `s/.venv\//venv\//g` en README, dev-local.md, release-v0.1.0.md, despliegue.md, playbook-operativo.md, audit-v0.1.0.md, cli/README.md, scripts/README.md, scripts/dev-up.sh, infra/deploy/{deploy,migrate,rollback}.sh, .claude/agents/deployer-systemd.md, ruff.toml.
+4. `scripts/fix-venv-hidden-pth.sh` reescrito como aviso de obsolescencia (no se borra para no romper memoria muscular ni docs externas).
+5. `.gitignore` añade `venv.nosync/` además de `venv/` y `.venv/`.
+6. ADR-016 marcado como SUPERSEDED. WCM-008 cerrado en `ISSUES.md`.
+
+**Consecuencias**:
+- ✅ El bug desaparece de raíz: `pip install -e` funciona; los procesos arrancan a la primera; `dev-status.sh` da OK sin pasos manuales intermedios.
+- ✅ El día que el repo se mueva fuera de iCloud sync (p. ej. a `~/code/`), el sufijo `.nosync` deja de ser necesario pero no estorba; el symlink se puede simplificar a un venv directo.
+- ✅ En Linux/prod (servidor WHM), el problema no existe; ahí el venv se llama `venv/` directamente sin symlink. La doc de despliegue ya refleja el nombre nuevo.
+- ⚠️ Cualquier nuevo dev del equipo debe leer la nota de `docs/dev-local.md §1` antes de hacer `python -m venv`. Si crea `.venv` directamente, recae en el bug.
+- ⚠️ El symlink `venv` debe quedarse local (no entra a git porque está gitignored), igual que `venv.nosync`.
 
 ---
 

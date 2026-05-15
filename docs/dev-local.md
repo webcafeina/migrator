@@ -26,22 +26,38 @@ PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH" make
 PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH" make install
 ```
 
-**venv Python + .pth fix** (ADR-016):
+**venv Python** (ADR-035: si el repo vive bajo `~/Desktop/` o `~/Documents/`, macOS lo sincroniza con iCloud Drive. Eso, combinado con un nombre de venv dotted (`.venv`), causa que iCloud reaplique el flag `UF_HIDDEN` sobre los `.pth` cada pocos segundos, dejando los editables no importables. Solución: nombrar el venv `venv.nosync` (sufijo reconocido por iCloud para excluir) y exponerlo como `venv` vía symlink):
 
 ```bash
 cd /Users/alvaro/Desktop/webcafeina-migrator
-python3 -m venv .venv
-.venv/bin/pip install -e ./packages/shared-types[dev] \
-                     -e ./packages/db-schema[dev] \
-                     -e ./packages/scraper-core[dev] \
-                     -e ./packages/bricks-transpiler[dev] \
-                     -e ./packages/wp-client[dev] \
-                     -e ./apps/api[dev] \
-                     -e ./apps/worker[dev] \
-                     -e ./cli[dev] \
-                     greenlet  # requerido por SQLAlchemy async
-bash scripts/fix-venv-hidden-pth.sh  # ADR-016
+python3 -m venv venv.nosync
+ln -s venv.nosync venv             # symlink estable; los scripts usan `venv/...`
+venv/bin/pip install --upgrade pip wheel
+venv/bin/pip install \
+  -e './packages/shared-types[dev]' \
+  -e './packages/db-schema[dev]' \
+  -e './packages/scraper-core[dev]' \
+  -e './packages/bricks-transpiler[dev]' \
+  -e './packages/wp-client[dev]' \
+  -e './apps/api[dev]' \
+  -e './apps/worker[dev]' \
+  -e './cli[dev]' \
+  greenlet                          # requerido por SQLAlchemy async
 ```
+
+> Las comillas alrededor de `'./packages/...[dev]'` son obligatorias en zsh para que no interprete `[dev]` como glob.
+
+**Verificación**:
+
+```bash
+venv/bin/python -c "import wcm_api, wcm_worker, wcm_db, wcm_cli; print('OK')"
+ls -lO venv/lib/python3.14/site-packages/__editable__*.pth | head -3
+# La columna de flags debe mostrar '-' (no 'hidden'). Si dice 'hidden':
+# - ¿`ls -ld venv*` confirma que el real es venv.nosync?
+# - ¿El repo está bajo iCloud sync? Si está fuera (p. ej. ~/code/), basta venv/ sin truco.
+```
+
+En Linux (servidor WHM) el bug no existe: `python -m venv venv` directamente.
 
 **Node deps**:
 
@@ -98,7 +114,7 @@ SENTRY_DSN_API= ...  (o usa GlitchTip hosted, compatible drop-in: https://app.gl
 
 ```bash
 set -a; source .env; set +a
-cd packages/db-schema && /Users/alvaro/Desktop/webcafeina-migrator/.venv/bin/alembic -c alembic.ini upgrade head
+cd packages/db-schema && /Users/alvaro/Desktop/webcafeina-migrator/venv/bin/alembic -c alembic.ini upgrade head
 cd /Users/alvaro/Desktop/webcafeina-migrator
 ```
 
@@ -106,7 +122,7 @@ cd /Users/alvaro/Desktop/webcafeina-migrator
 
 ```bash
 set -a; source .env; set +a
-.venv/bin/python <<'PY'
+venv/bin/python <<'PY'
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -138,15 +154,15 @@ Sin Docker, cada servicio en su propio shell (`tmux` o iTerm tabs, lo que prefie
 ```bash
 # Terminal 1 — API
 set -a; source .env; set +a
-.venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload
+venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload
 
 # Terminal 2 — Celery worker
 set -a; source .env; set +a
-.venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --concurrency=2
+venv/bin/celery -A wcm_worker.celery_app worker --loglevel=info --concurrency=2
 
 # Terminal 3 — Celery beat (opcional para smoke; necesario si testeas retention sweep)
 set -a; source .env; set +a
-.venv/bin/celery -A wcm_worker.celery_app beat --loglevel=info
+venv/bin/celery -A wcm_worker.celery_app beat --loglevel=info
 
 # Terminal 4 — Dashboard Next.js
 pnpm --filter @webcafeina/dashboard exec next dev -p 3000
@@ -160,7 +176,7 @@ WCM-023 (pendiente): script `scripts/dev-up.sh` que arranque todo con `concurren
 
 ```bash
 set -a; source .env; set +a
-.venv/bin/wcm doctor                           # esperado: todo ✓
+venv/bin/wcm doctor                           # esperado: todo ✓
 curl -s http://127.0.0.1:8000/health/deep | jq # esperado: status=ok, db+redis ok, r2 ok/skipped
 ```
 
@@ -171,10 +187,10 @@ Login dashboard: abrir http://localhost:3000/login con `ops@webcafeina.com` / `d
 ## 7. Smoke test del flujo prospección
 
 ```bash
-.venv/bin/wcm login --email ops@webcafeina.com --password dev-password-cambiar
+venv/bin/wcm login --email ops@webcafeina.com --password dev-password-cambiar
 
 # Lanzar campaña (sectores buenos: "restaurante", "clínica dental", "hotel" — tienen website)
-.venv/bin/wcm campaigns launch --sector "restaurante" --region "Cáceres" --target 5
+venv/bin/wcm campaigns launch --sector "restaurante" --region "Cáceres" --target 5
 
 # Ver tabla
 psql webcafeina_migrator -c "SELECT id, business_name, url, status, score FROM leads ORDER BY id;"
@@ -183,7 +199,7 @@ psql webcafeina_migrator -c "SELECT id, business_name, url, status, score FROM l
 **Limitación conocida v0.1.0** (WCM-026..028): la task `wcm.prospector.run_campaign` solo crea leads DISCOVERED — no encadena fingerprint + enrich. Tampoco hay `wcm leads enrich` ni task Celery `enricher.run`. Workaround actual:
 
 ```bash
-.venv/bin/python <<'PY'
+venv/bin/python <<'PY'
 import os
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
@@ -243,7 +259,7 @@ psql webcafeina_migrator -c "
 curl -s http://127.0.0.1:8000/metrics | grep -E "^wcm_(http|agent|celery)" | head -10
 
 # GlitchTip — enviar evento test
-.venv/bin/python -c "
+venv/bin/python -c "
 import sentry_sdk, os
 sentry_sdk.init(dsn=os.environ['SENTRY_DSN_API'], environment='local-test')
 print(sentry_sdk.capture_message('hello', level='info'))

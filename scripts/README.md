@@ -5,7 +5,7 @@ Documentación complementaria a [`docs/dev-local.md`](../docs/dev-local.md):
 ese doc cubre el **setup inicial** (BD, migraciones, seed) — este README
 cubre el **uso diario** una vez que el setup ya está hecho.
 
-Los scripts asumen Bash o Zsh, Homebrew, `tmux 3.x` y el venv en `.venv/`.
+Los scripts asumen Bash o Zsh, Homebrew, `tmux 3.x` y el venv en `venv/`.
 
 ---
 
@@ -15,7 +15,8 @@ Los scripts asumen Bash o Zsh, Homebrew, `tmux 3.x` y el venv en `.venv/`.
 |---|---|
 | `dev-up.sh` | Arranca API + Worker + Beat + Dashboard en una sesión `tmux` con 4 ventanas. |
 | `dev-down.sh` | Mata la sesión `tmux` y los procesos asociados. |
-| `fix-venv-hidden-pth.sh` | Reaplica los `.pth` ocultos del venv tras un `pip install` (ADR-016, bug macOS). |
+| `dev-status.sh` | Reporta el estado runtime de toda la stack (brew + tmux + procesos + HTTP). |
+| `fix-venv-hidden-pth.sh` | **OBSOLETO** desde ADR-035. Imprime aviso y sale. La causa real era iCloud Drive sincronizando el Desktop; ahora el venv vive en `venv.nosync/` con symlink `venv` y el problema desaparece. |
 
 ---
 
@@ -36,7 +37,7 @@ bash scripts/dev-up.sh --help      # ayuda
 
 ### Qué hace, paso a paso
 
-1. **Pre-checks**: existe `.env`, `.venv/bin/uvicorn`, `.venv/bin/celery`, `tmux`, `pnpm`.
+1. **Pre-checks**: existe `.env`, `venv/bin/uvicorn`, `venv/bin/celery`, `tmux`, `pnpm`.
 2. **Brew services**: arranca `redis` y `postgresql@16` si no estuvieran corriendo.
 3. **Verifica conectividad**: `redis-cli ping` y `pg_isready`.
 4. **Recrea la sesión `tmux`** con las siguientes ventanas:
@@ -85,6 +86,60 @@ bash scripts/dev-down.sh --help    # ayuda
 
 ---
 
+## `scripts/dev-status.sh`
+
+Inspecciona el estado actual de la stack sin tocar nada. Pensado para
+responder rápido a "¿qué tengo levantado y qué se ha caído?".
+Complementa a `wcm doctor`, que valida `.env` y conectividad TCP/HTTP —
+este script mira los procesos en sí.
+
+### Uso
+
+```bash
+bash scripts/dev-status.sh           # tabla humana por secciones
+bash scripts/dev-status.sh --quiet   # silencioso, solo exit code (útil en CI/cron)
+bash scripts/dev-status.sh --json    # JSON para scripting
+bash scripts/dev-status.sh --help
+```
+
+### Qué chequea
+
+| Sección | Comprobaciones |
+|---|---|
+| Servicios base | `brew services` para `redis` y `postgresql@16` + `redis-cli ping` + `pg_isready` |
+| Sesión tmux | Existencia de `wcm-dev` y nº/nombres de ventanas |
+| Procesos del stack | Por cada uno (api, worker, beat, dashboard): ventana viva + pid del proceso vía `pgrep -f` + (api/dashboard) HTTP probe |
+| Procesos sueltos | Duplicados de `uvicorn`/`celery worker`/`celery beat` fuera de tmux (Next no se chequea: arranca padre+hijo legítimos) |
+
+### Estados
+
+- `OK` — todo bien.
+- `WARN` — proceso vivo pero algo raro (HTTP 4xx/5xx, no responde, duplicado).
+- `FAIL` — proceso esperado pero ausente (ventana tmux viva con proceso muerto, brew started pero no responde, etc.).
+- `SKIP` — no aplica (p. ej. ventana `beat` ausente porque arrancaste con `--no-beat`).
+
+### Exit codes
+
+- `0` — ningún `FAIL` (los `WARN` y `SKIP` no cuentan).
+- `1` — uno o más `FAIL`.
+- `2` — flag desconocido.
+
+### Caso típico de diagnóstico
+
+Si `dev-status.sh` reporta `[FAIL] worker  ventana tmux viva pero proceso no encontrado`, el flujo de resolución es:
+
+```bash
+tmux capture-pane -p -t wcm-dev:worker | tail -30   # ver el error real
+```
+
+Casos comunes:
+
+- **`ModuleNotFoundError: No module named 'wcm_worker'`** → el venv está mal montado. Verifica que `venv` es un symlink a `venv.nosync` y que `venv/lib/python3.14/site-packages/__editable__*.pth` no tienen el flag `hidden` (`ls -lO venv/lib/.../*.pth`). Si tienen `hidden`, mira ADR-035: el repo está bajo iCloud sync y necesita el sufijo `.nosync`.
+- **Error de conexión a Redis o Postgres** → mira `wcm doctor`.
+- **Error de import de un paquete del repo** → reinstala el editable en cuestión: `venv/bin/pip install -e ./packages/<nombre>[dev]`.
+
+---
+
 ## Atajos `tmux` imprescindibles
 
 Una vez dentro de la sesión (`tmux attach -t wcm-dev`):
@@ -115,7 +170,7 @@ tmux send-keys -t wcm-dev:api C-c                  # mandar Ctrl+C al API
 
 ```bash
 bash scripts/dev-up.sh           # mañana, arrancar
-.venv/bin/wcm doctor             # verificar verde
+venv/bin/wcm doctor             # verificar verde
 # ...trabajo...
 bash scripts/dev-down.sh         # fin del día (Redis/PG siguen)
 ```
@@ -128,7 +183,7 @@ bash scripts/dev-down.sh         # fin del día (Redis/PG siguen)
 tmux send-keys -t wcm-dev:api C-c           # parar uvicorn
 sleep 1
 tmux send-keys -t wcm-dev:api \
-  'set -a; source .env; set +a && .venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload' C-m
+  'set -a; source .env; set +a && venv/bin/uvicorn wcm_api.main:app --host 127.0.0.1 --port 8000 --reload' C-m
 ```
 
 Equivalente con `dev-up.sh` completo (más fácil pero reinicia los 4 procesos):
@@ -158,7 +213,7 @@ bash scripts/dev-down.sh --all   # también para Redis y Postgres
 | Síntoma | Causa probable | Solución |
 |---|---|---|
 | `ERROR: tmux no instalado` | Falta tmux | `brew install tmux` |
-| `ERROR: .venv/bin/uvicorn no existe` | venv vacío o no creado | Reinstalar el venv (ver `docs/dev-local.md §1`) |
+| `ERROR: venv/bin/uvicorn no existe` | venv vacío o no creado | Reinstalar el venv (ver `docs/dev-local.md §1`) |
 | `ERROR: redis no responde a ping` | brew services dice "started" pero el socket está roto | `brew services restart redis` |
 | `pg_isready` falla pero `brew services` dice "started" | Postgres arrancando aún | Esperar 3–5 s y reintentar |
 | Dashboard arranca pero `http://localhost:3000` da 404 | Next.js aún compilando | Esperar (primera build ~30 s); ver ventana `dashboard` |
