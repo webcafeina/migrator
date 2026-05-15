@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -57,6 +57,80 @@ export function LeadsWorkspace({
     [leads],
   );
 
+  // Lista ordenada idéntica a la que renderiza LeadList — usada por los
+  // atajos de teclado para resolver "siguiente" / "anterior".
+  const orderedIds = useMemo(() => {
+    const uncontactedStatuses = new Set([
+      "discovered",
+      "fingerprinted",
+      "enriched",
+    ]);
+    const sortByScoreDesc = (a: LeadRead, b: LeadRead) => b.score - a.score;
+    return [
+      ...leads
+        .filter((l) => uncontactedStatuses.has(l.status))
+        .sort(sortByScoreDesc),
+      ...leads
+        .filter((l) => !uncontactedStatuses.has(l.status))
+        .sort(sortByScoreDesc),
+    ].map((l) => l.id);
+  }, [leads]);
+
+  const moveSelection = useCallback(
+    (delta: 1 | -1) => {
+      if (orderedIds.length === 0) return;
+      const currentIdx = selectedId == null ? -1 : orderedIds.indexOf(selectedId);
+      const nextIdx =
+        currentIdx === -1
+          ? delta === 1
+            ? 0
+            : orderedIds.length - 1
+          : Math.max(0, Math.min(orderedIds.length - 1, currentIdx + delta));
+      const nextId = orderedIds[nextIdx];
+      if (nextId != null && nextId !== selectedId) select(nextId);
+    },
+    [orderedIds, selectedId, select],
+  );
+
+  // Atajos de teclado. Se enganchan al document para no requerir focus
+  // en ningún elemento. Se ignoran cuando el usuario está editando un
+  // input/textarea/select para no interferir con la búsqueda futura.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement | null)?.tagName?.toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          moveSelection(1);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          moveSelection(-1);
+          break;
+        case "Enter":
+          if (selectedId != null) {
+            e.preventDefault();
+            router.push(`/leads/${selectedId}`);
+          }
+          break;
+        case "Escape":
+          if (selectedId != null) {
+            e.preventDefault();
+            const next = new URLSearchParams(params.toString());
+            next.delete("selected");
+            router.replace(next.toString() ? `?${next.toString()}` : "?", {
+              scroll: false,
+            });
+          }
+          break;
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [moveSelection, selectedId, router, params]);
+
   // Percentil del lead seleccionado dentro del set actual.
   const percentile = useMemo(() => {
     if (!selectedLead) return null;
@@ -74,6 +148,14 @@ export function LeadsWorkspace({
       ? sectorMedians[selectedLead.sector] ?? null
       : null;
 
+  const closeDetail = useCallback(() => {
+    const next = new URLSearchParams(params.toString());
+    next.delete("selected");
+    router.replace(next.toString() ? `?${next.toString()}` : "?", {
+      scroll: false,
+    });
+  }, [params, router]);
+
   return (
     // -m-6 anula el padding del `<main>` del layout `(app)/layout.tsx` para
     // que el workspace ocupe edge-to-edge. El resto de páginas mantienen
@@ -84,29 +166,57 @@ export function LeadsWorkspace({
       </div>
       <div
         className={cn(
+          // Layout: dos columnas a partir de xl (≥1280px); una sola
+          // columna por debajo. En 1-col mostramos lista o detalle según
+          // selección (mutuamente excluyentes con clases `hidden`).
           // `overflow-hidden` + `min-h-0` impiden que el grid crezca con
-          // la altura intrínseca de la lista (29 items × ~50px = ~2000px),
-          // lo cual sacaba el panel detalle fuera del viewport. Cada hijo
-          // del grid se hace scroll independientemente.
-          "grid min-h-0 flex-1 grid-cols-[420px_1fr] overflow-hidden",
-          // Responsive futuro (bloque 4): en <1280 colapsamos a 1 col.
+          // la altura intrínseca de la lista, sacando el panel detalle
+          // fuera del viewport. Cada hijo hace scroll independientemente.
+          "grid min-h-0 flex-1 overflow-hidden",
+          "grid-cols-1 xl:grid-cols-[420px_1fr]",
         )}
       >
-        <LeadList
-          leads={leads}
-          selectedId={selectedId}
-          onSelect={select}
-          filterChips={filterChips}
-        />
-        {selectedLead ? (
-          <LeadDetailPane
-            lead={selectedLead}
-            sectorMedian={sectorMedian}
-            percentile={percentile}
+        <div
+          className={cn(
+            "flex min-h-0 flex-col",
+            // En 1-col: oculta la lista cuando hay selección.
+            selectedLead && "hidden xl:flex",
+          )}
+        >
+          <LeadList
+            leads={leads}
+            selectedId={selectedId}
+            onSelect={select}
+            filterChips={filterChips}
           />
-        ) : (
-          <EmptyDetail leadsCount={leads.length} stats={stats} />
-        )}
+        </div>
+        <div
+          className={cn(
+            "min-h-0",
+            // En 1-col: oculta el detalle cuando NO hay selección.
+            !selectedLead && "hidden xl:block",
+          )}
+        >
+          {selectedLead ? (
+            <div className="flex h-full min-h-0 flex-col">
+              <button
+                type="button"
+                onClick={closeDetail}
+                className="flex shrink-0 items-center gap-2 border-b border-wcm-detail/40 bg-wcm-primary px-4 py-2 text-xs text-wcm-text/70 hover:text-wcm-accent xl:hidden"
+              >
+                <span aria-hidden>←</span> Volver a la lista
+              </button>
+              <LeadDetailPane
+                lead={selectedLead}
+                sectorMedian={sectorMedian}
+                percentile={percentile}
+                className="flex-1"
+              />
+            </div>
+          ) : (
+            <EmptyDetail leadsCount={leads.length} stats={stats} />
+          )}
+        </div>
       </div>
     </div>
   );

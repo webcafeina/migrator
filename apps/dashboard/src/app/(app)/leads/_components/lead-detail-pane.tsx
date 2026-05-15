@@ -2,8 +2,10 @@ import { cn, formatRelativeTime } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
 import { ActivityTimeline, type TimelineEvent } from "./activity-timeline";
+import { DraftBanner } from "./draft-banner";
 import { EvidenceTable, type EvidenceItem } from "./evidence-table";
 import { FingerprintList, type FingerprintItem } from "./fingerprint-list";
+import { LeadActions } from "./lead-actions";
 import { ScorePanel } from "./score-panel";
 
 interface LeadDetailPaneProps {
@@ -80,6 +82,8 @@ export function LeadDetailPane({
         </div>
       </header>
 
+      {lead.status === "outreach_prepared" && <DraftBanner leadId={lead.id} />}
+
       <ScorePanel
         score={lead.score}
         percentile={percentile ?? null}
@@ -87,12 +91,8 @@ export function LeadDetailPane({
         sectorName={lead.sector ?? null}
       />
 
-      {/* Acciones */}
-      <div className="flex gap-2 border-b border-wcm-detail/40 px-7 py-4">
-        <Action primary>Componer outreach →</Action>
-        <Action>Convertir a proyecto</Action>
-        <Action>Re-fingerprint</Action>
-        <Action danger>Marcar opt-out</Action>
+      <div className="border-b border-wcm-detail/40 px-7 py-4">
+        <LeadActions lead={lead} />
       </div>
 
       {/* Secciones 2x2 */}
@@ -311,32 +311,6 @@ function ContactList({ lead }: { lead: LeadRead }) {
         </div>
       )}
     </div>
-  );
-}
-
-function Action({
-  children,
-  primary,
-  danger,
-}: {
-  children: React.ReactNode;
-  primary?: boolean;
-  danger?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      className={cn(
-        "rounded-sm border px-3.5 py-1.5 text-xs transition-colors",
-        primary
-          ? "border-wcm-accent bg-wcm-accent font-semibold text-wcm-primary hover:brightness-105"
-          : danger
-            ? "border-wcm-detail/60 text-wcm-danger hover:border-wcm-danger"
-            : "border-wcm-detail/60 text-wcm-text hover:border-muted-foreground",
-      )}
-    >
-      {children}
-    </button>
   );
 }
 
