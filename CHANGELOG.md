@@ -11,6 +11,142 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.4.0] — 2026-05-16
+
+Rediseño completo de `/leads`. Pasa de una tabla genérica de 8 columnas a
+una experiencia **master-detail** estilo Linear/JetBrains: lista densa a la
+izquierda, detalle vivo a la derecha que se actualiza al instante con la
+selección. Tras una auditoría visual del dashboard entero, esta pantalla
+fue la prioridad P1 absoluta (la más usada del producto, la de más
+fricción). Sienta el nuevo lenguaje visual que extenderemos al resto en
+releases posteriores.
+
+Implementación en 5 commits granulares (`7ef97a9` → `b2ad4e7`) para
+facilitar revisión por trozos.
+
+### Added
+
+- **`scripts/dev-status.sh`** sin cambios desde v0.3.0 (mencionado para
+  contexto).
+- **Endpoint `GET /api/v1/leads/stats`** — agregados para el topbar denso
+  del rediseño: `total`, `uncontacted` (status pre-outreach), `avg_score`
+  (excluye score=0), `distinct_builders` (excluye null/UNKNOWN),
+  `distinct_sectors`, `distinct_regions`. Rol `any_user`. 3 tests unit
+  con `AsyncMock side_effect` sobre las 6 ejecuciones SQL.
+- **8 componentes nuevos** en `apps/dashboard/src/app/(app)/leads/_components/`
+  (prefix `_` = no es route):
+  - `ScorePanel` — cifra hero 60 px + barra horizontal con tick de
+    mediana del sector + línea de contexto con percentil dentro del
+    pipeline y delta vs sector.
+  - `FingerprintList` — tech con barra de confianza inline y valor
+    numérico.
+  - `EvidenceTable` (client, toggle) — sustituye al dump JSON crudo de
+    la versión anterior. Tabla compacta `Tech · Categoría · Confianza ·
+    Evidencia` colapsable.
+  - `ActivityTimeline` — eventos sobre línea vertical con dots
+    lima/outline según sea positivo/neutro.
+  - `TopbarStats` — tira densa `N leads · M sin contactar · score medio
+    K · L builders` con dot opcional de salud del worker.
+  - `FilterChips` (client) — chips toggle sincronizados con URL via
+    `useSearchParams` + `router.replace`. Toggle exclusivo por param
+    (patrón Linear). Preserva otros params (ej. `selected`) intactos.
+  - `DraftBanner` — banner ámbar arriba del detalle cuando
+    `lead.status === "outreach_prepared"`, con CTA "Revisar →".
+  - `LeadActions` (client) — botones con onClick + feedback inline
+    (loading/success/error). Conecta acciones reales contra backend.
+  - `LeadList` (client) — items 50 px con dot lima/outline + score
+    grande + nombre comercial + meta + tiempo relativo. Grupos "Sin
+    contactar / Procesados" derivados del status. Selección con borde
+    lima 2 px.
+  - `LeadDetailPane` (presentacional) — score panel + acciones + 4
+    secciones grid 2×2 (Contacto / Identificación / Fingerprint /
+    Estado del flujo) + EvidenceTable + ActivityTimeline.
+  - `LeadsWorkspace` (client) — orquestador master-detail. Layout
+    edge-to-edge (`-m-6` anula padding del `<main>`), grid responsive
+    (`grid-cols-1 xl:grid-cols-[420px_1fr]`), URL state con
+    `?selected=N`, atajos teclado (`↑↓` navegan, `↵` abre full-page,
+    `Esc` cierra detalle), construcción de chips de filtro a partir del
+    set real (top 4 sectores, 3 builders, 3 regiones por frecuencia).
+- **Helper `formatRelativeTime(iso)`** en `lib/utils.ts` — escala
+  compacta es-ES ("ahora", "hace 12 min", "hace 3 h", "hace 5 d", "hace
+  3 sem", "hace 6 mes", "hace 2 a").
+- **Vitest plugin React enchufado** en `vitest.config.ts` (la dep ya
+  estaba instalada pero no se usaba) — habilita JSX automatic runtime
+  de React 19. Sin él, `renderToString` falla con "React is not defined"
+  en componentes que no importan React explícitamente.
+- **Dependencias de testing**: `@testing-library/react`,
+  `@testing-library/jest-dom`, `@testing-library/user-event` (dev).
+  Setup global en `tests/setup.ts` con cleanup automático.
+- **27 tests Vitest nuevos** (12 smoke con `renderToString` + 10
+  interactivos con userEvent + matchers jest-dom + 5 misc).
+- **13 specs Playwright nuevas** (`tests/e2e/leads-redesign.spec.ts`):
+  2 ejecutables hoy (`Escape limpia selección`, `Enter abre full-page`),
+  11 marcadas `test.skip(SSR_BLOCKED, "WCM-021")` — documentan el
+  contrato esperado y pasarán automáticamente cuando MSW node esté
+  enchufado.
+
+### Changed
+
+- **`apps/dashboard/src/app/(app)/leads/page.tsx`** refactorizado de
+  Server Component que renderiza tabla a Server Component que fetcha
+  en paralelo `/leads` + `/leads/stats`, calcula medianas de score por
+  sector en servidor y delega a `<LeadsWorkspace>` Client.
+- **Sidebar** ancho `w-56` (224 px) → `w-[220px]` exactos. Versión
+  hardcoded "v0.1" → "v0.3.0" (y ahora v0.4.0 en la siguiente actualización
+  manual; pendiente automatizar via build var en v0.5+).
+- **Visual baselines** de Playwright regeneradas (`dashboard overview`,
+  `leads list`) para reflejar la versión master-detail.
+
+### Fixed
+
+- **CSS Grid + altura intrínseca**: el grid del master-detail con
+  `align-items: stretch` por defecto crecía hasta los ~2000 px de la
+  lista (29 items × ~50 px), sacando el panel detalle fuera del
+  viewport. Fix: `overflow-hidden` + `min-h-0` en el grid + `min-h-0`
+  en hijos con `overflow-y-auto` propio. Patrón estándar de scroll
+  containers que aplicará al resto del dashboard.
+- **React 19 SSR + interpolaciones JSX adyacentes**: `<strong>p{n}</strong>`
+  produce `<strong>p<!-- -->{n}</strong>` con comments separadores.
+  Componentes que requieren texto continuo usan template strings
+  (`{`p${n}`}`).
+- **Country `"ES"` → "España"** en la sección Identificación del detalle.
+  Mapa `COUNTRY_LABELS` con fallback al código bruto si no está mapeado.
+- **Teléfonos ES sin formato** → `+34 753 08 67 92` con regex
+  `/^\+34(\d{9})$/`. Resto se devuelve tal cual.
+
+### Decisions
+
+- **Master-detail con preview live + selección por URL** elegida sobre
+  la alternativa "tabla densa keyboard-first" porque el operador
+  trabaja "en profundidad" (5-10 leads top por sesión) más que
+  "barriendo masivo".
+- **JetBrains Mono al 100%** (mantiene ADR-022 estricto, sin segunda
+  tipografía) — la consistencia tipográfica refuerza el carácter
+  "instrumento técnico".
+- **Sidebar 220 px fijos** (sin toggle) — los operadores la quieren
+  siempre visible para acceso rápido al resto del menú.
+- **Empty state del detalle con stats agregados** (visibles / sin
+  contactar / score medio / builders) — convierte un estado
+  potencialmente vacío en información útil del filtro actual.
+- **Acciones disabled visibles** ("Convertir a proyecto", "Marcar
+  opt-out") con tooltip explicativo en lugar de ocultarlas: el
+  operador ve qué acciones llegan y cuáles están pendientes.
+- **Atajos teclado se enganchan al `document`** + ignoran si el target
+  es input/textarea/select + ignoran si hay modificadores — no
+  interfieren con la búsqueda fuzzy futura ni con copy/paste.
+- **WCM-021 sigue abierto**: los 11 specs Playwright skipped quedan
+  como documentación viva del comportamiento esperado. Cuando MSW node
+  se implemente, flip de `SSR_BLOCKED = false` los activa de golpe.
+
+### Tests
+
+- 430 pytest (+3 stats endpoint).
+- 37 vitest (12 smoke + 10 interactivos + 15 previos).
+- 7 Playwright ejecutables + 14 skipped (3 antiguos + 11 nuevos).
+- ruff + tsc verde, 0 regresiones.
+
+---
+
 ## [0.3.0] — 2026-05-15
 
 Release de DX local. Trae el comando `dev-status.sh` que faltaba para
