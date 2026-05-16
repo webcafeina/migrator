@@ -119,6 +119,27 @@ export async function installBaseMocks(page: Page): Promise<void> {
       body: JSON.stringify({ total: FIXTURE_LEADS.length }),
     }),
   );
+  await page.route(/\/api\/v1\/leads\/stats/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        total: FIXTURE_LEADS.length,
+        uncontacted: FIXTURE_LEADS.filter((l) =>
+          ["discovered", "fingerprinted", "enriched"].includes(l.status),
+        ).length,
+        avg_score:
+          FIXTURE_LEADS.reduce((s, l) => s + l.score, 0) / FIXTURE_LEADS.length,
+        distinct_builders: new Set(
+          FIXTURE_LEADS.map((l) => l.builder_detected).filter(
+            (b) => b && b !== "unknown",
+          ),
+        ).size,
+        distinct_sectors: new Set(FIXTURE_LEADS.map((l) => l.sector)).size,
+        distinct_regions: new Set(FIXTURE_LEADS.map((l) => l.region)).size,
+      }),
+    }),
+  );
   await page.route(/\/api\/v1\/projects(\?.*)?$/, (route: Route) =>
     route.fulfill({
       status: 200,
