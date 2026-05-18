@@ -29,6 +29,12 @@
 
 ## Última versión publicada
 
+**v0.13.1** (2026-05-18) — hotfix CI: conftest CLI fija COLUMNS=200 +
+NO_COLOR=1 + TERM=dumb para que typer/Rich formatee igual local y
+CI. 3 tests del CLI fallaban en GitHub Actions por ancho terminal
+distinto (Rich rompía `--confirm` en 2 líneas). Lección persistida
+en `feedback_preflight_ci_reproducible.md`.
+
 **v0.13.0** (2026-05-18) — cierre paridad funcional API↔CLI↔UI tras
 auditoría exhaustiva (7 bloques). Elimina 3 vaporwares ("Convertir a
 proyecto"/"Marcar opt-out"/`wcm users` inexistente) + rellena 3 gaps

@@ -11,7 +11,19 @@ from typer.testing import CliRunner
 
 @pytest.fixture(autouse=True)
 def _isolate_state(monkeypatch, tmp_path: Path) -> Iterator[None]:
-    """Aísla credenciales, env vars y modo JSON entre tests."""
+    """Aísla credenciales, env vars y modo JSON entre tests.
+
+    También fija el ancho del terminal y desactiva colores ANSI para
+    que el formato Rich de los errores de typer sea idéntico en local
+    y en CI. Sin esto:
+    - En local con terminal ancho (200+ cols), Rich no envuelve y
+      `--confirm` cabe en una línea → `assert "--confirm" in output`
+      pasa.
+    - En CI (default 80 cols), Rich rompe `--confirm` entre líneas
+      → el mismo assert falla.
+    Reproducibilidad obligatoria para que `pnpm`/`pytest` local
+    detecte lo mismo que la CI.
+    """
     fake_home = tmp_path / "home"
     fake_home.mkdir()
     monkeypatch.setenv("HOME", str(fake_home))
@@ -23,6 +35,11 @@ def _isolate_state(monkeypatch, tmp_path: Path) -> Iterator[None]:
     # Limpiar vars que pueden contaminar entre tests
     monkeypatch.delenv("WCM_TOKEN", raising=False)
     monkeypatch.delenv("WCM_JSON", raising=False)
+    # Forzar terminal ancho + sin colores ANSI → mismo formato local/CI
+    monkeypatch.setenv("COLUMNS", "200")
+    monkeypatch.setenv("LINES", "50")
+    monkeypatch.setenv("NO_COLOR", "1")
+    monkeypatch.setenv("TERM", "dumb")
     yield
 
 

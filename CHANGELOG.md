@@ -11,6 +11,50 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.13.1] — 2026-05-18
+
+Hotfix de CI: 3 tests del CLI fallaban en GitHub Actions tras publicar
+v0.13.0 aunque pasaban en preflight local. Causa raíz: ancho del
+terminal distinto entre macOS local (~200 cols) y runner GitHub
+(80 cols). Rich envolvía la palabra `--confirm` entre líneas y los
+asserts substring fallaban.
+
+### Fixed
+
+- **Conftest CLI** (`cli/tests/conftest.py`) fija ahora env vars de
+  presentación con monkeypatch autouse:
+  - `COLUMNS=200` + `LINES=50` — terminal ancho.
+  - `NO_COLOR=1` + `TERM=dumb` — sin escape ANSI.
+
+  Garantiza que el output formateado por typer +
+  `rich_markup_mode="rich"` sea bit-a-bit idéntico local y CI.
+  Verificado simulando `COLUMNS=80` en el shell — el monkeypatch
+  sobreescribe y los 3 tests pasan.
+
+- Tests afectados (sin cambio de assertion, solo conftest):
+  - `cli/tests/unit/test_leads_commands.py::test_delete_lead_requires_confirm`
+  - `cli/tests/unit/test_outreach_commands.py::test_cancel_requires_confirm`
+  - `cli/tests/unit/test_users_commands.py::test_delete_requires_confirm`
+
+### Decisions
+
+- **Reproducibilidad ENV antes que asserts laxos**: la alternativa
+  era hacer los asserts más permisivos (`re.search` con `\s*`).
+  Rechazada — esconde el síntoma sin arreglar la causa. Cualquier
+  futuro test del CLI sufriría el mismo bug. Normalizar el entorno
+  una vez es más sostenible.
+- Lección persistida en memoria de Claude
+  (`feedback_preflight_ci_reproducible.md`) para que cualquier
+  sesión futura aplique el patrón sin pasar por el mismo bug.
+
+### Tests
+
+- 356 pytest verde local con la fixture en su sitio. Esperado verde
+  en CI (acción de GitHub) ya que la fixture normaliza el entorno
+  identico al local.
+
+---
+
 ## [0.13.0] — 2026-05-18
 
 Cierre completo de paridad funcional **API ↔ CLI ↔ UI** tras
