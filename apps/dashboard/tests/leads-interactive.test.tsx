@@ -13,7 +13,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { EvidenceTable } from "../src/app/(app)/leads/_components/evidence-table";
-import { FilterChips } from "../src/app/(app)/leads/_components/filter-chips";
+import { FilterChips } from "../src/components/filter-chips";
 
 // ---------- Mock de next/navigation ----------
 

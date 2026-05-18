@@ -16,10 +16,23 @@ export async function Header() {
     // No bloqueamos render; middleware se encarga de redirigir
   }
 
+  // Entorno actual (dev | production). Sustituye al texto redundante
+  // "Migrator dashboard" — el sidebar ya identifica el producto.
+  const envLabel = process.env.NODE_ENV === "production" ? "prod" : "dev";
+  const envIsProd = envLabel === "prod";
+
   return (
     <header className="flex h-12 items-center justify-between border-b border-wcm-detail bg-wcm-primary px-4">
-      <div className="text-xs text-wcm-detail uppercase tracking-wider">
-        Migrator dashboard
+      <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+        <span
+          aria-hidden
+          className={
+            envIsProd
+              ? "h-1.5 w-1.5 rounded-full bg-wcm-warning shadow-[0_0_0_2px_rgba(255,171,0,0.18)]"
+              : "h-1.5 w-1.5 rounded-full bg-[#5fc591] shadow-[0_0_0_2px_rgba(95,197,145,0.15)]"
+          }
+        />
+        <span>entorno · {envLabel}</span>
       </div>
 
       <div className="flex items-center gap-3 text-sm">

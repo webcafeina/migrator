@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
-import type { FilterChip } from "./filter-chips";
+import type { FilterChip } from "@/components/filter-chips";
 import { LeadDetailPane } from "./lead-detail-pane";
 import { LeadList } from "./lead-list";
 import { TopbarStats, type TopbarStatsData } from "./topbar-stats";

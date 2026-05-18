@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
-import { FilterChips, type FilterChip } from "./filter-chips";
+import { FilterChips, type FilterChip } from "@/components/filter-chips";
 
 interface LeadListProps {
   leads: LeadRead[];

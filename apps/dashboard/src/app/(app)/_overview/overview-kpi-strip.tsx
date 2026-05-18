@@ -29,12 +29,24 @@ export function OverviewKpiStrip({ kpis, className }: OverviewKpiStripProps) {
   return (
     <ul
       className={cn(
-        "flex divide-x divide-wcm-detail/40 overflow-hidden rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30",
+        // En desktop (≥xl): tira horizontal con divisores verticales.
+        // En viewport estrecho: las celdas se envuelven en filas; los
+        // divisores horizontales sustituyen a los verticales.
+        "flex flex-wrap overflow-hidden rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30",
         className,
       )}
     >
-      {kpis.map((kpi) => (
-        <li key={kpi.label} className="flex-1">
+      {kpis.map((kpi, idx) => (
+        <li
+          key={kpi.label}
+          className={cn(
+            "min-w-[160px] flex-1",
+            // Divisor solo entre celdas, evitando bordes duplicados al
+            // hacer wrap (cada nueva fila empieza limpia gracias al
+            // border-t condicional).
+            idx > 0 && "border-l border-wcm-detail/40",
+          )}
+        >
           <KpiCell kpi={kpi} />
         </li>
       ))}
