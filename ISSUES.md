@@ -230,6 +230,97 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-034 — Extender rediseño visual a `/projects/[id]` + sub-páginas
+- **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P1
+- **Estado**: OPEN
+- **Contexto**: tras v0.7.0 (`/projects` listado rediseñado), las
+  sub-páginas `/projects/[id]`, `/projects/[id]/checklist` y
+  `/projects/[id]/diff` siguen con la UI original pre-rediseño,
+  rompiendo la coherencia visual al navegar desde el listado. Es el
+  rediseño más grande pendiente (4 páginas anidadas que comparten
+  contexto de proyecto).
+- **Acción**: aplicar el patrón de 5 bloques (ADR-036) considerando
+  que las 4 páginas comparten un header común con info del proyecto
+  (cliente · URL origen · status · diff). Probable patrón: layout
+  con tabs (`/projects/[id]` overview, `/checklist`, `/diff`) y
+  componente shared `ProjectHeader`. Posible reuso de
+  `ActivityTimeline` para mostrar histórico de fases del pipeline.
+  **Sin datos reales en BD** — auditoría visual será parcial; diseñar
+  contra el schema de `Project` + `ProjectPhase`.
+- **Dueño**: técnico.
+
+---
+
+### WCM-035 — Extender rediseño a `/errors` y `/residual-tasks`
+- **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P2
+- **Estado**: OPEN
+- **Contexto**: ambas pantallas siguen con UI original. Detectado en
+  auditoría visual de v0.4.0:
+  - `/errors`: empty pasivo, sin filtros (severity, component, rango
+    fecha), sin link a journalctl / Logtail.
+  - `/residual-tasks`: columnas placeholder ("ASIGNAR", "MIN" críptico).
+- **Acción**: rediseños más pequeños que `/projects/[id]`; candidatos a
+  agrupar en un único release. Reusar `KpiStrip` + `FilterChips` shared
+  + patrón de empty state contextual. Para `/errors`, integrar filtro
+  por severity (con counts) y por componente. Para `/residual-tasks`,
+  resolver el placeholder "ASIGNAR" (¿quitar columna?) y renombrar
+  "MIN" a "Estimado".
+- **Dueño**: técnico.
+
+---
+
+### WCM-036 — 3 vitest skipped por React 19 + `startTransition(async)`
+- **Tipo**: test / **Fase**: post-MVP rediseño / **Prioridad**: P3
+- **Estado**: OPEN
+- **Contexto**: en `tests/campaigns-launch-form.test.tsx` (v0.6.0) hay
+  3 tests `.skip(...)` porque los side-effects posteriores a un `await`
+  dentro de `startTransition(async () => ...)` no se propagan de forma
+  fiable en happy-dom + React 19 + Vitest. El handler se ejecuta y
+  `api.post` se llama (verificable), pero `toast.error` y
+  `router.refresh` posteriores quedan colgados.
+- **Acción**: investigar al actualizar React 19 o Vitest. Opciones:
+  (a) migrar de happy-dom a jsdom; (b) wrap explícito con `act()`;
+  (c) refactor del componente para no usar `startTransition` con
+  async; (d) esperar a que WCM-021 (MSW node) cubra el flujo en
+  Playwright y aceptar el gap en vitest.
+- **Dueño**: técnico, no urgente.
+
+---
+
+### WCM-037 — Promoción "componentes shared cuando lo usan 2+ páginas"
+- **Tipo**: docs / **Fase**: post-MVP rediseño / **Prioridad**: P3
+- **Estado**: OPEN (criterio aplicado de facto desde v0.5.0)
+- **Contexto**: 2 movimientos ya hechos: `FilterChips` (v0.5.0,
+  movido de `/leads/_components` a `components/`) y `KpiStrip`
+  (v0.7.0, movido de `/_overview/` a `components/`). El criterio es
+  consistente pero solo vive en commits — convendría doc explícito
+  para que el equipo replique sin discusión.
+- **Acción**: añadido informalmente en ADR-036 §"Componentes
+  compartidos". Si crece, un sub-ADR dedicado.
+- **Dueño**: docs (resuelto en ADR-036, mantener vigilancia).
+
+---
+
+### WCM-038 — Limpiar `.next/types/* [N]*.ts` duplicados por iCloud
+- **Tipo**: chore / **Fase**: post-MVP / **Prioridad**: P3
+- **Estado**: OPEN (workaround manual)
+- **Contexto**: iCloud Drive (mismo problema que causó ADR-035 con
+  el venv) duplica también archivos generados por Next dentro de
+  `apps/dashboard/.next/types/` con sufijo ` 2.ts`, ` 3.ts`, etc.
+  Esto rompe `tsc --noEmit` con `TS2300: Duplicate identifier
+  'LayoutProps'`. Detectado en preflight de v0.7.0.
+- **Acción**: opciones:
+  (a) Añadir `find apps/dashboard/.next -name "* [0-9]*" -delete`
+      como pre-step de `pnpm exec tsc --noEmit`.
+  (b) Añadir `.next/` al `xattr -w com.apple.fileprovider.ignore#P 1`
+      como hicimos con `venv.nosync/`.
+  (c) Mover el repo fuera de `~/Desktop/` (solución de raíz también
+      para el venv).
+  Por ahora workaround manual: `find ... -delete` cuando aparezca.
+- **Dueño**: técnico.
+
+---
+
 ## Plantilla para nuevos issues
 
 ```

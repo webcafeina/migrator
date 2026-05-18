@@ -824,6 +824,98 @@ venv -> venv.nosync
 
 ---
 
+## ADR-036 — Patrón de rediseño visual del dashboard en 5 bloques granulares
+
+**Fecha**: 2026-05-18 (consolidado tras 4 pantallas rediseñadas:
+`/leads` v0.4.0, `/` v0.5.0, `/campaigns` v0.6.0, `/projects` v0.7.0)
+**Estado**: ✅ Aceptada
+
+**Contexto**: tras el cierre del MVP v0.1.0 (2026-05-14) y una
+auditoría visual completa del dashboard (capturas en
+`/tmp/wcm-audit/AUDIT.md`), arrancamos un proceso de rediseño
+pantalla por pantalla con paleta y tipografía fijas (la marca WCM no
+cambia). Tras 4 pantallas rediseñadas con el mismo proceso, el
+patrón está consolidado y conviene documentarlo para que se replique
+en las pantallas restantes sin volver a inventar.
+
+**Decisión**: cada rediseño se descompone en **5 bloques
+granulares**, cada uno con su commit propio:
+
+1. **Backend — endpoint de stats** (`feat(api):`). Endpoint nuevo
+   `GET /api/v1/X/stats` con agregados que alimentan el topbar del
+   rediseño (counts por status, deltas, valores derivados). 5-10
+   tests unit con `AsyncMock side_effect` sobre las execute() y
+   `literal_binds` para verificar SQL compilado.
+
+2. **Frontend — componentes presentacionales** (`feat(X):`). Creación
+   de componentes en `apps/dashboard/src/app/(app)/X/_components/`.
+   Reusar shared (`KpiStrip`, `FilterChips`) o promover desde
+   `_components/` específico a `apps/dashboard/src/components/` cuando
+   un componente sirve a 2+ páginas (`git mv` preserva historial).
+   Tests Vitest con `renderToString` (smoke) y/o
+   `@testing-library/react` (interactividad). Si el componente es
+   Client con `useTransition + async`, anticipar 3-5 tests `.skip()`
+   por bug React 19 + happy-dom (WCM-036).
+
+3. **Frontend — refactor `page.tsx`** (`feat(X):`). Server Component
+   que fetcha en paralelo lista + stats + datos auxiliares con
+   `.catch()` defensivo. Layout consistente:
+   - Header: título + descripción 1-línea + acción primaria lima.
+   - `KpiStrip` con 4-6 KPIs en línea (responsive `flex-wrap`).
+   - (Opcional) `FilterChips` con URL state y counts de stats globales.
+   - Tabla densa o empty state contextual.
+
+4. **Frontend — pulido** (`feat(X):`). Tres cosas coordinadas:
+   - 2 empty states diferenciados: `EmptyX` (sistema vacío, card lima
+     con onboarding + CTAs) vs `EmptyFilterResult` (filtro deja 0,
+     card neutra con instrucción de quitar filtro).
+   - Responsive verificado en 3 viewports (1440 / 900 / 600). Tablas
+     densas con `hideUntil="md" | "lg"` por columna.
+   - Microcopy: header del listado refleja filtro activo
+     (`X resultados · filtrado por <status castellano>`).
+
+5. **Tests — spec Playwright** (`test(X):`). 6-9 specs con la mitad
+   ejecutables (header, CTA primario, accesibilidad de form) y la
+   mitad marcados `test.skip(SSR_BLOCKED, "WCM-021")` para contenido
+   del Server Component. Cuando MSW node esté (WCM-021), los
+   skipped pasan automáticamente.
+
+**Componentes compartidos**: cuando un componente sirve a 2+
+páginas, se promueve de `_components/` específico a
+`apps/dashboard/src/components/`. Ejemplos hasta hoy:
+- `FilterChips` (v0.5.0): de `/leads/_components/` a `components/`.
+- `KpiStrip` (v0.7.0): de `/_overview/` a `components/`, renombrado
+  desde `OverviewKpiStrip`.
+
+**Cierre de cada rediseño**: tag SemVer (minor para rediseño nuevo,
+patch para hotfix) + `gh release create` con notas en castellano
+detallando Added/Changed/Fixed/Decisions/Tests. Preflight obligatorio
+**incluyendo `pnpm lint`** (lección de v0.6.0 → v0.6.1: next lint
+no se ejecuta con tsc/vitest).
+
+**Consecuencias**:
+- ✅ Cadencia predecible: ~5 commits + 1 release por pantalla, en
+  sesiones de ~2-3 horas cada una.
+- ✅ Cada commit revisable de forma independiente (granular >
+  monolítico).
+- ✅ Componentes shared crecen orgánicamente sin sobre-diseño
+  prematuro.
+- ✅ Tests escalan con cada rediseño (de 410 totales en MVP a 562 en
+  v0.7.0 sin esfuerzo concentrado).
+- ⚠️ El bloque 5 (tests) sigue limitado por WCM-021 (MSW node):
+  muchos specs Playwright quedan `.skip()` hasta entonces. La
+  cobertura "real" vive en vitest del componente + spec mínima
+  ejecutable.
+- ⚠️ Sin auditoría visual no aplicable a pantallas donde no hay datos
+  reales en BD (caso `/projects/[id]` WCM-034). Hay que diseñar
+  contra el schema + completar la verificación visual cuando lleguen
+  los primeros datos en producción.
+
+Releases que materializan este patrón: v0.4.0, v0.5.0, v0.6.0,
+v0.7.0. Detalle de cada bloque en `STATE.md` §"Sesiones post-MVP".
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

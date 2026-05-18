@@ -23,7 +23,37 @@
 - **Fase 13 — Tests e2e**: ✅ Completada (commit `891553a`)
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
-- **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada (https://github.com/webcafeina/migrator/releases/tag/v0.1.0). Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021. Pendientes solo para cuando toque deploy real: secrets Actions + sudoers WHM.
+- **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada. Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021.
+- **Post-MVP: rediseño visual del dashboard** EN CURSO (2026-05-14 → presente). 4 de 11+3 pantallas rediseñadas. Detalle abajo en §"Sesiones post-MVP".
+
+## Última versión publicada
+
+**v0.7.0** (2026-05-18) — rediseño /projects (listado) + `KpiStrip` shared. CI verde. https://github.com/webcafeina/migrator/releases/tag/v0.7.0
+
+## Estado del rediseño visual del dashboard
+
+| # | Pantalla | Estado | Release |
+|---|---|---|---|
+| 1 | `/login` | original | — |
+| 2 | `/` Panel | ✅ rediseñado | v0.5.0 |
+| 3 | `/campaigns` | ✅ rediseñado + fix P0 | v0.6.0 + v0.6.1 |
+| 4 | `/leads` master-detail | ✅ rediseñado | v0.4.0 |
+| 5 | `/leads/[id]` full-page | ✅ refactor | v0.6.0 |
+| 6 | `/projects` | ✅ rediseñado | v0.7.0 |
+| 7 | `/projects/[id]` + sub (`checklist`, `diff`) | original | — (siguiente, WCM-034) |
+| 8 | `/errors` | original | — (WCM-035) |
+| 9 | `/residual-tasks` | original | — (WCM-035) |
+| 10 | `/settings` | modelo a replicar | — |
+
+**Patrón de rediseño consolidado** tras 4 pantallas (ADR-036):
+1. Endpoint stats dedicado (`/X/stats`).
+2. Componentes presentacionales en `_components/`.
+3. Refactor `page.tsx` con `KpiStrip` + chips + tabla/empty.
+4. Pulido: 2 empty states (sistema vacío vs filtro 0) + responsive.
+5. Tests: vitest del componente + spec Playwright (mitad ejecutable, mitad skipped por WCM-021).
+
+Componentes promovidos a `apps/dashboard/src/components/` (shared):
+`FilterChips` (v0.5.0), `KpiStrip` (v0.7.0).
 
 ---
 
@@ -47,6 +77,77 @@
 | 13 | Tests e2e | ✅ Completada | Playwright + 4 specs (login/leads/projects/visual) con API mockeada via page.route(); 5 e2e Python pipeline (orchestrator + stubs reales + stateful_session); coverage 74.8% con pytest-cov; CI matrix Py 3.13/3.14 × Node 20/22 (ADR-032). Total 384+15+8 Playwright. |
 | 14 | Documentación | ✅ Completada | arquitectura.md (5 diagramas Mermaid + tabla 21 agentes) + prospeccion.md (10 secciones operador) + migracion.md (13 secciones operador) + playbook-operativo.md (10 runbooks INC-NN) + glossary.md (40+ términos) + README quickstart operador. |
 | 15 | Hardening | ✅ Completada | pip-audit + pnpm audit (0 vulns tras postcss override); slowapi rate-limit en login/compose/send/opt-out; security audit doc v0.1.0; performance SLOs; CHANGELOG; release-v0.1.0.md con instrucciones push; ADR-033. Total 387 Py + 15 TS + 8 Playwright = 410 tests. |
+
+---
+
+## Sesiones post-MVP (rediseño visual del dashboard)
+
+Trabajo posterior al cierre del MVP v0.1.0. Cada release agrupa un
+rediseño completo de una pantalla (5 bloques granulares — ver ADR-036).
+
+### v0.7.0 — Rediseño `/projects` (listado) — 2026-05-18
+
+- Endpoint `GET /api/v1/projects/stats` (commit `fbe56ec`).
+- `ProjectsTable` con DiffIndicator coloreado por umbral (≥85/70/<70) +
+  `KpiStrip` promovido a `apps/dashboard/src/components/` (`b1a5d3a`).
+- Refactor `page.tsx` con KpiStrip + tabla + empty state lima (`d6b6730`).
+- Filtros chips por status + `EmptyFilterResult` + responsive (`ec4001c`).
+- Spec Playwright 2 ejecutables + 5 skipped (`9de2117`).
+- Release `53288c2` → tag v0.7.0. CI verde.
+
+### v0.6.0 + v0.6.1 — Consolidación prospección — 2026-05-18
+
+- `/leads/[id]` full-page refactorizado a reusar `LeadDetailPane` del
+  master-detail (`75d0879`). -135 líneas netas.
+- `/campaigns` rediseñado completo en 5 bloques (`004801b` → `2ccf119`):
+  endpoint `/runs` + `CampaignRunsTable` + `CampaignProgressCard`
+  (polling) + LaunchForm horizontal con autocompletado + 2 empty states +
+  spec Playwright.
+- **Bug P0** eliminado: nota técnica obsoleta de `/campaigns`
+  ("ProspectorAgent en stub · llega en Fase 9") — mentira desde v0.2.0.
+- **v0.6.1 hotfix** (`2aefdca`): 2 `<a>` → `<Link>` en
+  `EmptyHistorico`; `@next/next/no-html-link-for-pages` falló en CI.
+  Memoria persistente actualizada con preflight incluyendo `pnpm lint`.
+
+### v0.5.0 — Rediseño Panel/Overview — 2026-05-18
+
+- Endpoint `GET /api/v1/audit-log` (lectura del audit canon que solo se
+  escribía) (`c9879f8`).
+- `ActivityFeed` + `OverviewKpiStrip` (`fafe46f`).
+- Refactor `page.tsx` con feed agrupado por día + KPI strip
+  (`0206041`).
+- Filtros chips por action + responsive + onboarding card + header con
+  badge env (`3028e1d`).
+- Tests spec Playwright + visual baseline regenerada (`028990c`).
+- Release `b929f74` → tag v0.5.0.
+
+### v0.4.0 — Rediseño `/leads` master-detail — 2026-05-16
+
+- Endpoint `GET /api/v1/leads/stats` (`7ef97a9`).
+- 6 componentes presentacionales: ScorePanel, FingerprintList,
+  EvidenceTable, ActivityTimeline, TopbarStats, FilterChips
+  (`2121fb8`).
+- Refactor `page.tsx` a master-detail con URL state `?selected=N`
+  (`3aa419e`).
+- Banner borrador, atajos teclado, responsive, acciones conectadas
+  (`df43540`).
+- Tests interactivos + e2e + visual baselines (`b2ad4e7`).
+- Release `9e4a10c` → tag v0.4.0.
+
+### v0.3.0 — `dev-status.sh` + venv.nosync iCloud fix — 2026-05-15
+
+- Script `scripts/dev-status.sh` 3 modos (humano/quiet/json) para
+  diagnosticar la stack local.
+- Descubrimiento crítico: el bug WCM-008 (`.pth` ocultos) no era
+  heurística macOS, era iCloud Drive sincronizando el Desktop. ADR-035
+  supersede ADR-016. Solución: venv en `venv.nosync/` con symlink `venv`.
+- Memoria persistente `feedback_macos_venv.md` actualizada.
+
+### v0.2.x — Mejoras post-MVP (commits b5245e3, bdabdc0, 44620ad) — 2026-05-14
+
+- Vista de progreso de campañas + i18n + paleta azul.
+- Fix race condition POST /launch vs worker.
+- best_builder prioriza cms > ecommerce > builder.
 
 ---
 
@@ -582,15 +683,43 @@ Roadmap post-v0.1.0 (issues abiertos en `ISSUES.md`):
 
 ## Notas para la próxima sesión
 
-- Antes de tocar nada, leer este fichero y `CLAUDE.md`.
-- **NO leer `docs/humanos/`** (regla #11 — zona humana).
-- Tras CUALQUIER `pip install` en el venv, ejecutar `bash scripts/fix-venv-hidden-pth.sh` (ADR-016).
-- Test suite total a 2026-05-14 (tras Fase 15): **387 Python + 15 TS + 8 Playwright** (410 total) + coverage 74.8%. Para correr: `set -a; source .env; set +a; pytest -q` desde la raíz. Coverage HTML: `pytest --cov --cov-report=html` → abrir `htmlcov/index.html`.
-- **MVP v0.1.0 listo**. Para publicar a GitHub: leer `docs/release-v0.1.0.md` y ejecutar los 11 pasos.
-- Sandbox Local WP corriendo en `https://migrator-sandbox.local`; usuario admin = `test`; PHP `8.2.29+0` + socket en `run/H1F_xStai/...` (vigilar si Local cambia IDs).
-- Issues abiertos prioritarios:
-  - WCM-001 (P0) export real Bricks — sigue pendiente; sería el momento ideal con sandbox listo.
-  - WCM-002 (P1) datos legales Webcafeína.
-  - WCM-003 (P1) URLs reales por builder para calibrar scraper.
-  - WCM-008..010 (P2-P3) workarounds entorno; no bloquean.
-- Validar Fase 1 corriendo `alembic upgrade head` contra Postgres+pgvector sigue pendiente.
+**Lectura obligatoria al arrancar**: este fichero + `CLAUDE.md` + las
+entradas correspondientes de `MEMORY.md` (auto-memoria persistente).
+
+**Reglas operativas que ahora viven en memoria** (no hace falta releer):
+- Preflight de release: `git status` + `pytest` + `ruff` + `tsc` + `vitest`
+  + **`pnpm lint`** (ver `feedback_release_preflight.md` — añadido tras
+  v0.6.0→v0.6.1 hotfix). `next lint` NO se ejecuta con tsc/vitest.
+- macOS venv: vive en `venv.nosync/` con symlink `venv` para evitar el
+  bug iCloud (ADR-035). NO recrear como `.venv/`.
+- `docs/humanos/` intocable (regla #11 CLAUDE.md).
+- Limpiar `.next/cache` antes de demo visual; `Cmd+Shift+R` en navegador.
+- Periódicamente borrar `apps/dashboard/.next/types/* [N]*.ts` (iCloud
+  duplica) — WCM-038.
+
+**Test suite actual a 2026-05-18 (v0.7.0)**:
+- 453 pytest (era 387 en MVP; +66 entre rediseños).
+- 92 vitest passing + 3 skipped React 19 (era 15; +77).
+- 17 Playwright ejecutables + 28 skipped por WCM-021 (MSW node)
+  (era 8; +9 ejecutables, +28 skipped).
+- Para correr todo:
+  ```bash
+  set -a && source .env && set +a && venv.nosync/bin/pytest -q
+  cd apps/dashboard && PATH="/opt/homebrew/opt/node@22/bin:$PATH" pnpm exec vitest run
+  PATH="/opt/homebrew/opt/node@22/bin:$PATH" pnpm exec playwright test
+  ```
+
+**Siguiente trabajo natural**: extender rediseño a las 4 pantallas
+restantes (ver tabla arriba):
+1. WCM-034 (P1) — `/projects/[id]` + sub-páginas (`checklist`, `diff`).
+   El más grande de los pendientes: 3-4 sub-páginas anidadas.
+2. WCM-035 (P2) — `/errors` y `/residual-tasks` (agrupable en un release).
+3. WCM-021 (P2) — MSW node desbloquea 28 specs Playwright skipped.
+4. WCM-036 (P3) — 3 vitest skipped por React 19 + `startTransition(async)`.
+
+**Issues abiertos pre-rediseño que siguen vigentes** (originales del MVP):
+- WCM-001 (P0) export real Bricks Builder.
+- WCM-003 (P1) URLs reales por builder para calibrar scraper.
+- WCM-005 (P2) lista ClickUp por defecto.
+- WCM-011 (P1) revisión legal externa de prospección.
+- WCM-029, WCM-030 (P2) detalles `.env.example` + greenlet dep.
