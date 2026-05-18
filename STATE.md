@@ -29,6 +29,13 @@
 
 ## Última versión publicada
 
+**v0.13.3** (2026-05-18) — Banner reactivo en ficha del lead: refleja
+el estado real de la sequence (no `lead.status` estático). Mapeo de
+6 status → copy/color/CTA distintos ("Borrador preparado"/"Correos
+listos para enviar"/"Enviando"/etc). Polling 4s sincroniza con
+acciones del ContactSequencePanel sin Context/lifting. +11 tests
+vitest cubriendo todos los paths.
+
 **v0.13.2** (2026-05-18) — hotfix bug crítico: OutreachSend quedaba
 QUEUED indefinidamente cuando Resend rechazaba (session_scope hacía
 rollback del FAILED del agent). Fix: commit explícito antes del raise

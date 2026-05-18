@@ -11,6 +11,55 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.13.3] — 2026-05-18
+
+Banner reactivo en el detalle del lead — refleja el estado real de
+la sequence en vez del `lead.status` estático. Cambio UX pedido tras
+notar que "Borrador de contacto preparado" se quedaba visible aunque
+el operador hubiera aprobado los correos.
+
+### Changed
+
+- **`DraftBanner` ahora Client Component** que fetcha la sequence
+  más reciente del lead (`/api/v1/outreach/sequences?lead_id=N&limit=5`)
+  con polling cada 4s. Decide internamente si renderizarse y con qué
+  copy/color/CTA según el `sequence.status`:
+
+  | Status | Color | Copy | CTA |
+  |---|---|---|---|
+  | DRAFT_PENDING_REVIEW + legal_passed | ámbar | "Borrador de contacto preparado" | Revisar → |
+  | DRAFT_PENDING_REVIEW + !legal_passed | rojo | "Borrador NO aprobable" | Editar → |
+  | READY | lima | "Correos listos para enviar" | Enviar → |
+  | IN_PROGRESS | lima animado | "Enviando contacto" | Ver progreso → |
+  | PAUSED | ámbar | "Contacto pausado" | Reanudar → |
+  | COMPLETED | gris | "Contacto completado" | Ver historial → |
+  | CANCELLED / OPTED_OUT | — | no se renderiza | — |
+
+- **`lead-detail-pane.tsx`** ya no condiciona el banner a
+  `lead.status === "outreach_prepared"`. El banner se monta siempre
+  y decide solo (incluyendo no-renderizar cuando no hay sequence o
+  el estado es terminal).
+
+### Why
+
+`lead.status` solo cambia cuando el composer genera el draft
+(`outreach_prepared`) o cuando el sender envía (`outreach_sent`),
+pero NO refleja transiciones intermedias de la sequence (approve,
+pause, cancel). El banner usaba ese flag y se quedaba congelado en
+"Borrador preparado" aunque el operador ya hubiera aprobado.
+
+Acoplar el banner al `sequence.status` (con polling) lo hace
+reactivo a TODAS las acciones del operador en `ContactSequencePanel`
+sin necesidad de Context o lifting state.
+
+### Tests
+
+- 203 vitest (+11 nuevos del banner reactivo cubriendo 7 estados +
+  edge cases: sin sequence, fetch falla, case uppercase tolerance).
+- tsc + lint verde.
+
+---
+
 ## [0.13.2] — 2026-05-18
 
 Hotfix de bug crítico detectado al hacer envío real de email tras

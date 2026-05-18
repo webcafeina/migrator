@@ -85,7 +85,10 @@ export function LeadDetailPane({
       </header>
 
       <LeadStatusPoller status={lead.status} />
-      {lead.status === "outreach_prepared" && <DraftBanner leadId={lead.id} />}
+      {/* DraftBanner se renderiza siempre y decide internamente si
+          mostrarse según el status de la sequence más reciente del
+          lead (no del lead.status, que no refleja aprobaciones). */}
+      <DraftBanner leadId={lead.id} />
 
       <ScorePanel
         score={lead.score}
