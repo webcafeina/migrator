@@ -157,12 +157,48 @@ export async function installBaseMocks(page: Page): Promise<void> {
   await page.route(/\/api\/v1\/projects\/1\/phases/, (route: Route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "[]" }),
   );
-  // Errors y residual-tasks vacíos por defecto
-  await page.route(/\/api\/v1\/errors/, (route: Route) =>
+  // Errors y residual-tasks vacíos por defecto.
+  // /stats devuelve un objeto agregado; el listado, un array. Los
+  // handlers específicos van DESPUÉS del catch-all para que Playwright
+  // los priorice (último registrado gana).
+  await page.route(/\/api\/v1\/errors(\?.*)?$/, (route: Route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "[]" }),
   );
-  await page.route(/\/api\/v1\/residual-tasks/, (route: Route) =>
+  await page.route(/\/api\/v1\/errors\/stats/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        total: 0,
+        critical: 0,
+        error: 0,
+        warning: 0,
+        info: 0,
+        debug: 0,
+        distinct_components: 0,
+        last_critical_at: null,
+      }),
+    }),
+  );
+  await page.route(/\/api\/v1\/residual-tasks(\?.*)?$/, (route: Route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "[]" }),
+  );
+  await page.route(/\/api\/v1\/residual-tasks\/stats/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        total: 0,
+        open: 0,
+        in_progress: 0,
+        blocked: 0,
+        done: 0,
+        skipped: 0,
+        blocking_go_live: 0,
+        distinct_projects: 0,
+        estimated_minutes_pending: 0,
+      }),
+    }),
   );
 }
 
