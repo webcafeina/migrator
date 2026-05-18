@@ -137,11 +137,16 @@ describe("ContactSequencePanel", () => {
     expect(editButtons.length).toBe(2); // 2 pasos del _draftSeq
   });
 
-  it("botón Aprobar deshabilitado si status != DRAFT_PENDING_REVIEW", async () => {
-    apiGet.mockResolvedValue([_draftSeq({ status: "SENT" })]);
+  it("botón Aprobar NO se renderiza si status no permite aprobar", async () => {
+    // status=completed → no acciones; el botón Aprobar no aparece.
+    apiGet.mockResolvedValue([_draftSeq({ status: "completed" })]);
     render(<ContactSequencePanel leadId={5} />);
-    const button = await screen.findByRole("button", { name: /aprobar/i });
-    expect(button).toBeDisabled();
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: /aprobar/i })).toBeNull();
+    });
+    expect(
+      screen.getByText(/sin acciones disponibles/i),
+    ).toBeInTheDocument();
   });
 
   it("botón Aprobar deshabilitado + warning si validación legal NO pasada", async () => {

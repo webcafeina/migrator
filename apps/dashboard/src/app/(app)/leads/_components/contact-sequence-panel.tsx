@@ -1,10 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ApiError, api } from "@/lib/api";
+import {
+  sendStatusLabel,
+  sequenceStatusLabel,
+} from "@/lib/labels";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { OutreachSequenceRead } from "@/types/api";
 
@@ -13,29 +16,48 @@ import {
   SequenceStepEditor,
 } from "./sequence-step-editor";
 
+/**
+ * Panel de contacto comercial del lead. Lista las sequences existentes
+ * (típicamente 1 por lead) con cada paso desplegado y, según el status
+ * de la sequence, los envíos reales asociados.
+ *
+ * Acciones disponibles por estado:
+ *   DRAFT_PENDING_REVIEW + legal_passed → Aprobar | Cancelar
+ *   READY                               → Enviar | Pausar | Cancelar
+ *   IN_PROGRESS                         → Pausar | Cancelar
+ *   PAUSED                              → Aprobar (reanudar) | Cancelar
+ *   COMPLETED / OPTED_OUT / CANCELLED   → solo lectura
+ *
+ * Renombrado en v0.12.0 (ex `OutreachSequencePanel`) como parte del
+ * refactor castellano. URLs/columnas BD siguen siendo `outreach`.
+ */
+
+interface SequenceDetailRead extends OutreachSequenceRead {
+  sends?: SendRead[];
+}
+
+interface SendRead {
+  id: number;
+  sequence_id: number;
+  lead_id: number;
+  step_index: number;
+  channel: string;
+  subject: string | null;
+  body_rendered: string | null;
+  status: string;
+  sent_at: string | null;
+  opened_at: string | null;
+  replied_at: string | null;
+  bounced_at: string | null;
+  provider_message_id: string | null;
+}
+
 interface ContactSequencePanelProps {
   leadId: number;
 }
 
-/**
- * Panel de contacto comercial del lead. Lista las sequences
- * existentes (típicamente 1 por lead) con cada paso desplegado:
- * subject + body + delay desde el paso anterior.
- *
- * Si la sequence está en `DRAFT_PENDING_REVIEW` y pasó la validación
- * legal, muestra el botón "Aprobar" que llama
- * `POST /outreach/sequences/{id}/transition` con `action="approve"`.
- *
- * Sustituye el placeholder vaporware del `DraftBanner` que apuntaba a
- * `#outreach` sin sección detrás (decisión del bloque 2 v0.11.1).
- *
- * Renombrado en v0.12.0 (ex `OutreachSequencePanel`) como parte del
- * refactor castellano. Las URLs/columnas BD siguen siendo `outreach`
- * (ancla técnica estable).
- */
 export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
-  const router = useRouter();
-  const [sequences, setSequences] = useState<OutreachSequenceRead[] | null>(
+  const [sequences, setSequences] = useState<SequenceDetailRead[] | null>(
     null,
   );
   const [loading, setLoading] = useState(true);
@@ -49,13 +71,35 @@ export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
       .get<OutreachSequenceRead[]>("/api/v1/outreach/sequences", {
         searchParams: { lead_id: leadId },
       })
-      .then((data) => {
+      .then(async (list) => {
         if (!alive) return;
-        setSequences(data);
+        // Para cada sequence cuyo status indique que ya hay envíos
+        // (READY o posteriores), fetcheamos el detail para incluir
+        // `sends`. DRAFT/PAUSED no tienen sends relevantes aún.
+        const detailed = await Promise.all(
+          list.map(async (seq) => {
+            const status = String(seq.status).toUpperCase();
+            const needsSends =
+              status === "READY" ||
+              status === "IN_PROGRESS" ||
+              status === "COMPLETED";
+            if (!needsSends) return seq as SequenceDetailRead;
+            try {
+              return await api.get<SequenceDetailRead>(
+                `/api/v1/outreach/sequences/${seq.id}`,
+              );
+            } catch {
+              return seq as SequenceDetailRead;
+            }
+          }),
+        );
+        if (alive) setSequences(detailed);
       })
       .catch((err) => {
         if (!alive) return;
-        setError(err instanceof ApiError ? err.message : "Error al cargar contactos");
+        setError(
+          err instanceof ApiError ? err.message : "Error al cargar contactos",
+        );
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -64,6 +108,23 @@ export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
       alive = false;
     };
   }, [leadId]);
+
+  // Helper compartido: reemplaza UNA sequence en el state local con la
+  // versión actualizada devuelta por una mutación (approve/pause/etc).
+  // Fix del bug v0.12.0: router.refresh() NO re-fetchaba el Client
+  // child (useEffect con [leadId] no se re-evalúa). Ahora cada acción
+  // actualiza el state local con la response — UI consistente sin
+  // depender del refresh del Server padre.
+  const replaceSequence = useCallback(
+    (updated: SequenceDetailRead) => {
+      setSequences((prev) =>
+        prev == null
+          ? prev
+          : prev.map((s) => (s.id === updated.id ? updated : s)),
+      );
+    },
+    [],
+  );
 
   if (loading) {
     return (
@@ -92,7 +153,7 @@ export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
         <SequenceCard
           key={seq.id}
           sequence={seq}
-          onApproved={() => router.refresh()}
+          onUpdate={replaceSequence}
         />
       ))}
     </div>
@@ -101,16 +162,12 @@ export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
 
 function SequenceCard({
   sequence,
-  onApproved,
+  onUpdate,
 }: {
-  sequence: OutreachSequenceRead;
-  onApproved: () => void;
+  sequence: SequenceDetailRead;
+  onUpdate: (updated: SequenceDetailRead) => void;
 }) {
   const [pending, startTransition] = useTransition();
-  // Estado local de los pasos para permitir edición optimista sin
-  // refresh entre cada save. Se inicializa con los steps del prop y
-  // se sustituye con la respuesta del PATCH (que recarga
-  // legal_validation_passed con el resultado de la re-validación).
   const [localSteps, setLocalSteps] = useState<Record<string, unknown>[]>(
     (sequence.steps_json ?? []) as unknown as Record<string, unknown>[],
   );
@@ -119,28 +176,83 @@ function SequenceCard({
   );
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
 
-  // El API serializa el enum lowercase (`'draft_pending_review'`),
-  // así que normalizamos a UPPERCASE una vez antes de comparar.
-  // Los OutreachSequenceStatus de wcm_types tienen valor lowercase
-  // pero las constantes lógicas de UI las mantenemos UPPERCASE por
-  // legibilidad (matchean el nombre del enum Python).
+  // Sincroniza state local cuando el padre nos pasa una sequence
+  // updated (p. ej. tras approve → status cambia, sends aparecen).
+  useEffect(() => {
+    setLocalSteps(
+      (sequence.steps_json ?? []) as unknown as Record<string, unknown>[],
+    );
+    setLegalPassed(sequence.legal_validation_passed);
+  }, [sequence.steps_json, sequence.legal_validation_passed]);
+
   const status = String(sequence.status).toUpperCase();
   const editable =
     status === "DRAFT_PENDING_REVIEW" || status === "PAUSED";
-  const canApprove = status === "DRAFT_PENDING_REVIEW" && legalPassed;
 
-  function approve() {
+  // Visibilidad del botón (status lo permite) vs habilitación (precondiciones
+  // extras como legal_passed). Mostrar disabled con tooltip > esconder.
+  const showApprove =
+    status === "DRAFT_PENDING_REVIEW" || status === "PAUSED";
+  const canApprove = showApprove && legalPassed;
+  const canPause = status === "READY" || status === "IN_PROGRESS";
+  const canCancel =
+    status === "DRAFT_PENDING_REVIEW" ||
+    status === "READY" ||
+    status === "PAUSED";
+  const canSend = status === "READY";
+
+  function runTransition(action: "approve" | "pause" | "cancel") {
     startTransition(async () => {
       try {
-        await api.post(
+        const updated = await api.post<OutreachSequenceRead>(
           `/api/v1/outreach/sequences/${sequence.id}/transition`,
-          { action: "approve" },
+          { action },
         );
-        toast.success(`Sequence #${sequence.id} aprobada — lista para enviar`);
-        onApproved();
+        const newStatus = String(updated.status).toUpperCase();
+        // Si pasa a READY o IN_PROGRESS, refetch detail para traer sends.
+        let merged: SequenceDetailRead = updated;
+        if (newStatus === "READY" || newStatus === "IN_PROGRESS") {
+          try {
+            merged = await api.get<SequenceDetailRead>(
+              `/api/v1/outreach/sequences/${sequence.id}`,
+            );
+          } catch {
+            /* mantenemos updated sin sends */
+          }
+        }
+        onUpdate(merged);
+        toast.success(
+          `Secuencia #${sequence.id}: ${sequenceStatusLabel(updated.status)}`,
+        );
+      } catch (err) {
+        const msg =
+          err instanceof ApiError ? err.message : `Error al ${action}`;
+        toast.error(msg);
+      }
+    });
+  }
+
+  function sendNow() {
+    startTransition(async () => {
+      try {
+        const resp = await api.post<{ task_id?: string; status?: string }>(
+          `/api/v1/outreach/sequences/${sequence.id}/send`,
+        );
+        // El send es asíncrono — encola el OutreachSend en Celery.
+        // Refetchamos el detail para reflejar el nuevo estado y los
+        // sends.
+        const merged = await api.get<SequenceDetailRead>(
+          `/api/v1/outreach/sequences/${sequence.id}`,
+        );
+        onUpdate(merged);
+        toast.success(
+          resp.task_id
+            ? `Envío encolado · task ${resp.task_id.slice(0, 8)}…`
+            : "Envío encolado",
+        );
       } catch (err) {
         toast.error(
-          err instanceof ApiError ? err.message : "Error al aprobar",
+          err instanceof ApiError ? err.message : "Error al enviar",
         );
       }
     });
@@ -148,14 +260,9 @@ function SequenceCard({
 
   function saveStep(editedStep: EditableStep) {
     startTransition(async () => {
-      // Construir la lista completa: el paso editado + los demás
-      // intactos. La API requiere semántica de reemplazo (PUT-like).
-      const next = localSteps.map((s, idx) => {
-        if (idx !== editedStep.step_index) {
-          return _toEditable(s, idx);
-        }
-        return editedStep;
-      });
+      const next = localSteps.map((s, idx) =>
+        idx === editedStep.step_index ? editedStep : _toEditable(s, idx),
+      );
       try {
         const updated = await api.patch<OutreachSequenceRead>(
           `/api/v1/outreach/sequences/${sequence.id}/steps`,
@@ -166,11 +273,12 @@ function SequenceCard({
         );
         setLegalPassed(updated.legal_validation_passed);
         setEditingIdx(null);
+        onUpdate(updated as SequenceDetailRead);
         if (updated.legal_validation_passed) {
           toast.success(`Paso ${editedStep.step_index + 1} guardado`);
         } else {
           toast.warning(
-            `Paso guardado pero NO pasa validación legal — Aprobar deshabilitado`,
+            "Paso guardado pero NO pasa validación legal — Aprobar deshabilitado",
           );
         }
       } catch (err) {
@@ -203,7 +311,7 @@ function SequenceCard({
         <SequenceStatusBadge status={status} />
       </header>
 
-      {!legalPassed && (
+      {!legalPassed && (status === "DRAFT_PENDING_REVIEW" || status === "PAUSED") && (
         <div className="mb-3 rounded-sm border border-wcm-danger/40 bg-wcm-danger/[0.05] px-2.5 py-1.5 text-[11px] text-wcm-danger">
           Validación legal NO pasada. No se puede aprobar — revisa el
           cuerpo del paso (firma + opt-out obligatorios).
@@ -211,8 +319,11 @@ function SequenceCard({
       )}
 
       <ol className="space-y-3">
-        {localSteps.map((step, idx) =>
-          editingIdx === idx ? (
+        {localSteps.map((step, idx) => {
+          const send = (sequence.sends ?? []).find(
+            (s) => s.step_index === idx,
+          );
+          return editingIdx === idx ? (
             <li key={idx}>
               <SequenceStepEditor
                 initialStep={_toEditable(step, idx)}
@@ -226,39 +337,84 @@ function SequenceCard({
               key={idx}
               step={step}
               idx={idx}
+              send={send}
               onEdit={editable ? () => setEditingIdx(idx) : undefined}
             />
-          ),
-        )}
+          );
+        })}
       </ol>
 
-      <footer className="mt-3 flex justify-end">
-        <button
-          type="button"
-          onClick={approve}
-          disabled={pending || !canApprove}
-          title={approveDisabledReason(status, legalPassed) ?? undefined}
-          className="rounded-sm bg-wcm-accent px-3 py-1 text-xs font-semibold text-wcm-primary transition-colors hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {pending ? "Aprobando…" : "Aprobar →"}
-        </button>
+      <footer className="mt-3 flex flex-wrap justify-end gap-2">
+        {canCancel && (
+          <button
+            type="button"
+            onClick={() => runTransition("cancel")}
+            disabled={pending}
+            className="rounded-sm border border-wcm-detail/60 px-3 py-1 text-xs text-wcm-danger hover:border-wcm-danger disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Cancelar
+          </button>
+        )}
+        {canPause && (
+          <button
+            type="button"
+            onClick={() => runTransition("pause")}
+            disabled={pending}
+            className="rounded-sm border border-wcm-warning/50 px-3 py-1 text-xs text-wcm-warning hover:border-wcm-warning disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Pausar
+          </button>
+        )}
+        {showApprove && (
+          <button
+            type="button"
+            onClick={() => runTransition("approve")}
+            disabled={pending || !canApprove}
+            title={
+              canApprove
+                ? "Aprobar la secuencia (queda lista para enviar)"
+                : "Validación legal NO pasada — edita el paso afectado y restaura la firma + opt-out"
+            }
+            className="rounded-sm bg-wcm-accent px-3 py-1 text-xs font-semibold text-wcm-primary transition-colors hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pending
+              ? "Procesando…"
+              : status === "PAUSED"
+                ? "Reanudar →"
+                : "Aprobar →"}
+          </button>
+        )}
+        {canSend && (
+          <button
+            type="button"
+            onClick={sendNow}
+            disabled={pending}
+            title="Encola el envío real vía Resend. Si RESEND_API_KEY no está configurado, el agente devolverá 'skipped' (no se envía nada, pero el sequence avanza)."
+            className="rounded-sm bg-wcm-accent px-3 py-1 text-xs font-semibold text-wcm-primary transition-colors hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pending ? "Enviando…" : "Enviar ahora →"}
+          </button>
+        )}
+        {!showApprove && !canPause && !canCancel && !canSend && (
+          <span className="text-[11px] text-muted-foreground">
+            Sin acciones disponibles en estado{" "}
+            <strong>{sequenceStatusLabel(status)}</strong>
+          </span>
+        )}
       </footer>
     </article>
   );
 }
 
-/** Render defensivo de cada step. El shape canónico tiene `subject` +
- * `body` + `delay_days_from_previous`, pero algunas sequences viejas
- * traen `delay_days` (sin "from_previous") — leemos ambos. */
 function StepBlock({
   step,
   idx,
+  send,
   onEdit,
 }: {
   step: Record<string, unknown>;
   idx: number;
-  /** Si se pasa, renderiza botón "Editar" que dispara el callback.
-   * Si no, el paso es solo lectura (ej. sequence ya SENT/READY). */
+  send?: SendRead;
   onEdit?: () => void;
 }) {
   const subject =
@@ -297,12 +453,105 @@ function StepBlock({
       <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-[11.5px] leading-relaxed text-wcm-text/90">
         {body}
       </pre>
+      {send && <SendTracking send={send} />}
     </li>
   );
 }
 
-/** Convierte un step del payload (heterogéneo) al shape canónico
- * `EditableStep` que espera el editor + el PATCH endpoint. */
+function SendTracking({ send }: { send: SendRead }) {
+  const events: Array<[string, string | null]> = [
+    ["encolado", null],
+    ["enviado", send.sent_at],
+    ["abierto", send.opened_at],
+    ["respondido", send.replied_at],
+    ["rebotado", send.bounced_at],
+  ];
+  return (
+    <div className="mt-3 rounded-sm border border-wcm-detail/30 bg-wcm-secondary/30 p-2 text-[11px]">
+      <div className="mb-1.5 flex items-baseline justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          Envío real
+        </span>
+        <SendStatusBadge status={send.status} />
+      </div>
+      <ul className="space-y-0.5 text-wcm-text/80">
+        {events
+          .filter(([label, at]) => label === "encolado" || at !== null)
+          .map(([label, at]) => (
+            <li
+              key={label}
+              className="flex items-baseline justify-between gap-2"
+            >
+              <span className="text-muted-foreground">{label}</span>
+              <span className="tabular-nums text-wcm-text/90">
+                {at ? formatRelativeTime(at) : "—"}
+              </span>
+            </li>
+          ))}
+      </ul>
+      {send.provider_message_id && (
+        <p className="mt-1.5 text-[10px] text-muted-foreground">
+          msg id:{" "}
+          <code className="text-wcm-text/70">
+            {send.provider_message_id}
+          </code>
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SequenceStatusBadge({ status }: { status: string }) {
+  const map: Record<string, string> = {
+    DRAFT_PENDING_REVIEW:
+      "border-wcm-warning/50 bg-wcm-warning/10 text-wcm-warning",
+    READY: "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
+    IN_PROGRESS:
+      "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
+    COMPLETED: "border-wcm-detail/60 text-wcm-text/80",
+    PAUSED: "border-wcm-warning/40 text-wcm-warning",
+    CANCELLED: "border-wcm-danger/40 text-wcm-danger",
+    OPTED_OUT: "border-wcm-danger/40 text-wcm-danger",
+  };
+  const cls = map[status] ?? "border-wcm-detail/60 text-wcm-text/70";
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 rounded-sm border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
+        cls,
+      )}
+    >
+      {sequenceStatusLabel(status)}
+    </span>
+  );
+}
+
+function SendStatusBadge({ status }: { status: string }) {
+  const upper = status.toUpperCase();
+  const map: Record<string, string> = {
+    QUEUED: "border-wcm-detail/60 text-muted-foreground",
+    SENT: "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
+    OPENED: "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
+    REPLIED:
+      "border-wcm-accent/60 bg-wcm-accent/15 text-wcm-accent font-semibold",
+    BOUNCED: "border-wcm-danger/40 text-wcm-danger",
+    FAILED:
+      "border-wcm-danger/50 bg-wcm-danger/15 text-wcm-danger font-semibold",
+  };
+  const cls = map[upper] ?? "border-wcm-detail/60 text-wcm-text/70";
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-sm border px-1.5 py-0.5 text-[10px] uppercase tracking-wider",
+        cls,
+      )}
+    >
+      {sendStatusLabel(status)}
+    </span>
+  );
+}
+
+/** Convierte un step heterogéneo al shape canónico `EditableStep`. */
 function _toEditable(
   step: Record<string, unknown>,
   idx: number,
@@ -322,45 +571,4 @@ function _toEditable(
     body,
     delay_days_from_previous: delay,
   };
-}
-
-function SequenceStatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    DRAFT_PENDING_REVIEW:
-      "border-wcm-warning/50 bg-wcm-warning/10 text-wcm-warning",
-    READY: "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
-    SENDING: "border-wcm-accent/50 bg-wcm-accent/10 text-wcm-accent",
-    SENT: "border-wcm-detail/60 text-wcm-text/80",
-    PAUSED: "border-wcm-detail/60 text-muted-foreground",
-    CANCELLED: "border-wcm-danger/40 text-wcm-danger",
-  };
-  const cls = map[status] ?? "border-wcm-detail/60 text-wcm-text/70";
-  return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 rounded-sm border px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
-        cls,
-      )}
-    >
-      {status.replace(/_/g, " ").toLowerCase()}
-    </span>
-  );
-}
-
-/** Razón por la que el botón Aprobar está deshabilitado. Devuelve
- * null si SE PUEDE aprobar (no hace falta tooltip). Distingue los 2
- * casos importantes para el operador: status no aprobable vs validación
- * legal fallida (el segundo es accionable — el operador puede editar
- * el paso problemático para restaurar la firma legal). */
-function approveDisabledReason(
-  status: string,
-  legalPassed: boolean,
-): string | null {
-  if (status !== "DRAFT_PENDING_REVIEW") {
-    return `Solo se aprueban borradores. Estado actual: ${status.replace(/_/g, " ").toLowerCase()}.`;
-  }
-  if (!legalPassed) {
-    return "Validación legal NO pasada — revisa que el body de cada paso conserve la firma (razón social, CIF, dirección) y el enlace de opt-out.";
-  }
-  return null;
 }

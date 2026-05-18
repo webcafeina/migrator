@@ -48,11 +48,21 @@ const RESIDUAL_LABELS: Record<string, string> = {
 
 const OUTREACH_SEQUENCE_LABELS: Record<string, string> = {
   draft_pending_review: "Borrador pendiente",
-  ready: "Lista",
-  in_progress: "En curso",
+  ready: "Lista para enviar",
+  in_progress: "Enviando",
   completed: "Completada",
   paused: "Pausada",
   opted_out: "Baja (RGPD)",
+  cancelled: "Cancelada",
+};
+
+const OUTREACH_SEND_LABELS: Record<string, string> = {
+  queued: "En cola",
+  sent: "Enviado",
+  bounced: "Rebotado",
+  opened: "Abierto",
+  replied: "Respondido",
+  failed: "Falló",
 };
 
 const ALL_LABELS: Record<string, string> = {
@@ -61,6 +71,7 @@ const ALL_LABELS: Record<string, string> = {
   ...PROJECT_PHASE_LABELS,
   ...RESIDUAL_LABELS,
   ...OUTREACH_SEQUENCE_LABELS,
+  ...OUTREACH_SEND_LABELS,
 };
 
 function capitalize(s: string): string {
@@ -80,4 +91,13 @@ export function statusLabel(status: string | null | undefined): string {
 }
 
 /** Traducciones específicas si en algún sitio quieres forzar dominio. */
-export const leadStatusLabel = (s: string) => LEAD_LABELS[s.toLowerCase()] ?? statusLabel(s);
+export const leadStatusLabel = (s: string) =>
+  LEAD_LABELS[s.toLowerCase()] ?? statusLabel(s);
+
+/** Status de la secuencia de contacto comercial (`OutreachSequenceStatus`). */
+export const sequenceStatusLabel = (s: string) =>
+  OUTREACH_SEQUENCE_LABELS[s.toLowerCase()] ?? statusLabel(s);
+
+/** Status de cada envío individual (`OutreachSendStatus`). */
+export const sendStatusLabel = (s: string) =>
+  OUTREACH_SEND_LABELS[s.toLowerCase()] ?? statusLabel(s);
