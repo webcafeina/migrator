@@ -33,11 +33,11 @@ Todas detrás de auth middleware (cookie `wcm_session`):
 | `/projects` | Listado de proyectos con status |
 | `/projects/[id]` | Detalle + timeline de fases + start/resume/cancel |
 | `/projects/[id]/checklist` | Tareas residuales agrupadas por categoría |
-| `/projects/[id]/diff` | Placeholder visual diff (Fase 10) |
-| `/campaigns` | Form de lanzar campaña + notas legales |
-| `/errors` | Log de errores con severity, component, project, fecha |
+| `/projects/[id]/diff` | Placeholder honesto: `packages/visual-diff/` ya existe, falta conectar a UI |
+| `/campaigns` | Listado de campañas + LaunchForm + polling de runs activos |
+| `/errors` | Log de errores con KPIs por severity + filtros chips + 5 colores |
 | `/residual-tasks` | Tabla con `Done` action que sincroniza con ClickUp |
-| `/settings` | Usuario actual + instrucciones para editar `.env` (read-only desde UI) |
+| `/settings` | Ajustes: usuario actual + estado del sistema (/system/info) + runbook operativo |
 
 ## Stack
 
