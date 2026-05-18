@@ -259,6 +259,41 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-041 — Sin progreso visible tras alta manual de lead — **CERRADO v0.11.1**
+- **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commit `681121d`).
+- **Contexto**: tras `POST /leads` el redirect a `/leads?selected=N`
+  mostraba el lead en `discovered` sin polling. Operador no veía el
+  avance del pipeline (fingerprint → enrich) hasta hacer F5.
+  Detectado por el usuario en E2E manual tras v0.11.0.
+- **Resolución**: `LeadStatusPoller` Client que llama
+  `router.refresh()` cada 4s mientras `status ∈ {discovered,
+  fingerprinted}`. Indicador visual contextual ("Fingerprint en
+  curso…" / "Enriquecimiento en curso…"). Para cuando llega a
+  terminal. 6 tests vitest con fake timers.
+
+---
+
+### WCM-042 — "Revisar" del banner outreach lleva a vaporware — **CERRADO v0.11.1**
+- **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P0
+- **Estado**: DONE 2026-05-18 (commit `dd272f6`).
+- **Contexto**: `DraftBanner` enlazaba a `/leads/{id}#outreach` con
+  comentario explícito "futura sección (cuando exista)". La sección
+  nunca se implementó. Bloqueaba el paso 6 del flujo §8 (operador
+  revisa/aprueba outreach) — clase de vaporware como "Fase 10"
+  v0.8.0 y "Fase 14" v0.10.0.
+- **Resolución**: `OutreachSequencePanel` Client en `LeadDetailPane`
+  con sección `id="outreach"`. Fetcha
+  `/api/v1/outreach/sequences?lead_id=N`, renderiza cada sequence
+  con sus pasos (subject + body line-breaks preservados + delay),
+  botón "Aprobar" → `POST /transition action=approve` habilitado
+  solo si DRAFT_PENDING_REVIEW + legal_validation_passed.
+  Adicionalmente fix de schema `OutreachStep` con `extra="allow"` +
+  `AliasChoices` para tolerar sequences legacy en BD que rompían
+  el endpoint con 500. 10 tests vitest.
+
+---
+
 ### WCM-040 — Alta manual de leads (single + bulk) — **CERRADO v0.11.0**
 - **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
 - **Estado**: DONE 2026-05-18 (commits `aa43968`, `b5ecb47`, `511fd4c`, `72c751f`, `303bb80`).

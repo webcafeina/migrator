@@ -29,6 +29,13 @@
 
 ## Última versión publicada
 
+**v0.11.1** (2026-05-18) — hotfix de 2 bugs detectados en E2E manual:
+polling vivo del status del lead mientras el pipeline corre
+(`LeadStatusPoller`), y sección outreach real en la ficha del lead
+(`OutreachSequencePanel`) que sustituye el placeholder vaporware al
+que enlazaba "Revisar". Schema `OutreachStep` tolerante a sequences
+legacy. WCM-041 + WCM-042 cerrados. CI verde.
+
 **v0.11.0** (2026-05-18) — alta manual de leads (single + bulk) en
 dashboard y CLI. Endpoints `POST /api/v1/leads` y `/leads/bulk` con
 encadenado automático fingerprint+enrich. Página `/leads/new` con tabs

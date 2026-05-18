@@ -11,6 +11,65 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.11.1] — 2026-05-18
+
+Hotfix de 2 bugs detectados haciendo E2E manual del flujo §8 tras
+v0.11.0. Ambos son fixes de feedback al operador — el flujo
+funcionaba "por debajo" pero la UI no lo reflejaba.
+
+### Fixed
+
+- **Sin progreso visible tras alta manual de lead** (WCM-041): el
+  operador llegaba a la ficha en estado `discovered` y no había
+  forma de ver el avance del pipeline (fingerprint → enrich) salvo
+  hacer F5. Nuevo `LeadStatusPoller` Client llama
+  `router.refresh()` cada 4s mientras `status ∈ {discovered,
+  fingerprinted}`. Cuando llega a terminal (enriched, opted_out,
+  etc.) el polling se detiene. Indicador visual mínimo con
+  microcopy contextual ("Fingerprint en curso…" /
+  "Enriquecimiento en curso…") + `role="status"` + `aria-live`.
+- **"Revisar" del banner outreach llevaba a placeholder vaporware**
+  (WCM-042): el `DraftBanner` enlazaba a `/leads/{id}#outreach`
+  con un comentario explícito en el código "futura sección
+  (cuando exista)" — la sección nunca se implementó. Misma clase
+  de vaporware que "Fase 10" eliminada en v0.8.0 y "Fase 14" en
+  v0.10.0. Nuevo `OutreachSequencePanel` fetcha
+  `/api/v1/outreach/sequences?lead_id=N`, renderiza cada sequence
+  con `SequenceCard` (status badge + template + steps con subject
+  + body line-breaks preservados + delay relativo) + botón
+  "Aprobar" que dispara `POST /transition action=approve`.
+  Habilitado SOLO si `status=DRAFT_PENDING_REVIEW` y
+  `legal_validation_passed=true`. Sección con `id="outreach"` +
+  `scroll-mt-12` para que el anchor del banner funcione.
+- **`GET /outreach/sequences` 500 con sequences legacy** (descubierto
+  al implementar el panel): el schema `OutreachStep` con
+  `extra="forbid"` rechazaba sequences viejas persistidas con
+  shape `body/subject/template/delay_days` (sin `step_index` ni
+  `delay_days_from_previous`). El endpoint devolvía 500 al
+  intentar serializarlas. Schema ahora tolera shapes legacy con
+  `extra="allow"`, `step_index` con default 0, y
+  `AliasChoices("delay_days_from_previous", "delay_days")`. Los
+  composers nuevos siguen escribiendo solo el shape canónico —
+  el cambio es de tolerancia en lectura.
+
+### Tests
+
+- 280 pytest API (sin cambios, suite sigue verde — schema más
+  permisivo no rompió validaciones existentes).
+- 164 vitest + 3 skipped React 19 (+16 nuevos: LeadStatusPoller 6
+  con fake timers, OutreachSequencePanel 10).
+- ruff + tsc + lint verde.
+
+### Estado funcional del flujo de prospección §8
+
+| Paso | v0.11.0 | v0.11.1 |
+|---|---|---|
+| 1-4 (alta + fingerprint + enrich) | ✅ funcionan | ✅ **+ feedback visible al operador** |
+| 5 (composer prepara borrador) | ✅ | ✅ |
+| 6 (operador revisa/aprueba) | ❌ "Revisar" vaporware | ✅ **panel real con botón Aprobar** |
+
+---
+
 ## [0.11.0] — 2026-05-18
 
 Primer sprint de **ampliación funcional** sobre el dashboard ya rediseñado.
