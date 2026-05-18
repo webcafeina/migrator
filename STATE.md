@@ -29,6 +29,14 @@
 
 ## Última versión publicada
 
+**v0.12.1** (2026-05-18) — hotfix + cierre del flujo §8 paso 6.
+Aprobar ya refleja status READY en la UI (bug del Client child sin
+re-fetch). Status badges castellano (`sequenceStatusLabel`,
+`sendStatusLabel`). Acciones completas (Aprobar/Pausar/Cancelar/
+Enviar) según status. Vista de tracking de envíos por step con
+polling automático. CLI `wcm outreach` completo (6 comandos).
+WCM-048 cerrado.
+
 **v0.12.0** (2026-05-18) — sprint funcional grande (6 bloques). Editor
 inline de pasos de contacto comercial, soft+hard delete de leads,
 CRUD de plantillas Jinja2 desde dashboard (migración Alembic 0003 a

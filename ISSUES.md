@@ -259,6 +259,26 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-048 — Cerrar flujo §8 paso 6 (Aprobar→Enviar) en UI + CLI — **CERRADO v0.12.1**
+- **Tipo**: bug + feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P0
+- **Estado**: DONE 2026-05-18 (commits `94c83e3`, `c71fe4f`, +hotfix polling).
+- **Contexto**: tras E2E manual el usuario reportó 3 problemas: (1)
+  Aprobar no transicionaba a READY en UI aunque el backend sí; (2)
+  status badges mostraban enum en bruto sin castellanizar; (3) tras
+  aprobar no había forma de enviar realmente — flujo se interrumpía.
+- **Resolución**:
+  - Bug fix: `replaceSequence` actualiza state local con response del
+    POST (router.refresh no re-monta Client child).
+  - i18n: helpers `sequenceStatusLabel`/`sendStatusLabel` en labels.ts.
+  - Acciones expandidas: Aprobar/Pausar/Cancelar/Enviar condicionales
+    por status. Aprobar visible-disabled (no oculto) si !legalPassed
+    con tooltip que dirige a editar el paso.
+  - Vista tracking de envíos por step + polling automático (4s)
+    mientras hay sends QUEUED o sequence IN_PROGRESS.
+  - CLI completo `wcm outreach list/show/approve/pause/cancel/send`.
+
+---
+
 ### WCM-043 — Editar correos de contacto sugeridos — **CERRADO v0.12.0**
 - **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
 - **Estado**: DONE 2026-05-18 (commits `1549ef4`, `7c1563c`).

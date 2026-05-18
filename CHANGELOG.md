@@ -11,6 +11,84 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.12.1] — 2026-05-18
+
+Hotfix + cierre del flujo §8 paso 6 (revisar/aprobar/enviar contacto)
+tras E2E manual del usuario. 3 problemas reportados, 4 features
+añadidas para que el flujo end-to-end funcione tanto en UI como en CLI.
+
+### Fixed
+
+- **Aprobar no transicionaba a READY en la UI** aunque el backend SÍ
+  cambiaba el status. Causa: `ContactSequencePanel` es Client con
+  `sequences[]` en useState; `router.refresh()` re-renderiza el
+  Server padre pero NO re-monta el Client child (`useEffect` con
+  `[leadId]` no se re-evalúa). Fix: `replaceSequence` actualiza la
+  sequence editada en el state local con la response del POST. UI
+  consistente sin depender del refresh del Server.
+- **Status badges mostraban el enum en bruto** (`DRAFT PENDING REVIEW`
+  uppercase) en vez de castellano. Fix: helpers
+  `sequenceStatusLabel()` y `sendStatusLabel()` en `labels.ts` con
+  mapeo explícito ("Borrador pendiente", "Lista para enviar",
+  "Enviando", "Rebotado", etc.). `SequenceStatusBadge` y
+  `SendStatusBadge` usan los helpers. Cero enum visible al usuario.
+
+### Added
+
+- **Botones de acción completos** según status de la sequence en
+  `ContactSequencePanel`:
+  - DRAFT_PENDING_REVIEW → Aprobar + Cancelar (+ Editar paso).
+  - PAUSED → Reanudar + Cancelar.
+  - READY → Enviar + Pausar + Cancelar.
+  - IN_PROGRESS → Pausar + Cancelar.
+  - COMPLETED / OPTED_OUT / CANCELLED → solo lectura ("Sin acciones
+    disponibles en estado X").
+  - Aprobar visible pero disabled con tooltip si !legalPassed
+    (dirige a editar el paso problemático).
+- **Botón "Enviar ahora →"** dispara `POST /sequences/{id}/send` →
+  crea OutreachSends en estado QUEUED. Tooltip explícito sobre el
+  fallback "skipped" cuando RESEND_API_KEY no está configurado.
+- **Vista de tracking de envíos** por step (`SendTracking`):
+  encolado / enviado / abierto / respondido / rebotado con
+  timestamps relativos + `provider_message_id`. `SendStatusBadge`
+  con 6 colores (queued gris, sent/opened lima, replied lima
+  negrita, bounced/failed rojo).
+- **Polling automático del detail** mientras hay sends en estado
+  no terminal (queued) o sequence en IN_PROGRESS. Refetcha cada 4s;
+  para cuando todo está terminal. Espejo del patrón
+  `LeadStatusPoller` v0.11.1.
+- **CLI `wcm outreach`** completo, espejo funcional de la UI:
+  - `wcm outreach list [--lead-id N] [--status X] [--limit N]`
+  - `wcm outreach show ID` — pasos + envíos.
+  - `wcm outreach approve ID` — DRAFT/PAUSED → READY (409 si
+    validación legal falla).
+  - `wcm outreach pause ID` — READY/IN_PROGRESS → PAUSED.
+  - `wcm outreach cancel ID --confirm` — irreversible.
+  - `wcm outreach send ID [--step N]` — encola envío real.
+  - Traducción castellana de status integrada (espejo del
+    dashboard).
+
+### Tests
+
+- 346 pytest (+12 nuevos CLI outreach).
+- 192 vitest + 3 skipped (sin cambios — el refactor mantiene
+  cobertura).
+- ruff + tsc + lint verde.
+
+### Estado funcional del flujo §8 paso 6
+
+| Capacidad | v0.12.0 | v0.12.1 |
+|---|---|---|
+| Aprobar refleja status en UI | ❌ "DRAFT PENDING REVIEW" se quedaba | ✅ pasa a "Lista para enviar" |
+| Status badges castellano | ❌ enum en bruto | ✅ traducidos |
+| Botón Enviar | ❌ no existía | ✅ con tooltip y fallback Resend |
+| Vista de envíos reales | ❌ | ✅ tracking por step |
+| Pausar / Cancelar / Reanudar | ❌ | ✅ botones contextuales |
+| Polling automático envíos | ❌ requería F5 | ✅ cada 4s mientras inflight |
+| CLI flujo completo | ❌ solo leads/campaigns | ✅ `wcm outreach …` |
+
+---
+
 ## [0.12.0] — 2026-05-18
 
 Sprint funcional grande sobre el dashboard ya rediseñado. Cierra 4

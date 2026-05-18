@@ -185,6 +185,32 @@ function SequenceCard({
     setLegalPassed(sequence.legal_validation_passed);
   }, [sequence.steps_json, sequence.legal_validation_passed]);
 
+  // Polling automático del detail mientras hay sends en estado no
+  // terminal (queued/sending). Espejo del patrón LeadStatusPoller
+  // v0.11.1. Refetcha cada 4s; para cuando todos los sends están en
+  // terminal (sent/bounced/replied/failed) o cuando la sequence está
+  // en COMPLETED/CANCELLED/OPTED_OUT.
+  useEffect(() => {
+    const hasInflightSends = (sequence.sends ?? []).some(
+      (s) => s.status === "queued",
+    );
+    const seqStatus = String(sequence.status).toUpperCase();
+    const isInflight =
+      hasInflightSends || seqStatus === "IN_PROGRESS";
+    if (!isInflight) return;
+    const id = setInterval(async () => {
+      try {
+        const fresh = await api.get<SequenceDetailRead>(
+          `/api/v1/outreach/sequences/${sequence.id}`,
+        );
+        onUpdate(fresh);
+      } catch {
+        /* mantiene state si el API falla puntualmente */
+      }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [sequence.id, sequence.status, sequence.sends, onUpdate]);
+
   const status = String(sequence.status).toUpperCase();
   const editable =
     status === "DRAFT_PENDING_REVIEW" || status === "PAUSED";
