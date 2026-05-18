@@ -161,6 +161,24 @@ docs/
 - Updates breves en hitos: hallazgo, cambio de rumbo, bloqueo.
 - Sin narración del proceso interno.
 
+### Paridad funcional API ↔ CLI ↔ UI (obligatoria)
+
+Cada nueva capacidad debe verificarse en las **tres** capas antes de marcarla completa:
+
+1. **API endpoint** funcional con tests.
+2. **CLI command** equivalente bajo `cli/src/wcm_cli/commands/`. Excepciones legítimas: webhooks, `/health`, `/metrics`, `/ready` (técnicos, no de usuario).
+3. **UI dashboard** que lo dispare o muestre.
+
+**Reglas duras:**
+
+- **Prohibido** commitear botones disabled con copy tipo `"Implementación en Fase N"` o `"Endpoint pendiente"` apuntando a fases que ya pasaron. O se implementa, o se omite el botón, o se documenta en `ISSUES.md` como `WCM-NNN` con fecha objetivo concreta (no nombre de fase).
+- **Prohibido** mencionar herramientas inexistentes en microcopy de UI (caso `wcm users` en OperationRunbook antes de v0.13.0 — doble engaño: prometía CLI inexistente + endpoint expuesto sin acceso).
+- **Tras commit del bloque backend** de cualquier sprint: micro-audit obligatoria. Grep `apps/dashboard/src` y `cli/src/wcm_cli` por el recurso nuevo. Si falta, **añadir bloques UI + CLI al mismo sprint** o crear `WCM-NNN` explícito.
+- **Antes de marcar una task como completed**: pregunta interna — *"¿este endpoint tiene botón visible? ¿comando CLI? Si no, ¿hay tracking?"*.
+- **Auditorías de paridad completas** cuando el usuario las pida o cada 3-5 releases: matriz `Capacidad | API | CLI | UI` con GAPs marcados P0/P1/P2. P0 (vaporware) se cierran antes del siguiente release minor.
+
+Causa raíz documentada: múltiples sprints (v0.12.0, v0.12.1, v0.13.0) se han gastado limpiando vaporwares acumulados ("Fase 7", "Fase 10", "Fase 14", `wcm users` inexistente). La auditoría sistemática los previene.
+
 ---
 
 ## 7. Flujo de migración (resumen)
