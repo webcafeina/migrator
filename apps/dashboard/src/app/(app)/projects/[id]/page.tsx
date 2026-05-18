@@ -1,15 +1,24 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, ClipboardCheck, GitCompare } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge, statusVariant } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
-import { statusLabel } from "@/lib/labels";
-import { formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
-import { ProjectActions } from "./actions";
 
+import { ProjectActions } from "./actions";
+import {
+  ProjectHeader,
+  type ProjectSummaryData,
+} from "./_components/project-header";
+import { ProjectPhasesTimeline } from "./_components/project-phases-timeline";
+
+/**
+ * `/projects/[id]` — overview del proyecto con header compartido +
+ * timeline de fases + bloque compacto de configuración técnica.
+ *
+ * Fetcha en paralelo project + summary + phases. summary alimenta el
+ * header denso (counts de fases, residuales, lead origen) y phases
+ * alimenta el timeline detallado.
+ */
 export default async function ProjectDetailPage({
   params,
 }: {
@@ -20,154 +29,101 @@ export default async function ProjectDetailPage({
   try {
     project = await api.get<ProjectRead>(`/api/v1/projects/${id}`);
   } catch (e) {
-    if (e instanceof ApiError && e.status === 404) {
-      notFound();
-    }
+    if (e instanceof ApiError && e.status === 404) notFound();
     throw e;
   }
 
-  const phases = await api
-    .get<ProjectPhaseRead[]>(`/api/v1/projects/${id}/phases`)
-    .catch(() => [] as ProjectPhaseRead[]);
+  const [summary, phases] = await Promise.all([
+    api
+      .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
+      .catch(() => emptySummary(project.id)),
+    api
+      .get<ProjectPhaseRead[]>(`/api/v1/projects/${id}/phases`)
+      .catch(() => [] as ProjectPhaseRead[]),
+  ]);
 
   return (
-    <div className="space-y-6">
-      <Link
-        href="/projects"
-        className="inline-flex items-center gap-1 text-xs text-wcm-detail hover:text-wcm-accent"
-      >
-        <ArrowLeft className="h-3 w-3" /> Volver a proyectos
-      </Link>
+    <div className="space-y-5">
+      <ProjectHeader
+        project={project}
+        summary={summary}
+        actions={
+          <ProjectActions projectId={project.id} status={project.status} />
+        }
+      />
 
-      <div className="flex flex-wrap items-baseline justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold">
-            Proyecto #{project.id} — {project.client_name}
-          </h1>
-          <p className="text-sm text-wcm-detail">{String(project.source_url)}</p>
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
+        <div className="space-y-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            Fases del pipeline
+          </h2>
+          <ProjectPhasesTimeline phases={phases} />
         </div>
-        <ProjectActions projectId={project.id} status={project.status} />
-      </div>
 
-      <div className="flex gap-3">
-        <Link
-          href={`/projects/${id}/checklist`}
-          className="inline-flex items-center gap-1.5 rounded-sm border border-wcm-detail bg-wcm-secondary px-3 py-1.5 text-xs hover:border-wcm-accent/50"
-        >
-          <ClipboardCheck className="h-3 w-3" />
-          Checklist humano
-        </Link>
-        <Link
-          href={`/projects/${id}/diff`}
-          className="inline-flex items-center gap-1.5 rounded-sm border border-wcm-detail bg-wcm-secondary px-3 py-1.5 text-xs hover:border-wcm-accent/50"
-        >
-          <GitCompare className="h-3 w-3" />
-          Visual diff
-        </Link>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Configuración</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <Row label="Origen">{String(project.source_url)}</Row>
-            <Row label="Destino">{project.target_domain ?? "—"}</Row>
-            <Row label="Builder">{project.builder_source ?? "—"}</Row>
-            <Row label="E-commerce">
-              {project.has_ecommerce ? "sí" : "no"}
-            </Row>
-            <Row label="Multilang">
-              {project.is_multilang
-                ? `sí (${(project.langs ?? []).join(", ")})`
-                : "no"}
-            </Row>
-            <Row label="Asset storage">{project.asset_storage}</Row>
-            <Row label="Preserve paths">
-              {project.preserve_paths ? "sí" : "no"}
-            </Row>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Estado</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <Row label="Status">
-              <Badge variant={statusVariant(project.status)}>
-                {statusLabel(project.status)}
-              </Badge>
-            </Row>
-            <Row label="Iniciado">{formatDate(project.started_at)}</Row>
-            <Row label="Completado">{formatDate(project.completed_at)}</Row>
-            <Row label="Go-live estimado">
-              {formatDate(project.estimated_go_live_at)}
-            </Row>
-            <Row label="Visual diff promedio">
-              {project.visual_diff_avg_score !== null &&
-              project.visual_diff_avg_score !== undefined ? (
-                <span className="text-wcm-accent tabular-nums">
-                  {project.visual_diff_avg_score.toFixed(2)}
-                </span>
-              ) : (
-                "—"
-              )}
-            </Row>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Timeline de fases</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {phases.length === 0 ? (
-            <p className="text-sm text-wcm-detail">
-              Aún sin fases ejecutadas. Pulsa "Start" para arrancar el pipeline.
-            </p>
-          ) : (
-            <ul className="space-y-1">
-              {phases.map((ph) => (
-                <li
-                  key={ph.id}
-                  className="flex items-center justify-between border-b border-wcm-detail/30 py-2 text-sm last:border-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge variant={statusVariant(ph.status)}>{statusLabel(ph.status)}</Badge>
-                    <span className="font-medium">{ph.phase_name}</span>
-                    {ph.attempt > 1 && (
-                      <span className="text-xs text-wcm-detail">
-                        intento {ph.attempt}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs text-wcm-detail">
-                    {ph.completed_at
-                      ? formatDate(ph.completed_at)
-                      : ph.started_at
-                        ? `iniciada ${formatDate(ph.started_at)}`
-                        : ""}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+        <aside className="space-y-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            Configuración técnica
+          </h2>
+          <ConfigPanel project={project} />
+        </aside>
+      </section>
     </div>
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function ConfigPanel({ project }: { project: ProjectRead }) {
+  const rows: Array<[string, React.ReactNode]> = [
+    ["destino", project.target_domain ?? "—"],
+    ["builder", project.builder_source ?? "—"],
+    ["e-commerce", boolBadge(project.has_ecommerce ?? false)],
+    [
+      "multilang",
+      project.is_multilang
+        ? (project.langs ?? []).join(", ") || "sí"
+        : "no",
+    ],
+    ["assets", project.asset_storage ?? "—"],
+    ["preserve paths", boolBadge(project.preserve_paths ?? false)],
+  ];
   return (
-    <div className="flex items-baseline justify-between gap-2">
-      <span className="text-xs text-wcm-detail uppercase tracking-wider shrink-0">
-        {label}
-      </span>
-      <span className="text-right text-wcm-text break-all">{children}</span>
-    </div>
+    <dl className="grid grid-cols-[100px_1fr] gap-x-3 gap-y-2 rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs">
+      {rows.map(([k, v]) => (
+        <div key={k} className="contents">
+          <dt className="text-muted-foreground">{k}</dt>
+          <dd className="break-all text-wcm-text">{v}</dd>
+        </div>
+      ))}
+    </dl>
   );
+}
+
+function boolBadge(v: boolean) {
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-sm border px-1.5 text-[10px] uppercase tracking-wider",
+        v
+          ? "border-wcm-accent/40 bg-wcm-accent/10 text-wcm-accent"
+          : "border-wcm-detail/60 text-muted-foreground",
+      )}
+    >
+      {v ? "sí" : "no"}
+    </span>
+  );
+}
+
+function emptySummary(projectId: number): ProjectSummaryData {
+  return {
+    project_id: projectId,
+    lead_origin: null,
+    phases_total: 0,
+    phases_completed: 0,
+    phases_failed: 0,
+    phases_running: 0,
+    phases_pending: 0,
+    current_phase_name: null,
+    residual_total: 0,
+    residual_open: 0,
+    residual_done: 0,
+  };
 }
