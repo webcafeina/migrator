@@ -70,6 +70,22 @@ export default async function SettingsPage() {
             </Link>
           </Block>
 
+          <Block title="Layout del correo">
+            <Link
+              href="/settings/email-layout"
+              className="block rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs text-wcm-text hover:border-wcm-accent hover:text-wcm-accent"
+            >
+              <div className="font-semibold">
+                Editar layout maestro HTML →
+              </div>
+              <p className="mt-1 text-muted-foreground">
+                Shell HTML + CSS que envuelve todos los correos de
+                outreach (header con logo, slot del cuerpo, CTA, footer
+                legal). Admin-only.
+              </p>
+            </Link>
+          </Block>
+
           <Block title="Usuarios del sistema">
             <Link
               href="/admin/users"

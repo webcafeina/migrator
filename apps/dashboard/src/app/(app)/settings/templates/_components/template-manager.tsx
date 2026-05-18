@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { EmailPreviewIframe } from "@/components/email-preview-iframe";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { ApiError, api } from "@/lib/api";
 import { cn, formatRelativeTime } from "@/lib/utils";
 
@@ -13,6 +15,11 @@ interface TemplateRead {
   subject_template: string;
   body_template: string;
   language: string;
+  /** v0.14.0 — HTML opcional. Si NULL composer cae a body_template texto. */
+  body_html_template: string | null;
+  /** v0.14.0 — CTA opcional pintado por el layout. */
+  cta_label: string | null;
+  cta_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -85,14 +92,19 @@ export function TemplateManager({ initialTemplates }: TemplateManagerProps) {
   function saveEdit(tplId: number, values: TemplateFormValues) {
     startTransition(async () => {
       try {
-        // PATCH no acepta `name` (decisión backend); enviamos solo los
-        // 3 campos editables.
+        // PATCH no acepta `name`. v0.14.0: mandamos también
+        // body_html_template/cta_label/cta_url (vacío = null para
+        // borrar; backend usa exclude_unset, así que SIEMPRE los
+        // enviamos para que el operador pueda vaciarlos).
         const updated = await api.patch<TemplateRead>(
           `/api/v1/templates/${tplId}`,
           {
             subject_template: values.subject_template,
             body_template: values.body_template,
             language: values.language,
+            body_html_template: values.body_html_template || null,
+            cta_label: values.cta_label || null,
+            cta_url: values.cta_url || null,
           },
         );
         toast.success(`Plantilla "${updated.name}" guardada`);
@@ -194,11 +206,12 @@ export function TemplateManager({ initialTemplates }: TemplateManagerProps) {
               subject_template: mode.tpl.subject_template,
               body_template: mode.tpl.body_template,
               language: mode.tpl.language,
+              body_html_template: mode.tpl.body_html_template ?? "",
+              cta_label: mode.tpl.cta_label ?? "",
+              cta_url: mode.tpl.cta_url ?? "",
             }}
             onSave={(v) => saveEdit(mode.tpl.id, v)}
-            onCancel={() =>
-              setMode({ kind: "view", tplId: mode.tpl.id })
-            }
+            onCancel={() => setMode({ kind: "view", tplId: mode.tpl.id })}
             pending={pending}
           />
         )}
@@ -236,6 +249,7 @@ function TemplateView({
   onDelete: () => void;
   pending: boolean;
 }) {
+  const [tab, setTab] = useState<"source" | "preview">("source");
   return (
     <article className="space-y-4 rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
@@ -245,6 +259,18 @@ function TemplateView({
             <code className="text-wcm-text/80">{tpl.language}</code>
             <span className="mx-1.5">·</span>
             actualizada {formatRelativeTime(tpl.updated_at)}
+            {tpl.body_html_template && (
+              <>
+                <span className="mx-1.5">·</span>
+                <span className="text-wcm-accent">HTML</span>
+              </>
+            )}
+            {tpl.cta_label && (
+              <>
+                <span className="mx-1.5">·</span>
+                <span className="text-wcm-accent">CTA</span>
+              </>
+            )}
           </div>
         </div>
         <div className="flex gap-2">
@@ -267,26 +293,101 @@ function TemplateView({
         </div>
       </header>
 
-      <div>
-        <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Asunto (Jinja2)
-        </div>
-        <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
-          {tpl.subject_template}
-        </pre>
+      <div
+        role="tablist"
+        className="flex gap-1 border-b border-wcm-detail/40 text-[10.5px] uppercase tracking-wider"
+      >
+        <TabBtn active={tab === "source"} onClick={() => setTab("source")}>
+          Fuente (Jinja2)
+        </TabBtn>
+        <TabBtn active={tab === "preview"} onClick={() => setTab("preview")}>
+          Vista previa
+        </TabBtn>
       </div>
 
-      <div>
-        <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-          Cuerpo (Jinja2)
-        </div>
-        <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
-          {tpl.body_template}
-        </pre>
-      </div>
+      {tab === "source" ? (
+        <>
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Asunto (Jinja2)
+            </div>
+            <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+              {tpl.subject_template}
+            </pre>
+          </div>
 
-      <JinjaHelp />
+          {tpl.body_html_template ? (
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                Cuerpo HTML (Jinja2 + tags)
+              </div>
+              <pre className="mt-1 max-h-72 overflow-y-auto whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+                {tpl.body_html_template}
+              </pre>
+            </div>
+          ) : null}
+
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Cuerpo texto (fallback / clientes sin HTML)
+            </div>
+            <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+              {tpl.body_template}
+            </pre>
+          </div>
+
+          {(tpl.cta_label || tpl.cta_url) && (
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                CTA
+              </div>
+              <div className="mt-1 rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 text-[11px] text-wcm-text">
+                <strong>{tpl.cta_label || "(sin texto)"}</strong>{" "}
+                <span className="text-muted-foreground">→</span>{" "}
+                <code className="text-wcm-accent">
+                  {tpl.cta_url || "(sin URL)"}
+                </code>
+              </div>
+            </div>
+          )}
+
+          <JinjaHelp />
+        </>
+      ) : (
+        <EmailPreviewIframe
+          fetchUrl={`/api/v1/templates/${tpl.id}/preview`}
+          ariaLabel={`Vista previa de plantilla ${tpl.name}`}
+          height={560}
+        />
+      )}
     </article>
+  );
+}
+
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={cn(
+        "px-3 py-1.5 transition-colors",
+        active
+          ? "border-b-2 border-wcm-accent text-wcm-accent"
+          : "text-muted-foreground hover:text-wcm-text",
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -297,6 +398,9 @@ interface TemplateFormValues {
   subject_template: string;
   body_template: string;
   language: string;
+  body_html_template: string;
+  cta_label: string;
+  cta_url: string;
 }
 
 function TemplateForm({
@@ -316,6 +420,9 @@ function TemplateForm({
   const [subject, setSubject] = useState(initial?.subject_template ?? "");
   const [body, setBody] = useState(initial?.body_template ?? "");
   const [language, setLanguage] = useState(initial?.language ?? "es");
+  const [bodyHtml, setBodyHtml] = useState(initial?.body_html_template ?? "");
+  const [ctaLabel, setCtaLabel] = useState(initial?.cta_label ?? "");
+  const [ctaUrl, setCtaUrl] = useState(initial?.cta_url ?? "");
 
   const isEdit = mode === "edit";
   const canSave =
@@ -332,6 +439,9 @@ function TemplateForm({
       subject_template: subject,
       body_template: body,
       language,
+      body_html_template: bodyHtml,
+      cta_label: ctaLabel.trim(),
+      cta_url: ctaUrl.trim(),
     });
   }
 
@@ -398,10 +508,10 @@ function TemplateForm({
         />
       </Field>
 
-      <Field htmlFor="tpl-body" label="Cuerpo (Jinja2)">
+      <Field htmlFor="tpl-body" label="Cuerpo texto (fallback / clientes sin HTML)">
         <textarea
           id="tpl-body"
-          rows={16}
+          rows={10}
           required
           value={body}
           onChange={(e) => setBody(e.target.value)}
@@ -410,6 +520,51 @@ function TemplateForm({
           className="w-full resize-y rounded-sm border border-wcm-detail/70 bg-wcm-primary p-2 font-mono text-[11.5px] text-wcm-text placeholder:text-muted-foreground focus:border-wcm-accent focus:outline-none disabled:opacity-50"
         />
       </Field>
+
+      <Field htmlFor="tpl-body-html" label="Cuerpo HTML (opcional — recomendado)">
+        <RichTextEditor
+          initialHtml={bodyHtml}
+          onChange={setBodyHtml}
+          disabled={pending}
+          placeholder="Escribe el cuerpo HTML del correo. Si lo dejas vacío el composer caerá al texto plano de arriba envolviéndolo en <p>."
+        />
+        <p className="mt-1 text-[10px] text-muted-foreground">
+          Si está vacío, el composer envuelve el texto plano de arriba
+          en <code>&lt;p&gt;</code> automáticamente. Para HTML personalizado
+          (negritas, listas, links) escríbelo aquí — Jinja2 sigue funcionando.
+        </p>
+      </Field>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_2fr]">
+        <Field htmlFor="tpl-cta-label" label="CTA · texto del botón (opcional)">
+          <input
+            id="tpl-cta-label"
+            type="text"
+            maxLength={80}
+            value={ctaLabel}
+            onChange={(e) => setCtaLabel(e.target.value)}
+            disabled={pending}
+            placeholder="Reservar 20min"
+            className={inputClass}
+          />
+        </Field>
+        <Field htmlFor="tpl-cta-url" label="CTA · URL del botón (opcional)">
+          <input
+            id="tpl-cta-url"
+            type="url"
+            maxLength={500}
+            value={ctaUrl}
+            onChange={(e) => setCtaUrl(e.target.value)}
+            disabled={pending}
+            placeholder="https://cal.com/webcafeina"
+            className={inputClass}
+          />
+        </Field>
+      </div>
+      <p className="-mt-1 text-[10px] text-muted-foreground">
+        Si ambos están rellenos, el layout pinta el botón lima. Si dejas
+        uno vacío, no se pinta nada.
+      </p>
 
       <JinjaHelp />
 

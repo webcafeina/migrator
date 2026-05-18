@@ -10,6 +10,9 @@ interface TemplateRead {
   subject_template: string;
   body_template: string;
   language: string;
+  body_html_template: string | null;
+  cta_label: string | null;
+  cta_url: string | null;
   created_at: string;
   updated_at: string;
 }

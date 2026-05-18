@@ -44,6 +44,9 @@ function _tpl(over: Record<string, unknown> = {}) {
     subject_template: "{{ business_name }}, una idea",
     body_template: "Hola...",
     language: "es",
+    body_html_template: null,
+    cta_label: null,
+    cta_url: null,
     created_at: "2026-05-18T10:00:00Z",
     updated_at: "2026-05-18T10:00:00Z",
     ...over,
@@ -144,7 +147,7 @@ describe("TemplateManager", () => {
       "Hola business",
     );
     await user.type(
-      screen.getByLabelText(/cuerpo.*jinja2/i),
+      screen.getByLabelText(/cuerpo texto/i),
       "Cuerpo nuevo",
     );
     await user.click(
