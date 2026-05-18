@@ -1,4 +1,4 @@
-"""Secuencias de outreach + log de envíos."""
+"""Secuencias de outreach + log de envíos + plantillas + layout HTML."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from sqlalchemy import (
+    CheckConstraint,
     DateTime,
     Enum,
     ForeignKey,
@@ -61,9 +62,7 @@ class OutreachSequence(Base, TimestampMixin):
 class OutreachSend(Base, TimestampMixin):
     __tablename__ = "outreach_sends"
     __table_args__ = (
-        UniqueConstraint(
-            "sequence_id", "step_index", name="uq_outreach_sends_sequence_step"
-        ),
+        UniqueConstraint("sequence_id", "step_index", name="uq_outreach_sends_sequence_step"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -82,6 +81,12 @@ class OutreachSend(Base, TimestampMixin):
     )
     subject: Mapped[str | None] = mapped_column(String(255))
     body_rendered: Mapped[str | None] = mapped_column(Text)
+    # Snapshot HTML del envío (v0.14.0). NULL para sends históricos
+    # anteriores al pipeline HTML; el preview endpoint re-renderiza
+    # on-the-fly desde `body_rendered` en ese caso. Los sends nuevos
+    # persisten ambos para que la UI muestre exactamente lo que llegó
+    # al lead aunque la plantilla/layout cambien después.
+    body_html_rendered: Mapped[str | None] = mapped_column(Text)
     status: Mapped[OutreachSendStatus] = mapped_column(
         Enum(OutreachSendStatus, name="outreach_send_status", native_enum=False, length=16),
         nullable=False,
@@ -127,3 +132,51 @@ class OutreachTemplate(Base, TimestampMixin):
     # ISO 639-1 lowercase. "es" / "en". Permite tener variantes por
     # idioma del mismo arquetipo.
     language: Mapped[str] = mapped_column(String(8), nullable=False, default="es")
+    # v0.14.0 — pipeline HTML estilado. Si está poblado, el composer
+    # usa este Jinja2 directamente (HTML semántico — p, strong, a, ul…)
+    # y lo inyecta en el slot del layout maestro. Si NULL, el composer
+    # cae a `body_template` (texto) y lo envuelve en `<p>` automáticamente
+    # vía `wrap_plain_as_html` (preserva fallback de plantillas legacy).
+    body_html_template: Mapped[str | None] = mapped_column(Text)
+    # CTA opcional pintado por el layout. Si ambos están rellenos el
+    # layout pinta el botón lima; si vacíos, sin botón. Heredado por
+    # todos los steps de la sequence — para CTA por step (caso raro)
+    # crear WCM-NNN específico.
+    cta_label: Mapped[str | None] = mapped_column(String(80))
+    cta_url: Mapped[str | None] = mapped_column(String(500))
+
+
+class EmailLayout(Base, TimestampMixin):
+    """Shell HTML maestra de los correos de outreach (v0.14.0).
+
+    Singleton (id=1 forzado por CHECK constraint): existe exactamente
+    una fila editable desde `/settings/email-layout` por usuarios admin.
+    Cualquier plantilla `OutreachTemplate` se renderiza dentro del slot
+    `{{ content }}` que define este layout.
+
+    Por qué tabla aparte y no columnas en `outreach_templates`:
+    el layout es compartido por TODAS las plantillas; ponerlo en cada
+    fila lo duplicaría y obligaría a sincronizar manualmente. Tabla
+    singleton es la representación más honesta del invariante.
+
+    El composer y el endpoint preview usan `load_layout(session)` que
+    cae a layout hardcoded si la tabla está vacía o no existe — útil
+    en entornos sin migración aplicada (tests, dev fresh).
+    """
+
+    __tablename__ = "email_layouts"
+    __table_args__ = (CheckConstraint("id = 1", name="singleton"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    # Jinja2 con bloques `{{ content }}`, `{{ cta_label }}`, `{{ cta_url }}`,
+    # `{{ logo_url }}`, `{{ company_legal_name }}`, `{{ opt_out_url }}`,
+    # `{{ privacy_policy_url }}`. El composer inyecta el contexto.
+    layout_html: Mapped[str] = mapped_column(Text, nullable=False)
+    # CSS separado por claridad — premailer lo inyecta inline al
+    # renderizar. Si está vacío el layout se envía tal cual.
+    layout_css: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    # Trazabilidad de quién hizo el último cambio (audit-log redundante
+    # pero útil para reviews rápidas desde la UI sin abrir la timeline).
+    updated_by_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL")
+    )

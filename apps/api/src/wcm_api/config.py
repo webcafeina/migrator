@@ -26,9 +26,7 @@ class ApiSettings(BaseSettings):
     )
 
     # ---- entorno ----
-    env: Literal["development", "staging", "production"] = Field(
-        default="development", alias="ENV"
-    )
+    env: Literal["development", "staging", "production"] = Field(default="development", alias="ENV")
     app_name: str = Field(default="webcafeina-migrator", alias="APP_NAME")
     api_url: str = Field(default="http://localhost:8000", alias="API_URL")
     app_url: str = Field(default="http://localhost:3000", alias="APP_URL")
@@ -49,9 +47,7 @@ class ApiSettings(BaseSettings):
 
     # ---- Redis / Celery ----
     redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
-    celery_broker_url: str = Field(
-        default="redis://localhost:6379/1", alias="CELERY_BROKER_URL"
-    )
+    celery_broker_url: str = Field(default="redis://localhost:6379/1", alias="CELERY_BROKER_URL")
     celery_result_backend: str = Field(
         default="redis://localhost:6379/2", alias="CELERY_RESULT_BACKEND"
     )
@@ -60,9 +56,7 @@ class ApiSettings(BaseSettings):
     # Almacenado como string CSV en .env porque pydantic-settings intenta
     # parse JSON estricto para `list[str]`. Exponemos `cors_origins` como
     # property derivada.
-    cors_origins_raw: str = Field(
-        default="http://localhost:3000", alias="CORS_ORIGINS"
-    )
+    cors_origins_raw: str = Field(default="http://localhost:3000", alias="CORS_ORIGINS")
 
     @property
     def cors_origins(self) -> list[str]:
@@ -70,12 +64,8 @@ class ApiSettings(BaseSettings):
         return [item.strip() for item in self.cors_origins_raw.split(",") if item.strip()]
 
     # ---- Empresa (para outreach legal) ----
-    company_legal_name: str = Field(
-        default="Webcafeína S.L.", alias="COMPANY_LEGAL_NAME"
-    )
-    company_contact_email: str = Field(
-        default="info@webcafeina.com", alias="COMPANY_CONTACT_EMAIL"
-    )
+    company_legal_name: str = Field(default="Webcafeína S.L.", alias="COMPANY_LEGAL_NAME")
+    company_contact_email: str = Field(default="info@webcafeina.com", alias="COMPANY_CONTACT_EMAIL")
     company_privacy_policy_url: str = Field(
         default="https://webcafeina.com/politica-de-privacidad",
         alias="COMPANY_PRIVACY_POLICY_URL",
@@ -87,12 +77,17 @@ class ApiSettings(BaseSettings):
         alias="OUTREACH_OPT_OUT_URL_BASE",
     )
 
+    # ---- Email branding (v0.14.0) ----
+    # URL pública del logo Webcafeína en R2 que el layout HTML embebe en
+    # el header del correo. Subir con `python scripts/upload_email_logo.py`.
+    # Si está vacío, el layout pinta `webcafeína` como texto estilado
+    # (fallback grácil documentado en docstring del layout maestro).
+    email_logo_url: str | None = Field(default=None, alias="EMAIL_LOGO_URL")
+
     # ---- Observabilidad ----
     sentry_dsn_api: str | None = Field(default=None, alias="SENTRY_DSN_API")
     sentry_environment: str = Field(default="development", alias="SENTRY_ENVIRONMENT")
-    sentry_traces_sample_rate: float = Field(
-        default=0.2, alias="SENTRY_TRACES_SAMPLE_RATE"
-    )
+    sentry_traces_sample_rate: float = Field(default=0.2, alias="SENTRY_TRACES_SAMPLE_RATE")
     logtail_source_token: str | None = Field(default=None, alias="LOGTAIL_SOURCE_TOKEN")
 
     # ---- ClickUp webhook secret (para validar firmas) ----

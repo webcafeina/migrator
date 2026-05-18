@@ -91,11 +91,11 @@ class ScrapeStatus(StrEnum):
 
 
 class CampaignStatus(StrEnum):
-    QUEUED = "queued"          # encolada, worker aún no la ha cogido
-    RUNNING = "running"        # prospector + chain enrich corriendo
-    COMPLETED = "completed"    # todos los leads pasaron por enrich (o 0 leads)
-    FAILED = "failed"          # error definitivo
-    CANCELLED = "cancelled"    # operador la canceló manualmente
+    QUEUED = "queued"  # encolada, worker aún no la ha cogido
+    RUNNING = "running"  # prospector + chain enrich corriendo
+    COMPLETED = "completed"  # todos los leads pasaron por enrich (o 0 leads)
+    FAILED = "failed"  # error definitivo
+    CANCELLED = "cancelled"  # operador la canceló manualmente
 
 
 class AssetStatus(StrEnum):
@@ -158,10 +158,20 @@ class AuditAction(StrEnum):
     FINGERPRINT = "fingerprint"
     ENRICH = "enrich"
     SEND = "send"
+    # v0.14.0 — envío de prueba a una dirección arbitraria desde la UI
+    # del editor de pasos. NO crea OutreachSend ni muta el sequence;
+    # solo registra en audit-log para trazabilidad (qué operador probó
+    # qué step contra qué email). Separado de SEND para no contaminar
+    # métricas de outreach real.
+    TEST_SEND = "test_send"
     OPT_OUT = "opt_out"
     DEPLOY = "deploy"
     QA = "qa"
     SYSTEM = "system"
+    # v0.14.0 — edición de la shell HTML maestra desde
+    # /settings/email-layout. Capa de auditoría adicional al
+    # `updated_by_user_id` que también persiste en la tabla.
+    EMAIL_LAYOUT_UPDATE = "email_layout_update"
 
 
 class ErrorSeverity(StrEnum):

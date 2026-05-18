@@ -8,7 +8,12 @@ from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.campaigns import Campaign
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead, LeadEnrichment, OptOutLog
-from wcm_db.models.outreach import OutreachSend, OutreachSequence, OutreachTemplate
+from wcm_db.models.outreach import (
+    EmailLayout,
+    OutreachSend,
+    OutreachSequence,
+    OutreachTemplate,
+)
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_db.models.residual_tasks import ResidualTask
 from wcm_db.models.scraped_pages import ScrapedPage
@@ -22,6 +27,7 @@ __all__ = [
     "BricksPage",
     "Campaign",
     "ContentBlock",
+    "EmailLayout",
     "ErrorLog",
     "Lead",
     "LeadEnrichment",
