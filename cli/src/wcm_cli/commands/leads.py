@@ -183,6 +183,45 @@ def get_lead(lead_id: Annotated[int, typer.Argument(help="ID del lead")]) -> Non
         })
 
 
+@app.command("discard")
+def discard_lead(
+    lead_id: Annotated[int, typer.Argument(help="ID del lead a descartar")],
+) -> None:
+    """Soft delete: marca el lead como DISCARDED. Reversible —
+    cualquier PATCH del status restaura. El listado oculta DISCARDED
+    por defecto en dashboard y CLI."""
+    client = ApiClient()
+    lead = client.post(f"/api/v1/leads/{lead_id}/discard")
+    output.success(f"Lead #{lead['id']} descartado (status={lead['status']})")
+
+
+@app.command("delete")
+def delete_lead(
+    lead_id: Annotated[int, typer.Argument(help="ID del lead a borrar")],
+    confirm: Annotated[
+        bool,
+        typer.Option(
+            "--confirm",
+            help="Obligatorio para confirmar el hard delete (CASCADE).",
+        ),
+    ] = False,
+) -> None:
+    """Hard delete: borra el lead + sus enriquecimientos + sequences
+    con CASCADE. Irreversible. Usa `wcm leads discard ID` si solo
+    quieres ocultarlo del listado."""
+    if not confirm:
+        raise CliInputError(
+            "Borrado definitivo requiere --confirm.",
+            hint=(
+                "Para descartar (reversible) usa `wcm leads discard ID`.\n"
+                "Para borrado real ejecuta `wcm leads delete ID --confirm`."
+            ),
+        )
+    client = ApiClient()
+    client.delete(f"/api/v1/leads/{lead_id}")
+    output.success(f"Lead #{lead_id} borrado permanentemente (CASCADE)")
+
+
 @app.command("refingerprint")
 def refingerprint_lead(lead_id: Annotated[int, typer.Argument()]) -> None:
     """Encola re-fingerprint de un lead (worker lo procesará)."""

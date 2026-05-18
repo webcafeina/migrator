@@ -192,3 +192,40 @@ def test_create_bulk_file_not_found(
     )
     assert result.exit_code != 0
     assert "no encontrado" in result.output.lower() or "not found" in result.output.lower()
+
+
+# ---------- wcm leads discard / delete (v0.12.0) ----------
+
+
+def test_discard_lead_success(runner: CliRunner, authenticated) -> None:
+    with respx.mock(base_url="http://api.test") as router:
+        router.post("/api/v1/leads/3/discard").return_value = httpx.Response(
+            200, json=_ok_lead(lead_id=3, url="https://x.com")
+            | {"status": "discarded"},
+        )
+        result = runner.invoke(app, ["leads", "discard", "3"])
+    assert result.exit_code == 0, result.output
+    assert "#3" in result.output
+    assert "discarded" in result.output
+
+
+def test_delete_lead_requires_confirm(
+    runner: CliRunner, authenticated
+) -> None:
+    """Sin --confirm el comando aborta con CliInputError ANTES de
+    tocar el API."""
+    result = runner.invoke(app, ["leads", "delete", "3"])
+    assert result.exit_code != 0
+    assert "--confirm" in result.output
+
+
+def test_delete_lead_with_confirm_204(
+    runner: CliRunner, authenticated
+) -> None:
+    with respx.mock(base_url="http://api.test") as router:
+        router.delete("/api/v1/leads/3").return_value = httpx.Response(204)
+        result = runner.invoke(
+            app, ["leads", "delete", "3", "--confirm"]
+        )
+    assert result.exit_code == 0, result.output
+    assert "permanentemente" in result.output.lower()

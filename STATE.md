@@ -29,6 +29,13 @@
 
 ## Última versión publicada
 
+**v0.12.0** (2026-05-18) — sprint funcional grande (6 bloques). Editor
+inline de pasos de contacto comercial, soft+hard delete de leads,
+CRUD de plantillas Jinja2 desde dashboard (migración Alembic 0003 a
+tabla `outreach_templates`), refactor castellano "outreach" →
+"contacto comercial", firma legal read-only en /settings. CLI con
+`wcm leads discard|delete`. WCM-043..047 cerrados. CI verde.
+
 **v0.11.1** (2026-05-18) — hotfix de 2 bugs detectados en E2E manual:
 polling vivo del status del lead mientras el pipeline corre
 (`LeadStatusPoller`), y sección outreach real en la ficha del lead

@@ -11,6 +11,140 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.12.0] — 2026-05-18
+
+Sprint funcional grande sobre el dashboard ya rediseñado. Cierra 4
+brechas pedidas por el operador tras E2E manual:
+
+1. Editar correos de contacto sugeridos antes de aprobar.
+2. Gestión de leads: descartar (soft) y borrar definitivo (hard).
+3. CRUD de plantillas Jinja2 desde el dashboard (sin SSH).
+4. Castellanización: "outreach" → "contacto comercial" en UI.
+
+Más extras: firma legal read-only en /settings.
+
+### Added
+
+- **Backend `PATCH /api/v1/outreach/sequences/{id}/steps`**: edita
+  los pasos de una sequence en estado editable (DRAFT_PENDING_REVIEW
+  o PAUSED). Reemplaza la lista completa (semántica de PUT). Re-corre
+  validación legal via helper público del composer
+  (`validate_outreach_steps`) y actualiza `legal_validation_passed`.
+  Si la edición rompe la validación, la sequence queda no-aprobable
+  hasta corregir. AuditLog UPDATE con razones de fallo capadas a 10.
+- **Backend `POST /api/v1/leads/{id}/discard`**: soft delete, status
+  DISCARDED, idempotente, AuditLog UPDATE con
+  `payload.action="discard"`.
+- **Backend `DELETE /api/v1/leads/{id}`**: hard delete con CASCADE a
+  enrichments + sequences + sends. AuditLog DELETE escrito ANTES del
+  delete con snapshot (url + business_name) para evidencia
+  post-borrado.
+- **Backend `/api/v1/templates` CRUD completo**: GET/GET-by-id
+  any_user, POST/PATCH/DELETE admin only. `name` no editable
+  (renombrar rompería sequences históricas). 409 amistoso en
+  IntegrityError por nombre duplicado.
+- **Backend `GET /api/v1/system/firma`** (admin/operator): devuelve
+  los datos legales aplicados al composer (legal_name, cif, address,
+  contact_email, privacy_url, opt_out_url_base).
+- **BD nuevo modelo `OutreachTemplate`** + migración Alembic 0003
+  que crea la tabla y siembra `wix_intro_es` + `followup_es` con el
+  contenido de los .j2 actuales hardcoded en la migración
+  (reproducible aunque los .j2 desaparezcan).
+- **Worker — composer refactor**: helpers públicos
+  `validate_outreach_steps()` y `load_company_legal_settings()`
+  exportados. `_render_template` que primero busca en BD por `name`,
+  fallback a fichero `.j2` si no existe — degradación grácil.
+- **Frontend `SequenceStepEditor`** Client: editor inline expandible
+  con form subject + body (textarea font-mono 12 rows) + delay
+  number. Botones Guardar/Cancelar. Help inline sobre mantener
+  footer legal + opt_out intactos.
+- **Frontend `LeadDeleteDialog`** Client: modal con confirmación
+  typing-to-confirm (patrón GitHub). El operador debe tipear el
+  `business_name` (o `url`) exacto para habilitar el botón rojo.
+  Cierre con Escape + click fuera (deshabilitado durante pending).
+- **Frontend `/settings/templates`** Server Component con
+  `TemplateManager` Client. Layout master-detail simple (lista 280px
+  + form/view derecha). Help expandible con variables Jinja2
+  canónicas. Sin Radix Dialog (window.confirm casero para DELETE).
+- **Frontend `FirmaCard`** Client read-only en `/settings` con dl
+  grid 2-col denso. Warning rojo si COMPANY_CIF o COMPANY_ADDRESS
+  faltan en env. Microcopy de SSH para editar.
+- **CLI `wcm leads discard ID`**: soft delete CLI.
+- **CLI `wcm leads delete ID --confirm`**: hard delete CLI con flag
+  obligatorio (sin --confirm aborta con CliInputError antes de tocar
+  API).
+
+### Changed
+
+- **Listado `/leads` por defecto oculta DISCARDED**
+  (`WHERE status != 'discarded'`). Sigue accesible vía
+  `?status=discarded` (chip futuro).
+- **Rename componente `OutreachSequencePanel` → `ContactSequencePanel`**
+  + test renombrado (`git mv` preserva historial). El anchor
+  `#outreach` se mantiene como id técnico (no visible al usuario;
+  evita romper enlaces externos).
+- **Copy castellano en 6 sitios**: h3 sección "Outreach" → "Contacto
+  comercial"; banner "Borrador outreach preparado" → "Borrador de
+  contacto preparado"; botón "Componer outreach →" → "Componer
+  contacto →"; activity feed "Outreach enviado" → "Contacto
+  enviado"; empty state "Pulsa Componer outreach" → "Pulsa Componer
+  contacto"; entity label "Secuencia outreach" → "Secuencia de
+  contacto".
+
+### Decisions
+
+- **"contacto comercial" como traducción de "outreach"**: singular
+  masculino, semánticamente preciso para B2B sin sonar agresivo
+  (vs "captación"). URLs API y columnas BD se mantienen con
+  `outreach` (estables).
+- **Editar subject + body + delay, NO add/delete pasos**: 95% de
+  casos cubiertos manteniendo estructura del template original.
+  Menos validaciones legales que re-correr.
+- **Plantillas en BD con migración + fallback a .j2**: composer
+  busca en BD primero, cae al .j2 si no existe. Esto permite editar
+  sin redeploy y mantiene tests del composer pasando aunque la BD
+  esté vacía.
+- **`name` no editable en plantillas**: renombrar rompería
+  sequences históricas que la referencian por nombre. Schema PATCH
+  lo excluye con `extra="forbid"`.
+- **Firma legal read-only desde dashboard** (NO migrada a BD): no
+  se edita con frecuencia (CIF, dirección no cambian en el día a
+  día). Editar via SSH es coherente con el resto de configuración
+  del sistema.
+- **Borrado de leads en 2 niveles**: descartar (lima outline ámbar,
+  reversible) como acción principal; borrar definitivo (rojo con
+  typing-to-confirm) como acción secundaria para limpieza
+  controlada o cumplimiento art. 17 RGPD.
+- **PATCH steps con semántica de reemplazo (PUT-like)**: la lista
+  enviada SIEMPRE es completa, no merge parcial. Evita ambigüedad
+  con borrar pasos por omisión.
+
+### Tests
+
+- 358 pytest API (+27 nuevos: 6 outreach edit, 9 leads
+  discard/delete, 12 templates CRUD).
+- 22 pytest CLI (+3 nuevos: discard, delete sin confirm aborta,
+  delete con --confirm).
+- 191 vitest + 3 skipped React 19 (+27 nuevos: editor 8, dialog 6,
+  templates manager 8, firma card 5).
+- 33 Playwright ejecutables (+3 nuevos) + 62 skipped (+6 nuevos
+  SSR-blocked WCM-021).
+- Total: 358 + 22 = **380 pytest** · 191 vitest · 33 Playwright
+  ejecutables. ruff + tsc + lint verde.
+
+### Estado funcional del flujo §8
+
+| Capacidad | v0.11.x | v0.12.0 |
+|---|---|---|
+| Editar pasos del draft antes de aprobar | ❌ | ✅ inline editor |
+| Descartar leads (soft) | ❌ | ✅ botón + CLI |
+| Borrar leads (hard, RGPD art.17) | ❌ | ✅ dialog typing + CLI --confirm |
+| CRUD plantillas desde dashboard | ❌ filesystem .j2 | ✅ tabla BD + UI |
+| Firma legal visible sin SSH | ❌ | ✅ read-only en /settings |
+| UI castellano "outreach" → "contacto" | ❌ | ✅ |
+
+---
+
 ## [0.11.1] — 2026-05-18
 
 Hotfix de 2 bugs detectados haciendo E2E manual del flujo §8 tras

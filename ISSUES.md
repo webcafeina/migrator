@@ -259,6 +259,58 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-043 — Editar correos de contacto sugeridos — **CERRADO v0.12.0**
+- **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commits `1549ef4`, `7c1563c`).
+- **Resolución**: `PATCH /api/v1/outreach/sequences/{id}/steps` con
+  semántica de reemplazo + re-validación legal. Editor inline
+  `SequenceStepEditor` con subject/body/delay. Si la edición rompe
+  el footer legal, la sequence queda no-aprobable hasta corregir.
+
+---
+
+### WCM-044 — Eliminar leads (soft + hard) — **CERRADO v0.12.0**
+- **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commit `d24bb71`).
+- **Resolución**: `POST /leads/{id}/discard` (soft, idempotente) y
+  `DELETE /leads/{id}` (hard con CASCADE) + UI con botones outline
+  ámbar y rojo + `LeadDeleteDialog` typing-to-confirm + listado oculta
+  DISCARDED por defecto. CLI `wcm leads discard|delete --confirm`.
+
+---
+
+### WCM-045 — CRUD plantillas Jinja2 desde dashboard — **CERRADO v0.12.0**
+- **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commits `1549ef4`, `5dc9f5d`).
+- **Resolución**: tabla `outreach_templates` nueva (migración Alembic
+  0003) + router CRUD admin-only para escritura + pantalla
+  `/settings/templates` con master-detail. Composer refactorizado
+  para leer plantillas de BD con fallback a `.j2`. `name` no editable
+  para no romper sequences históricas.
+
+---
+
+### WCM-046 — Refactor castellano "outreach" → "contacto comercial" — **CERRADO v0.12.0**
+- **Tipo**: refactor UI / **Fase**: post-rediseño / **Prioridad**: P2
+- **Estado**: DONE 2026-05-18 (commit `ead57b5`).
+- **Resolución**: copy castellano visible al usuario actualizado en 6
+  sitios + componente `OutreachSequencePanel` renombrado a
+  `ContactSequencePanel` (git mv preserva historial). URLs API,
+  columnas BD y módulos Python intactos. Anchor `#outreach` se
+  mantiene (id técnico).
+
+---
+
+### WCM-047 — Firma legal visible read-only en /settings — **CERRADO v0.12.0**
+- **Tipo**: feature / **Fase**: post-rediseño / **Prioridad**: P2
+- **Estado**: DONE 2026-05-18 (commit `ead57b5`).
+- **Resolución**: nuevo endpoint `GET /system/firma` admin/operator +
+  `FirmaCard` Client en /settings que muestra los datos legales
+  aplicados al composer. Read-only (editar via SSH + systemctl).
+  Warning rojo si COMPANY_CIF o COMPANY_ADDRESS faltan en env.
+
+---
+
 ### WCM-041 — Sin progreso visible tras alta manual de lead — **CERRADO v0.11.1**
 - **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P1
 - **Estado**: DONE 2026-05-18 (commit `681121d`).
