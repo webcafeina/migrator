@@ -246,3 +246,114 @@ def send_sequence(
         f"Envío encolado · sequence #{sequence_id} · step "
         f"{resp.get('step_index', '?')} · task {task_short}…"
     )
+
+
+# ===== v0.14.0: templates preview + test-send =====
+
+
+@app.command("preview")
+def preview_step(
+    sequence_id: Annotated[int, typer.Argument(help="ID de la secuencia")],
+    step_index: Annotated[int, typer.Argument(help="Index del paso (0, 1, …)")],
+    open_browser: Annotated[
+        bool,
+        typer.Option(
+            "--open/--no-open",
+            help="Abrir el HTML renderizado en el navegador (tempfile)",
+        ),
+    ] = False,
+) -> None:
+    """Renderiza el HTML preview de un step y lo imprime (o abre en
+    navegador con `--open`).
+    """
+    client = ApiClient()
+    resp = client.get(
+        f"/api/v1/outreach/sequences/{sequence_id}/steps/{step_index}/preview"
+    )
+    html = str(resp.get("html", ""))
+    subject = resp.get("subject") or ""
+
+    if open_browser:
+        import tempfile
+        import webbrowser
+
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".html",
+            delete=False,
+            encoding="utf-8",
+        ) as f:
+            f.write(html)
+            path = f.name
+        webbrowser.open(f"file://{path}")
+        output.success(f"HTML abierto en navegador (tempfile: {path})")
+    else:
+        if subject:
+            output.info(f"Asunto: {subject}")
+        typer.echo(html)
+
+
+@app.command("test-send")
+def test_send_step(
+    sequence_id: Annotated[int, typer.Argument(help="ID de la secuencia")],
+    step_index: Annotated[int, typer.Argument(help="Index del paso (0, 1, …)")],
+    to: Annotated[
+        str,
+        typer.Option("--to", help="Email destino del envío de prueba", prompt=True),
+    ],
+) -> None:
+    """Envía el step a `--to` vía Resend para previsualizarlo en una
+    bandeja real. NO crea OutreachSend ni muta el sequence (queda en
+    AuditLog como TEST_SEND).
+    """
+    if "@" not in to or "." not in to.split("@", 1)[-1]:
+        raise CliInputError(f"Email no válido: {to!r}")
+
+    client = ApiClient()
+    resp = client.post(
+        f"/api/v1/outreach/sequences/{sequence_id}/steps/{step_index}/test-send",
+        json={"to": to},
+    )
+    msg_id = resp.get("provider_message_id") or "—"
+    output.success(
+        f"Correo de prueba enviado a {to} · provider_message_id={msg_id}"
+    )
+
+
+# ===== v0.14.0: templates preview =====
+
+
+templates_app = typer.Typer(help="Gestión de plantillas Jinja2")
+
+
+@templates_app.command("preview")
+def preview_template_cmd(
+    template_id: Annotated[int, typer.Argument(help="ID de la plantilla")],
+    open_browser: Annotated[
+        bool, typer.Option("--open/--no-open", help="Abrir en navegador")
+    ] = False,
+) -> None:
+    """Renderiza la plantilla con un lead demo y devuelve el HTML."""
+    client = ApiClient()
+    resp = client.get(f"/api/v1/templates/{template_id}/preview")
+    html = str(resp.get("html", ""))
+    subject = resp.get("subject") or ""
+
+    if open_browser:
+        import tempfile
+        import webbrowser
+
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".html", delete=False, encoding="utf-8"
+        ) as f:
+            f.write(html)
+            path = f.name
+        webbrowser.open(f"file://{path}")
+        output.success(f"HTML abierto en navegador (tempfile: {path})")
+    else:
+        if subject:
+            output.info(f"Asunto: {subject}")
+        typer.echo(html)
+
+
+app.add_typer(templates_app, name="templates")

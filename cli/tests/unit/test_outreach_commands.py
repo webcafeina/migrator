@@ -218,3 +218,60 @@ def test_send_with_step_index(runner: CliRunner, authenticated) -> None:
         )
     assert result.exit_code == 0
     assert captured["params"].get("step_index") == "2"
+
+
+# ---------- v0.14.0: preview + test-send ----------
+
+
+def test_preview_step_imprime_html(runner: CliRunner, authenticated) -> None:
+    with respx.mock(base_url="http://api.test") as router:
+        router.get(
+            "/api/v1/outreach/sequences/1/steps/0/preview"
+        ).return_value = httpx.Response(
+            200, json={"html": "<html><body>HOLA</body></html>", "subject": "Asunto"}
+        )
+        result = runner.invoke(app, ["outreach", "preview", "1", "0"])
+    assert result.exit_code == 0, result.output
+    assert "HOLA" in result.output
+    assert "Asunto" in result.output
+
+
+def test_test_send_happy_path(runner: CliRunner, authenticated) -> None:
+    with respx.mock(base_url="http://api.test") as router:
+        router.post(
+            "/api/v1/outreach/sequences/1/steps/0/test-send"
+        ).return_value = httpx.Response(
+            200,
+            json={
+                "provider_message_id": "re_xyz",
+                "to": "test@webcafeina.com",
+            },
+        )
+        result = runner.invoke(
+            app, ["outreach", "test-send", "1", "0", "--to", "test@webcafeina.com"]
+        )
+    assert result.exit_code == 0, result.output
+    assert "re_xyz" in result.output
+    assert "test@webcafeina.com" in result.output
+
+
+def test_test_send_rechaza_email_malformado(runner: CliRunner, authenticated) -> None:
+    result = runner.invoke(
+        app, ["outreach", "test-send", "1", "0", "--to", "no-es-email"]
+    )
+    assert result.exit_code != 0
+    assert "no válido" in result.output.lower() or "invalido" in result.output.lower()
+
+
+def test_templates_preview_imprime_html(runner: CliRunner, authenticated) -> None:
+    with respx.mock(base_url="http://api.test") as router:
+        router.get(
+            "/api/v1/templates/3/preview"
+        ).return_value = httpx.Response(
+            200,
+            json={"html": "<p>Demo</p>", "subject": "Demo subject"},
+        )
+        result = runner.invoke(app, ["outreach", "templates", "preview", "3"])
+    assert result.exit_code == 0, result.output
+    assert "Demo subject" in result.output
+    assert "<p>Demo</p>" in result.output

@@ -122,5 +122,8 @@ class ApiClient:
     def patch(self, path: str, **kwargs: Any) -> Any:
         return self._request("PATCH", path, **kwargs)
 
+    def put(self, path: str, **kwargs: Any) -> Any:
+        return self._request("PUT", path, **kwargs)
+
     def delete(self, path: str, **kwargs: Any) -> Any:
         return self._request("DELETE", path, **kwargs)

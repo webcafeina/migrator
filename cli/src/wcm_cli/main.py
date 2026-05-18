@@ -13,6 +13,7 @@ from wcm_cli.commands import (
     campaigns,
     deploy,
     doctor,
+    email_layout,
     leads,
     outreach,
     projects,
@@ -59,6 +60,7 @@ app.add_typer(leads.app, name="leads")
 app.add_typer(projects.app, name="projects")
 app.add_typer(campaigns.app, name="campaigns")
 app.add_typer(outreach.app, name="outreach")
+app.add_typer(email_layout.app, name="email-layout")
 app.add_typer(residual_tasks.app, name="residual-tasks")
 app.add_typer(users.app, name="users")
 

@@ -29,6 +29,20 @@
 
 ## Última versión publicada
 
+**v0.14.0** (2026-05-18) — sprint MINOR grande (6 bloques): correos
+de outreach HTML estilados de marca. Pipeline completo composer →
+sender → Resend con HTML inlined por premailer. Singleton
+`email_layouts` editable desde `/settings/email-layout`. Plantillas
+ganan `body_html_template` + `cta_label/url` con WYSIWYG Tiptap en
+`/settings/templates`. Vista previa en iframe + envío de prueba a
+email arbitrario (AuditLog `TEST_SEND`, no muta sequence). CLI
+paridad completa (`wcm outreach preview/test-send/templates preview`
++ `wcm email-layout show/update`). Migración Alembic 0005. +65 tests
+nuevos. **Acción pendiente del operador**: subir el PNG del logo a
+`apps/api/assets/webcafeina-email-logo.png` y ejecutar
+`python scripts/upload_email_logo.py` para activar el header con
+marca; sin ello, el layout cae a "webcafeína" texto estilado.
+
 **v0.13.3** (2026-05-18) — Banner reactivo en ficha del lead: refleja
 el estado real de la sequence (no `lead.status` estático). Mapeo de
 6 status → copy/color/CTA distintos ("Borrador preparado"/"Correos

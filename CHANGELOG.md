@@ -11,6 +11,127 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.14.0] — 2026-05-18
+
+Sprint MINOR: **correos de outreach HTML estilados de marca**. Hasta
+ahora el composer enviaba texto plano sin formato; ahora el operador
+puede formatear visualmente con un editor WYSIWYG, ver el HTML final
+en un iframe, y mandar correos de prueba a su propio email antes de
+aprobar el envío real al lead. Toda la marca Webcafeína (logo, paleta
+lima, CTA estilado, footer legal LSSI) se aplica automáticamente vía
+un layout maestro editable.
+
+### Added
+
+- **Pipeline HTML completo** en `outreach_composer` →
+  `outreach_sender` → Resend. El composer renderiza el cuerpo HTML
+  (Tiptap output o fallback wrap del texto plano), lo inyecta en el
+  layout maestro, aplica premailer para inline CSS, deriva el texto
+  plano para clientes sin HTML, y persiste ambos en
+  `OutreachSend.body_rendered` + `body_html_rendered`.
+- **Singleton `email_layouts`** (tabla nueva con `CHECK id = 1`) con
+  la shell HTML maestra editable desde `/settings/email-layout` (UI +
+  CLI). Seed inicial email-safe (tabla 600px, header logo, slot
+  `{{ content | safe }}`, CTA condicional, footer LSSI).
+- **3 columnas opcionales en `outreach_templates`**:
+  `body_html_template` (Jinja2 HTML), `cta_label`, `cta_url`. Si
+  body_html_template es NULL el composer cae al body_template texto.
+- **Snapshot HTML del envío** en `outreach_sends.body_html_rendered`.
+  NULL para sends pre-v0.14.0; el preview endpoint re-renderiza
+  on-the-fly en ese caso.
+- **2 valores nuevos en AuditAction**: `TEST_SEND` y
+  `EMAIL_LAYOUT_UPDATE`.
+- **3 endpoints API nuevos**:
+  - `GET /api/v1/email-layout` + `PUT /api/v1/email-layout`
+    (admin-only) con validación Jinja2 antes de persistir.
+  - `GET /api/v1/templates/{id}/preview` — render con datos demo.
+  - `GET /api/v1/outreach/sequences/{id}/steps/{idx}/preview` y
+    `POST .../test-send` (operator/admin, rate-limited 10/min) con
+    AuditLog `TEST_SEND` sin mutar el sequence.
+- **3 componentes UI nuevos** (`apps/dashboard/src/components/`):
+  - `RichTextEditor` — Tiptap SSR-safe con toolbar (bold/italic/link/listas).
+  - `EmailPreviewIframe` — iframe sandbox con HTML inlined del API.
+  - `TestSendDialog` — modal con input email + envío real.
+- **Nueva pantalla `/settings/email-layout`** con editor HTML/CSS
+  side-by-side + iframe preview en vivo (debounce 600ms).
+- **Card "Layout del correo"** en `/settings`.
+- **Tab "Vista previa"** en `/settings/templates` por plantilla.
+- **CLI**: `wcm outreach preview SEQ_ID STEP_IDX [--open]`,
+  `wcm outreach test-send SEQ_ID STEP_IDX --to EMAIL`,
+  `wcm outreach templates preview TPL_ID [--open]`,
+  `wcm email-layout show/update`.
+- **Script `scripts/upload_email_logo.py`** que sube el PNG del
+  logo a R2 (`branding/webcafeina-email-logo.png`) e imprime la URL
+  para `.env` como `EMAIL_LOGO_URL`.
+- Helpers `wcm_worker.integrations.html_email` (inline_css,
+  html_to_text con expansión `<a href>` → `texto (url)`,
+  wrap_plain_as_html, is_html) y
+  `wcm_worker.integrations.email_layout` (load_layout con fallback,
+  render_full_email).
+
+### Changed
+
+- `OutreachTemplate{Base,Create,Update,Read}` schemas extendidos
+  con `body_html_template`, `cta_label`, `cta_url`.
+- `OutreachSendRead` añade `body_html_rendered`.
+- `PATCH /templates/{id}` usa `exclude_unset=True` en el dump del
+  payload — permite vaciar campos enviando `null` explícito.
+- `outreach_sender.py` inyecta `body_html=send.body_html_rendered`
+  al `ResendClient.send()` cuando no es NULL.
+- Editor del step del lead pasa de textarea font-mono a Tiptap
+  WYSIWYG. Tests adaptados mockeando Tiptap como textarea.
+- `lib/api.ts` y `cli/client.py` añaden helper `put()`.
+
+### Decisions
+
+- **Layout singleton** en lugar de columnas duplicadas por plantilla
+  — el layout es compartido, una sola fuente de verdad.
+- **CTA por plantilla**, no por step. Si en el futuro se necesita CTA
+  por step, añadir columnas a `OutreachStep` (WCM no creado todavía).
+- **Validación legal sobre text derivado** (no sobre HTML markup) —
+  desacopla las reglas LSSI-CE del formato del correo.
+- **`html_to_text` expande `<a href>` como `texto (url)`** para que
+  el text/plain part conserve URLs (opt-out, CTA, website) y la
+  re-validación legal encuentre el `opt_out_url_base` substring.
+- **Test-send NO crea OutreachSend** ni muta el sequence — solo
+  Resend directo + AuditLog. Evita contaminar métricas/tracking.
+- **Tiptap SSR-safe** con `immediatelyRender: false` (Next.js 15 RSC).
+
+### Tests
+
+- **+65 tests nuevos** (15 BD/schemas, 24 worker HTML pipeline +
+  sender, 18 API endpoints, 14 dashboard, 8 CLI).
+- Suite Python: **403 tests verde**. Vitest: **214 tests verde**.
+
+### Migración Alembic
+
+- `0005_email_html_layout.py`: añade 3 cols a `outreach_templates`
+  (`body_html_template`, `cta_label`, `cta_url`), 1 col a
+  `outreach_sends` (`body_html_rendered`), crea tabla singleton
+  `email_layouts` con seed inicial. Downgrade limpio.
+
+### Dependencias
+
+- `premailer>=3.10.0` en worker (inline CSS).
+- `beautifulsoup4>=4.12` en worker (html_to_text, ya estaba transitiva).
+- `@tiptap/react@^3.23.4` + starter-kit + extension-link +
+  extension-placeholder en dashboard (~80 KB gzip).
+
+### Post-release: pendiente operador
+
+1. Subir el PNG del logo a `apps/api/assets/webcafeina-email-logo.png`
+   (~600 px ancho, transparente, oscuro para fondo blanco) y ejecutar
+   `python scripts/upload_email_logo.py`. Copiar la URL impresa a
+   `.env` como `EMAIL_LOGO_URL` y reiniciar API + worker.
+2. Editar las plantillas existentes (`wix_intro_es`, `followup_es`)
+   desde `/settings/templates` para añadir `body_html_template` con
+   versión HTML del mensaje + opcionalmente CTA (`Reservar 20min` →
+   URL de Cal.com).
+3. Hacer un test-send a `info@webcafeina.com` para validar visualmente
+   antes de aprobar el primer envío real con marca.
+
+---
+
 ## [0.13.3] — 2026-05-18
 
 Banner reactivo en el detalle del lead — refleja el estado real de
