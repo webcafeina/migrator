@@ -7,7 +7,9 @@ import {
   AlertTriangle,
   Briefcase,
   CheckSquare,
+  FileText,
   LayoutGrid,
+  Mail,
   Settings,
   Target,
   Users,
@@ -24,10 +26,12 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: "/", label: "Panel", icon: LayoutGrid },
   { href: "/leads", label: "Leads", icon: Users },
+  { href: "/contactos", label: "Contactos", icon: Mail },
   { href: "/projects", label: "Proyectos", icon: Briefcase },
   { href: "/campaigns", label: "Campañas", icon: Target },
   { href: "/residual-tasks", label: "Tareas pendientes", icon: CheckSquare },
   { href: "/errors", label: "Errores", icon: AlertTriangle },
+  { href: "/audit-log", label: "Audit log", icon: FileText },
   { href: "/settings", label: "Ajustes", icon: Settings },
 ];
 
