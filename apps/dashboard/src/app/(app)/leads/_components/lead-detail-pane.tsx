@@ -6,6 +6,8 @@ import { DraftBanner } from "./draft-banner";
 import { EvidenceTable, type EvidenceItem } from "./evidence-table";
 import { FingerprintList, type FingerprintItem } from "./fingerprint-list";
 import { LeadActions } from "./lead-actions";
+import { LeadStatusPoller } from "./lead-status-poller";
+import { OutreachSequencePanel } from "./outreach-sequence-panel";
 import { ScorePanel } from "./score-panel";
 
 interface LeadDetailPaneProps {
@@ -82,6 +84,7 @@ export function LeadDetailPane({
         </div>
       </header>
 
+      <LeadStatusPoller status={lead.status} />
       {lead.status === "outreach_prepared" && <DraftBanner leadId={lead.id} />}
 
       <ScorePanel
@@ -147,6 +150,17 @@ export function LeadDetailPane({
       </div>
 
       <EvidenceTable items={evidence} />
+
+      <section
+        id="outreach"
+        className="scroll-mt-12 border-t border-wcm-detail/40 px-7 py-5"
+        aria-label="Borradores de outreach"
+      >
+        <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+          Outreach
+        </h3>
+        <OutreachSequencePanel leadId={lead.id} />
+      </section>
 
       <ActivityTimeline events={timeline} />
     </article>
