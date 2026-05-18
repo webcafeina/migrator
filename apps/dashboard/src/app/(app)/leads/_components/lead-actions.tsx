@@ -7,7 +7,9 @@ import { ApiError, api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
+import { ConvertToProjectDialog } from "./convert-to-project-dialog";
 import { LeadDeleteDialog } from "./lead-delete-dialog";
+import { MarkOptOutDialog } from "./mark-opt-out-dialog";
 
 interface LeadActionsProps {
   lead: LeadRead;
@@ -38,13 +40,24 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
   const [, startTransition] = useTransition();
   const [state, setState] = useState<ActionState>({ kind: "idle" });
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [convertOpen, setConvertOpen] = useState(false);
+  const [optOutOpen, setOptOutOpen] = useState(false);
 
   // Validaciones de pre-condición. Se evalúan antes de habilitar cada
   // acción y deciden el `disabledReason` mostrado como tooltip.
   const composeBlock = lead.emails.length === 0 ? "Sin emails: enrich primero" : null;
   const refingerprintBlock = null; // siempre permitido
-  const convertBlock = "Implementación en migrador (Fase 7 producto)";
+  // "Convertir a proyecto" requiere fingerprint conocido para inicializar
+  // builder_source del proyecto. Sin builder igual se puede crear (queda
+  // como null y el operador lo pone luego) — solo bloqueamos en
+  // discarded/opted_out (no tiene sentido convertir un lead descartado).
   const isDiscarded = lead.status === "discarded";
+  const isOptedOut = lead.status === "opted_out";
+  const convertBlock = isDiscarded
+    ? "Lead descartado — restaura el status antes de convertir"
+    : isOptedOut
+      ? "Lead opted-out — no se puede convertir por compliance RGPD"
+      : null;
   const discardBlock = isDiscarded
     ? "Este lead ya está descartado"
     : null;
@@ -96,8 +109,12 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
         Componer contacto →
       </ActionButton>
 
-      <ActionButton disabled disabledReason={convertBlock}>
-        Convertir a proyecto
+      <ActionButton
+        disabled={inflight || convertBlock !== null}
+        disabledReason={convertBlock ?? undefined}
+        onClick={() => setConvertOpen(true)}
+      >
+        Convertir a proyecto →
       </ActionButton>
 
       <ActionButton
@@ -113,6 +130,17 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
         }
       >
         Re-fingerprint
+      </ActionButton>
+
+      <ActionButton
+        warning
+        disabled={inflight || isOptedOut}
+        disabledReason={
+          isOptedOut ? "El lead ya está opted-out" : undefined
+        }
+        onClick={() => setOptOutOpen(true)}
+      >
+        Marcar opt-out
       </ActionButton>
 
       <ActionButton
@@ -155,6 +183,18 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
           setDeleteOpen(false);
           startTransition(() => router.push("/leads"));
         }}
+      />
+
+      <ConvertToProjectDialog
+        lead={lead}
+        open={convertOpen}
+        onClose={() => setConvertOpen(false)}
+      />
+
+      <MarkOptOutDialog
+        lead={lead}
+        open={optOutOpen}
+        onClose={() => setOptOutOpen(false)}
       />
     </div>
   );
