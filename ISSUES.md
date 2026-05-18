@@ -245,21 +245,17 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
-### WCM-035 — Extender rediseño a `/errors` y `/residual-tasks`
+### WCM-035 — Extender rediseño a `/errors` y `/residual-tasks` — **CERRADO v0.9.0**
 - **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P2
-- **Estado**: OPEN
-- **Contexto**: ambas pantallas siguen con UI original. Detectado en
-  auditoría visual de v0.4.0:
-  - `/errors`: empty pasivo, sin filtros (severity, component, rango
-    fecha), sin link a journalctl / Logtail.
-  - `/residual-tasks`: columnas placeholder ("ASIGNAR", "MIN" críptico).
-- **Acción**: rediseños más pequeños que `/projects/[id]`; candidatos a
-  agrupar en un único release. Reusar `KpiStrip` + `FilterChips` shared
-  + patrón de empty state contextual. Para `/errors`, integrar filtro
-  por severity (con counts) y por componente. Para `/residual-tasks`,
-  resolver el placeholder "ASIGNAR" (¿quitar columna?) y renombrar
-  "MIN" a "Estimado".
-- **Dueño**: técnico.
+- **Estado**: DONE 2026-05-18 (commits `a146528`, `e832b53`, `8106474`, `707bc95`).
+- **Resolución**: rediseñadas ambas pantallas en sprint único v0.9.0
+  bajo patrón ADR-036. Endpoints `/stats` específicos (8 buckets errors,
+  9 residuales), KpiStrip + FilterChips reusados, ErrorsTable con
+  SeverityBadge 5 colores, ResidualTasksTable con CategoryBadge para
+  blocking_go_live y StatusPill castellana. Empty states 2 ramas
+  (systemEmpty lima con mención de Sentry/checklist-generator vs filtro
+  neutro). Quedan filtros por componente y por rango fecha como mejora
+  futura no bloqueante.
 
 ---
 

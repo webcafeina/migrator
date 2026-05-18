@@ -24,11 +24,14 @@
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
 - **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada. Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021.
-- **Post-MVP: rediseño visual del dashboard** EN CURSO (2026-05-14 → presente). 4 de 11+3 pantallas rediseñadas. Detalle abajo en §"Sesiones post-MVP".
+- **Post-MVP: rediseño visual del dashboard** — 9 de 11 pantallas rediseñadas con v0.9.0 (2026-05-18). Solo queda `/settings` antes de cerrar el rediseño. Detalle abajo en §"Sesiones post-MVP".
 
 ## Última versión publicada
 
-**v0.8.0** (2026-05-18) — rediseño /projects/[id] + 3 sub-páginas con ProjectHeader shared. CI verde.
+**v0.9.0** (2026-05-18) — rediseño `/errors` + `/residual-tasks` en sprint
+único, cerrando todas las pantallas del dashboard menos `/settings`.
+KpiStrip + FilterChips + tablas con badges semánticos + 2 empty states
+por pantalla. CI verde.
 
 ## Estado del rediseño visual del dashboard
 
@@ -40,12 +43,12 @@
 | 4 | `/leads` master-detail | ✅ rediseñado | v0.4.0 |
 | 5 | `/leads/[id]` full-page | ✅ refactor | v0.6.0 |
 | 6 | `/projects` | ✅ rediseñado | v0.7.0 |
-| 7-9 | `/projects/[id]` + `checklist` + `diff` | ✅ rediseñado | **v0.8.0** |
-| 10 | `/errors` | original | — (WCM-035, siguiente) |
-| 11 | `/residual-tasks` | original | — (WCM-035) |
-| 12 | `/settings` | modelo a replicar | — |
+| 7-9 | `/projects/[id]` + `checklist` + `diff` | ✅ rediseñado | v0.8.0 |
+| 10 | `/errors` | ✅ rediseñado | **v0.9.0** |
+| 11 | `/residual-tasks` | ✅ rediseñado | **v0.9.0** |
+| 12 | `/settings` | modelo a replicar | — (último pendiente) |
 
-**Patrón de rediseño consolidado** tras 4 pantallas (ADR-036):
+**Patrón de rediseño consolidado** tras 5 pantallas (ADR-036):
 1. Endpoint stats dedicado (`/X/stats`).
 2. Componentes presentacionales en `_components/`.
 3. Refactor `page.tsx` con `KpiStrip` + chips + tabla/empty.
@@ -84,6 +87,32 @@ Componentes promovidos a `apps/dashboard/src/components/` (shared):
 
 Trabajo posterior al cierre del MVP v0.1.0. Cada release agrupa un
 rediseño completo de una pantalla (5 bloques granulares — ver ADR-036).
+
+### v0.9.0 — Rediseño `/errors` + `/residual-tasks` (sprint único) — 2026-05-18
+
+Primer sprint que agrupa 2 pantallas porque ambas comparten patrón
+exacto (lista plana de eventos del sistema con filtro por enum, sin
+master-detail). Cierra todas las pantallas operativas del dashboard
+salvo `/settings`.
+
+- Endpoints `GET /api/v1/errors/stats` (8 buckets: total + 5 severities +
+  distinct_components + last_critical_at) y `/residual-tasks/stats`
+  (9 buckets: total + 5 status + blocking_go_live + distinct_projects +
+  estimated_minutes_pending), ambos con ventana configurable
+  (`since_hours` en errores) y RBAC (errors admin/operator,
+  residuales any_user). 9 tests Python (`a146528`).
+- `ErrorsTable` con SeverityBadge 5 colores + `ResidualTasksTable` con
+  CategoryBadge ámbar para blocking_go_live y StatusPill castellana,
+  responsive `hideUntil="md"`. 11 tests vitest (`e832b53`).
+- Refactor páginas al patrón 5 bloques: KpiStrip (6 KPIs errors / 5
+  residuales con tiempo pendiente formateado "Nh Mm") + FilterChips +
+  empty states 2 ramas (systemEmpty lima vs filtro neutro)
+  (`8106474`).
+- Bloque 4 (responsive) verificado visualmente en 3 viewports — sin
+  cambios necesarios; el KpiStrip wrappea en grid 2-3 cols sin
+  overflow.
+- Spec Playwright 12 tests (2 ejecutables + 10 skip por WCM-021),
+  fixture base ampliado con handlers específicos /stats (`707bc95`).
 
 ### v0.8.0 — Rediseño `/projects/[id]` + 3 sub-páginas — 2026-05-18
 

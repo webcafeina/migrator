@@ -827,7 +827,10 @@ venv -> venv.nosync
 ## ADR-036 — Patrón de rediseño visual del dashboard en 5 bloques granulares
 
 **Fecha**: 2026-05-18 (consolidado tras 4 pantallas rediseñadas:
-`/leads` v0.4.0, `/` v0.5.0, `/campaigns` v0.6.0, `/projects` v0.7.0)
+`/leads` v0.4.0, `/` v0.5.0, `/campaigns` v0.6.0, `/projects` v0.7.0;
+reforzado con `/projects/[id]` v0.8.0 y agrupación `/errors` +
+`/residual-tasks` en v0.9.0 — primer sprint que mete 2 pantallas en
+una sola release porque comparten patrón exacto)
 **Estado**: ✅ Aceptada
 
 **Contexto**: tras el cierre del MVP v0.1.0 (2026-05-14) y una
@@ -912,7 +915,15 @@ no se ejecuta con tsc/vitest).
   los primeros datos en producción.
 
 Releases que materializan este patrón: v0.4.0, v0.5.0, v0.6.0,
-v0.7.0. Detalle de cada bloque en `STATE.md` §"Sesiones post-MVP".
+v0.7.0, v0.8.0, v0.9.0. Detalle de cada bloque en `STATE.md`
+§"Sesiones post-MVP".
+
+**Agrupación de 2 pantallas en una release** (caso v0.9.0): cuando 2
+pantallas comparten patrón exacto (lista plana + filtro por enum, sin
+master-detail ni subpáginas), pueden meterse en la misma release con
+un commit por bloque que toca ambas a la vez. Reduce overhead de
+release sin sacrificar granularidad. NO aplicable cuando las pantallas
+tienen schemas o componentes claramente distintos.
 
 ---
 
