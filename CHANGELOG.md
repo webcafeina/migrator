@@ -11,6 +11,115 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.7.0] — 2026-05-18
+
+Rediseño del **listado de proyectos** (`/projects`), cuarta pantalla
+del flujo de uso (tras `/`, `/leads`, `/campaigns`). Mismo patrón
+consolidado de 5 bloques granulares: endpoint stats + componentes
+presentacionales + refactor page + pulido + tests.
+
+Esta release consolida también un **patrón compartido** que se está
+afianzando: `KpiStrip` y `FilterChips` ahora viven en
+`apps/dashboard/src/components/` y los usan 2+ páginas.
+
+### Added
+
+- **Endpoint `GET /api/v1/projects/stats`** (rol any_user) análogo a
+  `/leads/stats`. 8 campos: `total`, `queued`, `running`, `blocked`
+  (= `blocked_human_input`), `completed`, `failed_or_cancelled`
+  (agregado `qa_failed` + `cancelled`), `distinct_builders` (excluye
+  null/UNKNOWN), `avg_visual_diff_score` (decimal 0..1, null si
+  ningún proyecto tiene diff). 8 ejecuciones SQL separadas. 5 tests
+  unit.
+- **`ProjectsTable`** en
+  `apps/dashboard/src/app/(app)/projects/_components/` — tabla con 7
+  columnas ordenadas por importancia operativa: cliente (con link a
+  /projects/{id} + meta a lead origen), origen, builder, destino,
+  estado, diff con barra mini coloreada por umbral
+  (≥85 verde / 70-84 ámbar / <70 rojo; umbral 0.85 del §13
+  CLAUDE.md), actividad relativa. Responsive con `hideUntil="md"/"lg"`
+  (mismo patrón que CampaignRunsTable). 18 tests Vitest.
+- **Empty states diferenciados**:
+  - `EmptyProjects` (sistema sin proyectos): card lima con onboarding
+    "Convierte un lead cualificado en migración" + descripción del
+    pipeline + 2 CTAs (Ir a leads + Ver actividad del Panel).
+  - `EmptyFilterResult` (proyectos existen pero filtro deja 0): card
+    neutra "Sin proyectos en estado X. Quita el filtro o lanza uno
+    nuevo desde un lead". Más discreto — no es estado inicial, es
+    resultado de búsqueda.
+- **Filtros chips por status** con URL state `?status=running`. 5
+  chips (encolados / en curso / bloqueados / completados / cancelados)
+  reutilizando `FilterChips`. Counts tomados de `/projects/stats`
+  (globales, no del listado filtrado). Chips ocultos cuando
+  `stats.total === 0`.
+- **Spec Playwright** `tests/e2e/projects-redesign.spec.ts` con 7
+  tests (2 ejecutables + 5 SSR-blocked).
+
+### Changed
+
+- **`OverviewKpiStrip` → `KpiStrip`** movido a
+  `apps/dashboard/src/components/kpi-strip.tsx`. Genérico desde el día
+  1, solo el nombre lo ligaba al Overview. Mismo patrón que el `git
+  mv` de `FilterChips` en v0.5.0. Ahora 2 páginas lo usan
+  (`/` y `/projects`); el patrón "componente promovido a shared
+  cuando lo usan 2+ páginas" queda consolidado.
+- **`apps/dashboard/src/app/(app)/projects/page.tsx`** refactorizado
+  de tabla shadcn genérica con 7 columnas a layout consistente con el
+  resto del rediseño: header + KpiStrip + sección listado con chips
+  + tabla densa o empty state contextual.
+
+### Decisions
+
+- **`failed_or_cancelled` agregado en stats** (2 estados en 1
+  bucket) — ambos son terminales "no exitosos" y al operador le
+  interesan juntos. El chip de filtro correspondiente filtra solo
+  por `cancelled` (más frecuente); si en futuro hace falta
+  distinguir, se desdobla.
+- **`blocked` = solo `blocked_human_input`** en stats. Es el único
+  estado bloqueado real que requiere acción humana. Color ámbar
+  warning para destacar.
+- **Acción primaria "+ Nuevo proyecto" linkea a /leads** (no a un
+  form de creación). Los proyectos nacen siempre de un lead
+  cualificado — el modelo mental se refuerza desde el botón. El
+  tooltip lo explica explícitamente.
+- **Counts de filtros desde stats globales**, no del listado
+  filtrado — el operador ve cuántos hay en cada estado antes de
+  pulsar.
+- **DiffIndicator con umbral 85/70**: 0.85 viene del §13 CLAUDE.md
+  (criterio de éxito MVP del visual diff). Verde ≥85, ámbar 70-84,
+  rojo <70, "—" si null.
+
+### Tests
+
+- 453 pytest (+5 projects/stats endpoint).
+- 92 vitest (+18 ProjectsTable, 3 skipped React 19 desde v0.6.0
+  intactos).
+- 17 Playwright ejecutables (+2 nuevos projects) + 28 skipped
+  (23 antiguos + 5 nuevos projects).
+- ruff + tsc + `pnpm lint` verde (preflight completo aplicado tras la
+  lección de v0.6.0 → v0.6.1; lint añadido a la memoria persistente
+  del proyecto).
+
+### Estado del rediseño visual
+
+| Pantalla | Estado |
+|---|---|
+| `/login` | original |
+| `/` Panel | ✅ v0.5.0 |
+| `/campaigns` | ✅ v0.6.0 + v0.6.1 |
+| `/leads` master-detail | ✅ v0.4.0 |
+| `/leads/[id]` full-page | ✅ v0.6.0 |
+| `/projects` | ✅ **v0.7.0** |
+| `/projects/[id]` + sub | original (siguiente) |
+| `/errors`, `/residual-tasks` | original |
+| `/settings` | modelo a replicar |
+
+**4 pantallas rediseñadas en producción** de 11 + 3 sub. Pendientes:
+detalle de proyecto + sub-páginas (checklist, diff), errores y
+residual-tasks.
+
+---
+
 ## [0.6.1] — 2026-05-18
 
 Hotfix de CI: el `EmptyHistorico` de `/campaigns` introducido en v0.6.0
