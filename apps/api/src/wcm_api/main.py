@@ -25,6 +25,7 @@ from wcm_api.observability import (
 )
 from wcm_api.rate_limit import limiter
 from wcm_api.routers import (
+    audit,
     auth,
     campaigns,
     errors_router,
@@ -113,6 +114,7 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     app.include_router(projects.router, prefix=v1_prefix)
     app.include_router(residual_tasks.router, prefix=v1_prefix)
     app.include_router(errors_router.router, prefix=v1_prefix)
+    app.include_router(audit.router, prefix=v1_prefix)
     app.include_router(webhooks.router, prefix=v1_prefix)
 
     return app

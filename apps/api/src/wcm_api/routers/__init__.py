@@ -1,6 +1,7 @@
 """Routers FastAPI. Cada uno se monta con prefijo en main."""
 
 from wcm_api.routers import (
+    audit,
     auth,
     campaigns,
     health,
@@ -17,6 +18,7 @@ from wcm_api.routers import (
 )
 
 __all__ = [
+    "audit",
     "auth",
     "campaigns",
     "errors_router",
