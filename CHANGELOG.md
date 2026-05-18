@@ -11,6 +11,25 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.6.1] — 2026-05-18
+
+Hotfix de CI: el `EmptyHistorico` de `/campaigns` introducido en v0.6.0
+usaba 2 `<a href="/leads">` / `<a href="/">` para enlaces internos. La
+regla ESLint `@next/next/no-html-link-for-pages` falló en CI matrix
+(Node 20 + 22) — pedía `<Link>` de next/link.
+
+### Fixed
+
+- `apps/dashboard/src/app/(app)/campaigns/page.tsx`: 2 `<a>` →
+  `<Link>` en el empty state del histórico. Comportamiento idéntico
+  para el operador; ganamos prefetch automático y evitamos full
+  reload entre rutas.
+
+Tests/lint: tsc + vitest 77 + `pnpm lint` verdes en local. CI debería
+quedar verde tras el push de este tag.
+
+---
+
 ## [0.6.0] — 2026-05-18
 
 Consolidación del **flujo de prospección end-to-end**. Cierra dos
