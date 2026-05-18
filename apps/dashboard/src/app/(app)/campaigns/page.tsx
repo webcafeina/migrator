@@ -100,8 +100,17 @@ function EmptyHistorico() {
         Sin campañas en los últimos 30 días.
       </p>
       <p className="mt-2 text-xs text-muted-foreground">
-        Lanza tu primera campaña arriba — una campaña típica produce 30-60
-        leads cualificados por sector + región en menos de 1 hora.
+        Lanza una arriba — una campaña típica produce 30-60 leads
+        cualificados por sector + región en menos de 1 hora. Cuando
+        termine, los leads aparecen en{" "}
+        <a href="/leads" className="text-wcm-accent hover:underline">
+          /leads
+        </a>{" "}
+        y los eventos en el feed del{" "}
+        <a href="/" className="text-wcm-accent hover:underline">
+          Panel
+        </a>
+        .
       </p>
     </div>
   );

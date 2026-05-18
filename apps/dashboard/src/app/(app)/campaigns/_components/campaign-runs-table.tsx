@@ -48,12 +48,12 @@ export function CampaignRunsTable({
       <table className="w-full border-collapse text-[12.5px]">
         <thead className="bg-wcm-secondary/40">
           <tr>
-            <Th width="120px">Lanzada</Th>
+            <Th width="120px" hideUntil="md">Lanzada</Th>
             <Th>Sector · Región</Th>
             <Th width="180px">Producidos / objetivo</Th>
-            <Th width="100px">Duración</Th>
+            <Th width="100px" hideUntil="lg">Duración</Th>
             <Th width="120px">Estado</Th>
-            <Th width="80px">Avisos</Th>
+            <Th width="80px" hideUntil="md">Avisos</Th>
           </tr>
         </thead>
         <tbody>
@@ -69,7 +69,7 @@ export function CampaignRunsTable({
 function Row({ run }: { run: CampaignRunSummary }) {
   return (
     <tr className="border-t border-wcm-detail/40 transition-colors hover:bg-wcm-secondary/30">
-      <td className="px-4 py-2.5 tabular-nums text-wcm-text/80">
+      <td className="hidden px-4 py-2.5 tabular-nums text-wcm-text/80 md:table-cell">
         {formatRelativeTime(run.started_at)}
       </td>
       <td className="px-4 py-2.5 text-wcm-text">
@@ -79,13 +79,13 @@ function Row({ run }: { run: CampaignRunSummary }) {
       <td className="px-4 py-2.5">
         <ProducedBar leads={run.leads_count} target={run.target_count} />
       </td>
-      <td className="px-4 py-2.5 tabular-nums text-wcm-text/80">
+      <td className="hidden px-4 py-2.5 tabular-nums text-wcm-text/80 lg:table-cell">
         {formatDuration(run.duration_s)}
       </td>
       <td className="px-4 py-2.5">
         <StatusBadge status={run.status} />
       </td>
-      <td className="px-4 py-2.5">
+      <td className="hidden px-4 py-2.5 md:table-cell">
         <Indicators run={run} />
       </td>
     </tr>
@@ -179,14 +179,26 @@ function Indicators({ run }: { run: CampaignRunSummary }) {
 function Th({
   children,
   width,
+  hideUntil,
 }: {
   children: React.ReactNode;
   width?: string;
+  /** Breakpoint a partir del cual la columna es visible. */
+  hideUntil?: "md" | "lg";
 }) {
+  const visibility =
+    hideUntil === "lg"
+      ? "hidden lg:table-cell"
+      : hideUntil === "md"
+        ? "hidden md:table-cell"
+        : "";
   return (
     <th
       style={width ? { width } : undefined}
-      className="px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+      className={cn(
+        "px-4 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground",
+        visibility,
+      )}
     >
       {children}
     </th>
