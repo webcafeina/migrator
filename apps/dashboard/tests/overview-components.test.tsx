@@ -57,6 +57,24 @@ describe("OverviewKpiStrip", () => {
     // El value "3" debe estar dentro de un span con la clase de warning
     expect(html).toContain("text-wcm-warning");
   });
+
+  it("la celda raíz tiene min-width para permitir wrap responsive", () => {
+    // Ajuste de bloque 4: en viewport estrecho cada celda mantiene
+    // 160px mínimos y `flex-wrap` envuelve en filas en lugar de comprimir.
+    const html = renderToString(<OverviewKpiStrip kpis={kpis} />);
+    expect(html).toContain("min-w-[160px]");
+    expect(html).toContain("flex-wrap");
+  });
+
+  it("no aplica border-l a la primera celda (evita doble borde al wrap)", () => {
+    const html = renderToString(<OverviewKpiStrip kpis={kpis} />);
+    // El primer <li> NO debe llevar border-l; los siguientes sí.
+    const firstLi = html.split("<li")[1] ?? "";
+    expect(firstLi).not.toContain("border-l");
+    // Pero en el HTML completo, "border-l" debe aparecer (en las celdas
+    // 2..N).
+    expect(html).toContain("border-l");
+  });
 });
 
 // ---------- ActivityFeed: agrupación + descripciones ----------
