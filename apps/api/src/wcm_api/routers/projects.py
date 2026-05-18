@@ -21,8 +21,16 @@ from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import require_role
 from wcm_api.tasks.enqueue import enqueue_project_pipeline
+from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
-from wcm_types.enums import BuilderType, ProjectStatus, UserRole
+from wcm_db.models.residual_tasks import ResidualTask
+from wcm_types.enums import (
+    BuilderType,
+    ProjectPhaseStatus,
+    ProjectStatus,
+    ResidualStatus,
+    UserRole,
+)
 from wcm_types.schemas.projects import (
     ProjectCreate,
     ProjectPhaseRead,
@@ -180,6 +188,136 @@ async def get_project(
     if project is None:
         raise NotFoundError(f"Project {project_id} no encontrado")
     return ProjectRead.model_validate(project)
+
+
+class LeadOriginSummary(BaseModel):
+    """Vista reducida del lead origen del que nació el proyecto."""
+
+    id: int
+    business_name: str | None
+    score: int
+    builder_detected: BuilderType | None
+
+
+class ProjectSummary(BaseModel):
+    """Resumen agregado del proyecto para el header del rediseño
+    `/projects/[id]`. Evita 3-4 fetches del cliente (project + phases +
+    residual_tasks + lead) reduciéndolos a 2 (`/projects/{id}` para los
+    campos completos editables + `/summary` para los agregados).
+
+    `current_phase_name` es la fase RUNNING actual; si no hay ninguna,
+    devuelve la última COMPLETED como contexto. None si no hay fases.
+    """
+
+    project_id: int
+    lead_origin: LeadOriginSummary | None
+
+    phases_total: int
+    phases_completed: int
+    phases_failed: int
+    phases_running: int
+    phases_pending: int
+    current_phase_name: str | None
+
+    residual_total: int
+    residual_open: int
+    residual_done: int
+
+
+@router.get("/{project_id}/summary", response_model=ProjectSummary)
+async def project_summary(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> ProjectSummary:
+    """Agregados del proyecto: progreso de fases, lead origen, residuales."""
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    # Lead origen — None si lead_id es null o el lead fue borrado
+    # (ondelete=SET NULL).
+    lead_origin: LeadOriginSummary | None = None
+    if project.lead_id is not None:
+        lead = await session.get(Lead, project.lead_id)
+        if lead is not None:
+            lead_origin = LeadOriginSummary(
+                id=lead.id,
+                business_name=lead.business_name,
+                score=lead.score,
+                builder_detected=lead.builder_detected,
+            )
+
+    # Fases: counts agrupados por status.
+    phase_rows = (
+        await session.execute(
+            select(ProjectPhase.status, func.count())
+            .where(ProjectPhase.project_id == project_id)
+            .group_by(ProjectPhase.status)
+        )
+    ).all()
+    by_status: dict[ProjectPhaseStatus, int] = {s: c for s, c in phase_rows}
+    phases_total = sum(by_status.values())
+    phases_completed = by_status.get(ProjectPhaseStatus.COMPLETED, 0)
+    phases_failed = by_status.get(ProjectPhaseStatus.FAILED, 0)
+    phases_running = by_status.get(ProjectPhaseStatus.RUNNING, 0)
+    phases_pending = by_status.get(ProjectPhaseStatus.PENDING, 0)
+
+    # Fase actual: RUNNING si hay, sino última COMPLETED.
+    current_phase_name: str | None = None
+    if phases_running > 0:
+        row = (
+            await session.execute(
+                select(ProjectPhase.phase_name)
+                .where(ProjectPhase.project_id == project_id)
+                .where(ProjectPhase.status == ProjectPhaseStatus.RUNNING)
+                .order_by(ProjectPhase.started_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        current_phase_name = row
+    elif phases_completed > 0:
+        row = (
+            await session.execute(
+                select(ProjectPhase.phase_name)
+                .where(ProjectPhase.project_id == project_id)
+                .where(ProjectPhase.status == ProjectPhaseStatus.COMPLETED)
+                .order_by(ProjectPhase.completed_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        current_phase_name = row
+
+    # Residual tasks counts.
+    residual_rows = (
+        await session.execute(
+            select(ResidualTask.status, func.count())
+            .where(ResidualTask.project_id == project_id)
+            .group_by(ResidualTask.status)
+        )
+    ).all()
+    residual_by: dict[ResidualStatus, int] = {s: c for s, c in residual_rows}
+    residual_total = sum(residual_by.values())
+    residual_done = residual_by.get(ResidualStatus.DONE, 0)
+    # "Abiertos" = todo lo que NO está done/skipped. Operativamente lo
+    # que el operador aún tiene que tocar.
+    residual_open = residual_total - residual_done - residual_by.get(
+        ResidualStatus.SKIPPED, 0
+    )
+
+    return ProjectSummary(
+        project_id=project.id,
+        lead_origin=lead_origin,
+        phases_total=phases_total,
+        phases_completed=phases_completed,
+        phases_failed=phases_failed,
+        phases_running=phases_running,
+        phases_pending=phases_pending,
+        current_phase_name=current_phase_name,
+        residual_total=residual_total,
+        residual_open=residual_open,
+        residual_done=residual_done,
+    )
 
 
 @router.patch("/{project_id}", response_model=ProjectRead)
