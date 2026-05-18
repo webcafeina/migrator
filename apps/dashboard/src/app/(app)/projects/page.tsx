@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { FilterChips, type FilterChip } from "@/components/filter-chips";
 import { KpiStrip, type Kpi } from "@/components/kpi-strip";
 import { api } from "@/lib/api";
 import type { ProjectRead } from "@/types/api";
@@ -17,6 +18,23 @@ interface ProjectStatsResponse {
   avg_visual_diff_score: number | null;
 }
 
+interface SearchParams {
+  /** Filtro del listado por estado (project_status del API). */
+  status?: string;
+}
+
+/** Etiquetas castellanas para los chips de filtro. Coinciden con el
+ *  copy de los status badges de `ProjectsTable` para que el operador
+ *  reconozca el vocabulario al instante. */
+const STATUS_LABEL: Record<string, string> = {
+  queued: "encolados",
+  running: "en curso",
+  blocked_human_input: "bloqueados",
+  qa_failed: "QA fallido",
+  completed: "completados",
+  cancelled: "cancelados",
+};
+
 /**
  * `/projects` — rediseño consistente con /leads, /campaigns y /:
  *
@@ -29,10 +47,17 @@ interface ProjectStatsResponse {
  * Server Component: 2 fetches en paralelo (lista + stats). `.catch()`
  * defensivo en ambos.
  */
-export default async function ProjectsPage() {
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
   const [projects, stats] = await Promise.all([
     api
-      .get<ProjectRead[]>("/api/v1/projects")
+      .get<ProjectRead[]>("/api/v1/projects", {
+        searchParams: params.status ? { project_status: params.status } : {},
+      })
       .catch(() => [] as ProjectRead[]),
     api
       .get<ProjectStatsResponse>("/api/v1/projects/stats")
@@ -97,14 +122,94 @@ export default async function ProjectsPage() {
           </h2>
           <span className="text-[10.5px] tabular-nums text-muted-foreground">
             {`${projects.length} resultado${projects.length === 1 ? "" : "s"}`}
+            {params.status
+              ? ` · filtrado por ${STATUS_LABEL[params.status] ?? params.status}`
+              : ""}
           </span>
         </header>
+        {stats.total > 0 && (
+          <FilterChips chips={buildStatusChips(stats)} />
+        )}
         {projects.length === 0 ? (
-          <EmptyProjects />
+          stats.total === 0 ? (
+            <EmptyProjects />
+          ) : (
+            <EmptyFilterResult activeStatus={params.status ?? null} />
+          )
         ) : (
           <ProjectsTable projects={projects} />
         )}
       </section>
+    </div>
+  );
+}
+
+/**
+ * Construye los 5 chips de filtro a partir de los stats agregados
+ * (no del listado actual — los counts deben ser globales para que el
+ * operador vea cuántos hay en cada estado antes de filtrar).
+ */
+function buildStatusChips(stats: ProjectStatsResponse): FilterChip[] {
+  return [
+    {
+      id: "status:queued",
+      label: STATUS_LABEL.queued!,
+      count: stats.queued,
+      param: "status",
+      value: "queued",
+    },
+    {
+      id: "status:running",
+      label: STATUS_LABEL.running!,
+      count: stats.running,
+      param: "status",
+      value: "running",
+    },
+    {
+      id: "status:blocked_human_input",
+      label: STATUS_LABEL.blocked_human_input!,
+      count: stats.blocked,
+      param: "status",
+      value: "blocked_human_input",
+    },
+    {
+      id: "status:completed",
+      label: STATUS_LABEL.completed!,
+      count: stats.completed,
+      param: "status",
+      value: "completed",
+    },
+    // `failed_or_cancelled` es agregado en stats; el chip filtra por
+    // cancelled (el más común); qa_failed se filtraría con otro chip
+    // si se necesita en futuro.
+    {
+      id: "status:cancelled",
+      label: STATUS_LABEL.cancelled!,
+      count: stats.failed_or_cancelled,
+      param: "status",
+      value: "cancelled",
+    },
+  ];
+}
+
+/**
+ * Empty state cuando hay proyectos en el sistema pero el filtro actual
+ * deja 0. Distinto de `EmptyProjects` (sistema sin proyectos).
+ */
+function EmptyFilterResult({ activeStatus }: { activeStatus: string | null }) {
+  const label =
+    activeStatus && STATUS_LABEL[activeStatus]
+      ? STATUS_LABEL[activeStatus]
+      : activeStatus ?? "—";
+  return (
+    <div className="rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-6 text-center">
+      <p className="text-sm text-wcm-text/70">
+        {`Sin proyectos en estado "${label}".`}
+      </p>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Quita el filtro arriba para ver todos, o lanza un nuevo proyecto
+        desde un lead.
+      </p>
     </div>
   );
 }
