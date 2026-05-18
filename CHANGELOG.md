@@ -11,6 +11,69 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.13.2] — 2026-05-18
+
+Hotfix de bug crítico detectado al hacer envío real de email tras
+v0.13.1. Los OutreachSend quedaban como `QUEUED` indefinidamente en
+BD aunque Resend rechazaba el envío con error claro ("domain not
+verified" en el caso del usuario). UI mostraba "en cola" sin pista.
+
+### Fixed
+
+- **`OutreachSenderAgent` perdía el estado FAILED** por interacción
+  con `session_scope`: el agent marcaba `send.status = FAILED` con
+  `flush()` y luego lanzaba `OutreachSenderError`. El context manager
+  del wrapper hace `rollback()` ante excepción → el FAILED se perdía.
+  Fix: `session.commit()` ANTES del raise en los 3 paths de error
+  (Resend rechaza, lead sin email, lead opted-out). Tras el commit
+  el rollback del context manager no encuentra cambios pendientes
+  — el FAILED queda persistido.
+- **Mensaje del error proveedor invisible al operador**. Nuevo
+  campo `error_message: str | None` (max 1000) en `OutreachSend` +
+  migración Alembic 0004. El agent persiste el mensaje legible
+  ("Resend rechazó: domain not verified"). UI `SendTracking` muestra
+  una caja roja con el error bajo cada send fallido.
+- **AuditLog UPDATE** con `payload={outcome: "failed", provider:
+  "resend", error: ..., step_index}` cuando Resend rechaza.
+  Trazabilidad RGPD + debugging.
+
+### Verificación manual end-to-end
+
+- **Path SENT verificado en vivo**: send a `info@webcafeina.com` →
+  `SENT` con `provider_message_id` real de Resend → email
+  entregado.
+- **Path FAILED** (teórico, cubierto por preflight): cubierto por el
+  fix transaccional. Cuando Resend rechace (ej. dominio externo
+  no verificado), el send queda como FAILED + `error_message`
+  poblado.
+
+### Tests
+
+- 356 pytest verde.
+- 192 vitest + 3 skipped.
+- Migración 0004 aplicada en dev local sin issues.
+
+### Acción del operador (no es bug del producto)
+
+Resend exige verificar el dominio "From" por DNS antes de aceptar
+envíos a dominios externos. Si `webcafeina.com` no está verificado
+en [resend.com/domains](https://resend.com/domains), envíos a
+direcciones externas fallarán con `"domain not verified"`. Tras este
+hotfix el operador ve la causa directamente en la UI de cada send
+fallido.
+
+### Migración Alembic obligatoria pre-deploy
+
+```
+alembic upgrade head
+```
+
+Aplica la migración 0004 que añade la columna `error_message` a
+`outreach_sends`. Sin esto el código nuevo del agent fallará al
+intentar SET error_message en una fila con esa columna inexistente.
+
+---
+
 ## [0.13.1] — 2026-05-18
 
 Hotfix de CI: 3 tests del CLI fallaban en GitHub Actions tras publicar

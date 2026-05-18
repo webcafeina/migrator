@@ -93,6 +93,11 @@ class OutreachSend(Base, TimestampMixin):
     replied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     bounced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     provider_message_id: Mapped[str | None] = mapped_column(String(255))
+    # Mensaje de error legible cuando status=FAILED (ej. "Resend rechazó:
+    # The webcafeina.com domain is not verified"). Permite al operador
+    # diagnosticar sin SSHear al servidor a leer logs. Capado a 1000
+    # chars — errores típicos de proveedores SMTP/Resend son <500.
+    error_message: Mapped[str | None] = mapped_column(String(1000))
 
     sequence: Mapped[OutreachSequence] = relationship(back_populates="sends")
 

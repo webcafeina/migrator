@@ -29,6 +29,13 @@
 
 ## Última versión publicada
 
+**v0.13.2** (2026-05-18) — hotfix bug crítico: OutreachSend quedaba
+QUEUED indefinidamente cuando Resend rechazaba (session_scope hacía
+rollback del FAILED del agent). Fix: commit explícito antes del raise
++ nuevo campo `error_message` con migración Alembic 0004 + UI muestra
+caja roja con el error del proveedor bajo cada send. Path SENT
+verificado vivo (email entregado).
+
 **v0.13.1** (2026-05-18) — hotfix CI: conftest CLI fija COLUMNS=200 +
 NO_COLOR=1 + TERM=dumb para que typer/Rich formatee igual local y
 CI. 3 tests del CLI fallaban en GitHub Actions por ancho terminal

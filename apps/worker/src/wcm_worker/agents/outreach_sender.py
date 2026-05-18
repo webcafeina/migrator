@@ -78,14 +78,18 @@ class OutreachSenderAgent(BaseAgent):
         if lead is None:
             raise OutreachSenderError(f"Lead {send.lead_id} desaparecido")
         if not lead.emails:
+            # Commit explícito antes del raise — ver nota larga en el
+            # except ResendApiError más abajo (mismo bug v0.13.1).
             send.status = OutreachSendStatus.FAILED
-            ctx.session.flush()
+            send.error_message = "Lead sin email — no se puede enviar"
+            ctx.session.commit()
             raise OutreachSenderError(f"Lead {lead.id} sin email — no se puede enviar")
 
         # Doble check anti-spam: opt-out log
         opted = self._check_opted_out(ctx, lead.emails)
         if opted:
             send.status = OutreachSendStatus.FAILED
+            send.error_message = f"Lead opted-out ({opted}) — abortado por compliance"
             ctx.session.add(
                 AuditLog(
                     actor="outreach-sender",
@@ -96,7 +100,7 @@ class OutreachSenderAgent(BaseAgent):
                     payload={"reason": "lead_opted_out_at_send_time", "email": opted},
                 )
             )
-            ctx.session.flush()
+            ctx.session.commit()
             raise OutreachSenderError(
                 f"Lead {lead.id} en opt_out_log ({opted}) — abortado envío"
             )
@@ -121,8 +125,31 @@ class OutreachSenderAgent(BaseAgent):
                 ],
             )
         except ResendApiError as e:
+            # Persistencia DEFENSIVA del fallo: marcar FAILED + commit
+            # explícito ANTES del raise. Si no, el `session_scope` del
+            # wrapper hace rollback al propagar la excepción y el
+            # cambio se pierde (bug v0.13.1 → v0.13.2: el send quedaba
+            # QUEUED indefinidamente y la UI mostraba "en cola" sin
+            # pista del error). El mensaje se persiste en
+            # `error_message` para que la UI lo muestre.
             send.status = OutreachSendStatus.FAILED
-            ctx.session.flush()
+            send.error_message = f"Resend rechazó: {e}"[:1000]
+            ctx.session.add(
+                AuditLog(
+                    actor="outreach-sender",
+                    action=AuditAction.UPDATE,
+                    entity_type="outreach_send",
+                    entity_id=str(send.id),
+                    legal_ground="6.1.f",
+                    payload={
+                        "outcome": "failed",
+                        "provider": "resend",
+                        "error": str(e)[:500],
+                        "step_index": send.step_index,
+                    },
+                )
+            )
+            ctx.session.commit()
             raise OutreachSenderError(f"Resend send falló: {e}") from e
 
         send.status = OutreachSendStatus.SENT

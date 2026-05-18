@@ -50,6 +50,9 @@ interface SendRead {
   replied_at: string | null;
   bounced_at: string | null;
   provider_message_id: string | null;
+  /** v0.13.2: mensaje legible del proveedor cuando status=FAILED
+   * (ej. "Resend rechazó: domain not verified"). */
+  error_message: string | null;
 }
 
 interface ContactSequencePanelProps {
@@ -522,6 +525,11 @@ function SendTracking({ send }: { send: SendRead }) {
             {send.provider_message_id}
           </code>
         </p>
+      )}
+      {send.error_message && (
+        <div className="mt-2 rounded-sm border border-wcm-danger/40 bg-wcm-danger/[0.05] p-2 text-[11px] text-wcm-danger">
+          <strong>Error del proveedor:</strong> {send.error_message}
+        </div>
       )}
     </div>
   );
