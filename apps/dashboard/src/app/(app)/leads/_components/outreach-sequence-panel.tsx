@@ -8,6 +8,11 @@ import { ApiError, api } from "@/lib/api";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import type { OutreachSequenceRead } from "@/types/api";
 
+import {
+  type EditableStep,
+  SequenceStepEditor,
+} from "./sequence-step-editor";
+
 interface OutreachSequencePanelProps {
   leadId: number;
 }
@@ -98,9 +103,22 @@ function SequenceCard({
   onApproved: () => void;
 }) {
   const [pending, startTransition] = useTransition();
+  // Estado local de los pasos para permitir edición optimista sin
+  // refresh entre cada save. Se inicializa con los steps del prop y
+  // se sustituye con la respuesta del PATCH (que recarga
+  // legal_validation_passed con el resultado de la re-validación).
+  const [localSteps, setLocalSteps] = useState<Record<string, unknown>[]>(
+    (sequence.steps_json ?? []) as unknown as Record<string, unknown>[],
+  );
+  const [legalPassed, setLegalPassed] = useState<boolean>(
+    sequence.legal_validation_passed,
+  );
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+
   const status = String(sequence.status);
-  const canApprove =
-    status === "DRAFT_PENDING_REVIEW" && sequence.legal_validation_passed;
+  const editable =
+    status === "DRAFT_PENDING_REVIEW" || status === "PAUSED";
+  const canApprove = status === "DRAFT_PENDING_REVIEW" && legalPassed;
 
   function approve() {
     startTransition(async () => {
@@ -114,6 +132,41 @@ function SequenceCard({
       } catch (err) {
         toast.error(
           err instanceof ApiError ? err.message : "Error al aprobar",
+        );
+      }
+    });
+  }
+
+  function saveStep(editedStep: EditableStep) {
+    startTransition(async () => {
+      // Construir la lista completa: el paso editado + los demás
+      // intactos. La API requiere semántica de reemplazo (PUT-like).
+      const next = localSteps.map((s, idx) => {
+        if (idx !== editedStep.step_index) {
+          return _toEditable(s, idx);
+        }
+        return editedStep;
+      });
+      try {
+        const updated = await api.patch<OutreachSequenceRead>(
+          `/api/v1/outreach/sequences/${sequence.id}/steps`,
+          { steps: next },
+        );
+        setLocalSteps(
+          (updated.steps_json ?? []) as unknown as Record<string, unknown>[],
+        );
+        setLegalPassed(updated.legal_validation_passed);
+        setEditingIdx(null);
+        if (updated.legal_validation_passed) {
+          toast.success(`Paso ${editedStep.step_index + 1} guardado`);
+        } else {
+          toast.warning(
+            `Paso guardado pero NO pasa validación legal — Aprobar deshabilitado`,
+          );
+        }
+      } catch (err) {
+        toast.error(
+          err instanceof ApiError ? err.message : "Error al guardar",
         );
       }
     });
@@ -141,21 +194,33 @@ function SequenceCard({
         <SequenceStatusBadge status={status} />
       </header>
 
-      {!sequence.legal_validation_passed && (
+      {!legalPassed && (
         <div className="mb-3 rounded-sm border border-wcm-danger/40 bg-wcm-danger/[0.05] px-2.5 py-1.5 text-[11px] text-wcm-danger">
-          Validación legal NO pasada. No se puede aprobar — revisa la
-          plantilla.
+          Validación legal NO pasada. No se puede aprobar — revisa el
+          cuerpo del paso (firma + opt-out obligatorios).
         </div>
       )}
 
       <ol className="space-y-3">
-        {(sequence.steps_json ?? []).map((step, idx) => (
-          <StepBlock
-            key={idx}
-            step={step as unknown as Record<string, unknown>}
-            idx={idx}
-          />
-        ))}
+        {localSteps.map((step, idx) =>
+          editingIdx === idx ? (
+            <li key={idx}>
+              <SequenceStepEditor
+                initialStep={_toEditable(step, idx)}
+                onSave={saveStep}
+                onCancel={() => setEditingIdx(null)}
+                pending={pending}
+              />
+            </li>
+          ) : (
+            <StepBlock
+              key={idx}
+              step={step}
+              idx={idx}
+              onEdit={editable ? () => setEditingIdx(idx) : undefined}
+            />
+          ),
+        )}
       </ol>
 
       <footer className="mt-3 flex justify-end">
@@ -183,9 +248,13 @@ function SequenceCard({
 function StepBlock({
   step,
   idx,
+  onEdit,
 }: {
   step: Record<string, unknown>;
   idx: number;
+  /** Si se pasa, renderiza botón "Editar" que dispara el callback.
+   * Si no, el paso es solo lectura (ej. sequence ya SENT/READY). */
+  onEdit?: () => void;
 }) {
   const subject =
     typeof step.subject === "string" ? step.subject : "(sin asunto)";
@@ -209,6 +278,15 @@ function StepBlock({
             </>
           )}
         </span>
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="rounded-sm border border-wcm-detail/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wcm-text/80 transition-colors hover:border-wcm-accent hover:text-wcm-accent"
+          >
+            Editar
+          </button>
+        )}
       </div>
       <div className="text-xs font-semibold text-wcm-text">{subject}</div>
       <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-[11.5px] leading-relaxed text-wcm-text/90">
@@ -216,6 +294,29 @@ function StepBlock({
       </pre>
     </li>
   );
+}
+
+/** Convierte un step del payload (heterogéneo) al shape canónico
+ * `EditableStep` que espera el editor + el PATCH endpoint. */
+function _toEditable(
+  step: Record<string, unknown>,
+  idx: number,
+): EditableStep {
+  const subjectRaw = step.subject;
+  const subject = typeof subjectRaw === "string" ? subjectRaw : null;
+  const body = typeof step.body === "string" ? step.body : "";
+  const delay =
+    typeof step.delay_days_from_previous === "number"
+      ? step.delay_days_from_previous
+      : typeof step.delay_days === "number"
+        ? (step.delay_days as number)
+        : 0;
+  return {
+    step_index: idx,
+    subject,
+    body,
+    delay_days_from_previous: delay,
+  };
 }
 
 function SequenceStatusBadge({ status }: { status: string }) {
