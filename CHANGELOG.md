@@ -11,6 +11,101 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.5.0] — 2026-05-18
+
+Rediseño completo de **Panel/Overview** — la primera pantalla tras
+login. Sustituye las 4 KPI cards gigantes (3 con valor 0) y los 2
+mensajes de placeholder ("Ningún proyecto en ejecución", "Sin errores
+recientes") por una experiencia centrada en lo que de verdad pasa en el
+sistema: **tira compacta de KPIs + feed de actividad agrupado por día**.
+
+Sigue el mismo patrón de 5 bloques granulares que usamos en `/leads`
+(v0.4.0). El componente `FilterChips` se compartió entre las dos
+páginas tras el rediseño (movido a `components/`).
+
+### Added
+
+- **Endpoint `GET /api/v1/audit-log`** (rol any_user) para alimentar el
+  feed. Hasta ahora `audit_log` solo se escribía desde 5 sitios
+  (outreach, leads, webhooks); el dashboard no podía leerlo. Filtros:
+  `action` (AuditAction enum), `entity_type`, `entity_id`, `actor`,
+  `since` (ISO datetime), `limit` (1..200, default 50). Ventana por
+  defecto: últimos 7 días. Ordenado por `at` DESC. 9 tests unit con
+  inspección del SQL compilado (`literal_binds`).
+- **3 componentes nuevos** en
+  `apps/dashboard/src/app/(app)/_overview/`:
+  - `OverviewKpiStrip` — tira horizontal con borde + divider sutil
+    entre celdas. Cada celda con label uppercase small + value grande
+    tabular-nums + `ArrowUpRight` si tiene `href`. Soporta `accent`
+    para warning color en valores no-cero (errores). Responsive:
+    `flex-wrap` + `min-w-[160px]` por celda.
+  - `ActivityFeed` — agrupa eventos del audit_log por día con encabezado
+    sticky ("Hoy", "Ayer", "Mar 17 may" en es-ES). Iconografía por
+    action (Search / Fingerprint / Sparkles / Send / XCircle / ...
+    via lucide-react), frases humanas en castellano ("Lead #42
+    enriquecido", "Outreach enviado · Lead #19", "Proyecto #7
+    desplegado"), actor en muted, tiempo relativo a la derecha.
+    Enlaces inteligentes: lead → `/leads?selected={id}` (master-detail
+    de v0.4.0), project → `/projects/{id}`, residual_task →
+    `/residual-tasks`. Empty state explicativo si 0 eventos en 7 días.
+  - `OnboardingCard` (inline en `page.tsx`) — sustituye al feed
+    cuando el sistema está recién provisionado (0 leads + 0 proyectos
+    + 0 eventos). Borde lima, copy explicativo del flujo
+    (descubre → clasifica → enriquece, aprobación manual) y 2 CTAs:
+    "+ Lanzar primera campaña →" + "Ver configuración del entorno".
+- **Filtro del feed por action** con URL state `?action=enrich`. 7
+  chips canónicos (descubrir, fingerprint, enriquecer, outreach,
+  opt-out, deploy, sistema) reutilizando `FilterChips`. Header del
+  feed muestra "X eventos · últimos 7 días · filtrado por <action>"
+  cuando hay filtro activo.
+- **Badge de entorno en Header global**: dot verde + "entorno · dev"
+  o dot ámbar + "entorno · prod" según `process.env.NODE_ENV`.
+  Sustituye al texto redundante "Migrator dashboard".
+- **Spec Playwright** `tests/e2e/overview-redesign.spec.ts` con 8
+  tests (2 ejecutables + 6 `test.skip(SSR_BLOCKED, "WCM-021")`).
+
+### Changed
+
+- **`apps/dashboard/src/app/(app)/page.tsx`** refactorizado de Server
+  Component que renderiza 4 cards + 2 cards (~400 px de espacio
+  desperdiciado con frases vacías) a Server Component que fetcha en
+  paralelo `/leads/stats`, `/projects`, `/residual-tasks`, `/errors`,
+  `/audit-log`, calcula `isEmptySystem` y delega a los componentes
+  nuevos. Header: "Overview" → "Panel" (coherencia con sidebar).
+- **`FilterChips` compartido entre páginas**: movido de
+  `apps/dashboard/src/app/(app)/leads/_components/filter-chips.tsx` a
+  `apps/dashboard/src/components/filter-chips.tsx` (genérico de URL
+  state, no específico de leads). `git mv` preserva historial.
+- **Visual baseline regenerada** para `dashboard overview` (la anterior
+  capturaba la versión pre-rediseño).
+
+### Decisions
+
+- **Solo `audit_log` canon** alimenta el feed (no `error_log` ni
+  cambios de status). Limpio, sin ruido técnico. Si necesitamos
+  errors_log cruzado, se añade después como fuente opcional.
+- **Agrupación por día con encabezado sticky** en lugar de timeline
+  lineal — más fácil de escanear ("¿qué hicimos hoy?"). Las fechas
+  > ayer usan formato corto es-ES via `toLocaleDateString`.
+- **KPI strip con `flex-wrap`** sin breakpoints fijos — se adapta
+  orgánicamente. La regla `idx > 0 → border-l` evita doble borde
+  cuando los items envuelven a nueva fila.
+- **Onboarding card como respuesta a "primer impacto vacío"** —
+  decidimos no eliminar la pantalla para sistemas recién provisionados;
+  mejor convertirla en un onboarding útil con CTAs reales.
+- **Header env desde `NODE_ENV`** sin fetch adicional — el sidebar ya
+  identifica el producto y la salud profunda vive en `/health/deep`.
+
+### Tests
+
+- 439 pytest (+9 audit-log endpoint).
+- 60 vitest (+23: 21 componentes + 2 polish responsive).
+- 9 Playwright ejecutables (+2 nuevos overview) + 20 skipped
+  (14 antiguos + 6 nuevos del overview, pendientes WCM-021).
+- ruff + tsc verde, 0 regresiones.
+
+---
+
 ## [0.4.0] — 2026-05-16
 
 Rediseño completo de `/leads`. Pasa de una tabla genérica de 8 columnas a
