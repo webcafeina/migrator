@@ -28,8 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`dark ${jetbrainsMono.variable}`}>
-      <body>
+    // `suppressHydrationWarning` solo aquí — las extensiones del
+    // navegador (LanguageTool, Grammarly, Dark Reader…) inyectan
+    // atributos en `<html>` y `<body>` tras el SSR pero antes del
+    // mount, lo que React detecta como hydration mismatch. Es el
+    // patrón oficial documentado por Next.js para este caso. NO se
+    // propaga a hijos.
+    <html
+      lang="es"
+      className={`dark ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body suppressHydrationWarning>
         {children}
         <Toaster
           theme="dark"
