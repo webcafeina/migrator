@@ -11,6 +11,118 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.6.0] — 2026-05-18
+
+Consolidación del **flujo de prospección end-to-end**. Cierra dos
+piezas pendientes del rediseño visual:
+
+- **`/leads/[id]` full-page** reusa el `LeadDetailPane` del
+  master-detail (`/leads?selected=N`) — coherencia 100% entre los dos
+  modos del producto, eliminando la duplicación visual previa.
+- **`/campaigns`** rediseñado completo con layout 3-zona: lanzar →
+  en curso → histórico. Bug P0 de copy obsoleto eliminado.
+
+Patrón consistente con v0.4.0 (/leads) y v0.5.0 (/): endpoint dedicado
++ componentes presentacionales reutilizables + refactor de la página +
+pulido responsive + capa de tests. 5 commits granulares por rediseño.
+
+### Added
+
+- **Endpoint `GET /api/v1/campaigns/runs`** (rol any_user) para el
+  histórico de campañas. Hasta ahora solo había `/runs/{task_id}`
+  (detalle de UNA). Filtros: `status` (CampaignStatus enum:
+  queued|running|completed|failed|cancelled), `since` (ISO datetime),
+  `limit` (1..100, default 20), `offset`. Ventana por defecto 30
+  días. Ordenado por `started_at` DESC. Schema `CampaignRunSummary`
+  con campos derivados: `duration_s` calculado (null si aún corre),
+  `leads_count` = `len(created_lead_ids)`, `warnings_count` =
+  `len(warnings)` (para badge sin payload pesado). 9 tests unit con
+  inspección del SQL compilado (`literal_binds`).
+- **3 componentes nuevos** en
+  `apps/dashboard/src/app/(app)/campaigns/_components/`:
+  - `CampaignRunsTable` — tabla histórica con 6 columnas (lanzada,
+    sector·región, producidos/objetivo con barra mini, duración
+    compacta, status badge en castellano, indicadores warnings/error).
+    Responsive: oculta columnas secundarias en viewports estrechos via
+    prop `hideUntil="md" | "lg"`.
+  - `CampaignProgressCard` (Client, polling 5s) — visible solo cuando
+    hay campañas QUEUED/RUNNING. Cada activa: barra de progreso
+    animada `lead_count/target_count` + sector·región + tiempo elapsed
+    + status badge. Auto-oculta cuando 0 activas.
+  - `LaunchCampaignForm` refactorizado a layout horizontal compacto
+    (sector flex-1 | región flex-1 | objetivo w-24 | botón). Nueva
+    prop `sectorSuggestions` y `regionSuggestions` para `<datalist>`
+    autocompletado.
+- **Spec Playwright** `tests/e2e/campaigns-redesign.spec.ts` con 9
+  tests (6 ejecutables + 3 SSR-blocked). Incluye test del fix P0
+  que verifica que la nota obsoleta NO aparece.
+
+### Changed
+
+- **`/leads/[id]` full-page** simplificada de 158 líneas a 50 líneas.
+  Server Component que fetcha el lead + renderiza `LeadDetailPane`
+  (el mismo del master-detail) envuelto en layout edge-to-edge con
+  breadcrumb arriba ("← Lista de leads" + "Abrir en master-detail").
+  Eliminado `refingerprint-button.tsx` local — `LeadActions` ya cubre
+  re-fingerprint + componer outreach + opt-out + convertir, con
+  feedback inline y disabled tooltips.
+- **`/campaigns/page.tsx`** refactorizado de layout 2-col
+  (form en Card + "Notas" en Card) a layout 3-zona vertical: header
+  + form en sección con borde + `CampaignProgressCard` auto-oculta +
+  `CampaignRunsTable` o empty state. Sugerencias de sector/región
+  derivadas del histórico (ordenadas por frecuencia descendente).
+
+### Fixed
+
+- **Bug P0 nota obsoleta de `/campaigns`** ("ProspectorAgent está
+  actualmente en stub. La implementación real llega en Fase 9") —
+  mentira desde v0.2.0 cuando se implementó la integración real con
+  Google Places. Detectada en la auditoría visual del dashboard.
+  Test e2e regresivo añadido.
+
+### Decisions
+
+- **Reutilización de `LeadDetailPane`** entre master-detail y
+  full-page — un único componente garantiza coherencia. Sin
+  `sectorMedian` ni `percentile` en el full-page (requeriría fetch
+  agregado adicional; el ScorePanel los omite silenciosamente).
+- **Ventana 30 días por defecto para `/campaigns/runs`** (vs 7 días
+  del audit-log) — las campañas son eventos menos frecuentes; un mes
+  es la cadencia útil para revisar histórico.
+- **`warnings_count` en lugar del array completo** en
+  `CampaignRunSummary` — para badge sin payload pesado. El detalle ya
+  vive en `/runs/{task_id}`.
+- **Responsive de tabla por breakpoints** en lugar de scroll
+  horizontal — columnas secundarias se ocultan elegantemente con
+  `hidden md:table-cell` / `hidden lg:table-cell`.
+- **3 tests vitest skipped por React 19 + happy-dom + useTransition**:
+  side-effects post-`await` dentro de `startTransition(async)` no
+  propagan de forma fiable en happy-dom. Cobertura real vive en
+  Playwright cuando WCM-021 (MSW node) esté.
+
+### Tests
+
+- 448 pytest (+9 campaigns/runs endpoint).
+- 77 vitest (74 pasan + 3 skipped React 19; +17 totales).
+- 15 Playwright ejecutables (+6 nuevos campaigns) + 23 skipped
+  (20 antiguos + 3 nuevos campaigns).
+- ruff + tsc verde, 0 regresiones.
+
+### Estado del rediseño
+
+| Pantalla | Estado |
+|---|---|
+| `/login` | original |
+| `/` Panel | ✅ v0.5.0 |
+| `/campaigns` | ✅ **v0.6.0** |
+| `/leads` master-detail | ✅ v0.4.0 |
+| `/leads/[id]` full-page | ✅ **v0.6.0** |
+| `/projects` + detalle | original (siguiente) |
+| `/errors`, `/residual-tasks` | original |
+| `/settings` | modelo a replicar |
+
+---
+
 ## [0.5.0] — 2026-05-18
 
 Rediseño completo de **Panel/Overview** — la primera pantalla tras
