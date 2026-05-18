@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { api } from "@/lib/api";
 import type { UserRead } from "@/types/api";
 
@@ -44,6 +46,22 @@ export default async function SettingsPage() {
 
           <Block title="Estado del sistema">
             <SystemInfoPanel info={info} />
+          </Block>
+
+          <Block title="Plantillas de contacto">
+            <Link
+              href="/settings/templates"
+              className="block rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs text-wcm-text hover:border-wcm-accent hover:text-wcm-accent"
+            >
+              <div className="font-semibold">
+                Gestionar plantillas Jinja2 →
+              </div>
+              <p className="mt-1 text-muted-foreground">
+                Editar los borradores que el composer usa para generar
+                los correos comerciales. Solo administradores pueden
+                escribir.
+              </p>
+            </Link>
           </Block>
         </div>
 
