@@ -28,6 +28,7 @@ from wcm_api.routers import (
     audit,
     auth,
     campaigns,
+    email_layout,
     errors_router,
     health,
     leads,
@@ -100,7 +101,10 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     # Health/probes y /metrics — sin prefijo de versión, sin auth.
     app.include_router(health.router)
     app.add_api_route(
-        "/metrics", metrics_endpoint, methods=["GET"], include_in_schema=False,
+        "/metrics",
+        metrics_endpoint,
+        methods=["GET"],
+        include_in_schema=False,
     )
 
     # Opt-out RGPD — sin prefijo (URL humana, no API JSON)
@@ -118,6 +122,7 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     app.include_router(errors_router.router, prefix=v1_prefix)
     app.include_router(system.router, prefix=v1_prefix)
     app.include_router(templates.router, prefix=v1_prefix)
+    app.include_router(email_layout.router, prefix=v1_prefix)
     app.include_router(audit.router, prefix=v1_prefix)
     app.include_router(webhooks.router, prefix=v1_prefix)
 

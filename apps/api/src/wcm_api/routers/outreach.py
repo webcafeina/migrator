@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +27,7 @@ from wcm_api.rate_limit import limiter
 from wcm_api.security import TokenPayload, get_current_user_payload, require_role
 from wcm_api.tasks.enqueue import enqueue_outreach_send
 from wcm_db.models.audit import AuditLog
-from wcm_db.models.outreach import OutreachSend, OutreachSequence
+from wcm_db.models.outreach import EmailLayout, OutreachSend, OutreachSequence
 from wcm_types.enums import (
     AuditAction,
     OutreachSendStatus,
@@ -35,9 +35,12 @@ from wcm_types.enums import (
     UserRole,
 )
 from wcm_types.schemas.outreach import (
+    OutreachPreviewResponse,
     OutreachSendRead,
     OutreachSequenceRead,
     OutreachStepsUpdatePayload,
+    OutreachTestSendPayload,
+    OutreachTestSendResponse,
 )
 
 router = APIRouter(prefix="/outreach", tags=["outreach"])
@@ -140,9 +143,7 @@ async def transition_sequence(
         )
 
     if payload.action == "approve" and not seq.legal_validation_passed:
-        raise ConflictError(
-            "No se puede aprobar una secuencia que no pasó la validación legal"
-        )
+        raise ConflictError("No se puede aprobar una secuencia que no pasó la validación legal")
 
     seq.status = new_status
     session.add(
@@ -271,9 +272,7 @@ async def send_sequence_step(
 
     send = (await session.execute(stmt)).scalars().first()
     if send is None:
-        raise ConflictError(
-            f"Sequence {sequence_id} no tiene ningún OutreachSend en estado QUEUED"
-        )
+        raise ConflictError(f"Sequence {sequence_id} no tiene ningún OutreachSend en estado QUEUED")
 
     task_id = enqueue_outreach_send(send.id)
 
@@ -298,3 +297,171 @@ async def send_sequence_step(
         "send_id": send.id,
         "step_index": send.step_index,
     }
+
+
+# --- v0.14.0: preview HTML del step + test-send ---
+
+
+async def _load_send_or_404(
+    session: AsyncSession, sequence_id: int, step_index: int
+) -> OutreachSend:
+    stmt = select(OutreachSend).where(
+        OutreachSend.sequence_id == sequence_id,
+        OutreachSend.step_index == step_index,
+    )
+    send = (await session.execute(stmt)).scalar_one_or_none()
+    if send is None:
+        raise NotFoundError(
+            f"OutreachSend step={step_index} de sequence {sequence_id} no encontrado"
+        )
+    return send
+
+
+async def _render_send_html(send: OutreachSend, session: AsyncSession) -> str:
+    """Devuelve el HTML para previsualizar el step. Si el send tiene
+    `body_html_rendered` (sends post-v0.14.0) lo retorna directo;
+    si NULL (sends legacy) lo regenera on-the-fly envolviendo el
+    `body_rendered` texto en HTML básico + layout + premailer.
+    """
+    if send.body_html_rendered:
+        return send.body_html_rendered
+
+    from wcm_worker.integrations.email_layout import (
+        EmailLayoutSnapshot,
+        load_layout,
+        render_full_email,
+    )
+    from wcm_worker.integrations.html_email import wrap_plain_as_html
+
+    layout_row = await session.get(EmailLayout, 1)
+    layout = (
+        EmailLayoutSnapshot(layout_html=layout_row.layout_html, layout_css=layout_row.layout_css)
+        if layout_row
+        else load_layout(None)
+    )
+    body_html_content = wrap_plain_as_html(send.body_rendered or "")
+    # Contexto mínimo legal/branding desde env — el send histórico ya
+    # tenía estos valores literales en body_rendered (footer + opt-out).
+    # Lo que reconstruimos aquí es el wrapper visual (header/CTA/CSS).
+    import os
+
+    ctx = {
+        "company_legal_name": os.environ.get("COMPANY_LEGAL_NAME", "Webcafeína S.L."),
+        "company_cif": os.environ.get("COMPANY_CIF", ""),
+        "company_address": os.environ.get("COMPANY_ADDRESS", ""),
+        "company_contact_email": os.environ.get("COMPANY_CONTACT_EMAIL", "info@webcafeina.com"),
+        "privacy_policy_url": os.environ.get(
+            "COMPANY_PRIVACY_POLICY_URL",
+            "https://webcafeina.com/politica-de-privacidad",
+        ),
+        "opt_out_url": "https://migrator.webcafeina.com/opt-out?token=LEGACY",
+        "logo_url": os.environ.get("EMAIL_LOGO_URL", "") or "",
+    }
+    return render_full_email(
+        layout,
+        content_html=body_html_content,
+        subject=send.subject,
+        cta_label=None,
+        cta_url=None,
+        logo_url=ctx["logo_url"],
+        template_ctx=ctx,
+    )
+
+
+@router.get(
+    "/sequences/{sequence_id}/steps/{step_index}/preview",
+    response_model=OutreachPreviewResponse,
+)
+async def preview_sequence_step(
+    sequence_id: int,
+    step_index: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> OutreachPreviewResponse:
+    """HTML renderizado del step (snapshot histórico o regenerado).
+
+    El cliente lo pinta en un iframe `srcDoc` para que el operador
+    vea exactamente cómo quedará el correo. No requiere RBAC especial
+    (cualquier usuario con acceso al lead puede previsualizar).
+    """
+    send = await _load_send_or_404(session, sequence_id, step_index)
+    html = await _render_send_html(send, session)
+    return OutreachPreviewResponse(html=html, subject=send.subject)
+
+
+@router.post(
+    "/sequences/{sequence_id}/steps/{step_index}/test-send",
+    response_model=OutreachTestSendResponse,
+)
+@limiter.limit("10/minute")
+async def test_send_sequence_step(
+    request: Request,
+    sequence_id: int,
+    step_index: int,
+    payload: OutreachTestSendPayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> OutreachTestSendResponse:
+    """Envía el step a una dirección arbitraria para verificar
+    visualmente cómo llega. NO crea OutreachSend ni muta status del
+    sequence — solo llama a Resend directo y registra AuditLog
+    `TEST_SEND` con `to` para trazabilidad.
+
+    Rate-limited a 10/min por IP para evitar abuso (un operador no
+    necesita más; abuso = bug en cliente o intent malicioso).
+    """
+    send = await _load_send_or_404(session, sequence_id, step_index)
+    html = await _render_send_html(send, session)
+    text_body = send.body_rendered or ""
+    subject = send.subject or ""
+
+    # Lazy import del worker (mismo patrón que el resto del router).
+    from wcm_worker.integrations.resend import ResendApiError, ResendClient
+
+    client = ResendClient.from_env()
+    if client is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="RESEND_API_KEY no configurada; el envío de prueba no está disponible.",
+        )
+
+    try:
+        result = client.send(
+            to=[payload.to],
+            subject=f"[PRUEBA] {subject}" if subject else "[PRUEBA] Test",
+            body_text=text_body,
+            body_html=html or None,
+            tags=[
+                {"name": "kind", "value": "test_send"},
+                {"name": "sequence_id", "value": str(sequence_id)},
+                {"name": "step_index", "value": str(step_index)},
+            ],
+        )
+    except ResendApiError as e:
+        # No persistimos error en la BD: el test-send es efímero. El
+        # operador ve el toast con el mensaje.
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Resend rechazó: {e}",
+        ) from e
+
+    session.add(
+        AuditLog(
+            actor=f"user:{user.sub}",
+            action=AuditAction.TEST_SEND,
+            entity_type="outreach_send",
+            entity_id=str(send.id),
+            legal_ground=None,
+            payload={
+                "to": payload.to,
+                "sequence_id": sequence_id,
+                "step_index": step_index,
+                "provider_message_id": result.message_id,
+                "operator_role": user.role,
+            },
+        )
+    )
+    await session.commit()
+
+    return OutreachTestSendResponse(provider_message_id=result.message_id, to=payload.to)
