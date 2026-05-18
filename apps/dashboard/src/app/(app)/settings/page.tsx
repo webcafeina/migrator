@@ -1,87 +1,75 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { formatDate } from "@/lib/utils";
 import type { UserRead } from "@/types/api";
 
+import { OperationRunbook } from "./_components/operation-runbook";
+import {
+  SystemInfoPanel,
+  type SystemInfoData,
+} from "./_components/system-info-panel";
+import { UserCard } from "./_components/user-card";
+
+/**
+ * `/settings` — Ajustes. Pantalla informativa: usuario actual, runtime
+ * del API y runbook para operaciones que no viven en el dashboard
+ * (editar .env, gestionar usuarios vía CLI).
+ *
+ * Server Component. Fetcha /auth/me + /system/info en paralelo con
+ * `.catch()` defensivo — cualquier dependencia caída se refleja en su
+ * componente correspondiente sin romper la página entera.
+ */
 export default async function SettingsPage() {
-  const me = await api.get<UserRead>("/api/v1/auth/me").catch(() => null);
+  const [user, info] = await Promise.all([
+    api.get<UserRead>("/api/v1/auth/me").catch(() => null),
+    api
+      .get<SystemInfoData>("/api/v1/system/info")
+      .catch(() => null),
+  ]);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-lg font-semibold">Settings</h1>
+    <div className="space-y-5">
+      <header>
+        <h1 className="text-lg font-semibold text-wcm-text">Ajustes</h1>
+        <p className="text-xs text-muted-foreground">
+          Usuario actual, estado del API y procedimientos operativos.
+          Solo lectura — las variables del sistema y los usuarios se
+          gestionan en el servidor.
+        </p>
+      </header>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Usuario actual</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {me ? (
-            <>
-              <Row label="ID">{me.id}</Row>
-              <Row label="Email">{me.email}</Row>
-              <Row label="Nombre">{me.name}</Row>
-              <Row label="Rol">{me.role}</Row>
-              <Row label="Activo">{me.is_active ? "sí" : "no"}</Row>
-              <Row label="Creado">{formatDate(me.created_at)}</Row>
-            </>
-          ) : (
-            <p className="text-wcm-detail">No se pudo obtener el usuario.</p>
-          )}
-        </CardContent>
-      </Card>
+      <section className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_360px]">
+        <div className="space-y-5">
+          <Block title="Usuario actual">
+            <UserCard user={user} />
+          </Block>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Configuración del entorno</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-wcm-detail">
-          <p>
-            El dashboard es de solo lectura para la configuración. Las
-            variables del sistema viven en <code>.env</code> en el servidor
-            (permisos 600). Para editarlas:
-          </p>
-          <ol className="list-decimal pl-5 space-y-1">
-            <li>
-              SSH al servidor: <code>ssh root@migrator.webcafeina.com</code>
-            </li>
-            <li>
-              Editar <code>/etc/webcafeina-migrator/env</code>
-            </li>
-            <li>
-              Reload de los servicios:{" "}
-              <code>systemctl restart webcafeina-api webcafeina-worker</code>
-            </li>
-          </ol>
-          <p>
-            Detalle completo del despliegue en{" "}
-            <span className="text-wcm-text">docs/despliegue.md</span>.
-          </p>
-        </CardContent>
-      </Card>
+          <Block title="Estado del sistema">
+            <SystemInfoPanel info={info} />
+          </Block>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Gestión de usuarios (admin)</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm text-wcm-detail">
-          <p>
-            La gestión de usuarios (crear, eliminar, asignar roles) está
-            disponible solo vía CLI <code>wcm users …</code> o directamente
-            con SQL. UI de gestión: Fase 14.
-          </p>
-        </CardContent>
-      </Card>
+        <aside>
+          <Block title="Operación">
+            <OperationRunbook />
+          </Block>
+        </aside>
+      </section>
     </div>
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Block({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="flex items-baseline justify-between gap-2">
-      <span className="text-xs text-wcm-detail uppercase tracking-wider shrink-0">
-        {label}
-      </span>
-      <span className="text-right text-wcm-text break-all">{children}</span>
+    <div className="space-y-2">
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+        {title}
+      </h2>
+      {children}
     </div>
   );
 }
