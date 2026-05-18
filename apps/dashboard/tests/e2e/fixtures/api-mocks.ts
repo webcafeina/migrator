@@ -200,6 +200,26 @@ export async function installBaseMocks(page: Page): Promise<void> {
       }),
     }),
   );
+  // System info para /settings (v1.0.0). Health "ok" por defecto.
+  await page.route(/\/api\/v1\/system\/info/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        version: "1.0.0",
+        environment: "test",
+        python_version: "3.14.0",
+        alembic_revision: "c8e1dc21716b",
+        uptime_seconds: 123,
+        health: {
+          overall: "ok",
+          db: "ok",
+          redis: "ok",
+          r2: "skipped",
+        },
+      }),
+    }),
+  );
 }
 
 /**
