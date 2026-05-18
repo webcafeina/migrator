@@ -232,22 +232,16 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ### WCM-034 — Extender rediseño visual a `/projects/[id]` + sub-páginas
 - **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P1
-- **Estado**: OPEN
-- **Contexto**: tras v0.7.0 (`/projects` listado rediseñado), las
-  sub-páginas `/projects/[id]`, `/projects/[id]/checklist` y
-  `/projects/[id]/diff` siguen con la UI original pre-rediseño,
-  rompiendo la coherencia visual al navegar desde el listado. Es el
-  rediseño más grande pendiente (4 páginas anidadas que comparten
-  contexto de proyecto).
-- **Acción**: aplicar el patrón de 5 bloques (ADR-036) considerando
-  que las 4 páginas comparten un header común con info del proyecto
-  (cliente · URL origen · status · diff). Probable patrón: layout
-  con tabs (`/projects/[id]` overview, `/checklist`, `/diff`) y
-  componente shared `ProjectHeader`. Posible reuso de
-  `ActivityTimeline` para mostrar histórico de fases del pipeline.
-  **Sin datos reales en BD** — auditoría visual será parcial; diseñar
-  contra el schema de `Project` + `ProjectPhase`.
-- **Dueño**: técnico.
+- **Estado**: DONE (cerrado en v0.8.0, 2026-05-18)
+- **Resolución**: rediseñado en 5 bloques (`64908c1` → `98b8591`):
+  endpoint `/projects/{id}/summary` con agregados + 4 componentes
+  shared (`ProjectHeader`, `ProjectTabs`, `PhaseProgressBar`,
+  `ProjectPhasesTimeline`) + refactor de las 3 sub-páginas
+  (overview, checklist, diff) + spec Playwright. Verificación visual
+  con fixture de proyecto en desktop + mobile. Bug menor P0 cerrado:
+  el placeholder de diff decía "se implementa en Fase 10" — mentira
+  desde hace meses; ahora reconoce que `packages/visual-diff/` ya
+  existe y solo falta conectarlo a la UI.
 
 ---
 

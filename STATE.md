@@ -28,7 +28,7 @@
 
 ## Última versión publicada
 
-**v0.7.0** (2026-05-18) — rediseño /projects (listado) + `KpiStrip` shared. CI verde. https://github.com/webcafeina/migrator/releases/tag/v0.7.0
+**v0.8.0** (2026-05-18) — rediseño /projects/[id] + 3 sub-páginas con ProjectHeader shared. CI verde.
 
 ## Estado del rediseño visual del dashboard
 
@@ -40,10 +40,10 @@
 | 4 | `/leads` master-detail | ✅ rediseñado | v0.4.0 |
 | 5 | `/leads/[id]` full-page | ✅ refactor | v0.6.0 |
 | 6 | `/projects` | ✅ rediseñado | v0.7.0 |
-| 7 | `/projects/[id]` + sub (`checklist`, `diff`) | original | — (siguiente, WCM-034) |
-| 8 | `/errors` | original | — (WCM-035) |
-| 9 | `/residual-tasks` | original | — (WCM-035) |
-| 10 | `/settings` | modelo a replicar | — |
+| 7-9 | `/projects/[id]` + `checklist` + `diff` | ✅ rediseñado | **v0.8.0** |
+| 10 | `/errors` | original | — (WCM-035, siguiente) |
+| 11 | `/residual-tasks` | original | — (WCM-035) |
+| 12 | `/settings` | modelo a replicar | — |
 
 **Patrón de rediseño consolidado** tras 4 pantallas (ADR-036):
 1. Endpoint stats dedicado (`/X/stats`).
@@ -84,6 +84,24 @@ Componentes promovidos a `apps/dashboard/src/components/` (shared):
 
 Trabajo posterior al cierre del MVP v0.1.0. Cada release agrupa un
 rediseño completo de una pantalla (5 bloques granulares — ver ADR-036).
+
+### v0.8.0 — Rediseño `/projects/[id]` + 3 sub-páginas — 2026-05-18
+
+- Endpoint `GET /api/v1/projects/{id}/summary` con agregados
+  (lead_origin, phases counts, current_phase_name, residual counts)
+  para evitar 3-4 fetches por sub-página (commit `64908c1`).
+- 4 componentes shared en
+  `apps/dashboard/src/app/(app)/projects/[id]/_components/`:
+  `ProjectHeader`, `ProjectTabs` (Client), `PhaseProgressBar`,
+  `ProjectPhasesTimeline` (`c3162d9`).
+- Refactor de las 3 sub-páginas (overview, checklist, diff) para
+  reusar `ProjectHeader` y fetch unificado (`c48f1ad`).
+- Verificación visual con fixture de proyecto en desktop + mobile.
+- Spec Playwright 14 specs (todas skipped por WCM-021 — el detalle
+  depende 100% del SSR fetch) (`98b8591`).
+- Bug P0 eliminado: copy "se implementa en Fase 10" del diff
+  placeholder (Fase 10 pasó hace meses).
+- Release v0.8.0.
 
 ### v0.7.0 — Rediseño `/projects` (listado) — 2026-05-18
 

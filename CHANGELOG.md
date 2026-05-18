@@ -11,6 +11,136 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.8.0] — 2026-05-18
+
+Rediseño de `/projects/[id]` + sus 3 sub-páginas (`overview`,
+`checklist`, `diff`) — la pantalla más grande del lote pendiente, con
+4 rutas anidadas que ahora comparten un `ProjectHeader` único. Quinta
+release del rediseño visual, siguiendo el patrón consolidado en
+ADR-036.
+
+### Added
+
+- **Endpoint `GET /api/v1/projects/{id}/summary`** (rol any_user)
+  para evitar 3-4 fetches por sub-página. Devuelve agregados clave:
+  `lead_origin` reducido (id, business_name, score,
+  builder_detected); counts de fases por status
+  (`phases_total/completed/failed/running/pending`);
+  `current_phase_name` (la RUNNING si la hay, sino la última
+  COMPLETED por `completed_at` DESC); counts de residual-tasks
+  (`residual_total/open/done`, donde `open = total - done - skipped`).
+  Implementación: 2 `session.get` + 3 `session.execute` con
+  `GROUP BY`. 8 tests unit cubriendo proyecto sin fases, lead
+  borrado defensivo, current_phase RUNNING > COMPLETED, residual_open
+  excluye DONE/SKIPPED, 404, 401.
+- **4 componentes shared** en
+  `apps/dashboard/src/app/(app)/projects/[id]/_components/`:
+  - `ProjectHeader` (presentacional) — header común a las 4
+    sub-páginas: breadcrumb `← Proyectos`, badge `Proyecto · #N`,
+    título cliente, URL origen externa, `PhaseProgressBar`, MetaLine
+    densa (fase actual · residuales · lead origen con score), slot
+    opcional `actions` (para `ProjectActions` existente), tabs.
+  - `ProjectTabs` (Client, `usePathname`) — 3 tabs Overview ·
+    Checklist · Visual diff con active state por pathname exacto.
+    Badge condicional con count de residuales abiertas en
+    Checklist (solo si > 0; colores diferenciados según tab
+    activo/inactivo).
+  - `PhaseProgressBar` (presentacional) — barra multi-segmento con
+    4 colores: completadas (lima sólido), fallidas (rojo), running
+    (lima con `animate-pulse`), pendientes (gris). Cifra `N/M`
+    tabular a la derecha.
+  - `ProjectPhasesTimeline` (presentacional) — timeline vertical con
+    icono por status (`CheckCircle2/Loader2/AlertCircle/MinusCircle/
+    Circle` de lucide-react), badge "intento N" cuando `attempt > 1`,
+    `error_log` con `line-clamp-2` si existe, columna derecha con
+    when relativo + duración formateada. Empty state contextual
+    cuando 0 fases ("Pulsa Start para encolar el pipeline").
+- **Spec Playwright** `tests/e2e/projects-detail-redesign.spec.ts`
+  con 14 tests en 3 describes (overview · checklist · diff). Todas
+  marcadas `test.skip(SSR_BLOCKED, "WCM-021")` — la página depende
+  100% del fetch del Server Component (sin proyecto cargado no hay
+  nada que el browser pueda verificar). La cobertura real vive en
+  los 17 vitest de componentes hasta que MSW esté.
+
+### Changed
+
+- **`/projects/[id]/page.tsx`** (overview): refactor de 174 líneas
+  con 4 Cards apiladas a layout 2-col en lg+ (timeline 1fr +
+  `ConfigPanel` 280px sidebar). En estrecho colapsa a 1 col.
+  `ConfigPanel`: grid kv compacto con 6 filas sustituyendo Card
+  "Configuración" + Card "Estado" del original (los datos de
+  estado ya viven en el header denso). Fetch en paralelo
+  project + summary + phases.
+- **`/projects/[id]/checklist/page.tsx`**: refactor de tarjetas
+  anidadas a sections con header de categoría + `<ul divide>`.
+  Mantiene el orden canónico (`blocking_go_live` → `client_config`
+  → `visual_content` → `post_go_live` → `other`), pero
+  `blocking_go_live` ahora con borde ámbar warning (urgencia
+  visual). `TaskStatusPill` con 5 status en castellano.
+- **`/projects/[id]/diff/page.tsx`**: placeholder actualizado.
+  Elimina la mentira "se implementa en Fase 10" del copy original
+  (Fase 10 pasó hace meses; el bloqueo es UI, no backend). Nuevo
+  copy reconoce que `packages/visual-diff/` ya existe y explica
+  los 4 pasos del flujo + callout informativo apuntando a la
+  columna Diff del listado para ver el score agregado mientras
+  tanto. Score medio del proyecto visible en la cabecera.
+
+### Fixed
+
+- **Campo schema `error_log`** (no `error_message`): asumí mal en
+  `ProjectPhasesTimeline`. Corregido tras descubrir en preflight
+  tsc — el schema canónico (`ProjectPhaseRead`) usa `error_log:
+  string | null`.
+- **`has_ecommerce` / `preserve_paths` como `boolean | undefined`**:
+  pydantic2ts serializa defaults como opcionales. `?? false`
+  defensivo en `ConfigPanel`.
+
+### Decisions
+
+- **`residual_open = total - done - skipped`**: IN_PROGRESS y
+  BLOCKED cuentan como "abiertos" porque siguen requiriendo acción
+  humana. Decisión semántica del producto, documentada en
+  docstring del endpoint.
+- **`current_phase_name` fallback a última COMPLETED**: si no hay
+  fase RUNNING, mostramos la última terminada como contexto. Más
+  útil que None puro.
+- **`blocking_go_live` con borde ámbar warning**: urgencia visual
+  sin ser alarmante. Las demás categorías con border neutro.
+- **14 specs Playwright skipped sin tests ejecutables nuevos**: el
+  detalle del proyecto depende 100% del fetch SSR — no hay nada
+  client-side puro que testear sin proyecto. Honesto. Pasarán
+  cuando WCM-021 esté.
+
+### Tests
+
+- 461 pytest (+8 projects/{id}/summary).
+- 109 vitest + 3 skipped React 19 (+17 nuevos: PhaseProgressBar,
+  ProjectTabs, ProjectHeader, ProjectPhasesTimeline).
+- 17 Playwright ejecutables (sin cambios) + 42 skipped (+14 nuevos
+  del detalle, todos SSR-blocked).
+- ruff + tsc + `pnpm lint` verde. Cleanup preventivo de
+  `.next/types/* [N]*.ts` duplicados por iCloud (WCM-038) antes del
+  preflight de tsc.
+
+### Estado del rediseño visual
+
+| Pantalla | Estado |
+|---|---|
+| `/login` | original |
+| `/` Panel | ✅ v0.5.0 |
+| `/campaigns` | ✅ v0.6.0 + v0.6.1 |
+| `/leads` master-detail | ✅ v0.4.0 |
+| `/leads/[id]` full-page | ✅ v0.6.0 |
+| `/projects` | ✅ v0.7.0 |
+| `/projects/[id]` + `/checklist` + `/diff` | ✅ **v0.8.0** |
+| `/errors`, `/residual-tasks` | original (WCM-035, siguiente) |
+| `/settings` | modelo a replicar |
+
+**5 pantallas + 2 sub** rediseñadas. Quedan solo **2 pantallas**
+para tener el dashboard completo bajo el nuevo lenguaje.
+
+---
+
 ## [0.7.0] — 2026-05-18
 
 Rediseño del **listado de proyectos** (`/projects`), cuarta pantalla
