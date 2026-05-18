@@ -259,6 +259,43 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-049 — Vaporware "Convertir a proyecto" (Fase 7) — **CERRADO v0.13.0**
+- **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P0
+- **Estado**: DONE 2026-05-18 (commit `117d974`).
+- **Resolución**: `ConvertToProjectDialog` con form pre-rellenado
+  desde lead → POST /projects → redirect a /projects/{id}. Endpoint
+  ya existía; el botón estaba disabled vaporware desde v0.3.0.
+
+---
+
+### WCM-050 — Vaporware "Marcar opt-out" — **CERRADO v0.13.0**
+- **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P0
+- **Estado**: DONE 2026-05-18 (commit `117d974`).
+- **Resolución**: `MarkOptOutDialog` con nota libre → POST
+  /leads/{id}/consent action=objection_received. Endpoint ya existía
+  (Fase 9 RGPD).
+
+---
+
+### WCM-051 — Vaporware Runbook menciona `wcm users` inexistente — **CERRADO v0.13.0**
+- **Tipo**: bug / **Fase**: post-rediseño / **Prioridad**: P0
+- **Estado**: DONE 2026-05-18 (commits `8e1efb9`, `07fd7c4`).
+- **Resolución**: CLI `wcm users` real (6 comandos + 10 tests) + UI
+  /admin/users admin-only con CRUD completo + endpoint PATCH
+  /users/{id} nuevo + Runbook actualizado con link real.
+
+---
+
+### WCM-052 — Gaps operativos UI: audit-log + contactos cross-lead — **CERRADO v0.13.0**
+- **Tipo**: feature / **Fase**: post-rediseño / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commits `ff8ee0b`, `2a5fbe5`).
+- **Resolución**: página /audit-log dedicada con filtros (action/
+  entity_type/actor/since) reemplazando feed mini de homepage; vista
+  global /contactos cross-lead con KpiStrip + FilterChips por status
+  + tabla con link a ficha lead. Sidebar amplía con ambas entradas.
+
+---
+
 ### WCM-048 — Cerrar flujo §8 paso 6 (Aprobar→Enviar) en UI + CLI — **CERRADO v0.12.1**
 - **Tipo**: bug + feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P0
 - **Estado**: DONE 2026-05-18 (commits `94c83e3`, `c71fe4f`, +hotfix polling).

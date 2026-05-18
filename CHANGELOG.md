@@ -11,6 +11,104 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.13.0] — 2026-05-18
+
+Cierre completo de paridad funcional **API ↔ CLI ↔ UI** tras
+auditoría exhaustiva. Elimina 3 vaporwares confirmados y rellena
+3 GAPs operativos. 7 bloques granulares.
+
+### Fixed (vaporwares eliminados)
+
+- **"Convertir a proyecto" disabled con "Fase 7 producto"** — el
+  endpoint `POST /api/v1/projects` SÍ existía. Ahora el botón abre
+  `ConvertToProjectDialog` modal con form pre-rellenado desde el
+  lead (client_name, target_domain opcional, builder_source auto,
+  flags has_ecommerce/is_multilang/preserve_paths) → POST → redirect
+  a `/projects/{id}`. Bloqueado solo si lead DISCARDED o OPTED_OUT.
+- **"Marcar opt-out" disabled con "Endpoint pendiente"** — el
+  endpoint `POST /leads/{id}/consent` con `action=objection_received`
+  SÍ existía. Ahora el botón abre `MarkOptOutDialog` con campo nota
+  libre (1000 char). Lead pasa a MANUAL_REVIEW + AuditLog OPT_OUT.
+  Microcopy distingue entre opt-out manual (este flujo) vs automático
+  (link público `/opt-out?token=…` sin auth).
+- **OperationRunbook decía "vía CLI wcm users …" que NO EXISTÍA** —
+  doble engaño: prometía un CLI inexistente Y endpoint expuesto sin
+  acceso. Ahora hay CLI real Y UI real (siguientes secciones).
+
+### Added
+
+- **CLI `wcm users`** completo (6 comandos): list, create
+  (genera password aleatorio si se omite, >=18 chars), set-role,
+  activate/deactivate (reversible), delete --confirm (irreversible).
+  10 tests pytest.
+- **API `PATCH /api/v1/users/{id}`** admin-only para cambiar
+  role/is_active/name (email no editable; password vía flujo
+  separado). Schema `UserUpdate` con 3 campos opcionales.
+- **UI `/admin/users`** admin-only con:
+  - Tabla densa: email mono | nombre | role select inline | toggle
+    activo clickeable | alta relativa | botón Borrar.
+  - `CreateUserDialog` modal: email/name/role + checkbox "Generar
+    password aleatorio" (recomendado) con `crypto.getRandomValues`
+    (alfabeto 73 chars × 18 longitud). Si checked, password se
+    muestra al creador en toast de 30s para canal seguro.
+  - Mutaciones optimistas (PATCH/DELETE) con toast.
+  - Forbidden state amigable si el usuario actual no es admin.
+- **UI `/audit-log`** vista completa con filtros (action / entity_type
+  / actor / since ISO / limit). Tabla densa con badges por acción
+  (9 colores), payload inline (3 pares + "+N más" con hover JSON
+  pretty), base legal. Empty state según hay filtro o no.
+- **UI `/contactos`** vista global cross-lead de todas las
+  secuencias. KpiStrip 5 KPIs (Total, Borrador pendiente con accent
+  si >0, Lista para enviar accent, Enviando, Completadas) +
+  FilterChips por status. Tabla con Lead # | Negocio + URL |
+  Plantilla | Estado badge castellano | Legal ✓/✗ | Creada | Abrir →
+  (link a `/leads?selected=N#outreach`). Empty state con CTA a
+  `/leads` para componer el primero.
+- **Sidebar nav** amplía con 2 entradas: "Contactos" (icon Mail) y
+  "Audit log" (icon FileText). `/admin/users` accesible desde
+  `/settings` card (no en sidebar — admin-only).
+
+### Changed
+
+- **OperationRunbook** de /settings reescrito: el copy "no hay UI
+  prevista; CLI wcm users en el servidor" se sustituye por link
+  directo a `/admin/users` + sigue documentando CLI para
+  scripts/automatización. Paso 4 nuevo: deactivate / delete
+  --confirm. Test "no promete vaporware" reformulado para verificar
+  que el link a /admin/users existe en el DOM.
+- **Card "Usuarios del sistema"** añadida a `/settings` con link a
+  `/admin/users` (al lado de Plantillas de contacto).
+
+### Tests
+
+- 356 pytest API+worker+CLI (+10 nuevos CLI users).
+- 192 vitest dashboard + 3 skipped React 19 (sin nuevos componentes
+  con tests dedicados — el manager admin se cubrirá en sprint
+  futuro junto con guards de role).
+- ruff + tsc + lint verde.
+
+### Matriz funcional tras v0.13.0
+
+| Capacidad | API | CLI | UI |
+|---|---|---|---|
+| **Leads** completo | ✅ | ✅ | ✅ |
+| **Convertir a proyecto** | ✅ | ✅ | ✅ **+nuevo** |
+| **Opt-out manual** | ✅ | n/a | ✅ **+nuevo** |
+| **Outreach sequences** | ✅ | ✅ (v0.12.1) | ✅ (v0.12.1) |
+| **Templates Jinja2** | ✅ | ❌ (no priorizado) | ✅ |
+| **Proyectos** | ✅ | ✅ | ✅ |
+| **Campañas** | ✅ | ✅ | ✅ |
+| **Residual tasks** | ✅ | ✅ | ✅ |
+| **Errors** | ✅ | n/a | ✅ |
+| **Audit log** | ✅ | n/a | ✅ **+nuevo** |
+| **Users CRUD** | ✅ | ✅ **+nuevo** | ✅ **+nuevo** |
+| **Settings + Firma** | ✅ | n/a | ✅ |
+
+Paridad casi total. Solo gap residual: CLI templates (no urgente —
+caso típico es UI). Eliminados los 3 vaporwares "Fase X" históricos.
+
+---
+
 ## [0.12.1] — 2026-05-18
 
 Hotfix + cierre del flujo §8 paso 6 (revisar/aprobar/enviar contacto)

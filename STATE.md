@@ -29,6 +29,13 @@
 
 ## Última versión publicada
 
+**v0.13.0** (2026-05-18) — cierre paridad funcional API↔CLI↔UI tras
+auditoría exhaustiva (7 bloques). Elimina 3 vaporwares ("Convertir a
+proyecto"/"Marcar opt-out"/`wcm users` inexistente) + rellena 3 gaps
+operativos (UI `/admin/users` admin-only, página `/audit-log` con
+filtros, vista global `/contactos` cross-lead). Sidebar nav amplía
+con Contactos + Audit log. WCM-049/050/051/052 cerrados.
+
 **v0.12.1** (2026-05-18) — hotfix + cierre del flujo §8 paso 6.
 Aprobar ya refleja status READY en la UI (bug del Client child sin
 re-fetch). Status badges castellano (`sequenceStatusLabel`,
