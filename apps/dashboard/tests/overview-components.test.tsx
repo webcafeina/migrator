@@ -1,6 +1,6 @@
 /**
  * Tests de los componentes presentacionales del Overview rediseñado:
- * - `OverviewKpiStrip` (tira de KPIs, sustituye 4 cards gigantes).
+ * - `KpiStrip` (tira de KPIs, sustituye 4 cards gigantes).
  * - `ActivityFeed` (feed agrupado por día desde audit_log).
  *
  * Renderizado server-side con `renderToString` (sin testing-library) para
@@ -16,11 +16,11 @@ import {
   ActivityFeed,
   type AuditLogEntry,
 } from "../src/app/(app)/_overview/activity-feed";
-import { OverviewKpiStrip } from "../src/app/(app)/_overview/overview-kpi-strip";
+import { KpiStrip } from "../src/components/kpi-strip";
 
-// ---------- OverviewKpiStrip ----------
+// ---------- KpiStrip ----------
 
-describe("OverviewKpiStrip", () => {
+describe("KpiStrip", () => {
   const kpis = [
     { label: "Leads totales", value: 29, href: "/leads" },
     { label: "Proyectos activos", value: 0, href: "/projects" },
@@ -29,7 +29,7 @@ describe("OverviewKpiStrip", () => {
   ];
 
   it("renderiza cada KPI con label y value", () => {
-    render(<OverviewKpiStrip kpis={kpis} />);
+    render(<KpiStrip kpis={kpis} />);
     expect(screen.getByText("Leads totales")).toBeInTheDocument();
     expect(screen.getByText("29")).toBeInTheDocument();
     expect(screen.getByText("Proyectos activos")).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe("OverviewKpiStrip", () => {
   });
 
   it("envuelve en Link solo los KPIs con href", () => {
-    render(<OverviewKpiStrip kpis={kpis} />);
+    render(<KpiStrip kpis={kpis} />);
     expect(screen.getByRole("link", { name: /leads totales/i })).toHaveAttribute(
       "href",
       "/leads",
@@ -53,7 +53,7 @@ describe("OverviewKpiStrip", () => {
   });
 
   it("aplica clase warning a valores accent=true", () => {
-    const html = renderToString(<OverviewKpiStrip kpis={kpis} />);
+    const html = renderToString(<KpiStrip kpis={kpis} />);
     // El value "3" debe estar dentro de un span con la clase de warning
     expect(html).toContain("text-wcm-warning");
   });
@@ -61,13 +61,13 @@ describe("OverviewKpiStrip", () => {
   it("la celda raíz tiene min-width para permitir wrap responsive", () => {
     // Ajuste de bloque 4: en viewport estrecho cada celda mantiene
     // 160px mínimos y `flex-wrap` envuelve en filas en lugar de comprimir.
-    const html = renderToString(<OverviewKpiStrip kpis={kpis} />);
+    const html = renderToString(<KpiStrip kpis={kpis} />);
     expect(html).toContain("min-w-[160px]");
     expect(html).toContain("flex-wrap");
   });
 
   it("no aplica border-l a la primera celda (evita doble borde al wrap)", () => {
-    const html = renderToString(<OverviewKpiStrip kpis={kpis} />);
+    const html = renderToString(<KpiStrip kpis={kpis} />);
     // El primer <li> NO debe llevar border-l; los siguientes sí.
     const firstLi = html.split("<li")[1] ?? "";
     expect(firstLi).not.toContain("border-l");

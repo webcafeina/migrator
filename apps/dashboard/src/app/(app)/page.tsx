@@ -15,10 +15,7 @@ import {
   ActivityFeed,
   type AuditLogEntry,
 } from "./_overview/activity-feed";
-import {
-  OverviewKpiStrip,
-  type OverviewKpi,
-} from "./_overview/overview-kpi-strip";
+import { KpiStrip, type Kpi } from "@/components/kpi-strip";
 
 interface LeadStatsResponse {
   total: number;
@@ -108,7 +105,7 @@ export default async function OverviewPage({
     auditLog.length === 0 &&
     !params.action;
 
-  const kpis: OverviewKpi[] = [
+  const kpis: Kpi[] = [
     {
       label: "Leads totales",
       value: leadStats.total,
@@ -156,7 +153,7 @@ export default async function OverviewPage({
         </div>
       </header>
 
-      <OverviewKpiStrip kpis={kpis} />
+      <KpiStrip kpis={kpis} />
 
       {isEmptySystem ? (
         <OnboardingCard />
