@@ -259,6 +259,22 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-039 — Rediseño `/settings` — cierre del ciclo completo — **CERRADO v0.10.0**
+- **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P2
+- **Estado**: DONE 2026-05-18 (commits `b44a99f`, `8936af0`, `67e07a1`, `a7d4baa`, `69a1bce`).
+- **Resolución**: rediseñada la última pantalla del dashboard bajo el
+  patrón ADR-036 con la variación para pantallas no-list. Endpoint
+  `/api/v1/system/info` con 6 campos de runtime + 3 componentes
+  presentacionales (`UserCard`, `SystemInfoPanel` con HealthRows,
+  `OperationRunbook`) + refactor 2-col + spec Playwright 7 tests.
+  Castellanización del título ("Settings" → "Ajustes"). Bug P0
+  eliminado: "UI de gestión: Fase 14" (misma clase que la "Fase 10"
+  del diff cerrada en WCM-034). Con esto **11/11 pantallas
+  operativas del dashboard quedan bajo el nuevo lenguaje visual**;
+  `/login` queda fuera de scope por vivir en otro app group.
+
+---
+
 ### WCM-036 — 3 vitest skipped por React 19 + `startTransition(async)`
 - **Tipo**: test / **Fase**: post-MVP rediseño / **Prioridad**: P3
 - **Estado**: OPEN

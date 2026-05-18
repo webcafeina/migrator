@@ -11,6 +11,140 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.10.0] — 2026-05-18
+
+Rediseño de **`/settings`** — última pantalla del dashboard. **Cierre
+del ciclo completo del rediseño visual**: 11/11 pantallas operativas
+bajo el nuevo lenguaje. Última release del trayecto iniciado en v0.4.0.
+
+Pantalla distinta del resto: informativa, no listado. Confirmó la
+variación del patrón ADR-036 para pantallas no-list, hoy documentada
+explícitamente.
+
+### Added
+
+- **Endpoint `GET /api/v1/system/info`** (admin/operator) con 6 campos
+  de runtime: `version` (de pyproject.toml vía
+  `importlib.metadata.version`), `environment` (de ApiSettings),
+  `python_version`, `alembic_revision` (de `SELECT version_num FROM
+  alembic_version`), `uptime_seconds` (desde `_PROCESS_STARTED_AT`
+  módulo-level capturado al import), `health` summary 4 campos
+  (overall + db + redis + r2). Reúsa `_check_db/_check_redis/_check_r2`
+  de `/health/deep` para single source of truth sobre qué consideramos
+  sano. Mismo criterio overall: db/redis críticos → fail; r2 opcional
+  → degraded. 6 tests unit cubriendo shape canónica, alembic null
+  cuando la tabla no existe (BD sin migrar), overall degraded por r2,
+  overall fail por db, viewer 403, sin auth 401.
+- **3 componentes presentacionales** en
+  `apps/dashboard/src/app/(app)/settings/_components/`:
+  - `UserCard` — dl grid 2-col denso con 6 filas (email, nombre, rol
+    con `RoleBadge` lima para admin, activo, alta, id). Error
+    explicativo cuando `/auth/me` falla.
+  - `SystemInfoPanel` — 5 filas runtime + sub-bloque health con
+    `OverallBadge` (ok/degraded/fail por color) y 3 `HealthRow` con
+    dot coloreado. `EnvBadge` ámbar para "production" como
+    recordatorio visual. `formatUptime` escalable (s → m → h+m →
+    d+h+m). Error explicativo con sugerencia de `systemctl status
+    webcafeina-api` cuando el API no responde.
+  - `OperationRunbook` — runbook condensado con 2 secciones (editar
+    `.env` vía SSH + systemctl restart, gestión usuarios vía CLI
+    `wcm users`). Sustituye los 2 placeholders previos por
+    información accionable. Explícito sobre "no hay UI prevista"
+    para usuarios (sin promesas vaporware).
+- **Spec Playwright** `tests/e2e/settings-redesign.spec.ts` con 7
+  tests. 4 pasan client-side (header castellano "Ajustes", 3
+  secciones, guardia "Fase 14 NO presente", OperationRunbook con SSH
+  y comandos CLI); 3 marcados `test.skip(SSR_BLOCKED, "WCM-021")`
+  para datos server-fetched. Fixture base ampliado con handler de
+  `/api/v1/system/info`.
+
+### Changed
+
+- **`/settings/page.tsx`**: refactor completo de 3 Cards de shadcn
+  genéricas a layout 2-col denso (1fr Usuario+Sistema | 360px
+  Operación) con responsive a 1-col. Fetch en paralelo de `/auth/me`
+  + `/system/info` con `.catch()` defensivo — cualquier dependencia
+  caída se refleja en su componente sin romper la página entera.
+- **Título "Settings" → "Ajustes"** — el inglés violaba CLAUDE.md §3
+  (castellano de España primario) y además era inconsistente con el
+  nav lateral que ya ponía "Ajustes".
+- **`apps/dashboard/README.md`** — tabla de páginas actualizada con
+  las descripciones reales tras los rediseños v0.4.0..v0.10.0;
+  incluía aún una mención "Fase 10" desfasada en
+  `/projects/[id]/diff` que se actualizó por la copy honesta de
+  v0.8.0.
+
+### Fixed
+
+- **Bug P0 — Mentira "UI de gestión: Fase 14"**: el placeholder
+  original prometía "UI de gestión llega en Fase 14". Fase 14 pasó
+  hace meses; no hay UI de gestión planificada y el equipo (9
+  personas) no la justifica. Sustituido por explicación honesta del
+  flujo CLI `wcm users`. Misma clase de mentira que la "Fase 10" del
+  diff que se eliminó en v0.8.0 con WCM-034. Guardia automática
+  añadida en spec Playwright para prevenir regresiones.
+
+### Decisions
+
+- **Variación del patrón ADR-036 para pantallas no-list**
+  (documentada): el bloque 1 sigue siendo un endpoint backend
+  dedicado pero con runtime info en vez de counts; el bloque 4 omite
+  FilterChips y 2 empty states (no aplica filtrar lo que no es
+  lista); resto idéntico (componentes presentacionales, refactor
+  page denso, spec). Esta variación se anticipó al revisar
+  `/settings` y se documentó tras aplicarla — el patrón es robusto.
+- **`/system/info` admin/operator (no any_user)**: la revision de
+  Alembic y los component paths pueden filtrar arquitectura interna.
+  Viewers ven solo lo que les sirve para operar (leads, projects,
+  campaigns), no detalles del runtime del servidor.
+- **`_PROCESS_STARTED_AT` módulo-level (no persistente)**: cada
+  `systemctl restart webcafeina-api` resetea el uptime. Eso es lo
+  que el operador quiere ver — el uptime real del proceso que está
+  sirviendo la request, no el uptime acumulado de la máquina.
+- **`alembic_revision` por SELECT a la BD (no por `ScriptDirectory`
+  del repo)**: refleja qué migration está APLICADA en la BD, no qué
+  HEAD tiene el repo. Lo que el operador necesita saber.
+- **Reúso de `_check_*` de health.py**: importar `_check_db`,
+  `_check_redis`, `_check_r2` (privados con `_`) tiene el coste de
+  cruzar la barrera de privacy del módulo, pero el beneficio es una
+  única fuente de verdad sobre qué consideramos sano. Más limpio que
+  duplicar lógica.
+
+### Tests
+
+- 475 pytest (+6 nuevos: shape, alembic null, degraded r2, fail db,
+  viewer 403, sin auth 401).
+- 133 vitest + 3 skipped React 19 (+13 nuevos: UserCard render +
+  rol admin lima + error null; SystemInfoPanel render + 4 escalas
+  uptime + env production ámbar + alembic null copy + 3 health
+  rows + overall fail/degraded + error null; OperationRunbook 2
+  secciones + comandos + guardia "Fase 14 NO presente" + guardia
+  "no promete vaporware").
+- 23 Playwright ejecutables (+4 nuevos — más de los 2 habituales
+  porque el runbook y la guardia "Fase 14" son client-side puros) +
+  55 skipped (+3 nuevos, todos SSR-blocked por WCM-021).
+
+### Estado del rediseño visual — ✅ CICLO CERRADO
+
+| Pantalla | Estado |
+|---|---|
+| `/login` | fuera de scope (app group `(auth)`) |
+| `/` Panel | ✅ v0.5.0 |
+| `/campaigns` | ✅ v0.6.0 + v0.6.1 |
+| `/leads` master-detail | ✅ v0.4.0 |
+| `/leads/[id]` full-page | ✅ v0.6.0 |
+| `/projects` | ✅ v0.7.0 |
+| `/projects/[id]` + `/checklist` + `/diff` | ✅ v0.8.0 |
+| `/errors` | ✅ v0.9.0 |
+| `/residual-tasks` | ✅ v0.9.0 |
+| `/settings` | ✅ **v0.10.0** |
+
+**11 / 11 pantallas operativas** del dashboard bajo el nuevo lenguaje
+visual. Ciclo iniciado con `/leads` (v0.4.0, 2026-05-16) y cerrado
+con `/settings` (v0.10.0, 2026-05-18) — 6 sprints, 4 días calendario.
+
+---
+
 ## [0.9.0] — 2026-05-18
 
 Rediseño simultáneo de `/errors` + `/residual-tasks` — primer sprint

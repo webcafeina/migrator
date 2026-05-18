@@ -24,36 +24,41 @@
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
 - **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada. Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021.
-- **Post-MVP: rediseño visual del dashboard** — 9 de 11 pantallas rediseñadas con v0.9.0 (2026-05-18). Solo queda `/settings` antes de cerrar el rediseño. Detalle abajo en §"Sesiones post-MVP".
+- **Post-MVP: rediseño visual del dashboard** — ✅ **CERRADO con v0.10.0** (2026-05-18). 11/11 pantallas operativas bajo el nuevo lenguaje (todas las del nav lateral). `/login` queda fuera porque vive en la app group `(auth)` con su propio layout. Detalle abajo en §"Sesiones post-MVP".
 
 ## Última versión publicada
 
-**v0.9.0** (2026-05-18) — rediseño `/errors` + `/residual-tasks` en sprint
-único, cerrando todas las pantallas del dashboard menos `/settings`.
-KpiStrip + FilterChips + tablas con badges semánticos + 2 empty states
-por pantalla. CI verde.
+**v0.10.0** (2026-05-18) — rediseño `/settings` que cierra el ciclo
+completo del rediseño visual del dashboard. Nueva fuente de runtime info
+con endpoint `/system/info` (versión, alembic_revision, uptime, health
+summary). Eliminación de la mentira "UI de gestión: Fase 14". CI verde.
 
 ## Estado del rediseño visual del dashboard
 
 | # | Pantalla | Estado | Release |
 |---|---|---|---|
-| 1 | `/login` | original | — |
+| 1 | `/login` | fuera de scope | — (app group `(auth)`) |
 | 2 | `/` Panel | ✅ rediseñado | v0.5.0 |
 | 3 | `/campaigns` | ✅ rediseñado + fix P0 | v0.6.0 + v0.6.1 |
 | 4 | `/leads` master-detail | ✅ rediseñado | v0.4.0 |
 | 5 | `/leads/[id]` full-page | ✅ refactor | v0.6.0 |
 | 6 | `/projects` | ✅ rediseñado | v0.7.0 |
 | 7-9 | `/projects/[id]` + `checklist` + `diff` | ✅ rediseñado | v0.8.0 |
-| 10 | `/errors` | ✅ rediseñado | **v0.9.0** |
-| 11 | `/residual-tasks` | ✅ rediseñado | **v0.9.0** |
-| 12 | `/settings` | modelo a replicar | — (último pendiente) |
+| 10 | `/errors` | ✅ rediseñado | v0.9.0 |
+| 11 | `/residual-tasks` | ✅ rediseñado | v0.9.0 |
+| 12 | `/settings` | ✅ rediseñado | **v0.10.0** |
 
-**Patrón de rediseño consolidado** tras 5 pantallas (ADR-036):
-1. Endpoint stats dedicado (`/X/stats`).
+**Patrón de rediseño consolidado** tras 6 pantallas (ADR-036, con
+variación documentada para pantallas no-list en v0.10.0):
+1. Endpoint backend dedicado (`/X/stats` para listados; `/system/info`
+   o equivalente para pantallas informativas).
 2. Componentes presentacionales en `_components/`.
-3. Refactor `page.tsx` con `KpiStrip` + chips + tabla/empty.
-4. Pulido: 2 empty states (sistema vacío vs filtro 0) + responsive.
-5. Tests: vitest del componente + spec Playwright (mitad ejecutable, mitad skipped por WCM-021).
+3. Refactor `page.tsx` denso (`KpiStrip` + chips + tabla/empty para
+   listados; kv-grid + sub-bloques para informativas).
+4. Pulido: empty states diferenciados (listados) o verificación
+   responsive (informativas).
+5. Tests: vitest del componente + spec Playwright (mitad ejecutable,
+   mitad skipped por WCM-021).
 
 Componentes promovidos a `apps/dashboard/src/components/` (shared):
 `FilterChips` (v0.5.0), `KpiStrip` (v0.7.0).
@@ -87,6 +92,35 @@ Componentes promovidos a `apps/dashboard/src/components/` (shared):
 
 Trabajo posterior al cierre del MVP v0.1.0. Cada release agrupa un
 rediseño completo de una pantalla (5 bloques granulares — ver ADR-036).
+
+### v0.10.0 — Rediseño `/settings` — cierre del ciclo completo — 2026-05-18
+
+Última pantalla del rediseño. Distinta del resto: pantalla informativa
+(no listado), sin KpiStrip/FilterChips. Confirmó la variación del
+patrón ADR-036 para pantallas no-list.
+
+- Endpoint `GET /api/v1/system/info` (admin/operator) con 6 campos de
+  runtime (version, environment, python_version, alembic_revision,
+  uptime_seconds, health summary). Reúsa los checkers de `/health/deep`
+  para single source of truth. 6 tests pytest cubriendo shape, alembic
+  null defensivo, overall degraded/fail, RBAC viewer 403, sin auth 401
+  (commit `b44a99f`).
+- 3 componentes presentacionales (`UserCard`, `SystemInfoPanel`,
+  `OperationRunbook`) con el lenguaje visual denso del resto del
+  dashboard (dl grid 2-col, fondo `wcm-secondary/30`, badges por
+  rol/env/overall, formato de uptime escalable Nd Nh Nm). 13 tests
+  vitest (`8936af0`).
+- Refactor `page.tsx` a layout 2-col (Usuario+Sistema | Operación);
+  título castellano "Ajustes" sustituyendo "Settings" (violación
+  CLAUDE.md §3) (`67e07a1`).
+- **Bug P0** eliminado: la mentira "UI de gestión: Fase 14" del
+  placeholder original — Fase 14 pasó hace meses; misma clase que la
+  "Fase 10" del diff que se limpió en v0.8.0. Guardia automática
+  añadida en spec Playwright. README del dashboard también actualizado
+  (otra mención "Fase 10" desfasada en la tabla de páginas) (`a7d4baa`).
+- Spec Playwright 7 tests (4 ejecutables — más de los 2 habituales
+  porque la guardia "no menciona Fase 14" y el runbook son
+  client-side puros — + 3 SSR-blocked por WCM-021) (`69a1bce`).
 
 ### v0.9.0 — Rediseño `/errors` + `/residual-tasks` (sprint único) — 2026-05-18
 

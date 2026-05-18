@@ -829,9 +829,10 @@ venv -> venv.nosync
 **Fecha**: 2026-05-18 (consolidado tras 4 pantallas rediseñadas:
 `/leads` v0.4.0, `/` v0.5.0, `/campaigns` v0.6.0, `/projects` v0.7.0;
 reforzado con `/projects/[id]` v0.8.0 y agrupación `/errors` +
-`/residual-tasks` en v0.9.0 — primer sprint que mete 2 pantallas en
-una sola release porque comparten patrón exacto)
-**Estado**: ✅ Aceptada
+`/residual-tasks` en v0.9.0; **completado con `/settings` v0.10.0** —
+última pantalla del dashboard, que confirmó la variación del patrón
+para pantallas no-list).
+**Estado**: ✅ Aceptada — ciclo cerrado
 
 **Contexto**: tras el cierre del MVP v0.1.0 (2026-05-14) y una
 auditoría visual completa del dashboard (capturas en
@@ -915,8 +916,8 @@ no se ejecuta con tsc/vitest).
   los primeros datos en producción.
 
 Releases que materializan este patrón: v0.4.0, v0.5.0, v0.6.0,
-v0.7.0, v0.8.0, v0.9.0. Detalle de cada bloque en `STATE.md`
-§"Sesiones post-MVP".
+v0.7.0, v0.8.0, v0.9.0, v0.10.0 (cierre). Detalle de cada bloque en
+`STATE.md` §"Sesiones post-MVP".
 
 **Agrupación de 2 pantallas en una release** (caso v0.9.0): cuando 2
 pantallas comparten patrón exacto (lista plana + filtro por enum, sin
@@ -924,6 +925,30 @@ master-detail ni subpáginas), pueden meterse en la misma release con
 un commit por bloque que toca ambas a la vez. Reduce overhead de
 release sin sacrificar granularidad. NO aplicable cuando las pantallas
 tienen schemas o componentes claramente distintos.
+
+**Variación para pantallas no-list** (caso v0.10.0 `/settings`): el
+patrón se adapta cuando la pantalla es informativa/configuración en
+vez de listado:
+- **Bloque 1** sigue siendo un endpoint backend dedicado, pero no
+  agrega counts (`/stats`) sino runtime info (`/system/info`). Mismo
+  beneficio: una fuente única de verdad que el dashboard consume.
+- **Bloque 4** no usa `FilterChips` ni 2 empty states (no hay nada
+  que filtrar ni vaciar). Se reduce a verificación responsive +
+  microcopy.
+- **Resto idéntico**: componentes presentacionales en
+  `_components/`, refactor `page.tsx` denso con kv-grid en lugar de
+  KpiStrip, spec Playwright con guardias específicas (en `/settings`
+  la guardia "no menciona Fase 14" es análoga a la "no menciona
+  Fase 10" de `/projects/[id]/diff` v0.8.0 — ambas previenen
+  regresiones de mentiras vaporware).
+
+**Cierre del ciclo (v0.10.0)**: 11/11 pantallas operativas
+rediseñadas. `/login` queda fuera porque vive en otro app group con
+su propio layout. Total: 6 sprints (v0.4.0 → v0.10.0) en 4 días
+calendario, ~5 commits + 1 release por sprint. Componentes shared
+estabilizados en `apps/dashboard/src/components/` (`FilterChips`,
+`KpiStrip`); cada nuevo componente shared exigió 2+ páginas como
+prerequisito antes de promoverse — sin abstracciones prematuras.
 
 ---
 
