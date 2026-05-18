@@ -11,8 +11,9 @@ interface DraftBannerProps {
  * forma canónica de avisar al operador: "este lead tiene una secuencia
  * lista — revisa y aprueba/edita antes de enviar".
  *
- * El CTA enlaza a la futura sección de outreach del propio lead (cuando
- * exista) — el anchor `#outreach` queda fijo para no romper la URL.
+ * El CTA enlaza a la sección `#outreach` del propio panel detalle,
+ * donde `OutreachSequencePanel` (v0.11.1) renderiza la secuencia
+ * completa con su botón "Aprobar".
  */
 export function DraftBanner({ leadId, className }: DraftBannerProps) {
   return (

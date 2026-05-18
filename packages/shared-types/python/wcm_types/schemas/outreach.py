@@ -2,19 +2,44 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import Field
+from pydantic import AliasChoices, ConfigDict, Field
 
 from wcm_types.enums import OutreachChannel, OutreachSendStatus, OutreachSequenceStatus
 from wcm_types.schemas._base import TimestampedRead, WcmModel
 
 
 class OutreachStep(WcmModel):
-    """Un paso dentro de steps_json — validado para asegurar mínimos LSSI-CE."""
+    """Un paso dentro de steps_json — validado para asegurar mínimos LSSI-CE.
 
-    step_index: int = Field(ge=0)
+    Tolerante con shapes legacy (fix v0.11.1): sequences viejas
+    persistidas en BD tienen `delay_days` (sin `_from_previous`) y
+    pueden traer campos extra (`template`). Para no romper su lectura
+    desde el dashboard:
+
+    - `step_index` opcional con default 0 (se infiere del orden si falta).
+    - `delay_days_from_previous` acepta también el alias `delay_days`
+      vía `AliasChoices`.
+    - `extra="allow"` permite cualquier campo adicional sin lanzar 500.
+      Los composers nuevos siguen escribiendo solo el shape canónico.
+    """
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        str_strip_whitespace=True,
+        extra="allow",  # tolerancia a sequences legacy en BD
+        populate_by_name=True,
+    )
+
+    step_index: int = Field(default=0, ge=0)
     subject: str | None = Field(default=None, max_length=255)
     body: str
-    delay_days_from_previous: int = Field(default=0, ge=0)
+    delay_days_from_previous: int = Field(
+        default=0,
+        ge=0,
+        validation_alias=AliasChoices(
+            "delay_days_from_previous", "delay_days"
+        ),
+    )
     legal_footer_included: bool = True
 
 
