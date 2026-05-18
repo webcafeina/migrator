@@ -13,7 +13,8 @@ from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import select
+from pydantic import BaseModel, Field
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wcm_api.db import get_session
@@ -21,7 +22,7 @@ from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import require_role
 from wcm_api.tasks.enqueue import enqueue_project_pipeline
 from wcm_db.models.projects import Project, ProjectPhase
-from wcm_types.enums import ProjectStatus, UserRole
+from wcm_types.enums import BuilderType, ProjectStatus, UserRole
 from wcm_types.schemas.projects import (
     ProjectCreate,
     ProjectPhaseRead,
@@ -46,6 +47,110 @@ async def list_projects(
         stmt = stmt.where(Project.status == project_status)
     items = (await session.execute(stmt)).scalars().all()
     return [ProjectRead.model_validate(p) for p in items]
+
+
+class ProjectStats(BaseModel):
+    """Agregados de proyectos para el topbar del rediseño /projects.
+
+    Distingue 6 buckets de estado (los del enum `ProjectStatus`) +
+    `failed_or_cancelled` agregado para el topbar (no merece celda
+    separada). `avg_visual_diff_score` excluye los `null` (proyectos
+    sin diff calculado todavía).
+    """
+
+    total: int = Field(description="Proyectos totales.")
+    queued: int = Field(description="Proyectos encolados sin arrancar.")
+    running: int = Field(description="Proyectos con pipeline en curso.")
+    blocked: int = Field(description="Bloqueados esperando input humano.")
+    completed: int = Field(description="Migraciones cerradas con éxito.")
+    failed_or_cancelled: int = Field(
+        description="QA fallido o cancelados manualmente."
+    )
+    distinct_builders: int = Field(
+        description="Builders origen únicos detectados, sin unknown/null."
+    )
+    avg_visual_diff_score: float | None = Field(
+        description="Score medio de visual diff (0..1). null si ningún proyecto tiene diff."
+    )
+
+
+@router.get("/stats", response_model=ProjectStats)
+async def project_stats(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> ProjectStats:
+    """Devuelve agregados de proyectos para el topbar de `/projects`.
+
+    8 buckets calculados en SQL separado para mantener legibilidad.
+    Tabla pequeña en MVP (<100 proyectos esperados); cuando crezca
+    consideraremos un único GROUP BY.
+    """
+    total = (
+        await session.execute(select(func.count()).select_from(Project))
+    ).scalar_one()
+    queued = (
+        await session.execute(
+            select(func.count())
+            .select_from(Project)
+            .where(Project.status == ProjectStatus.QUEUED)
+        )
+    ).scalar_one()
+    running = (
+        await session.execute(
+            select(func.count())
+            .select_from(Project)
+            .where(Project.status == ProjectStatus.RUNNING)
+        )
+    ).scalar_one()
+    blocked = (
+        await session.execute(
+            select(func.count())
+            .select_from(Project)
+            .where(Project.status == ProjectStatus.BLOCKED_HUMAN_INPUT)
+        )
+    ).scalar_one()
+    completed = (
+        await session.execute(
+            select(func.count())
+            .select_from(Project)
+            .where(Project.status == ProjectStatus.COMPLETED)
+        )
+    ).scalar_one()
+    failed_or_cancelled = (
+        await session.execute(
+            select(func.count())
+            .select_from(Project)
+            .where(
+                Project.status.in_(
+                    [ProjectStatus.QA_FAILED, ProjectStatus.CANCELLED]
+                )
+            )
+        )
+    ).scalar_one()
+    distinct_builders = (
+        await session.execute(
+            select(func.count(func.distinct(Project.builder_source)))
+            .where(Project.builder_source.is_not(None))
+            .where(Project.builder_source != BuilderType.UNKNOWN)
+        )
+    ).scalar_one()
+    avg_diff = (
+        await session.execute(
+            select(func.avg(Project.visual_diff_avg_score)).where(
+                Project.visual_diff_avg_score.is_not(None)
+            )
+        )
+    ).scalar_one_or_none()
+    return ProjectStats(
+        total=int(total),
+        queued=int(queued),
+        running=int(running),
+        blocked=int(blocked),
+        completed=int(completed),
+        failed_or_cancelled=int(failed_or_cancelled),
+        distinct_builders=int(distinct_builders),
+        avg_visual_diff_score=float(avg_diff) if avg_diff is not None else None,
+    )
 
 
 @router.post("", response_model=ProjectRead, status_code=status.HTTP_201_CREATED)
