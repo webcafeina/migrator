@@ -74,6 +74,12 @@ export function LeadCreateBulkTab({
           router.push("/leads");
         }
       } catch (err) {
+        if (err instanceof ApiError && err.status === 429) {
+          toast.error(
+            "Demasiados envíos en 1 minuto — espera un poco y reintenta.",
+          );
+          return;
+        }
         toast.error(
           err instanceof ApiError ? err.message : "Error inesperado",
         );
