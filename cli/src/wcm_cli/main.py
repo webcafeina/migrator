@@ -14,6 +14,7 @@ from wcm_cli.commands import (
     deploy,
     doctor,
     leads,
+    outreach,
     projects,
     residual_tasks,
     setup_cmd,
@@ -56,6 +57,7 @@ app.add_typer(auth.app, name="auth")
 app.add_typer(leads.app, name="leads")
 app.add_typer(projects.app, name="projects")
 app.add_typer(campaigns.app, name="campaigns")
+app.add_typer(outreach.app, name="outreach")
 app.add_typer(residual_tasks.app, name="residual-tasks")
 
 
