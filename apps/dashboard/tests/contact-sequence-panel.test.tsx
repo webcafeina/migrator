@@ -1,5 +1,5 @@
 /**
- * Tests del OutreachSequencePanel (v0.11.1 bug 2):
+ * Tests del ContactSequencePanel (v0.11.1 bug 2):
  * - Fetcha /sequences?lead_id=N en mount.
  * - Render por estado: loading, vacío, con sequence, error.
  * - Botón "Aprobar" habilitado SOLO si status=DRAFT_PENDING_REVIEW y
@@ -37,7 +37,7 @@ vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-import { OutreachSequencePanel } from "../src/app/(app)/leads/_components/outreach-sequence-panel";
+import { ContactSequencePanel } from "../src/app/(app)/leads/_components/contact-sequence-panel";
 
 function _draftSeq(over: Record<string, unknown> = {}) {
   return {
@@ -77,25 +77,25 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("OutreachSequencePanel", () => {
+describe("ContactSequencePanel", () => {
   it("muestra loading mientras fetcha", () => {
     apiGet.mockReturnValue(new Promise(() => {})); // never resolves
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     expect(screen.getByText(/cargando borradores/i)).toBeInTheDocument();
   });
 
   it("muestra empty state con copy explicativa cuando no hay sequences", async () => {
     apiGet.mockResolvedValue([]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     await waitFor(() => {
       expect(screen.getByText(/sin borradores/i)).toBeInTheDocument();
     });
-    expect(screen.getByText(/componer outreach/i)).toBeInTheDocument();
+    expect(screen.getByText(/componer contacto/i)).toBeInTheDocument();
   });
 
   it("muestra error cuando la API falla", async () => {
     apiGet.mockRejectedValue(new Error("network down"));
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     await waitFor(() => {
       expect(
         screen.getByText(/no se pudieron cargar los borradores/i),
@@ -105,7 +105,7 @@ describe("OutreachSequencePanel", () => {
 
   it("renderiza pasos con subject + body + delay relativo", async () => {
     apiGet.mockResolvedValue([_draftSeq()]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     await waitFor(() => {
       expect(
         screen.getByText("Bar Pepe, una idea sobre vuestra web"),
@@ -119,21 +119,21 @@ describe("OutreachSequencePanel", () => {
 
   it("botón Aprobar habilitado con DRAFT_PENDING_REVIEW + validation_passed", async () => {
     apiGet.mockResolvedValue([_draftSeq()]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     const button = await screen.findByRole("button", { name: /aprobar/i });
     expect(button).toBeEnabled();
   });
 
   it("botón Aprobar deshabilitado si status != DRAFT_PENDING_REVIEW", async () => {
     apiGet.mockResolvedValue([_draftSeq({ status: "SENT" })]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     const button = await screen.findByRole("button", { name: /aprobar/i });
     expect(button).toBeDisabled();
   });
 
   it("botón Aprobar deshabilitado + warning si validación legal NO pasada", async () => {
     apiGet.mockResolvedValue([_draftSeq({ legal_validation_passed: false })]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     const button = await screen.findByRole("button", { name: /aprobar/i });
     expect(button).toBeDisabled();
     expect(
@@ -145,7 +145,7 @@ describe("OutreachSequencePanel", () => {
     apiGet.mockResolvedValue([_draftSeq()]);
     apiPost.mockResolvedValue({});
     const user = userEvent.setup();
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     const button = await screen.findByRole("button", { name: /aprobar/i });
     await user.click(button);
     expect(apiPost).toHaveBeenCalledWith(
@@ -156,7 +156,7 @@ describe("OutreachSequencePanel", () => {
 
   it("fetcha con searchParams.lead_id correcto", async () => {
     apiGet.mockResolvedValue([]);
-    render(<OutreachSequencePanel leadId={42} />);
+    render(<ContactSequencePanel leadId={42} />);
     await waitFor(() => {
       expect(apiGet).toHaveBeenCalledWith("/api/v1/outreach/sequences", {
         searchParams: { lead_id: 42 },
@@ -178,7 +178,7 @@ describe("OutreachSequencePanel", () => {
       ],
     });
     apiGet.mockResolvedValue([seq]);
-    render(<OutreachSequencePanel leadId={5} />);
+    render(<ContactSequencePanel leadId={5} />);
     await waitFor(() => {
       expect(screen.getByText("Test")).toBeInTheDocument();
     });

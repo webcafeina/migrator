@@ -3,6 +3,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import type { UserRead } from "@/types/api";
 
+import { FirmaCard, type FirmaData } from "./_components/firma-card";
 import { OperationRunbook } from "./_components/operation-runbook";
 import {
   SystemInfoPanel,
@@ -20,11 +21,12 @@ import { UserCard } from "./_components/user-card";
  * componente correspondiente sin romper la página entera.
  */
 export default async function SettingsPage() {
-  const [user, info] = await Promise.all([
+  const [user, info, firma] = await Promise.all([
     api.get<UserRead>("/api/v1/auth/me").catch(() => null),
     api
       .get<SystemInfoData>("/api/v1/system/info")
       .catch(() => null),
+    api.get<FirmaData>("/api/v1/system/firma").catch(() => null),
   ]);
 
   return (
@@ -46,6 +48,10 @@ export default async function SettingsPage() {
 
           <Block title="Estado del sistema">
             <SystemInfoPanel info={info} />
+          </Block>
+
+          <Block title="Firma legal aplicada al contacto">
+            <FirmaCard firma={firma} />
           </Block>
 
           <Block title="Plantillas de contacto">

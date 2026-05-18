@@ -107,7 +107,7 @@ test.describe("/leads — rediseño master-detail", () => {
     const detail = page.getByLabel("Detalle del lead seleccionado");
 
     await expect(
-      detail.getByRole("button", { name: /componer outreach/i }),
+      detail.getByRole("button", { name: /componer contacto/i }),
     ).toBeVisible();
     await expect(
       detail.getByRole("button", { name: /convertir a proyecto/i }),
@@ -120,7 +120,7 @@ test.describe("/leads — rediseño master-detail", () => {
     ).toBeVisible();
   });
 
-  test("componer outreach: muestra mensaje de éxito tras click", async ({
+  test("componer contacto: muestra mensaje de éxito tras click", async ({
     page,
   }) => {
     test.skip(SSR_BLOCKED, "WCM-021");
@@ -136,7 +136,7 @@ test.describe("/leads — rediseño master-detail", () => {
     );
 
     await page.goto("/leads?selected=1");
-    const composeBtn = page.getByRole("button", { name: /componer outreach/i });
+    const composeBtn = page.getByRole("button", { name: /componer contacto/i });
     await composeBtn.click();
 
     // Mensaje "✓ Borrador encolado" aparece junto a los botones.
@@ -145,13 +145,13 @@ test.describe("/leads — rediseño master-detail", () => {
     });
   });
 
-  test("componer outreach disabled si el lead no tiene emails", async ({
+  test("componer contacto disabled si el lead no tiene emails", async ({
     page,
   }) => {
     test.skip(SSR_BLOCKED, "WCM-021");
     // Hostel Papy (id 2) no tiene emails en la fixture.
     await page.goto("/leads?selected=2");
-    const composeBtn = page.getByRole("button", { name: /componer outreach/i });
+    const composeBtn = page.getByRole("button", { name: /componer contacto/i });
     await expect(composeBtn).toBeDisabled();
     await expect(composeBtn).toHaveAttribute(
       "title",

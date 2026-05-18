@@ -11,6 +11,7 @@ component paths que viewers no necesitan ver.
 
 from __future__ import annotations
 
+import os
 import sys
 from datetime import UTC, datetime
 from importlib.metadata import PackageNotFoundError
@@ -52,6 +53,20 @@ class HealthSummary(BaseModel):
     db: HealthStatus
     redis: HealthStatus
     r2: HealthStatus
+
+
+class FirmaInfo(BaseModel):
+    """Firma legal + datos de empresa del producto (read-only desde
+    dashboard). El operador puede ver qué firma se está aplicando a
+    los borradores de contacto sin SSHear al servidor; para editarla
+    sigue siendo necesario tocar `.env` (decisión v0.12.0)."""
+
+    company_legal_name: str
+    company_cif: str | None
+    company_address: str | None
+    company_contact_email: str
+    company_privacy_policy_url: str
+    opt_out_url_base: str
 
 
 class SystemInfo(BaseModel):
@@ -144,4 +159,23 @@ async def _health_summary(session: AsyncSession) -> HealthSummary:
         db=db_status,
         redis=redis_status,
         r2=r2_status,
+    )
+
+
+@router.get("/firma", response_model=FirmaInfo)
+async def system_firma(
+    _: Annotated[object, Depends(_admin_or_operator)],
+) -> FirmaInfo:
+    """Firma legal aplicada a los borradores de contacto. Read-only.
+    `COMPANY_CIF` y `COMPANY_ADDRESS` se leen directamente de env
+    vars (NO viven en ApiSettings — los consume el composer worker
+    via os.environ)."""
+    settings = get_settings()
+    return FirmaInfo(
+        company_legal_name=settings.company_legal_name,
+        company_cif=os.environ.get("COMPANY_CIF") or None,
+        company_address=os.environ.get("COMPANY_ADDRESS") or None,
+        company_contact_email=settings.company_contact_email,
+        company_privacy_policy_url=settings.company_privacy_policy_url,
+        opt_out_url_base=settings.outreach_opt_out_url_base,
     )

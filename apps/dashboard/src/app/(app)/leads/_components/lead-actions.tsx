@@ -93,7 +93,7 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
           )
         }
       >
-        Componer outreach →
+        Componer contacto →
       </ActionButton>
 
       <ActionButton disabled disabledReason={convertBlock}>

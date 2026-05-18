@@ -146,7 +146,7 @@ describe("ActivityFeed — descripciones por action", () => {
     ["discover", /lead #42 descubierto/i],
     ["fingerprint", /lead #42 fingerprintado/i],
     ["enrich", /lead #42 enriquecido/i],
-    ["send", /outreach enviado .* lead #42/i],
+    ["send", /contacto enviado .* lead #42/i],
     ["opt_out", /lead #42 marcado opt-out/i],
     ["create", /lead #42 creado/i],
     ["update", /lead #42 actualizado/i],

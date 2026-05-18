@@ -192,7 +192,7 @@ function describeEvent(entry: AuditLogEntry): EventDescription {
       };
     case "send":
       return {
-        main: `Outreach enviado · ${entity}`,
+        main: `Contacto enviado · ${entity}`,
         detail: extractString(entry.payload, ["to", "provider_message_id"]),
       };
     case "opt_out":
@@ -227,7 +227,7 @@ function entityLabel(entityType: string): string {
     lead: "Lead",
     project: "Proyecto",
     campaign: "Campaña",
-    outreach_sequence: "Secuencia outreach",
+    outreach_sequence: "Secuencia de contacto",
     outreach_send: "Envío",
     residual_task: "Tarea residual",
     user: "Usuario",

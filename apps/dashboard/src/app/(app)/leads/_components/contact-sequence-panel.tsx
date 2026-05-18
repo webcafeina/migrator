@@ -13,14 +13,14 @@ import {
   SequenceStepEditor,
 } from "./sequence-step-editor";
 
-interface OutreachSequencePanelProps {
+interface ContactSequencePanelProps {
   leadId: number;
 }
 
 /**
- * Panel de outreach del lead. Lista las sequences existentes (típicamente
- * 1 por lead) con cada paso desplegado: subject + body + delay desde el
- * paso anterior.
+ * Panel de contacto comercial del lead. Lista las sequences
+ * existentes (típicamente 1 por lead) con cada paso desplegado:
+ * subject + body + delay desde el paso anterior.
  *
  * Si la sequence está en `DRAFT_PENDING_REVIEW` y pasó la validación
  * legal, muestra el botón "Aprobar" que llama
@@ -28,8 +28,12 @@ interface OutreachSequencePanelProps {
  *
  * Sustituye el placeholder vaporware del `DraftBanner` que apuntaba a
  * `#outreach` sin sección detrás (decisión del bloque 2 v0.11.1).
+ *
+ * Renombrado en v0.12.0 (ex `OutreachSequencePanel`) como parte del
+ * refactor castellano. Las URLs/columnas BD siguen siendo `outreach`
+ * (ancla técnica estable).
  */
-export function OutreachSequencePanel({ leadId }: OutreachSequencePanelProps) {
+export function ContactSequencePanel({ leadId }: ContactSequencePanelProps) {
   const router = useRouter();
   const [sequences, setSequences] = useState<OutreachSequenceRead[] | null>(
     null,
@@ -51,7 +55,7 @@ export function OutreachSequencePanel({ leadId }: OutreachSequencePanelProps) {
       })
       .catch((err) => {
         if (!alive) return;
-        setError(err instanceof ApiError ? err.message : "Error al cargar outreach");
+        setError(err instanceof ApiError ? err.message : "Error al cargar contactos");
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -76,7 +80,7 @@ export function OutreachSequencePanel({ leadId }: OutreachSequencePanelProps) {
   if (!sequences || sequences.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        Sin borradores. Pulsa <strong>Componer outreach</strong> en la
+        Sin borradores. Pulsa <strong>Componer contacto</strong> en la
         barra de acciones para generar uno.
       </p>
     );

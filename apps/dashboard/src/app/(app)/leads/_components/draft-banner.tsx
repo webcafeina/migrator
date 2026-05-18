@@ -12,7 +12,8 @@ interface DraftBannerProps {
  * lista — revisa y aprueba/edita antes de enviar".
  *
  * El CTA enlaza a la sección `#outreach` del propio panel detalle,
- * donde `OutreachSequencePanel` (v0.11.1) renderiza la secuencia
+ * donde `ContactSequencePanel` (renombrado en v0.12.0, ex
+ * OutreachSequencePanel v0.11.1) renderiza la secuencia
  * completa con su botón "Aprobar".
  */
 export function DraftBanner({ leadId, className }: DraftBannerProps) {
@@ -23,7 +24,7 @@ export function DraftBanner({ leadId, className }: DraftBannerProps) {
         className,
       )}
       role="status"
-      aria-label="Borrador de outreach pendiente"
+      aria-label="Borrador de contacto pendiente"
     >
       <span
         aria-hidden
@@ -31,7 +32,7 @@ export function DraftBanner({ leadId, className }: DraftBannerProps) {
       />
       <div className="flex-1">
         <strong className="font-semibold text-wcm-warning">
-          Borrador outreach preparado
+          Borrador de contacto preparado
         </strong>
         <span className="ml-2 text-wcm-text/70">
           Pendiente de revisión humana antes de enviar.
