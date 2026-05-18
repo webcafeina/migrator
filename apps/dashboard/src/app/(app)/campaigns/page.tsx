@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { api } from "@/lib/api";
 
 import {
@@ -103,13 +105,13 @@ function EmptyHistorico() {
         Lanza una arriba — una campaña típica produce 30-60 leads
         cualificados por sector + región en menos de 1 hora. Cuando
         termine, los leads aparecen en{" "}
-        <a href="/leads" className="text-wcm-accent hover:underline">
+        <Link href="/leads" className="text-wcm-accent hover:underline">
           /leads
-        </a>{" "}
+        </Link>{" "}
         y los eventos en el feed del{" "}
-        <a href="/" className="text-wcm-accent hover:underline">
+        <Link href="/" className="text-wcm-accent hover:underline">
           Panel
-        </a>
+        </Link>
         .
       </p>
     </div>
