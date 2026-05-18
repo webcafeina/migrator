@@ -11,6 +11,118 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.9.0] — 2026-05-18
+
+Rediseño simultáneo de `/errors` + `/residual-tasks` — primer sprint
+del rediseño visual que mete 2 pantallas en una sola release porque
+ambas comparten patrón exacto (lista plana + filtro por enum, sin
+master-detail). Cierra el rediseño de todas las pantallas operativas
+del dashboard salvo `/settings`.
+
+### Added
+
+- **Endpoint `GET /api/v1/errors/stats`** (rol admin/operator — datos
+  de runtime potencialmente sensibles). 8 buckets en ventana
+  configurable `since_hours` (default 168h ≡ 7 días, max 90×24): total,
+  counts por `ErrorSeverity` (critical, error, warning, info, debug),
+  `distinct_components`, `last_critical_at`. Implementación con 8
+  `session.execute` y `Pydantic Query(le=24*90)` para validar la
+  ventana. 5 tests unit cubriendo shape canónica, null cuando no hay
+  críticos, viewer 403, sin auth 401, ventana inválida 422.
+- **Endpoint `GET /api/v1/residual-tasks/stats`** (rol any_user — toda
+  la operación necesita visibilidad de carga pendiente). 9 buckets:
+  total + 5 counts por status + `blocking_go_live` + `distinct_projects`
+  + `estimated_minutes_pending` (suma de `estimated_minutes` excluyendo
+  DONE/SKIPPED vía `notin_()`). 4 tests unit con verificación del SQL
+  compilado (`literal_binds`) confirmando `NOT IN (done, skipped)`.
+- **`ErrorsTable`** en `apps/dashboard/src/app/(app)/errors/_components/`
+  — tabla con 5 columnas (Cuándo · Severidad · Componente · Mensaje ·
+  Proyecto), `SeverityBadge` con 5 colores diferenciados (critical
+  fondo rojo + font-semibold, error texto rojo, warning ámbar, info
+  gris, debug muted), responsive `hideUntil="md"` en Componente +
+  Proyecto, link tabular-nums a `/projects/{id}` cuando aplica.
+- **`ResidualTasksTable`** en
+  `apps/dashboard/src/app/(app)/residual-tasks/_components/` — tabla
+  con 7 columnas (Proyecto link · Categoría con badge ámbar para
+  `blocking_go_live` · Tarea · Asignar · Min · Estado pill castellano ·
+  Acción). Reúsa `MarkDoneButton` existente solo en filas no
+  done/skipped (cerradas no tienen acción pendiente).
+- **Spec Playwright** `tests/e2e/errors-residuals-redesign.spec.ts` con
+  12 tests (6 por pantalla). 2 pasan client-side (headers y subtítulos
+  castellanos visibles); 10 marcados `test.skip(SSR_BLOCKED,
+  "WCM-021")` para KPIs, counts en chips, empty con datos, URL tras
+  click. Fixture base ampliado con handlers específicos `/errors/stats`
+  y `/residual-tasks/stats` que devuelven el objeto agregado (los
+  catch-all previos devolvían `[]` y rompían el shape).
+
+### Changed
+
+- **`/errors/page.tsx`**: refactor a Server Component que fetcha
+  `/errors` + `/errors/stats` en paralelo con `.catch()` defensivo.
+  Header descriptivo + `KpiStrip` con 6 KPIs (Total 7d · Críticos ·
+  Errores · Warnings · Componentes · Último crítico relativo) +
+  `FilterChips` por severity con counts del backend (solo se renderiza
+  si `stats.total > 0`). Empty state con 2 ramas: `systemEmpty` lima
+  "Sistema estable" con mención de Sentry y `journald` como segundo
+  lugar de búsqueda, vs filtro neutro.
+- **`/residual-tasks/page.tsx`**: refactor análogo con `KpiStrip` de 5
+  KPIs (Total · Abiertas agregado [open+in_progress+blocked] ·
+  Bloqueantes ámbar · Proyectos · Tiempo pendiente formateado "Nh Mm")
+  + `FilterChips` por status. Empty state explica el rol del agente
+  `checklist-generator` (mover DNS, configurar Stripe, etc.) cuando el
+  operador no entiende por qué la lista está vacía.
+
+### Decisions
+
+- **Agrupación de 2 pantallas en una release** (extensión a ADR-036):
+  cuando 2 pantallas comparten patrón exacto (lista plana + filtro por
+  enum, sin master-detail ni subpáginas), pueden meterse en la misma
+  release con un commit por bloque que toca ambas a la vez. Reduce
+  overhead de release sin sacrificar granularidad. NO aplicable cuando
+  las pantallas tienen schemas o componentes claramente distintos.
+- **`Abiertas` agregado en KpiStrip de residual-tasks**: muestro
+  `open + in_progress + blocked` como un único KPI porque el operador
+  piensa "abiertas vs cerradas" — los 3 sub-estados son ruido a nivel
+  global. El detalle por status sigue en `FilterChips` para quien lo
+  necesita.
+- **`/errors/stats` con `since_hours` configurable, default 168h
+  (7 días)**: 7 días es el horizonte natural de un on-call humano.
+  Configurable por si el operador quiere ventana corta tras un
+  incidente o larga para detectar drift.
+- **`/errors/stats` solo admin/operator**: los errores incluyen stack
+  traces y component paths que pueden filtrar arquitectura interna.
+  Viewers no necesitan esa visibilidad.
+
+### Tests
+
+- 469 pytest (+9 nuevos: 5 errors-stats + 4 residual-tasks-stats).
+  Total ruff + tsc + `pnpm lint` verde.
+- 120 vitest + 3 skipped React 19 (+11 nuevos: ErrorsTable + 
+  ResidualTasksTable cubriendo render, 5 severities, 5 status pills,
+  link a proyecto, MarkDoneButton condicional, empty).
+- 19 Playwright ejecutables (+2 nuevos) + 52 skipped (+10 nuevos,
+  todos SSR-blocked por WCM-021).
+
+### Estado del rediseño visual
+
+| Pantalla | Estado |
+|---|---|
+| `/login` | original |
+| `/` Panel | ✅ v0.5.0 |
+| `/campaigns` | ✅ v0.6.0 + v0.6.1 |
+| `/leads` master-detail | ✅ v0.4.0 |
+| `/leads/[id]` full-page | ✅ v0.6.0 |
+| `/projects` | ✅ v0.7.0 |
+| `/projects/[id]` + `/checklist` + `/diff` | ✅ v0.8.0 |
+| `/errors` | ✅ **v0.9.0** |
+| `/residual-tasks` | ✅ **v0.9.0** |
+| `/settings` | original (modelo a replicar) |
+
+**9 pantallas** rediseñadas. Solo `/settings` queda para cerrar el
+rediseño visual completo del dashboard.
+
+---
+
 ## [0.8.0] — 2026-05-18
 
 Rediseño de `/projects/[id]` + sus 3 sub-páginas (`overview`,
