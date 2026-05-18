@@ -10,6 +10,7 @@ from wcm_api.routers import (
     outreach,
     projects,
     residual_tasks,
+    system,
     users,
     webhooks,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "outreach",
     "projects",
     "residual_tasks",
+    "system",
     "users",
     "webhooks",
 ]
