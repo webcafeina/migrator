@@ -124,6 +124,19 @@ describe("ContactSequencePanel", () => {
     expect(button).toBeEnabled();
   });
 
+  it("status lowercase del API se normaliza — Aprobar y Editar funcionan (regresión bug v0.12.0)", async () => {
+    // El API serializa los enums lowercase ('draft_pending_review').
+    // El bug original (v0.12.0 pre-fix) comparaba con UPPERCASE y
+    // dejaba Aprobar disabled + botón Editar oculto. Test cubre ambos.
+    apiGet.mockResolvedValue([_draftSeq({ status: "draft_pending_review" })]);
+    render(<ContactSequencePanel leadId={5} />);
+    const approve = await screen.findByRole("button", { name: /aprobar/i });
+    expect(approve).toBeEnabled();
+    // Botones Editar visibles en cada paso (editable=true).
+    const editButtons = screen.getAllByRole("button", { name: /^editar$/i });
+    expect(editButtons.length).toBe(2); // 2 pasos del _draftSeq
+  });
+
   it("botón Aprobar deshabilitado si status != DRAFT_PENDING_REVIEW", async () => {
     apiGet.mockResolvedValue([_draftSeq({ status: "SENT" })]);
     render(<ContactSequencePanel leadId={5} />);

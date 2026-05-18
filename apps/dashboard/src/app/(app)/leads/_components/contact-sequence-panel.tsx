@@ -119,7 +119,12 @@ function SequenceCard({
   );
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
 
-  const status = String(sequence.status);
+  // El API serializa el enum lowercase (`'draft_pending_review'`),
+  // así que normalizamos a UPPERCASE una vez antes de comparar.
+  // Los OutreachSequenceStatus de wcm_types tienen valor lowercase
+  // pero las constantes lógicas de UI las mantenemos UPPERCASE por
+  // legibilidad (matchean el nombre del enum Python).
+  const status = String(sequence.status).toUpperCase();
   const editable =
     status === "DRAFT_PENDING_REVIEW" || status === "PAUSED";
   const canApprove = status === "DRAFT_PENDING_REVIEW" && legalPassed;
@@ -232,11 +237,7 @@ function SequenceCard({
           type="button"
           onClick={approve}
           disabled={pending || !canApprove}
-          title={
-            canApprove
-              ? "Aprobar la secuencia (queda lista para enviar)"
-              : `No se puede aprobar desde estado ${status}`
-          }
+          title={approveDisabledReason(status, legalPassed) ?? undefined}
           className="rounded-sm bg-wcm-accent px-3 py-1 text-xs font-semibold text-wcm-primary transition-colors hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pending ? "Aprobando…" : "Aprobar →"}
@@ -344,4 +345,22 @@ function SequenceStatusBadge({ status }: { status: string }) {
       {status.replace(/_/g, " ").toLowerCase()}
     </span>
   );
+}
+
+/** Razón por la que el botón Aprobar está deshabilitado. Devuelve
+ * null si SE PUEDE aprobar (no hace falta tooltip). Distingue los 2
+ * casos importantes para el operador: status no aprobable vs validación
+ * legal fallida (el segundo es accionable — el operador puede editar
+ * el paso problemático para restaurar la firma legal). */
+function approveDisabledReason(
+  status: string,
+  legalPassed: boolean,
+): string | null {
+  if (status !== "DRAFT_PENDING_REVIEW") {
+    return `Solo se aprueban borradores. Estado actual: ${status.replace(/_/g, " ").toLowerCase()}.`;
+  }
+  if (!legalPassed) {
+    return "Validación legal NO pasada — revisa que el body de cada paso conserve la firma (razón social, CIF, dirección) y el enlace de opt-out.";
+  }
+  return null;
 }
