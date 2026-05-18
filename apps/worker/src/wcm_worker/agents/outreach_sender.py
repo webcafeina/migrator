@@ -101,9 +101,7 @@ class OutreachSenderAgent(BaseAgent):
                 )
             )
             ctx.session.commit()
-            raise OutreachSenderError(
-                f"Lead {lead.id} en opt_out_log ({opted}) — abortado envío"
-            )
+            raise OutreachSenderError(f"Lead {lead.id} en opt_out_log ({opted}) — abortado envío")
 
         client = self._injected_client or ResendClient.from_env()
         if client is None:
@@ -118,6 +116,12 @@ class OutreachSenderAgent(BaseAgent):
                 to=[lead.emails[0]],
                 subject=send.subject or "",
                 body_text=send.body_rendered or "",
+                # v0.14.0 — snapshot HTML del envío. Si NULL (sends
+                # pre-v0.14.0 o composer en modo degradado por fallo
+                # del layout/premailer), Resend solo recibe `text` y
+                # el cliente cae a vista plain — degradación grácil
+                # documentada en el plan v0.14.0.
+                body_html=send.body_html_rendered or None,
                 tags=[
                     {"name": "kind", "value": "outreach"},
                     {"name": "sequence_id", "value": str(send.sequence_id)},

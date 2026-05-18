@@ -48,8 +48,9 @@ def _lead_mock(*, lead_id: int = 1, emails: list[str] | None = None) -> MagicMoc
     return lead
 
 
-def _ctx_for(session, lead_id: int, *, token: str = "tk-123",
-             steps: list | None = None) -> AgentContext:
+def _ctx_for(
+    session, lead_id: int, *, token: str = "tk-123", steps: list | None = None
+) -> AgentContext:
     return AgentContext(
         session=session,
         lead_id=lead_id,
@@ -122,10 +123,12 @@ def test_composer_persists_sequence_and_sends(fake_session) -> None:
     # session.flush asigna IDs en SQLAlchemy real. Aquí hookeamos add para
     # asignarle un id al primer OutreachSequence visto.
     added = []
+
     def _add(obj):
         if type(obj).__name__ == "OutreachSequence" and obj.id is None:
             obj.id = 77
         added.append(obj)
+
     fake_session.add.side_effect = _add
 
     result = OutreachComposerAgent().run(_ctx_for(fake_session, 1))
@@ -182,7 +185,7 @@ def test_builder_to_label_maps_wix() -> None:
 
 
 def test_city_from_address_extracts_caceres() -> None:
-    assert _city_from_address(
-        "Santa Cristina, s/n – Edificio Embarcadero, 10195 Cáceres"
-    ) == "Cáceres"
+    assert (
+        _city_from_address("Santa Cristina, s/n – Edificio Embarcadero, 10195 Cáceres") == "Cáceres"
+    )
     assert _city_from_address("") == ""
