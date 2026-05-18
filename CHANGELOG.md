@@ -11,6 +11,138 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.11.0] — 2026-05-18
+
+Primer sprint de **ampliación funcional** sobre el dashboard ya rediseñado.
+Añade **alta manual de leads** (single + bulk) en dashboard y CLI. Cierra
+brecha funcional detectada al hacer E2E manuales: hasta ahora los leads
+solo podían entrar al sistema vía campaña de Google Places.
+
+### Added
+
+- **`POST /api/v1/leads`** (201, operator/admin): alta manual de un lead
+  con URL + metadata opcional (business_name, sector, region, country).
+  `pg_insert.on_conflict_do_nothing` + 409 con `details.existing_lead_id`
+  si la URL ya existe. AuditLog DISCOVER con `legal_ground="6.1.f"`
+  (misma base RGPD que la prospección automática — no cambia por
+  procedencia) y `payload.source="manual_single"`. Fire-and-forget
+  `enqueue_lead_fingerprint` + `enqueue_lead_enrich` tras commit — si
+  Celery cae, lead persiste y warning en log; operador puede disparar
+  manual desde la ficha.
+- **`POST /api/v1/leads/bulk`** (200, rate-limit 10/min): alta masiva
+  hasta 200 URLs. NO aborta batch ante fallos aislados — cada URL es
+  transaccionalmente independiente vía INSERT ON CONFLICT. Devuelve
+  `LeadBulkCreateResult` con listas separadas `created` (LeadRead
+  completos), `skipped_duplicates` (con `lead_id` del existente),
+  `failed` (con `reason`). `payload.source="manual_bulk"` +
+  `batch_size`.
+- **`packages/scraper-core/src/wcm_scraper_core/urls.py`** con
+  `normalize_lead_url(url)` extraído del ProspectorAgent. Single
+  source of truth para canonicalización entre alta manual y crawler:
+  strippea querystring (UTMs, fbclid, gclid), fragment, `www.`,
+  trailing slash. Evita duplicados accidentales.
+- **`/leads/new`**: Server Component con header castellano "Nuevo
+  lead" + microcopy explicativa + form + microcopy legal RGPD abajo
+  (`legal_ground=6.1.f` + procedencia en `payload.source`). Fetch
+  `/leads?limit=200` para alimentar datalists de sector/región
+  (top 20 por frecuencia).
+- **`LeadCreateForm`** con tabs ARIA single/bulk (`useState`, no
+  searchParams):
+  - **SingleTab**: réplica del patrón `LaunchCampaignForm`. Submit
+    201 → toast + `router.push("/leads?selected=N")`. Submit 409 →
+    toast.error + botón secundario "Abrir lead existente #N" que
+    navega al lead que duplicaba.
+  - **BulkTab**: textarea `font-mono` 12 rows + `BulkPreview`
+    debounced con counts (lima/ámbar), lista expandible de
+    inválidas con número de línea. Submit envía solo las URLs
+    válidas detectadas por el preview. Toast resumen
+    `${created} · ${skipped} · ${failed}` (warning si created===0).
+    Si hay fallos, toast extra con razones (primeras 3). 429 con
+    copy específico.
+  - **`parseBulkUrls`** puro testable: 1 URL por línea, ignora vacías
+    y comments `#`. Autoañade `https://` si falta protocolo. Rechaza
+    espacios explícitamente (Chromium los toleraba con %20), rechaza
+    hosts sin TLD (`localhost`, `foo`), rechaza protocolos distintos
+    a http/https.
+- **Botón "+ Nuevo lead"** outline ghost en cabecera de `/leads`
+  junto al lima primario "+ Lanzar campaña". Jerarquía visual clara:
+  lima = acción frecuente (campaña), outline = alternativa menos
+  común (alta manual).
+- **`wcm leads create` CLI** con XOR `--url`/`--bulk-file`. Bulk lee
+  1 URL por línea, ignora vacías y comments. 409 muestra mensaje
+  específico con `existing_lead_id` (no el genérico "API HTTP 409").
+  Bulk imprime resumen `N creados · M duplicados · K fallos` + razones
+  de los primeros 3 fallos.
+
+### Changed
+
+- **`apps/worker/src/wcm_worker/agents/prospector.py`**: `_normalize_url`
+  local sustituido por import de `wcm_scraper_core.urls.normalize_lead_url`
+  para compartir lógica con el endpoint manual. Test
+  `test_prospector.py` adaptado al nuevo import.
+- **`CliApiError`** acepta opcionalmente `details: dict` que recibe
+  desde `_raise_from_response` el campo `error.details` del envelope
+  del API. Permite a comandos reaccionar a casos específicos sin
+  parsear el message (caso `existing_lead_id` en 409 single).
+
+### Decisions
+
+- **`legal_ground="6.1.f"` para alta manual** (NO `"manual_operator"`):
+  el art. 6.1.f cubre prospección B2B sistemática + datos públicos
+  bajo interés legítimo; la base RGPD NO cambia porque la procedencia
+  sea manual u automática. La procedencia va en `payload.source`
+  (`manual_single` / `manual_bulk` / `prospector_campaign`).
+  Semánticamente correcto y consistente con el resto del audit.
+- **`normalize_lead_url` strippea querystring por defecto**: evita
+  duplicados accidentales por UTMs (`utm_source`, `fbclid`, `gclid`).
+  Las URLs comerciales objetivo casi nunca dependen de querystring.
+  Documentado en docstring del helper.
+- **Fire-and-forget en vez de `celery.chain`**: la simplicidad de dos
+  `send_task` independientes basta — el enricher lee el lead fresh
+  de la DB y no depende del fingerprinter (campos distintos). Si
+  surge problema de ordering en producción, promover a chain.
+- **Tabs con `useState`, no searchParams**: evita un SSR roundtrip
+  al cambiar de tab y mantiene el formulario rellenado localmente.
+- **Bulk NO aborta el batch ante fallos aislados**: cada URL es
+  transaccionalmente independiente vía INSERT ON CONFLICT. El
+  operador prefiere "3 de 5 ok" a "0 de 5 por culpa de la 4ª".
+- **Rechazo explícito de espacios en `parseBulkUrls`**: Chromium
+  los tolera codificándolos como %20, lo cual NO es lo que un
+  operador quiere si pegó accidentalmente una línea descriptiva.
+- **CLI `--url` XOR `--bulk-file`**: validación en el comando con
+  `CliInputError` antes de tocar el API. Coherente con typer y
+  prevenir errores 4xx ruidosos.
+
+### Tests
+
+- 280 pytest API (+11 nuevos: alta single/bulk con audit, normalize
+  URL vía SQL compilado, 409 con existing_lead_id, 422 URL
+  malformada, Celery KO sigue devolviendo 201, bulk mixed outcomes,
+  bulk RBAC, bulk empty/oversize 422, audit legal_ground+source+batch_size).
+- 19 pytest CLI (+8 nuevos: single éxito, single 409 exits 1, XOR
+  validation ambos sentidos, bulk parsea comments/vacías, bulk
+  summary con razones, bulk file vacío error, bulk file no
+  existe error).
+- 148 vitest + 3 skipped React 19 (+15 nuevos: parseBulkUrls 8
+  cases, BulkPreview 3, LeadCreateForm tabs 4).
+- 30 Playwright ejecutables (+7 nuevos) + 56 skipped (+1
+  SSR-blocked WCM-021).
+- ruff + tsc + `pnpm lint` verde.
+
+### Estado funcional del flujo de prospección §8
+
+| Paso | Antes v0.11.0 | Después v0.11.0 |
+|---|---|---|
+| 1. Lanzar campaña | ✅ | ✅ |
+| 2. Prospector (Google Places) | ✅ | ✅ |
+| 3. Fingerprinter | ✅ | ✅ |
+| 4. Enricher | ✅ | ✅ |
+| 5. Outreach composer | ✅ | ✅ |
+| 6. Revisar/aprobar outreach | ✅ | ✅ |
+| **Alta manual de URLs concretas** | ❌ bloqueado | ✅ **single + bulk** |
+
+---
+
 ## [0.10.0] — 2026-05-18
 
 Rediseño de **`/settings`** — última pantalla del dashboard. **Cierre

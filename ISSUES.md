@@ -259,6 +259,25 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-040 — Alta manual de leads (single + bulk) — **CERRADO v0.11.0**
+- **Tipo**: feature / **Fase**: post-rediseño ampliación funcional / **Prioridad**: P1
+- **Estado**: DONE 2026-05-18 (commits `aa43968`, `b5ecb47`, `511fd4c`, `72c751f`, `303bb80`).
+- **Contexto**: el usuario detectó al hacer E2E manuales en /leads que
+  no había forma de añadir URLs concretas sin pasar por una campaña
+  Google Places. Bloqueaba poder probar el flujo de prospección + el
+  de migración sobre webs específicas.
+- **Resolución**: 2 endpoints (`POST /leads` + `POST /leads/bulk`),
+  página `/leads/new` con tabs ARIA single/bulk + preview live,
+  `wcm leads create` CLI con XOR `--url`/`--bulk-file`, encadenado
+  automático fingerprint+enrich tras alta. `normalize_lead_url`
+  extraído a `wcm_scraper_core.urls` como single source of truth
+  para canonicalización (compartido prospector + endpoint).
+  AuditLog mantiene `legal_ground="6.1.f"`; procedencia en
+  `payload.source`. 11 tests pytest + 15 vitest + 8 cli + 8 playwright.
+  `CliApiError` ahora propaga `details` del envelope del API.
+
+---
+
 ### WCM-039 — Rediseño `/settings` — cierre del ciclo completo — **CERRADO v0.10.0**
 - **Tipo**: feature / **Fase**: post-MVP rediseño / **Prioridad**: P2
 - **Estado**: DONE 2026-05-18 (commits `b44a99f`, `8936af0`, `67e07a1`, `a7d4baa`, `69a1bce`).

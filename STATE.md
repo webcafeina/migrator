@@ -24,14 +24,17 @@
 - **Fase 14 — Documentación**: ✅ Completada (commit `d1b2b86`)
 - **Fase 15 — Hardening**: ✅ Completada esta sesión (commit `5691199`)
 - **MVP v0.1.0 CERRADO** (2026-05-14) — repo público en https://github.com/webcafeina/migrator, release v0.1.0 publicada. Branch protection activado en `main`. CI verde. Roadmap post-v0.1.0 en ISSUES.md WCM-011..WCM-021.
-- **Post-MVP: rediseño visual del dashboard** — ✅ **CERRADO con v0.10.0** (2026-05-18). 11/11 pantallas operativas bajo el nuevo lenguaje (todas las del nav lateral). `/login` queda fuera porque vive en la app group `(auth)` con su propio layout. Detalle abajo en §"Sesiones post-MVP".
+- **Post-MVP: rediseño visual del dashboard** — ✅ CERRADO con v0.10.0 (2026-05-18). 11/11 pantallas operativas bajo el nuevo lenguaje.
+- **Post-rediseño: ampliación funcional** EN CURSO desde v0.11.0 (2026-05-18). Primer sprint sobre el dashboard ya rediseñado, sin tocar lenguaje visual — añadir features que faltaban para hacer E2E manuales del flujo de prospección y migración.
 
 ## Última versión publicada
 
-**v0.10.0** (2026-05-18) — rediseño `/settings` que cierra el ciclo
-completo del rediseño visual del dashboard. Nueva fuente de runtime info
-con endpoint `/system/info` (versión, alembic_revision, uptime, health
-summary). Eliminación de la mentira "UI de gestión: Fase 14". CI verde.
+**v0.11.0** (2026-05-18) — alta manual de leads (single + bulk) en
+dashboard y CLI. Endpoints `POST /api/v1/leads` y `/leads/bulk` con
+encadenado automático fingerprint+enrich. Página `/leads/new` con tabs
+ARIA + preview live de URLs válidas. `wcm leads create` con XOR
+`--url`/`--bulk-file`. AuditLog mantiene `legal_ground=6.1.f` (interés
+legítimo B2B); procedencia en `payload.source`. CI verde.
 
 ## Estado del rediseño visual del dashboard
 
@@ -92,6 +95,50 @@ Componentes promovidos a `apps/dashboard/src/components/` (shared):
 
 Trabajo posterior al cierre del MVP v0.1.0. Cada release agrupa un
 rediseño completo de una pantalla (5 bloques granulares — ver ADR-036).
+
+### v0.11.0 — Alta manual de leads (single + bulk) — 2026-05-18
+
+Primer sprint de ampliación funcional sobre el dashboard ya rediseñado
+(NO toca lenguaje visual). El usuario detectó al hacer E2E manuales
+que no había forma de añadir URLs concretas al sistema sin pasar por
+una campaña de Google Places — el flujo de prospección dependía
+totalmente del crawler. Esto cierra esa brecha.
+
+Aplica el patrón ADR-036 (5 bloques granulares) adaptado a "feature
+nueva sobre página existente" en vez de "rediseño completo":
+
+- `POST /api/v1/leads` (single, 201) + `POST /api/v1/leads/bulk` (200
+  con `LeadBulkCreateResult` agregado, hasta 200 URLs por batch,
+  rate-limit 10/min, NO aborta el batch ante fallos aislados).
+  `_insert_lead` helper compartido con `pg_insert.on_conflict_do_nothing`.
+  Fire-and-forget de `enqueue_lead_fingerprint` + `enqueue_lead_enrich`
+  tras commit (si Celery cae, lead persiste y warning en log).
+  AuditLog DISCOVER con `legal_ground="6.1.f"` igual que el
+  ProspectorAgent — la base RGPD no cambia por procedencia.
+  `payload.source` distingue `manual_single` / `manual_bulk`.
+  11 tests pytest (`aa43968`).
+- `normalize_lead_url` extraído de prospector a
+  `wcm_scraper_core.urls` — single source of truth para
+  canonicalización; strippea querystring (UTMs/fbclid) + fragment +
+  www + trailing slash. ProspectorAgent ahora importa de ahí.
+- `LeadCreateForm` con tabs ARIA single/bulk (useState, no
+  searchParams). `LeadCreateSingleTab` réplica del LaunchCampaignForm.
+  `LeadCreateBulkTab` con textarea + `BulkPreview` debounced (counts
+  lima/ámbar, lista expandible de inválidas con nº línea). `parseBulkUrls`
+  puro testable: rechaza espacios explícitamente (Chromium los
+  toleraba con %20), rechaza hosts sin TLD, autoañade https://.
+  15 tests vitest (`b5ecb47`).
+- Página `/leads/new` Server Component con header castellano +
+  microcopy legal abajo (trazabilidad art. 6.1.f). Botón
+  "+ Nuevo lead" outline ghost en cabecera de `/leads` junto al lima
+  "+ Lanzar campaña" — jerarquía visual clara (`511fd4c`).
+- Pulido: handler explícito 429 en bulk con copy específico, mobile
+  verificado en viewport 375 (`72c751f`).
+- `wcm leads create` CLI con XOR `--url`/`--bulk-file`. `CliApiError`
+  ahora propaga `details` del envelope del API para que comandos
+  reaccionen a casos específicos (ej. `existing_lead_id` en 409 single).
+  8 tests pytest. Spec Playwright 8 tests (7 ejecutables + 1
+  SSR-blocked) (`303bb80`).
 
 ### v0.10.0 — Rediseño `/settings` — cierre del ciclo completo — 2026-05-18
 
