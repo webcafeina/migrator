@@ -7,6 +7,8 @@ import { ApiError, api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
+import { LeadDeleteDialog } from "./lead-delete-dialog";
+
 interface LeadActionsProps {
   lead: LeadRead;
   className?: string;
@@ -18,7 +20,7 @@ type ActionState =
   | { kind: "success"; action: ActionId; message: string }
   | { kind: "error"; action: ActionId; message: string };
 
-type ActionId = "compose" | "refingerprint";
+type ActionId = "compose" | "refingerprint" | "discard";
 
 /**
  * Botones de acción del panel detalle, con feedback inline (loading,
@@ -35,13 +37,17 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [state, setState] = useState<ActionState>({ kind: "idle" });
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   // Validaciones de pre-condición. Se evalúan antes de habilitar cada
   // acción y deciden el `disabledReason` mostrado como tooltip.
   const composeBlock = lead.emails.length === 0 ? "Sin emails: enrich primero" : null;
   const refingerprintBlock = null; // siempre permitido
   const convertBlock = "Implementación en migrador (Fase 7 producto)";
-  const optOutBlock = "Endpoint de opt-out manual pendiente";
+  const isDiscarded = lead.status === "discarded";
+  const discardBlock = isDiscarded
+    ? "Este lead ya está descartado"
+    : null;
 
   const run = useCallback(
     async (
@@ -109,8 +115,28 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
         Re-fingerprint
       </ActionButton>
 
-      <ActionButton danger disabled disabledReason={optOutBlock}>
-        Marcar opt-out
+      <ActionButton
+        warning
+        disabled={inflight}
+        disabledReason={discardBlock ?? undefined}
+        loading={state.kind === "loading" && state.action === "discard"}
+        onClick={() =>
+          run(
+            "discard",
+            `/api/v1/leads/${lead.id}/discard`,
+            "Lead descartado",
+          )
+        }
+      >
+        Descartar
+      </ActionButton>
+
+      <ActionButton
+        danger
+        disabled={inflight}
+        onClick={() => setDeleteOpen(true)}
+      >
+        Borrar definitivo
       </ActionButton>
 
       {state.kind === "success" && (
@@ -119,6 +145,17 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
       {state.kind === "error" && (
         <span className="ml-2 text-xs text-wcm-danger">{state.message}</span>
       )}
+
+      <LeadDeleteDialog
+        leadId={lead.id}
+        confirmationText={lead.business_name ?? lead.url}
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onDeleted={() => {
+          setDeleteOpen(false);
+          startTransition(() => router.push("/leads"));
+        }}
+      />
     </div>
   );
 }
@@ -126,6 +163,7 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
 function ActionButton({
   children,
   primary,
+  warning,
   danger,
   disabled,
   disabledReason,
@@ -134,6 +172,7 @@ function ActionButton({
 }: {
   children: React.ReactNode;
   primary?: boolean;
+  warning?: boolean;
   danger?: boolean;
   disabled?: boolean;
   disabledReason?: string;
@@ -150,10 +189,15 @@ function ActionButton({
         "rounded-sm border px-3.5 py-1.5 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-50",
         primary &&
           "border-wcm-accent bg-wcm-accent font-semibold text-wcm-primary hover:brightness-105",
+        warning &&
+          !primary &&
+          "border-wcm-warning/50 text-wcm-warning hover:border-wcm-warning",
         danger &&
           !primary &&
+          !warning &&
           "border-wcm-detail/60 text-wcm-danger hover:border-wcm-danger",
         !primary &&
+          !warning &&
           !danger &&
           "border-wcm-detail/60 text-wcm-text hover:border-muted-foreground",
       )}
