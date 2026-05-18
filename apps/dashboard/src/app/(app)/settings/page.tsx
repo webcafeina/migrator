@@ -69,6 +69,21 @@ export default async function SettingsPage() {
               </p>
             </Link>
           </Block>
+
+          <Block title="Usuarios del sistema">
+            <Link
+              href="/admin/users"
+              className="block rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs text-wcm-text hover:border-wcm-accent hover:text-wcm-accent"
+            >
+              <div className="font-semibold">
+                Gestionar usuarios →
+              </div>
+              <p className="mt-1 text-muted-foreground">
+                Crear, cambiar rol y activar/desactivar usuarios del
+                equipo. Admin-only.
+              </p>
+            </Link>
+          </Block>
         </div>
 
         <aside>
