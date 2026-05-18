@@ -47,10 +47,16 @@ export function OperationRunbook() {
         title="gestionar usuarios (admin)"
         intro={
           <>
-            Crear, listar, cambiar rol o eliminar — todo vía CLI{" "}
-            <code className="text-wcm-text">wcm users</code> en el
-            servidor. No hay UI prevista; el volumen de usuarios del
-            equipo Webcafeína (9 personas) no justifica el coste.
+            Disponible desde dashboard en{" "}
+            <a
+              href="/admin/users"
+              className="text-wcm-accent underline-offset-2 hover:underline"
+            >
+              /admin/users
+            </a>{" "}
+            (admin-only). También vía CLI{" "}
+            <code className="text-wcm-text">wcm users</code> para
+            scripts/automatización.
           </>
         }
       >
@@ -61,13 +67,26 @@ export function OperationRunbook() {
         <Step n={2}>
           Crear:{" "}
           <code className="text-wcm-text">
-            wcm users create --email NOMBRE@webcafeina.com --role operator
-          </code>
+            wcm users create --email NOMBRE@webcafeina.com --name
+            "Nombre" --role operator
+          </code>{" "}
+          (genera password aleatorio si no se pasa{" "}
+          <code className="text-wcm-text">--password</code>).
         </Step>
         <Step n={3}>
           Cambiar rol:{" "}
           <code className="text-wcm-text">
             wcm users set-role EMAIL --role admin
+          </code>
+        </Step>
+        <Step n={4}>
+          Desactivar (reversible):{" "}
+          <code className="text-wcm-text">
+            wcm users deactivate EMAIL
+          </code>{" "}
+          · Borrar definitivo:{" "}
+          <code className="text-wcm-text">
+            wcm users delete EMAIL --confirm
           </code>
         </Step>
         <Note>

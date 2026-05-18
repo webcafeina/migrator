@@ -18,6 +18,7 @@ from wcm_cli.commands import (
     projects,
     residual_tasks,
     setup_cmd,
+    users,
 )
 
 app = typer.Typer(
@@ -59,6 +60,7 @@ app.add_typer(projects.app, name="projects")
 app.add_typer(campaigns.app, name="campaigns")
 app.add_typer(outreach.app, name="outreach")
 app.add_typer(residual_tasks.app, name="residual-tasks")
+app.add_typer(users.app, name="users")
 
 
 # Atajos de uso frecuente: `wcm login` además de `wcm auth login`

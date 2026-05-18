@@ -14,7 +14,7 @@ from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import hash_password, require_role
 from wcm_db.models.users import User
 from wcm_types.enums import UserRole
-from wcm_types.schemas.users import UserCreate, UserRead
+from wcm_types.schemas.users import UserCreate, UserRead, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -65,6 +65,26 @@ async def get_user(
     user = await session.get(User, user_id)
     if user is None:
         raise NotFoundError(f"Usuario {user_id} no encontrado")
+    return UserRead.model_validate(user)
+
+
+@router.patch("/{user_id}", response_model=UserRead)
+async def update_user(
+    user_id: uuid.UUID,
+    payload: UserUpdate,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_admin_only)],
+) -> UserRead:
+    """Cambia rol / is_active / name. Email no editable (identidad);
+    password requiere flujo separado de cambio con verificación."""
+    user = await session.get(User, user_id)
+    if user is None:
+        raise NotFoundError(f"Usuario {user_id} no encontrado")
+    changes = payload.model_dump(exclude_none=True)
+    for k, v in changes.items():
+        setattr(user, k, v)
+    await session.commit()
+    await session.refresh(user)
     return UserRead.model_validate(user)
 
 

@@ -166,8 +166,9 @@ describe("OperationRunbook", () => {
     expect(container.textContent ?? "").not.toMatch(/fase\s*14/i);
   });
 
-  it("explica que NO hay UI prevista de usuarios (no promete vaporware)", () => {
-    render(<OperationRunbook />);
-    expect(screen.getByText(/no hay ui prevista/i)).toBeInTheDocument();
+  it("incluye link a /admin/users (UI ahora real, no vaporware)", () => {
+    const { container } = render(<OperationRunbook />);
+    const link = container.querySelector("a[href='/admin/users']");
+    expect(link).not.toBeNull();
   });
 });
