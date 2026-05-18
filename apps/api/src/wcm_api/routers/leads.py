@@ -69,7 +69,14 @@ async def list_leads(
     if builder:
         stmt = stmt.where(Lead.builder_detected == builder)
     if status_filter:
+        # Filtro explícito: respeta el status pedido (incluye DISCARDED
+        # si el operador lo selecciona vía el chip "Descartados").
         stmt = stmt.where(Lead.status == status_filter)
+    else:
+        # Default: oculta DISCARDED del listado para no llenar la
+        # vista con ruido tras descartes masivos. Sigue accesible vía
+        # `?status=discarded`.
+        stmt = stmt.where(Lead.status != LeadStatus.DISCARDED)
     if min_score > 0:
         stmt = stmt.where(Lead.score >= min_score)
     stmt = stmt.order_by(Lead.created_at.desc()).limit(limit).offset(offset)
@@ -187,6 +194,88 @@ async def update_lead(
     await session.commit()
     await session.refresh(lead)
     return LeadRead.model_validate(lead)
+
+
+# ---------- Descarte / borrado de leads (v0.12.0) ----------
+
+
+@router.post("/{lead_id}/discard", response_model=LeadRead)
+async def discard_lead(
+    lead_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> LeadRead:
+    """Soft delete: marca el lead como DISCARDED. Reversible (basta con
+    `PATCH /leads/{id}` poniendo status a otro valor). Mantiene la fila
+    + enrichments + sequences para trazabilidad RGPD ("qué datos
+    tuvimos sobre quién").
+
+    Idempotente: si ya está DISCARDED, devuelve 200 sin tocar nada
+    (sin AuditLog redundante).
+    """
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+    if lead.status != LeadStatus.DISCARDED:
+        lead.status = LeadStatus.DISCARDED
+        session.add(
+            AuditLog(
+                actor=f"user:{user.sub}",
+                action=AuditAction.UPDATE,
+                entity_type="lead",
+                entity_id=str(lead.id),
+                legal_ground="6.1.f",
+                payload={
+                    "action": "discard",
+                    "operator_role": user.role,
+                },
+            )
+        )
+        await session.commit()
+        await session.refresh(lead)
+    return LeadRead.model_validate(lead)
+
+
+@router.delete("/{lead_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_lead(
+    lead_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> None:
+    """Hard delete con CASCADE (vía relaciones SQLAlchemy
+    `cascade="all, delete-orphan"` en `Lead.enrichments` y
+    `Lead.outreach_sequences`, y `ondelete="CASCADE"` en las FKs).
+
+    Útil para limpiar pruebas o cumplir el art. 17 RGPD (derecho de
+    supresión). El AuditLog se escribe ANTES del delete (después no
+    podríamos referenciar `entity_id` con sentido); el AuditLog
+    persiste como evidencia del borrado conforme.
+    """
+    lead = await session.get(Lead, lead_id)
+    if lead is None:
+        raise NotFoundError(f"Lead {lead_id} no encontrado")
+
+    snapshot_url = lead.url
+    snapshot_business_name = lead.business_name
+    session.add(
+        AuditLog(
+            actor=f"user:{user.sub}",
+            action=AuditAction.DELETE,
+            entity_type="lead",
+            entity_id=str(lead.id),
+            legal_ground="6.1.f",
+            payload={
+                "action": "hard_delete",
+                "snapshot_url": snapshot_url,
+                "snapshot_business_name": snapshot_business_name,
+                "operator_role": user.role,
+            },
+        )
+    )
+    await session.delete(lead)
+    await session.commit()
 
 
 # ---------- Alta manual de leads (single + bulk) ----------

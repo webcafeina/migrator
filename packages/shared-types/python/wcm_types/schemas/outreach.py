@@ -8,6 +8,54 @@ from wcm_types.enums import OutreachChannel, OutreachSendStatus, OutreachSequenc
 from wcm_types.schemas._base import TimestampedRead, WcmModel
 
 
+class OutreachTemplateBase(WcmModel):
+    """Plantilla Jinja2 reutilizable usada por el composer al generar
+    drafts. v0.12.0 — migrada de fichero `.j2` a tabla BD editable."""
+
+    name: str = Field(min_length=1, max_length=80)
+    subject_template: str = Field(min_length=1)
+    body_template: str = Field(min_length=1)
+    language: str = Field(default="es", min_length=2, max_length=8)
+
+
+class OutreachTemplateCreate(OutreachTemplateBase):
+    """Crear plantilla nueva. `name` debe ser único."""
+
+
+class OutreachTemplateUpdate(WcmModel):
+    """Actualizar plantilla existente. Todos los campos opcionales —
+    `name` NO se cambia (es la clave por la que el composer la
+    resuelve; renombrar rompería sequences históricas que la
+    referencian)."""
+
+    subject_template: str | None = Field(default=None, min_length=1)
+    body_template: str | None = Field(default=None, min_length=1)
+    language: str | None = Field(default=None, min_length=2, max_length=8)
+
+
+class OutreachTemplateRead(OutreachTemplateBase, TimestampedRead):
+    id: int
+
+
+class OutreachStepEdit(WcmModel):
+    """Payload para editar un paso desde la UI. NO se permite cambiar
+    step_index (preserva orden del template original); add/delete steps
+    se hace re-componiendo el draft, no editando."""
+
+    step_index: int = Field(ge=0)
+    subject: str | None = Field(default=None, max_length=255)
+    body: str = Field(min_length=1)
+    delay_days_from_previous: int = Field(default=0, ge=0)
+
+
+class OutreachStepsUpdatePayload(WcmModel):
+    """PATCH /sequences/{id}/steps. La lista debe contener TODOS los
+    steps de la sequence (semántica de reemplazo, no patch parcial)
+    para que la validación legal se corra sobre el resultado completo."""
+
+    steps: list[OutreachStepEdit] = Field(min_length=1, max_length=10)
+
+
 class OutreachStep(WcmModel):
     """Un paso dentro de steps_json — validado para asegurar mínimos LSSI-CE.
 

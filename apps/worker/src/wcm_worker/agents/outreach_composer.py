@@ -128,8 +128,7 @@ class OutreachComposerAgent(BaseAgent):
         rendered_steps: list[dict[str, Any]] = []
         for step in steps_cfg:
             tpl_name = step["template"]
-            subject = self._render(f"{tpl_name}.subject.j2", template_ctx)
-            body = self._render(f"{tpl_name}.body.j2", template_ctx)
+            subject, body = self._render_template(tpl_name, template_ctx, ctx)
             rendered_steps.append({
                 "template": tpl_name,
                 "delay_days": step.get("delay_days", 0),
@@ -201,12 +200,60 @@ class OutreachComposerAgent(BaseAgent):
 
     # ---------- helpers ----------
 
+    def _render_template(
+        self,
+        tpl_name: str,
+        template_ctx: dict[str, Any],
+        agent_ctx: AgentContext,
+    ) -> tuple[str, str]:
+        """Resuelve subject + body de una plantilla. Primero busca en
+        BD (`outreach_templates.name`); si no existe, cae al fichero
+        `.j2` histórico en disco (degradación grácil para entornos
+        sin la migración 0003 aplicada y para tests).
+        """
+        # Lazy import para no acoplar el composer al modelo si la BD
+        # aún no tiene la tabla (ej. test que solo mockea AgentContext).
+        from wcm_db.models.outreach import OutreachTemplate
+
+        stmt = select(OutreachTemplate).where(OutreachTemplate.name == tpl_name)
+        try:
+            row = agent_ctx.session.execute(stmt).scalar_one_or_none()
+        except Exception:  # noqa: BLE001 — tabla no existe / BD inalcanzable
+            row = None
+
+        # Defensa contra sessions mockeadas que devuelven cualquier
+        # objeto: confirmamos que es un OutreachTemplate de verdad
+        # antes de fiarnos de los atributos. Si no, fallback a .j2.
+        if isinstance(row, OutreachTemplate):
+            subject = self._render_from_string(
+                row.subject_template, template_ctx, f"{tpl_name}.subject (BD)"
+            )
+            body = self._render_from_string(
+                row.body_template, template_ctx, f"{tpl_name}.body (BD)"
+            )
+            return subject, body
+
+        # Fallback a fichero .j2.
+        subject = self._render(f"{tpl_name}.subject.j2", template_ctx)
+        body = self._render(f"{tpl_name}.body.j2", template_ctx)
+        return subject, body
+
     def _render(self, template_name: str, ctx: dict[str, Any]) -> str:
         try:
             return self._env.get_template(template_name).render(**ctx).strip()
         except Exception as e:
             raise OutreachComposerError(
                 f"Error renderizando template {template_name}: {e}"
+            ) from e
+
+    def _render_from_string(
+        self, source: str, ctx: dict[str, Any], label: str
+    ) -> str:
+        try:
+            return self._env.from_string(source).render(**ctx).strip()
+        except Exception as e:
+            raise OutreachComposerError(
+                f"Error renderizando template {label}: {e}"
             ) from e
 
     def _check_opted_out(self, ctx: AgentContext, emails: list[str]) -> str | None:
@@ -323,3 +370,22 @@ def _validate_legal_compliance(
         if not step.get("subject"):
             errors.append(f"step {idx}: subject vacío")
     return errors
+
+
+# ---------- API pública (consumida desde el API HTTP) ----------
+
+def validate_outreach_steps(
+    steps: list[dict[str, Any]], settings: dict[str, Any]
+) -> list[str]:
+    """Helper público para revalidar steps tras edición manual desde la
+    UI. Mismas reglas que la validación que el composer corre al generar
+    el draft inicial — single source of truth para qué cuenta como
+    "LSSI-CE compliant"."""
+    return _validate_legal_compliance(steps, settings)
+
+
+def load_company_legal_settings() -> dict[str, str]:
+    """Helper público equivalente a `_read_company_from_env`. Lanza
+    `OutreachComposerError` si faltan CIF/ADDRESS — mismo
+    comportamiento que el composer al arrancar."""
+    return _read_company_from_env()

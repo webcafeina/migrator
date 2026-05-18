@@ -95,3 +95,30 @@ class OutreachSend(Base, TimestampMixin):
     provider_message_id: Mapped[str | None] = mapped_column(String(255))
 
     sequence: Mapped[OutreachSequence] = relationship(back_populates="sends")
+
+
+class OutreachTemplate(Base, TimestampMixin):
+    """Plantillas Jinja2 reutilizables que el composer aplica al generar
+    drafts. Migradas a BD en v0.12.0 desde ficheros `.j2` para que el
+    equipo pueda editarlas desde el dashboard sin tocar código.
+
+    El composer mantiene fallback a los `.j2` históricos si la BD no
+    contiene una plantilla con el `name` solicitado — degradación
+    grácil en entornos sin migración aplicada o tests.
+
+    `subject_template` y `body_template` son strings Jinja2 puros. La
+    validación legal corre al GENERAR el draft (sobre los pasos
+    renderizados), no sobre el template per se.
+    """
+
+    __tablename__ = "outreach_templates"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    # name único — el composer recibe `template_name` como string opaco
+    # y resuelve por este campo.
+    name: Mapped[str] = mapped_column(String(80), nullable=False, unique=True)
+    subject_template: Mapped[str] = mapped_column(Text, nullable=False)
+    body_template: Mapped[str] = mapped_column(Text, nullable=False)
+    # ISO 639-1 lowercase. "es" / "en". Permite tener variantes por
+    # idioma del mismo arquetipo.
+    language: Mapped[str] = mapped_column(String(8), nullable=False, default="es")

@@ -34,7 +34,11 @@ from wcm_types.enums import (
     OutreachSequenceStatus,
     UserRole,
 )
-from wcm_types.schemas.outreach import OutreachSendRead, OutreachSequenceRead
+from wcm_types.schemas.outreach import (
+    OutreachSendRead,
+    OutreachSequenceRead,
+    OutreachStepsUpdatePayload,
+)
 
 router = APIRouter(prefix="/outreach", tags=["outreach"])
 
@@ -151,6 +155,77 @@ async def transition_sequence(
             payload={
                 "transition": payload.action,
                 "new_status": new_status.value,
+                "operator_role": user.role,
+            },
+        )
+    )
+    await session.commit()
+    await session.refresh(seq)
+    return OutreachSequenceRead.model_validate(seq)
+
+
+@router.patch("/sequences/{sequence_id}/steps", response_model=OutreachSequenceRead)
+async def edit_sequence_steps(
+    sequence_id: int,
+    payload: OutreachStepsUpdatePayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> OutreachSequenceRead:
+    """Edita los `steps_json` de una sequence en estado editable
+    (`DRAFT_PENDING_REVIEW` o `PAUSED`). Reemplaza la lista completa
+    de pasos (semántica de PUT, no merge parcial — el cliente envía
+    siempre todos los pasos).
+
+    Tras escribir, re-corre la validación legal sobre los pasos nuevos
+    (reusando el mismo helper del composer). Si el resultado NO pasa,
+    `legal_validation_passed` queda en False y el endpoint
+    `/transition action=approve` quedará bloqueado hasta corregir.
+    Devuelve la sequence actualizada para que el cliente refresque la
+    UI sin un fetch extra.
+    """
+    seq = await session.get(OutreachSequence, sequence_id)
+    if seq is None:
+        raise NotFoundError(f"Outreach sequence {sequence_id} no encontrada")
+
+    # Estados editables: solo borradores o pausados. Una sequence
+    # READY/SENT/COMPLETED no se edita — si el operador quiere
+    # cambiarla, debe cancelarla y re-componer.
+    editable_statuses = {
+        OutreachSequenceStatus.DRAFT_PENDING_REVIEW,
+        OutreachSequenceStatus.PAUSED,
+    }
+    if seq.status not in editable_statuses:
+        raise ConflictError(
+            f"No se pueden editar pasos en estado {seq.status.value!r}. "
+            "Cancela y re-compón el draft."
+        )
+
+    # Lazy import del worker (mismo patrón que health.py:127).
+    from wcm_worker.agents.outreach_composer import (
+        load_company_legal_settings,
+        validate_outreach_steps,
+    )
+
+    new_steps = [s.model_dump() for s in payload.steps]
+    company_settings = load_company_legal_settings()
+    legal_errors = validate_outreach_steps(new_steps, company_settings)
+
+    seq.steps_json = new_steps
+    seq.legal_validation_passed = len(legal_errors) == 0
+
+    session.add(
+        AuditLog(
+            actor=f"user:{user.sub}",
+            action=AuditAction.UPDATE,
+            entity_type="outreach_sequence",
+            entity_id=str(seq.id),
+            legal_ground="6.1.f",
+            payload={
+                "action": "edit_steps",
+                "steps_count": len(new_steps),
+                "legal_validation_passed": seq.legal_validation_passed,
+                "legal_errors": legal_errors[:10],  # cap para no llenar audit log
                 "operator_role": user.role,
             },
         )

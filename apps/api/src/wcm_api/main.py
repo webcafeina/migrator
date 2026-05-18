@@ -36,6 +36,7 @@ from wcm_api.routers import (
     projects,
     residual_tasks,
     system,
+    templates,
     users,
     webhooks,
 )
@@ -116,6 +117,7 @@ def create_app(settings: ApiSettings | None = None) -> FastAPI:
     app.include_router(residual_tasks.router, prefix=v1_prefix)
     app.include_router(errors_router.router, prefix=v1_prefix)
     app.include_router(system.router, prefix=v1_prefix)
+    app.include_router(templates.router, prefix=v1_prefix)
     app.include_router(audit.router, prefix=v1_prefix)
     app.include_router(webhooks.router, prefix=v1_prefix)
 
