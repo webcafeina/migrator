@@ -1,14 +1,52 @@
 /**
- * Tests del SequenceStepEditor (v0.12.0 bloque 2).
+ * Tests del SequenceStepEditor (v0.12.0 bloque 2, refactor v0.14.0).
  *
- * Form inline para editar subject + body + delay de un paso de una
- * secuencia de contacto. NO testea el PATCH (lo hace el padre con su
- * propio flujo de side-effects).
+ * Form inline para editar subject + body HTML (Tiptap) + delay de un
+ * paso de una secuencia de contacto. v0.14.0: añadidos botones
+ * "Vista previa" y "Enviar prueba".
+ *
+ * Estrategia: mockeamos `RichTextEditor` como un <textarea> simple
+ * para no arrastrar Tiptap a JSDOM (necesita contentEditable que
+ * happy-dom no soporta bien). Mockeamos también `EmailPreviewIframe`
+ * y `TestSendDialog` con stubs visuales que no fetchan ni renderizan
+ * iframes.
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+vi.mock("@/components/rich-text-editor", () => ({
+  RichTextEditor: ({
+    initialHtml,
+    onChange,
+    disabled,
+  }: {
+    initialHtml: string;
+    onChange: (v: string) => void;
+    disabled?: boolean;
+  }) => (
+    <textarea
+      aria-label="Cuerpo"
+      defaultValue={initialHtml}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+    />
+  ),
+}));
+
+vi.mock("@/components/email-preview-iframe", () => ({
+  EmailPreviewIframe: ({ fetchUrl }: { fetchUrl: string }) => (
+    <div data-testid="preview-iframe" data-url={fetchUrl}>
+      preview
+    </div>
+  ),
+}));
+
+vi.mock("@/components/test-send-dialog", () => ({
+  TestSendDialog: ({ open }: { open: boolean }) =>
+    open ? <div data-testid="test-send-dialog">test send dialog</div> : null,
+}));
 
 import {
   type EditableStep,
@@ -31,6 +69,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={vi.fn()}
         onCancel={vi.fn()}
       />,
@@ -46,6 +85,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={{ ..._step, step_index: 1 }}
+        sequenceId={42}
         onSave={vi.fn()}
         onCancel={vi.fn()}
       />,
@@ -60,6 +100,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={onSave}
         onCancel={onCancel}
       />,
@@ -75,6 +116,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={onSave}
         onCancel={vi.fn()}
       />,
@@ -102,6 +144,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={onSave}
         onCancel={vi.fn()}
       />,
@@ -117,6 +160,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={vi.fn()}
         onCancel={vi.fn()}
       />,
@@ -129,6 +173,7 @@ describe("SequenceStepEditor", () => {
     render(
       <SequenceStepEditor
         initialStep={_step}
+        sequenceId={42}
         onSave={vi.fn()}
         onCancel={vi.fn()}
         pending
@@ -138,12 +183,51 @@ describe("SequenceStepEditor", () => {
     expect(screen.getByRole("button", { name: /cancelar/i })).toBeDisabled();
   });
 
+  // --- v0.14.0: botones vista previa + enviar prueba ---
+
+  it("botón Vista previa alterna el iframe colapsable", async () => {
+    const user = userEvent.setup();
+    render(
+      <SequenceStepEditor
+        initialStep={_step}
+        sequenceId={77}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+    expect(screen.queryByTestId("preview-iframe")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /vista previa/i }));
+    const iframe = screen.getByTestId("preview-iframe");
+    expect(iframe).toHaveAttribute(
+      "data-url",
+      "/api/v1/outreach/sequences/77/steps/0/preview",
+    );
+    await user.click(screen.getByRole("button", { name: /ocultar vista previa/i }));
+    expect(screen.queryByTestId("preview-iframe")).not.toBeInTheDocument();
+  });
+
+  it("botón Enviar prueba abre el TestSendDialog", async () => {
+    const user = userEvent.setup();
+    render(
+      <SequenceStepEditor
+        initialStep={_step}
+        sequenceId={77}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+    expect(screen.queryByTestId("test-send-dialog")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /enviar prueba/i }));
+    expect(screen.getByTestId("test-send-dialog")).toBeInTheDocument();
+  });
+
   it("delay se sanitiza: negativo → 0, decimal → floor", async () => {
     const onSave = vi.fn();
     const user = userEvent.setup();
     render(
       <SequenceStepEditor
         initialStep={{ ..._step, delay_days_from_previous: 0 }}
+        sequenceId={42}
         onSave={onSave}
         onCancel={vi.fn()}
       />,

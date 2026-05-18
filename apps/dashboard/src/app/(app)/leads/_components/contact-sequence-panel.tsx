@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
+import { EmailPreviewIframe } from "@/components/email-preview-iframe";
 import { ApiError, api } from "@/lib/api";
 import {
   sendStatusLabel,
@@ -356,6 +357,7 @@ function SequenceCard({
             <li key={idx}>
               <SequenceStepEditor
                 initialStep={_toEditable(step, idx)}
+                sequenceId={sequence.id}
                 onSave={saveStep}
                 onCancel={() => setEditingIdx(null)}
                 pending={pending}
@@ -367,6 +369,7 @@ function SequenceCard({
               step={step}
               idx={idx}
               send={send}
+              sequenceId={sequence.id}
               onEdit={editable ? () => setEditingIdx(idx) : undefined}
             />
           );
@@ -439,11 +442,13 @@ function StepBlock({
   step,
   idx,
   send,
+  sequenceId,
   onEdit,
 }: {
   step: Record<string, unknown>;
   idx: number;
   send?: SendRead;
+  sequenceId: number;
   onEdit?: () => void;
 }) {
   const subject =
@@ -455,6 +460,7 @@ function StepBlock({
       : typeof step.delay_days === "number"
         ? (step.delay_days as number)
         : null;
+  const [showHtml, setShowHtml] = useState(false);
 
   return (
     <li className="rounded-sm border border-wcm-detail/30 bg-wcm-primary p-3">
@@ -468,20 +474,39 @@ function StepBlock({
             </>
           )}
         </span>
-        {onEdit && (
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={onEdit}
+            onClick={() => setShowHtml((v) => !v)}
             className="rounded-sm border border-wcm-detail/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wcm-text/80 transition-colors hover:border-wcm-accent hover:text-wcm-accent"
           >
-            Editar
+            {showHtml ? "Ocultar HTML" : "Ver HTML →"}
           </button>
-        )}
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="rounded-sm border border-wcm-detail/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-wcm-text/80 transition-colors hover:border-wcm-accent hover:text-wcm-accent"
+            >
+              Editar
+            </button>
+          )}
+        </div>
       </div>
       <div className="text-xs font-semibold text-wcm-text">{subject}</div>
-      <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-[11.5px] leading-relaxed text-wcm-text/90">
-        {body}
-      </pre>
+      {showHtml ? (
+        <div className="mt-2">
+          <EmailPreviewIframe
+            fetchUrl={`/api/v1/outreach/sequences/${sequenceId}/steps/${idx}/preview`}
+            ariaLabel={`Vista HTML del paso ${idx + 1}`}
+            height={480}
+          />
+        </div>
+      ) : (
+        <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-[11.5px] leading-relaxed text-wcm-text/90">
+          {body}
+        </pre>
+      )}
       {send && <SendTracking send={send} />}
     </li>
   );
