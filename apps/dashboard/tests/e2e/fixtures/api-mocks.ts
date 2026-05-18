@@ -200,6 +200,46 @@ export async function installBaseMocks(page: Page): Promise<void> {
       }),
     }),
   );
+  // Alta manual de leads (v0.11.0). Por defecto:
+  //  - POST /leads → 201 lead nuevo
+  //  - POST /leads/bulk → 200 con mixed outcomes
+  // Los tests específicos pueden sobreescribir con page.route() local
+  // (handlers más recientes ganan en Playwright).
+  await page.route(/\/api\/v1\/leads\/bulk$/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        created: FIXTURE_LEADS.slice(0, 1),
+        skipped_duplicates: FIXTURE_LEADS.slice(1, 2).map((l) => ({
+          url: l.url,
+          outcome: "skipped_duplicate",
+          lead_id: l.id,
+        })),
+        failed: [],
+      }),
+    }),
+  );
+  await page.route(
+    (url: URL) =>
+      url.pathname === "/api/v1/leads" || url.pathname.endsWith("/api/v1/leads"),
+    async (route: Route) => {
+      if (route.request().method() === "POST") {
+        await route.fulfill({
+          status: 201,
+          contentType: "application/json",
+          body: JSON.stringify({ ...FIXTURE_LEADS[0], id: 999 }),
+        });
+        return;
+      }
+      // GET — comportamiento previo (lista de leads).
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(FIXTURE_LEADS),
+      });
+    },
+  );
   // System info para /settings (v1.0.0). Health "ok" por defecto.
   await page.route(/\/api\/v1\/system\/info/, (route: Route) =>
     route.fulfill({

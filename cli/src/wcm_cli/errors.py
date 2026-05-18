@@ -50,6 +50,20 @@ class CliAuthError(CliError):
 class CliApiError(CliError):
     exit_code = 4
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        hint: str | None = None,
+        details: dict | None = None,
+    ) -> None:
+        super().__init__(message, hint=hint)
+        # Espejo de `error.details` del envelope JSON del API
+        # (`{error: {code, message, details}}`). Útil para comandos
+        # que quieren reaccionar a casos específicos sin parsear el
+        # message (p. ej. `leads create` lee `existing_lead_id` en 409).
+        self.details = details or {}
+
 
 class CliInputError(CliError):
     exit_code = 5

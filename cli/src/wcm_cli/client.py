@@ -81,11 +81,13 @@ class ApiClient:
 
     @staticmethod
     def _raise_from_response(response: httpx.Response) -> None:
+        details: dict = {}
         try:
             body = response.json()
             err = body.get("error", {})
             code = err.get("code", "unknown")
             message = err.get("message", response.text[:200] or "Error sin detalle")
+            details = err.get("details") or {}
         except (ValueError, KeyError):
             code = "unknown"
             message = response.text[:200] or f"HTTP {response.status_code}"
@@ -106,6 +108,7 @@ class ApiClient:
                 "Revisa los logs del API o el panel /errors para más contexto."
                 if response.status_code >= 500 else None
             ),
+            details=details,
         )
 
     # ---------- verbs ----------

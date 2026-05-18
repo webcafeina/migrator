@@ -2,14 +2,112 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Annotated
 
 import typer
 
 from wcm_cli import output
 from wcm_cli.client import ApiClient
+from wcm_cli.errors import CliApiError, CliInputError
 
 app = typer.Typer(help="Gestión de leads")
+
+
+@app.command("create")
+def create_lead(
+    url: Annotated[
+        str | None,
+        typer.Option(help="URL del lead. Excluyente con --bulk-file."),
+    ] = None,
+    sector: Annotated[
+        str | None, typer.Option(help="Sector aplicado al lead/batch")
+    ] = None,
+    region: Annotated[
+        str | None, typer.Option(help="Región aplicada al lead/batch")
+    ] = None,
+    country: Annotated[
+        str, typer.Option(help="Código ISO de país (2 letras)")
+    ] = "ES",
+    business_name: Annotated[
+        str | None, typer.Option(help="Nombre comercial (solo single)")
+    ] = None,
+    bulk_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--bulk-file",
+            help="Fichero con 1 URL por línea (excluyente con --url). "
+            "Líneas vacías y las que empiezan con # se ignoran.",
+        ),
+    ] = None,
+) -> None:
+    """Alta manual de uno o varios leads.
+
+    Tras crear, el sistema encadena fingerprint + enrich
+    automáticamente. La base jurídica RGPD aplicada es art. 6.1.f
+    (interés legítimo B2B) — misma que la prospección automática.
+    """
+    if (url is None) == (bulk_file is None):
+        raise CliInputError(
+            "Usa --url XOR --bulk-file (uno y solo uno).",
+            hint=(
+                "Ej. alta única: wcm leads create --url https://foo.com\n"
+                "Ej. alta bulk:  wcm leads create --bulk-file urls.txt"
+            ),
+        )
+
+    client = ApiClient()
+
+    if url is not None:
+        body: dict[str, str] = {"url": url, "country": country}
+        if sector:
+            body["sector"] = sector
+        if region:
+            body["region"] = region
+        if business_name:
+            body["business_name"] = business_name
+        try:
+            lead = client.post("/api/v1/leads", json=body)
+        except CliApiError as e:
+            existing = e.details.get("existing_lead_id")
+            if existing is not None:
+                output.error(
+                    f"URL duplicada · lead existente #{existing}"
+                )
+                raise typer.Exit(code=1) from None
+            raise
+        output.success(f"Lead #{lead['id']} creado · {lead['url']}")
+        return
+
+    # bulk
+    assert bulk_file is not None  # noqa: S101 — narrowing para mypy
+    if not bulk_file.exists():
+        raise CliInputError(f"Fichero no encontrado: {bulk_file}")
+    urls = [
+        line.strip()
+        for line in bulk_file.read_text().splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    if not urls:
+        raise CliInputError(
+            "El fichero no contiene URLs válidas (solo líneas vacías o comments)."
+        )
+    body_bulk: dict[str, object] = {"urls": urls, "country": country}
+    if sector:
+        body_bulk["sector"] = sector
+    if region:
+        body_bulk["region"] = region
+
+    result = client.post("/api/v1/leads/bulk", json=body_bulk)
+    output.success(
+        f"{len(result['created'])} creados · "
+        f"{len(result['skipped_duplicates'])} duplicados · "
+        f"{len(result['failed'])} fallos"
+    )
+    if result["failed"]:
+        # Mostrar primeras 3 razones de fallo para diagnóstico rápido.
+        for fail in result["failed"][:3]:
+            output.info(f"  fail · {fail['url']} · {fail.get('reason', '?')}")
 
 
 @app.command("list")
