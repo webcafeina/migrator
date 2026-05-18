@@ -77,6 +77,39 @@ export interface EnqueueResponse {
 }
 
 /**
+ * Payload de alta bulk: hasta 200 URLs + metadata aplicada al batch.
+ * Espejo de `wcm_types.schemas.leads.LeadBulkCreate`.
+ */
+export interface LeadBulkCreatePayload {
+  urls: string[];
+  business_name?: string;
+  sector?: string;
+  region?: string;
+  country?: string;
+}
+
+/**
+ * Detalle por URL fallida o duplicada. Espejo de
+ * `wcm_types.schemas.leads.LeadBulkCreateOutcome`.
+ */
+export interface LeadBulkCreateOutcome {
+  url: string;
+  outcome: "skipped_duplicate" | "failed";
+  lead_id?: number | null;
+  reason?: string | null;
+}
+
+/**
+ * Respuesta agregada de `POST /api/v1/leads/bulk`. `created` lleva
+ * LeadRead completos para evitar follow-up fetches en el cliente.
+ */
+export interface LeadBulkCreateResult {
+  created: LeadRead[];
+  skipped_duplicates: LeadBulkCreateOutcome[];
+  failed: LeadBulkCreateOutcome[];
+}
+
+/**
  * Snapshot de progreso de una campaña, retornado por
  * GET /api/v1/campaigns/runs/{task_id}.
  */
