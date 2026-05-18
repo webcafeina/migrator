@@ -71,6 +71,13 @@ export function LeadList({
             </span>
           </div>
           <Link
+            href="/leads/new"
+            className="rounded-sm border border-wcm-detail/60 px-2.5 py-1 text-xs text-wcm-text/90 transition-colors hover:border-wcm-accent hover:text-wcm-accent"
+            title="Añadir URLs concretas a evaluar (sin campaña)"
+          >
+            + Nuevo lead
+          </Link>
+          <Link
             href="/campaigns"
             className="rounded-sm bg-wcm-accent px-2.5 py-1 text-xs font-semibold text-wcm-primary hover:brightness-105"
           >

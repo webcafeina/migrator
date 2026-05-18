@@ -53,7 +53,10 @@ describe("parseBulkUrls", () => {
     expect(result.invalid).toHaveLength(0);
   });
 
-  it("URL malformada va a invalid con número de línea 1-based", () => {
+  it("URL con espacios va a invalid con número de línea 1-based", () => {
+    // Chromium tolera espacios codificándolos en %20 — los rechazamos
+    // explícitamente para no aceptar líneas descriptivas pegadas por
+    // accidente.
     const result = parseBulkUrls("https://a.com\nesto no es una url con espacios\nhttps://b.com");
     expect(result.valid).toHaveLength(2);
     expect(result.invalid).toHaveLength(1);
@@ -61,6 +64,14 @@ describe("parseBulkUrls", () => {
       line: 2,
       raw: "esto no es una url con espacios",
     });
+  });
+
+  it("host sin TLD (foo, localhost) va a invalid", () => {
+    // El operador quiere webs comerciales públicas — `localhost` o
+    // hosts sin punto típicamente son errores.
+    const result = parseBulkUrls("https://foo\nhttps://localhost:8080");
+    expect(result.valid).toHaveLength(0);
+    expect(result.invalid).toHaveLength(2);
   });
 
   it("rechaza protocolos no http/https (ftp:// → invalid)", () => {

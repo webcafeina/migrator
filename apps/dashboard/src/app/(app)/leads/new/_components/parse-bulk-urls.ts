@@ -30,8 +30,13 @@ export function parseBulkUrls(raw: string): BulkParseResult {
     if (trimmed.startsWith("#")) continue;
 
     try {
-      // El constructor `URL` necesita protocolo. Si el operador pega
-      // "foo.com" sin "https://", lo añadimos antes de validar.
+      // Rechazo previo: URLs reales no contienen espacios sin encoder.
+      // El constructor `URL` de Chromium los tolera codificándolos en
+      // %20, lo cual NO es lo que un operador quiere si pegó accidental-
+      // mente una línea descriptiva. Mejor fallar explícito.
+      if (/\s/.test(trimmed)) {
+        throw new Error("contiene espacios");
+      }
       // Si la línea YA trae un esquema (`xxx://`) que no es http/https,
       // la rechazamos directamente (sin prepender) para no aceptar
       // ftp://, file://, javascript:, etc.
@@ -44,8 +49,9 @@ export function parseBulkUrls(raw: string): BulkParseResult {
       if (url.protocol !== "http:" && url.protocol !== "https:") {
         throw new Error("protocolo no soportado");
       }
-      if (!url.hostname) {
-        throw new Error("host vacío");
+      if (!url.hostname || !url.hostname.includes(".")) {
+        // Sin TLD (`https://foo`) tampoco es una web pública válida.
+        throw new Error("host sin TLD");
       }
       valid.push(candidate);
     } catch {
