@@ -12,6 +12,7 @@ from typing import Annotated, Literal
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wcm_api.config import ApiSettings, get_settings
@@ -31,8 +32,16 @@ from wcm_api.tasks.enqueue import (
 )
 from wcm_db.models.audit import AuditLog
 from wcm_db.models.leads import Lead
+from wcm_scraper_core.urls import normalize_lead_url
 from wcm_types.enums import AuditAction, BuilderType, LeadStatus, UserRole
-from wcm_types.schemas.leads import LeadRead, LeadUpdate
+from wcm_types.schemas.leads import (
+    LeadBulkCreate,
+    LeadBulkCreateOutcome,
+    LeadBulkCreateResult,
+    LeadCreate,
+    LeadRead,
+    LeadUpdate,
+)
 
 router = APIRouter(prefix="/leads", tags=["leads"])
 
@@ -178,6 +187,196 @@ async def update_lead(
     await session.commit()
     await session.refresh(lead)
     return LeadRead.model_validate(lead)
+
+
+# ---------- Alta manual de leads (single + bulk) ----------
+
+async def _insert_lead(
+    session: AsyncSession,
+    *,
+    raw_url: str,
+    business_name: str | None,
+    sector: str | None,
+    region: str | None,
+    country: str,
+) -> tuple[Lead | None, int | None]:
+    """INSERT ON CONFLICT DO NOTHING devolviendo `(lead, None)` si creado
+    o `(None, existing_id)` si la URL ya existía.
+
+    Helper compartido entre single y bulk para mantener la lógica de
+    upsert canonicalizada en un solo sitio.
+    """
+    normalized = normalize_lead_url(raw_url)
+    stmt = (
+        pg_insert(Lead)
+        .values(
+            url=normalized,
+            business_name=business_name,
+            sector=sector,
+            region=region,
+            country=country,
+            status=LeadStatus.DISCOVERED,
+        )
+        .on_conflict_do_nothing(index_elements=["url"])
+        .returning(Lead.id)
+    )
+    result = await session.execute(stmt)
+    new_id = result.scalar_one_or_none()
+    if new_id is None:
+        existing = (
+            await session.execute(select(Lead.id).where(Lead.url == normalized))
+        ).scalar_one_or_none()
+        return None, existing
+    lead = await session.get(Lead, new_id)
+    return lead, None
+
+
+def _audit_manual_lead(
+    *, user: TokenPayload, lead_id: int, source: str, extra: dict | None = None
+) -> AuditLog:
+    """AuditLog DISCOVER para alta manual. `legal_ground=6.1.f` igual que
+    el ProspectorAgent: la base RGPD (interés legítimo B2B) NO cambia
+    por procedencia. La procedencia va en `payload.source`.
+    """
+    payload: dict = {
+        "source": source,
+        "operator_role": user.role,
+    }
+    if extra:
+        payload.update(extra)
+    return AuditLog(
+        actor=f"user:{user.sub}",
+        action=AuditAction.DISCOVER,
+        entity_type="lead",
+        entity_id=str(lead_id),
+        legal_ground="6.1.f",
+        payload=payload,
+    )
+
+
+def _enqueue_post_create_pipeline(lead_id: int) -> list[str]:
+    """Fire-and-forget de fingerprint + enrich tras alta. Devuelve lista
+    de warnings (vacía si todo OK). Si Celery está caído, devolvemos
+    warning pero NO propagamos — el lead ya está persistido y el
+    operador puede disparar manualmente desde la ficha.
+    """
+    warnings: list[str] = []
+    try:
+        enqueue_lead_fingerprint(lead_id)
+    except Exception as e:  # noqa: BLE001 — log + degradación grácil
+        warnings.append(f"enqueue_fingerprint_failed: {type(e).__name__}")
+    try:
+        enqueue_lead_enrich(lead_id, skip_embedding=False)
+    except Exception as e:  # noqa: BLE001
+        warnings.append(f"enqueue_enrich_failed: {type(e).__name__}")
+    return warnings
+
+
+@router.post("", response_model=LeadRead, status_code=status.HTTP_201_CREATED)
+async def create_lead_manual(
+    payload: LeadCreate,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> LeadRead:
+    """Alta manual de un lead. Encadena fingerprint+enrich fire-and-forget
+    tras commit. Si la URL ya existe (UNIQUE), 409 con `existing_lead_id`
+    en `details` para que el dashboard pueda navegar al existente.
+
+    Base jurídica: art. 6.1.f RGPD (interés legítimo B2B), igual que la
+    prospección automática. La procedencia queda registrada en el
+    AuditLog (`payload.source="manual_dashboard"|"manual_cli"`).
+    """
+    lead, existing_id = await _insert_lead(
+        session,
+        raw_url=str(payload.url),
+        business_name=payload.business_name,
+        sector=payload.sector,
+        region=payload.region,
+        country=payload.country,
+    )
+    if lead is None:
+        raise ConflictError(
+            "Lead con esa URL ya existe",
+            details={"existing_lead_id": existing_id},
+        )
+    # `source` lo deduce el cliente — el endpoint no sabe si vino del
+    # dashboard o del CLI. Lo registramos genérico; el CLI puede
+    # añadir un header X-Source-Channel en el futuro si interesa.
+    session.add(
+        _audit_manual_lead(
+            user=user,
+            lead_id=lead.id,
+            source="manual_single",
+        )
+    )
+    await session.commit()
+    await session.refresh(lead)
+    _enqueue_post_create_pipeline(lead.id)
+    return LeadRead.model_validate(lead)
+
+
+@router.post("/bulk", response_model=LeadBulkCreateResult)
+@limiter.limit("10/minute")
+async def create_leads_bulk(
+    request: Request,
+    payload: LeadBulkCreate,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    user: Annotated[TokenPayload, Depends(get_current_user_payload)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> LeadBulkCreateResult:
+    """Alta masiva de leads. NO aborta el batch ante fallos aislados —
+    cada URL se procesa de forma independiente vía `INSERT ON CONFLICT`.
+
+    Devuelve listas separadas (`created`, `skipped_duplicates`, `failed`)
+    para que el dashboard renderice el resumen sin filtrar por outcome.
+    """
+    created: list[Lead] = []
+    skipped: list[LeadBulkCreateOutcome] = []
+    failed: list[LeadBulkCreateOutcome] = []
+
+    for raw_url in payload.urls:
+        url_str = str(raw_url)
+        try:
+            lead, existing_id = await _insert_lead(
+                session,
+                raw_url=url_str,
+                business_name=payload.business_name,
+                sector=payload.sector,
+                region=payload.region,
+                country=payload.country,
+            )
+        except Exception as e:  # noqa: BLE001 — URL inesperadamente mala
+            failed.append(LeadBulkCreateOutcome(
+                url=url_str, outcome="failed", reason=type(e).__name__,
+            ))
+            continue
+        if lead is None:
+            skipped.append(LeadBulkCreateOutcome(
+                url=url_str,
+                outcome="skipped_duplicate",
+                lead_id=existing_id,
+            ))
+            continue
+        created.append(lead)
+        session.add(_audit_manual_lead(
+            user=user,
+            lead_id=lead.id,
+            source="manual_bulk",
+            extra={"batch_size": len(payload.urls)},
+        ))
+
+    await session.commit()
+    # Refresh + encolar tras commit único del batch.
+    for lead in created:
+        await session.refresh(lead)
+        _enqueue_post_create_pipeline(lead.id)
+
+    return LeadBulkCreateResult(
+        created=[LeadRead.model_validate(lead) for lead in created],
+        skipped_duplicates=skipped,
+        failed=failed,
+    )
 
 
 @router.post("/{lead_id}/refingerprint", status_code=status.HTTP_202_ACCEPTED)

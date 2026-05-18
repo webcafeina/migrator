@@ -16,11 +16,11 @@ from wcm_scraper_core.directories.google_places import (
     GooglePlacesQuotaExceeded,
     PlaceResult,
 )
+from wcm_scraper_core.urls import normalize_lead_url as _normalize_url
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.prospector import (
     ProspectorAgent,
     _domain_of,
-    _normalize_url,
 )
 from wcm_worker.errors import ProspectorError
 

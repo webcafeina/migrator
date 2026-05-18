@@ -39,6 +39,7 @@ from wcm_scraper_core.directories import (
     GooglePlacesQuotaExceeded,
     PlaceResult,
 )
+from wcm_scraper_core.urls import normalize_lead_url
 from wcm_types.enums import AuditAction, LeadStatus
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ProspectorError
@@ -117,7 +118,7 @@ class ProspectorAgent(BaseAgent):
                     skipped_no_website += 1
                     continue
 
-                normalized_url = _normalize_url(place_full.website)
+                normalized_url = normalize_lead_url(place_full.website)
                 domain = _domain_of(normalized_url)
                 if not domain or domain in exclude_domains:
                     skipped_excluded += 1
@@ -180,22 +181,6 @@ def _build_client_from_env() -> GooglePlacesClient:
         language=os.environ.get("GOOGLE_MAPS_LANGUAGE", "es"),
         region=os.environ.get("GOOGLE_MAPS_REGION", "es"),
     )
-
-
-def _normalize_url(url: str) -> str:
-    """Canónica: scheme + lowercase host + path sin trailing slash inicial.
-
-    No quitamos el path entero — algunos negocios tienen su web en
-    `/inicio` o en una subruta. Sí quitamos UTM y fragments.
-    """
-    parsed = urlparse(url.strip())
-    if not parsed.scheme:
-        parsed = urlparse("https://" + url.strip())
-    host = (parsed.hostname or "").lower()
-    if host.startswith("www."):
-        host = host[4:]
-    path = parsed.path.rstrip("/") or "/"
-    return f"{parsed.scheme}://{host}{path}"
 
 
 def _domain_of(url: str) -> str:
