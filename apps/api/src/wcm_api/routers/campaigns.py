@@ -16,10 +16,11 @@ Endpoints:
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 from celery.result import AsyncResult
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from pydantic import BaseModel, Field
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -129,6 +130,90 @@ async def list_active_campaigns(
         }
         for c in rows
     ]
+
+
+class CampaignRunSummary(BaseModel):
+    """Resumen de una campaña pasada para la tabla de histórico del
+    rediseño de /campaigns.
+
+    `leads_count` es `len(created_lead_ids)` — los leads que el
+    ProspectorAgent llegó a crear. `warnings_count` para que la UI
+    pueda mostrar un badge "⚠ 3" sin traer el listado completo;
+    el detalle vive en `GET /runs/{task_id}`.
+    """
+
+    id: int
+    task_id: str
+    sector: str
+    region: str
+    target_count: int
+    status: CampaignStatus
+    started_at: datetime
+    completed_at: datetime | None
+    duration_s: int | None
+    leads_count: int
+    warnings_count: int
+    error: str | None
+    created_by_user_id: str | None
+
+
+@router.get("/runs", response_model=list[CampaignRunSummary])
+async def list_campaign_runs(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    status_filter: CampaignStatus | None = Query(
+        default=None,
+        alias="status",
+        description="Filtra por estado de la campaña.",
+    ),
+    since: datetime | None = Query(
+        default=None,
+        description="ISO datetime. Si se omite, últimos 30 días.",
+    ),
+) -> list[CampaignRunSummary]:
+    """Histórico de campañas para la tabla del rediseño /campaigns.
+
+    Ordenadas por `started_at` DESC. Ventana por defecto 30 días — la
+    inmensa mayoría de operaciones consultan campañas recientes; para
+    histórico largo, pasar `since`.
+    """
+    if since is None:
+        since = datetime.now(UTC) - timedelta(days=30)
+
+    stmt = select(Campaign).where(Campaign.started_at >= since)
+    if status_filter is not None:
+        stmt = stmt.where(Campaign.status == status_filter)
+    stmt = stmt.order_by(desc(Campaign.started_at)).limit(limit).offset(offset)
+
+    rows = (await session.execute(stmt)).scalars().all()
+    return [
+        CampaignRunSummary(
+            id=c.id,
+            task_id=c.task_id,
+            sector=c.sector,
+            region=c.region,
+            target_count=c.target_count,
+            status=c.status,
+            started_at=c.started_at,
+            completed_at=c.completed_at,
+            duration_s=_compute_duration_s(c),
+            leads_count=len(c.created_lead_ids or []),
+            warnings_count=len(c.warnings or []),
+            error=c.error,
+            created_by_user_id=str(c.created_by_user_id) if c.created_by_user_id else None,
+        )
+        for c in rows
+    ]
+
+
+def _compute_duration_s(c: Campaign) -> int | None:
+    """Segundos entre `started_at` y `completed_at`. None si aún corre."""
+    if c.completed_at is None:
+        return None
+    delta = c.completed_at - c.started_at
+    return max(0, int(delta.total_seconds()))
 
 
 @router.get("/runs/{task_id}")
