@@ -23,6 +23,7 @@ from wcm_api.security import require_role
 from wcm_api.tasks.enqueue import enqueue_project_pipeline
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
+from wcm_db.models.qa_reports import QaReport
 from wcm_db.models.residual_tasks import ResidualTask
 from wcm_db.models.visual_diffs import VisualDiff
 from wcm_types.enums import (
@@ -38,6 +39,7 @@ from wcm_types.schemas.projects import (
     ProjectRead,
     ProjectUpdate,
 )
+from wcm_types.schemas.qa_reports import QaReportRead
 from wcm_types.schemas.visual_diffs import (
     VisualDiffRead,
     VisualDiffsListResponse,
@@ -424,3 +426,30 @@ async def list_visual_diffs(
         pages_total=len(pages),
         pages=pages,
     )
+
+
+@router.get("/{project_id}/qa-report", response_model=QaReportRead | None)
+async def get_latest_qa_report(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> QaReportRead | None:
+    """Última fila `qa_reports` del proyecto (v0.16.0).
+
+    Alimenta `/projects/[id]/qa` del dashboard. Devuelve `null` si el
+    agent qa-runner aún no ejecutó (status 200 con body `null`).
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    stmt = (
+        select(QaReport)
+        .where(QaReport.project_id == project_id)
+        .order_by(QaReport.created_at.desc())
+        .limit(1)
+    )
+    report = (await session.execute(stmt)).scalar_one_or_none()
+    if report is None:
+        return None
+    return QaReportRead.model_validate(report)
