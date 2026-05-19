@@ -15,18 +15,20 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
+from wcm_api.rate_limit import limiter
 from wcm_api.security import require_role
 from wcm_db.models.outreach import OutreachTemplate
 from wcm_types.enums import UserRole
 from wcm_types.schemas.outreach import (
     OutreachPreviewResponse,
+    OutreachTemplateBase,
     OutreachTemplateCreate,
     OutreachTemplateRead,
     OutreachTemplateUpdate,
@@ -231,6 +233,35 @@ async def _render_template_with_mock_context(
         template_ctx=mock_ctx,
     )
     return html, subject
+
+
+@router.post("/preview", response_model=OutreachPreviewResponse)
+@limiter.limit("60/minute")
+async def preview_inline_template(
+    request: Request,
+    payload: OutreachTemplateBase,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> OutreachPreviewResponse:
+    """Renderiza un payload de plantilla SIN persistirla. v0.15.0 —
+    alimenta el preview lateral del `TemplateForm` con debounce 600 ms
+    para que el operador vea cambios en vivo mientras edita.
+
+    Reutiliza `_render_template_with_mock_context` construyendo una
+    instancia transitoria de `OutreachTemplate` (no se añade a la
+    sesión, no toca BD). Rate-limit 60/min por IP.
+    """
+    transient = OutreachTemplate(
+        name=payload.name,
+        subject_template=payload.subject_template,
+        body_template=payload.body_template,
+        language=payload.language,
+        body_html_template=payload.body_html_template,
+        cta_label=payload.cta_label,
+        cta_url=payload.cta_url,
+    )
+    html, subject = await _render_template_with_mock_context(transient, session)
+    return OutreachPreviewResponse(html=html, subject=subject)
 
 
 @router.delete("/{template_id}", status_code=status.HTTP_204_NO_CONTENT)

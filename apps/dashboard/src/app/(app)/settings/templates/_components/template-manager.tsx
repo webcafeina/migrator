@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { EmailPreviewIframe } from "@/components/email-preview-iframe";
@@ -249,145 +249,110 @@ function TemplateView({
   onDelete: () => void;
   pending: boolean;
 }) {
-  const [tab, setTab] = useState<"source" | "preview">("source");
   return (
-    <article className="space-y-4 rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs">
-      <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <div>
-          <h3 className="text-sm font-semibold text-wcm-text">{tpl.name}</h3>
-          <div className="mt-0.5 text-[11px] text-muted-foreground">
-            <code className="text-wcm-text/80">{tpl.language}</code>
-            <span className="mx-1.5">·</span>
-            actualizada {formatRelativeTime(tpl.updated_at)}
-            {tpl.body_html_template && (
-              <>
-                <span className="mx-1.5">·</span>
-                <span className="text-wcm-accent">HTML</span>
-              </>
-            )}
-            {tpl.cta_label && (
-              <>
-                <span className="mx-1.5">·</span>
-                <span className="text-wcm-accent">CTA</span>
-              </>
-            )}
+    <article className="grid grid-cols-1 gap-4 rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-4 text-xs xl:grid-cols-[1fr_500px]">
+      {/* Columna izquierda: metadatos + fuente Jinja2. */}
+      <div className="space-y-4">
+        <header className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <h3 className="text-sm font-semibold text-wcm-text">{tpl.name}</h3>
+            <div className="mt-0.5 text-[11px] text-muted-foreground">
+              <code className="text-wcm-text/80">{tpl.language}</code>
+              <span className="mx-1.5">·</span>
+              actualizada {formatRelativeTime(tpl.updated_at)}
+              {tpl.body_html_template && (
+                <>
+                  <span className="mx-1.5">·</span>
+                  <span className="text-wcm-accent">HTML</span>
+                </>
+              )}
+              {tpl.cta_label && (
+                <>
+                  <span className="mx-1.5">·</span>
+                  <span className="text-wcm-accent">CTA</span>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={onEdit}
-            disabled={pending}
-            className="rounded-sm border border-wcm-detail/60 px-2.5 py-1 text-[11px] text-wcm-text hover:border-wcm-accent hover:text-wcm-accent disabled:opacity-50"
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            onClick={onDelete}
-            disabled={pending}
-            className="rounded-sm border border-wcm-detail/60 px-2.5 py-1 text-[11px] text-wcm-danger hover:border-wcm-danger disabled:opacity-50"
-          >
-            Borrar
-          </button>
-        </div>
-      </header>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onEdit}
+              disabled={pending}
+              className="rounded-sm border border-wcm-detail/60 px-2.5 py-1 text-[11px] text-wcm-text hover:border-wcm-accent hover:text-wcm-accent disabled:opacity-50"
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={pending}
+              className="rounded-sm border border-wcm-detail/60 px-2.5 py-1 text-[11px] text-wcm-danger hover:border-wcm-danger disabled:opacity-50"
+            >
+              Borrar
+            </button>
+          </div>
+        </header>
 
-      <div
-        role="tablist"
-        className="flex gap-1 border-b border-wcm-detail/40 text-[10.5px] uppercase tracking-wider"
-      >
-        <TabBtn active={tab === "source"} onClick={() => setTab("source")}>
-          Fuente (Jinja2)
-        </TabBtn>
-        <TabBtn active={tab === "preview"} onClick={() => setTab("preview")}>
-          Vista previa
-        </TabBtn>
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            Asunto (Jinja2)
+          </div>
+          <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+            {tpl.subject_template}
+          </pre>
+        </div>
+
+        {tpl.body_html_template ? (
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              Cuerpo HTML (Jinja2 + tags)
+            </div>
+            <pre className="mt-1 max-h-72 overflow-y-auto whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+              {tpl.body_html_template}
+            </pre>
+          </div>
+        ) : null}
+
+        <div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            Cuerpo texto (fallback / clientes sin HTML)
+          </div>
+          <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
+            {tpl.body_template}
+          </pre>
+        </div>
+
+        {(tpl.cta_label || tpl.cta_url) && (
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              CTA
+            </div>
+            <div className="mt-1 rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 text-[11px] text-wcm-text">
+              <strong>{tpl.cta_label || "(sin texto)"}</strong>{" "}
+              <span className="text-muted-foreground">→</span>{" "}
+              <code className="text-wcm-accent">
+                {tpl.cta_url || "(sin URL)"}
+              </code>
+            </div>
+          </div>
+        )}
+
+        <JinjaHelp />
       </div>
 
-      {tab === "source" ? (
-        <>
-          <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-              Asunto (Jinja2)
-            </div>
-            <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
-              {tpl.subject_template}
-            </pre>
-          </div>
-
-          {tpl.body_html_template ? (
-            <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                Cuerpo HTML (Jinja2 + tags)
-              </div>
-              <pre className="mt-1 max-h-72 overflow-y-auto whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
-                {tpl.body_html_template}
-              </pre>
-            </div>
-          ) : null}
-
-          <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-              Cuerpo texto (fallback / clientes sin HTML)
-            </div>
-            <pre className="mt-1 whitespace-pre-wrap break-words rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 font-mono text-[11px] text-wcm-text">
-              {tpl.body_template}
-            </pre>
-          </div>
-
-          {(tpl.cta_label || tpl.cta_url) && (
-            <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                CTA
-              </div>
-              <div className="mt-1 rounded-sm border border-wcm-detail/30 bg-wcm-primary p-2 text-[11px] text-wcm-text">
-                <strong>{tpl.cta_label || "(sin texto)"}</strong>{" "}
-                <span className="text-muted-foreground">→</span>{" "}
-                <code className="text-wcm-accent">
-                  {tpl.cta_url || "(sin URL)"}
-                </code>
-              </div>
-            </div>
-          )}
-
-          <JinjaHelp />
-        </>
-      ) : (
+      {/* Columna derecha: vista previa lateral (v0.15.0). */}
+      <div className="space-y-1 xl:sticky xl:top-4 xl:self-start">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          Vista previa
+        </div>
         <EmailPreviewIframe
           fetchUrl={`/api/v1/templates/${tpl.id}/preview`}
           ariaLabel={`Vista previa de plantilla ${tpl.name}`}
           height={560}
         />
-      )}
+      </div>
     </article>
-  );
-}
-
-function TabBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={active}
-      onClick={onClick}
-      className={cn(
-        "px-3 py-1.5 transition-colors",
-        active
-          ? "border-b-2 border-wcm-accent text-wcm-accent"
-          : "text-muted-foreground hover:text-wcm-text",
-      )}
-    >
-      {children}
-    </button>
   );
 }
 
@@ -424,12 +389,62 @@ function TemplateForm({
   const [ctaLabel, setCtaLabel] = useState(initial?.cta_label ?? "");
   const [ctaUrl, setCtaUrl] = useState(initial?.cta_url ?? "");
 
+  // v0.15.0 — preview lateral en vivo con debounce 600ms.
+  const [preview, setPreview] = useState<{ html: string; subject: string | null } | null>(
+    null,
+  );
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const debounceRef = useRef<number | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
   const isEdit = mode === "edit";
   const canSave =
     !pending &&
     name.trim() !== "" &&
     subject.trim() !== "" &&
     body.trim() !== "";
+
+  // Preview lateral: POST /templates/preview con debounce + AbortController.
+  useEffect(() => {
+    if (!canSave) {
+      // Sin body o sin subject el backend devolverá 422; no malgastamos request.
+      return;
+    }
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    debounceRef.current = window.setTimeout(() => {
+      if (abortRef.current) abortRef.current.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      api
+        .post<{ html: string; subject: string | null }>(
+          "/api/v1/templates/preview",
+          {
+            name: name.trim() || "preview_temp",
+            subject_template: subject,
+            body_template: body,
+            language,
+            body_html_template: bodyHtml || null,
+            cta_label: ctaLabel.trim() || null,
+            cta_url: ctaUrl.trim() || null,
+          },
+          { signal: controller.signal },
+        )
+        .then((res) => {
+          setPreview(res);
+          setPreviewError(null);
+        })
+        .catch((err) => {
+          if (err instanceof DOMException && err.name === "AbortError") return;
+          setPreview(null);
+          setPreviewError(
+            err instanceof ApiError ? err.message : "Preview no disponible",
+          );
+        });
+    }, 600);
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, [canSave, name, subject, body, language, bodyHtml, ctaLabel, ctaUrl]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -448,8 +463,9 @@ function TemplateForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-sm border border-wcm-accent/30 bg-wcm-secondary/30 p-4 text-xs"
+      className="grid grid-cols-1 gap-4 rounded-sm border border-wcm-accent/30 bg-wcm-secondary/30 p-4 text-xs xl:grid-cols-[1fr_500px]"
     >
+      <div className="space-y-4">
       <header className="text-[10.5px] uppercase tracking-wider text-wcm-accent">
         {isEdit ? "Editando plantilla" : "Nueva plantilla"}
       </header>
@@ -584,6 +600,37 @@ function TemplateForm({
         >
           {pending ? "Guardando…" : isEdit ? "Guardar →" : "Crear plantilla →"}
         </button>
+      </div>
+      </div>
+
+      {/* Columna derecha: preview lateral en vivo (v0.15.0). */}
+      <div className="space-y-1 xl:sticky xl:top-4 xl:self-start">
+        <div className="flex items-baseline justify-between text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+          <span>Vista previa en vivo</span>
+          {preview?.subject && (
+            <span className="truncate text-wcm-text/80 normal-case tracking-normal">
+              {preview.subject}
+            </span>
+          )}
+        </div>
+        {preview ? (
+          <iframe
+            title="Vista previa de la plantilla"
+            aria-label="Vista previa de la plantilla"
+            sandbox="allow-same-origin"
+            srcDoc={preview.html}
+            className="w-full rounded-sm border border-wcm-detail/40 bg-white"
+            style={{ height: 600 }}
+          />
+        ) : (
+          <div className="flex h-[600px] items-center justify-center rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 text-xs text-muted-foreground">
+            {previewError ?? "Cargando vista previa…"}
+          </div>
+        )}
+        <p className="text-[10px] text-muted-foreground">
+          Se actualiza al editar (debounce 600 ms). Preview con un lead
+          demo + layout maestro real + premailer.
+        </p>
       </div>
     </form>
   );

@@ -1,17 +1,24 @@
 "use client";
 
+import { Color } from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyle } from "@tiptap/extension-text-style";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
   Italic,
   Link as LinkIcon,
   List,
   ListOrdered,
+  Palette,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -51,9 +58,14 @@ export function RichTextEditor({
       StarterKit.configure({
         // Quitamos extensiones que no aportan en email (heading h1
         // queda raro dentro del slot; bloque code/codeBlock idem).
+        // `link` también deshabilitado aquí porque lo configuramos
+        // explícitamente abajo con openOnClick=false (Starter en v3
+        // lo incluye con defaults distintos — evitamos warning de
+        // "duplicate extension").
         heading: false,
         codeBlock: false,
         horizontalRule: false,
+        link: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -61,6 +73,16 @@ export function RichTextEditor({
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
       Placeholder.configure({ placeholder }),
+      // v0.15.0 — TextStyle es prerequisito de Color (Tiptap requiere
+      // un mark base donde colgar el atributo `style`).
+      TextStyle,
+      Color,
+      // TextAlign aplica `style="text-align:..."` a <p>. Email-safe.
+      TextAlign.configure({
+        types: ["paragraph"],
+        alignments: ["left", "center", "right"],
+        defaultAlignment: "left",
+      }),
     ],
     content: initialHtml || "",
     editable: !disabled,
@@ -123,6 +145,8 @@ interface ToolbarProps {
 }
 
 function Toolbar({ editor, disabled }: ToolbarProps) {
+  const colorInputRef = useRef<HTMLInputElement>(null);
+
   if (!editor) return null;
 
   const promptLink = () => {
@@ -134,6 +158,17 @@ function Toolbar({ editor, disabled }: ToolbarProps) {
       return;
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  };
+
+  const currentColor =
+    (editor.getAttributes("textStyle").color as string | undefined) ?? "#000000";
+
+  const openColorPicker = () => {
+    colorInputRef.current?.click();
+  };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    editor.chain().focus().setColor(e.target.value).run();
   };
 
   return (
@@ -179,6 +214,54 @@ function Toolbar({ editor, disabled }: ToolbarProps) {
       >
         <ListOrdered size={13} aria-hidden />
       </ToolButton>
+      <span className="mx-1 h-4 w-px bg-wcm-detail/50" aria-hidden />
+      <ToolButton
+        active={editor.isActive({ textAlign: "left" })}
+        disabled={disabled}
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        ariaLabel="Alinear a la izquierda"
+      >
+        <AlignLeft size={13} aria-hidden />
+      </ToolButton>
+      <ToolButton
+        active={editor.isActive({ textAlign: "center" })}
+        disabled={disabled}
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        ariaLabel="Alinear al centro"
+      >
+        <AlignCenter size={13} aria-hidden />
+      </ToolButton>
+      <ToolButton
+        active={editor.isActive({ textAlign: "right" })}
+        disabled={disabled}
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        ariaLabel="Alinear a la derecha"
+      >
+        <AlignRight size={13} aria-hidden />
+      </ToolButton>
+      <span className="mx-1 h-4 w-px bg-wcm-detail/50" aria-hidden />
+      <ToolButton
+        active={false}
+        disabled={disabled}
+        onClick={openColorPicker}
+        ariaLabel={`Color del texto (actual ${currentColor})`}
+      >
+        <Palette
+          size={13}
+          aria-hidden
+          style={{ color: currentColor === "#000000" ? undefined : currentColor }}
+        />
+      </ToolButton>
+      <input
+        ref={colorInputRef}
+        type="color"
+        value={currentColor}
+        onChange={handleColorChange}
+        disabled={disabled}
+        aria-label="Selector de color del texto"
+        className="sr-only"
+        // Mantener fuera del flow visual pero accesible (sr-only).
+      />
     </div>
   );
 }
