@@ -208,6 +208,97 @@ def test_adr049_exception_generica_required_sigue_abortando(fake_session) -> Non
     assert outcome.final_status == ProjectStatus.BLOCKED_HUMAN_INPUT
 
 
+# ADR-043 — Resume rápido salta fases COMPLETED.
+
+
+def test_adr043_resume_salta_fases_completed(fake_session) -> None:
+    """ADR-043: Resume con force_rerun_all=False salta COMPLETED."""
+    from wcm_types.enums import ProjectPhaseStatus
+
+    project = _make_project_mock()
+    fake_session.get.return_value = project
+
+    # Mock: phase_a ya COMPLETED, phase_b PENDING.
+    completed_phase = MagicMock()
+    completed_phase.status = ProjectPhaseStatus.COMPLETED
+
+    call_count = {"n": 0}
+
+    def _execute_side_effect(*args, **kwargs):
+        result_mock = MagicMock()
+        # En el primer call (phase_a check) devolvemos COMPLETED.
+        # En el segundo call (phase_b check) devolvemos None (no existe).
+        # Luego para los _mark_phase de phase_b devolvemos None también.
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            result_mock.scalar_one_or_none.return_value = completed_phase
+        else:
+            result_mock.scalar_one_or_none.return_value = None
+        return result_mock
+
+    fake_session.execute.side_effect = _execute_side_effect
+
+    class _A(_StubAgent):
+        name = "a"
+        phase_name = "phase_a"
+
+    class _B(_StubAgent):
+        name = "b"
+        phase_name = "phase_b"
+
+    orch = Orchestrator(
+        fake_session,
+        phases=(_PhaseSpec("phase_a", _A), _PhaseSpec("phase_b", _B)),
+        resume=True,
+        force_rerun_all=False,
+    )
+    outcome = orch.run_project(42)
+
+    # phase_a se salta (ya COMPLETED) pero cuenta como completed.
+    # phase_b se ejecuta normalmente.
+    assert "phase_a" in outcome.completed_phases
+    assert "phase_b" in outcome.completed_phases
+    assert outcome.final_status == ProjectStatus.COMPLETED
+
+
+def test_adr043_force_rerun_all_reejecuta_todo(fake_session) -> None:
+    """ADR-043: force_rerun_all=True ignora COMPLETED y re-ejecuta todo."""
+    project = _make_project_mock()
+    fake_session.get.return_value = project
+    fake_session.execute.return_value.scalar_one_or_none.return_value = None
+
+    runs: list[str] = []
+
+    class _A(_StubAgent):
+        name = "a"
+        phase_name = "phase_a"
+
+        def run(self, ctx):
+            runs.append("phase_a")
+            return AgentResult(summary="re-run a")
+
+    class _B(_StubAgent):
+        name = "b"
+        phase_name = "phase_b"
+
+        def run(self, ctx):
+            runs.append("phase_b")
+            return AgentResult(summary="re-run b")
+
+    orch = Orchestrator(
+        fake_session,
+        phases=(_PhaseSpec("phase_a", _A), _PhaseSpec("phase_b", _B)),
+        resume=True,
+        force_rerun_all=True,
+    )
+    outcome = orch.run_project(42)
+
+    # Con force_rerun_all=True, las dos fases se ejecutan aunque
+    # estuvieran COMPLETED previamente.
+    assert runs == ["phase_a", "phase_b"]
+    assert outcome.completed_phases == ["phase_a", "phase_b"]
+
+
 def test_orchestrator_skips_phase_when_condition_false(fake_session) -> None:
     project = _make_project_mock(has_ecommerce=False)
     fake_session.get.return_value = project

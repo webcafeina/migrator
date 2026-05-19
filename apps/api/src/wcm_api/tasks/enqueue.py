@@ -10,14 +10,27 @@ from __future__ import annotations
 from wcm_api.tasks.celery_app import celery_app
 
 
-def enqueue_project_pipeline(project_id: int, *, resume: bool = False) -> str:
+def enqueue_project_pipeline(
+    project_id: int,
+    *,
+    resume: bool = False,
+    force_rerun_all: bool = False,
+) -> str:
     """Lanza el pipeline completo de migración para un proyecto.
 
     Devuelve el `task_id` de Celery — útil para tracking en dashboard.
+
+    ADR-043 — `force_rerun_all` solo aplica si `resume=True`. Si True,
+    el orchestrator re-ejecuta TODAS las fases (incluso COMPLETED). Si
+    False (default), Resume rápido salta las ya completed.
     """
     result = celery_app.send_task(
         "wcm.orchestrator.run_project",
-        kwargs={"project_id": project_id, "resume": resume},
+        kwargs={
+            "project_id": project_id,
+            "resume": resume,
+            "force_rerun_all": force_rerun_all,
+        },
     )
     return result.id
 

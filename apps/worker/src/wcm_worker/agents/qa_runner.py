@@ -29,6 +29,7 @@ la entrega.
 from __future__ import annotations
 
 import logging
+import os
 from urllib.parse import urljoin, urlparse
 
 import httpx
@@ -53,10 +54,31 @@ log = logging.getLogger("wcm.worker.qa_runner")
 
 #: Límite de páginas validadas con W3C (rate-limit 1 req/s).
 MAX_W3C_PAGES = 50
-#: Umbrales para generar residual tasks críticos.
-LIGHTHOUSE_PERF_MIN_CRITICAL = 50
-HTML_ERRORS_MAX_CRITICAL = 20
-BROKEN_LINKS_MAX_CRITICAL = 5
+#: Umbrales para generar residual tasks críticos (ADR-053).
+#: Todos overridables via env para ajustar globalmente sin redeploy.
+LIGHTHOUSE_PERF_MIN_CRITICAL = int(os.environ.get("LIGHTHOUSE_PERF_MIN_CRITICAL", "50"))
+#: ADR-053 — accesibilidad bajo 70 = problemas estructurales graves
+#: (sin alt en imágenes, contraste insuficiente, navegación por teclado rota).
+#: WCAG 2.1 AA típicamente exige ≥90 para sitios públicos.
+LIGHTHOUSE_A11Y_MIN_CRITICAL = int(os.environ.get("LIGHTHOUSE_A11Y_MIN_CRITICAL", "70"))
+#: ADR-053 — best-practices bajo 75 = warnings de seguridad (mixed
+#: content, vulnerabilidades JS, console errors). Plugins del cliente.
+LIGHTHOUSE_BEST_PRACTICES_MIN_CRITICAL = int(
+    os.environ.get("LIGHTHOUSE_BEST_PRACTICES_MIN_CRITICAL", "75")
+)
+#: ADR-053 — SEO bajo 80 = títulos/descriptions faltantes, robots.txt
+#: errors, structured data ausente. Compromete posicionamiento.
+LIGHTHOUSE_SEO_MIN_CRITICAL = int(os.environ.get("LIGHTHOUSE_SEO_MIN_CRITICAL", "80"))
+HTML_ERRORS_MAX_CRITICAL = int(os.environ.get("HTML_ERRORS_MAX_CRITICAL", "20"))
+#: ADR-053 — broken_links pasa de threshold absoluto (>5) a fórmula
+#: proporcional: max(min_absolute, total * ratio).
+BROKEN_LINKS_MIN_ABSOLUTE = int(os.environ.get("BROKEN_LINKS_MIN_ABSOLUTE", "2"))
+BROKEN_LINKS_RATIO_THRESHOLD = float(
+    os.environ.get("BROKEN_LINKS_RATIO_THRESHOLD", "0.03")
+)
+#: Compat: el threshold absoluto antiguo queda como fallback para tests
+#: que importan el nombre directamente.
+BROKEN_LINKS_MAX_CRITICAL = BROKEN_LINKS_MIN_ABSOLUTE
 
 
 class QaRunnerAgent(BaseAgent):
@@ -149,6 +171,7 @@ class QaRunnerAgent(BaseAgent):
                 lh_mobile=lh_mobile,
                 html_errors=html_result["errors"],
                 broken_links=link_report.broken_count,
+                total_links_checked=link_report.total_checked,
                 https_valid=https_valid,
                 robots_ok=robots_ok,
                 sitemap_ok=sitemap_ok,
@@ -293,6 +316,7 @@ class QaRunnerAgent(BaseAgent):
         lh_mobile,
         html_errors: int,
         broken_links: int,
+        total_links_checked: int = 0,
         https_valid: bool | None,
         robots_ok: bool,
         sitemap_ok: bool,
@@ -335,6 +359,50 @@ class QaRunnerAgent(BaseAgent):
                     ResidualCategory.POST_GO_LIVE,
                 )
 
+        # ADR-053 — accesibilidad, best-practices, SEO. Promediados
+        # desktop+mobile en lh_*_avg que el agente ya calculó.
+        # Para mantener simple, evaluamos a11y de lh_desktop si existe
+        # (típicamente es el más representativo del sitio).
+        lh_for_extras = lh_desktop or lh_mobile
+        if lh_for_extras:
+            if (
+                lh_for_extras.accessibility is not None
+                and lh_for_extras.accessibility < LIGHTHOUSE_A11Y_MIN_CRITICAL
+            ):
+                _add(
+                    f"Mejorar accesibilidad (score {lh_for_extras.accessibility}/100)",
+                    f"Lighthouse marca accesibilidad < {LIGHTHOUSE_A11Y_MIN_CRITICAL}. "
+                    "Causas comunes: imágenes sin `alt`, contraste insuficiente, "
+                    "navegación por teclado rota, ARIA mal usado. WCAG 2.1 AA "
+                    "exige ≥90 para sitios públicos en UE (LOPDGDD-LGGDP). "
+                    "Detalles: https://web.dev/learn/accessibility/",
+                    ResidualCategory.POST_GO_LIVE,
+                )
+            if (
+                lh_for_extras.best_practices is not None
+                and lh_for_extras.best_practices < LIGHTHOUSE_BEST_PRACTICES_MIN_CRITICAL
+            ):
+                _add(
+                    f"Mejorar buenas prácticas (score {lh_for_extras.best_practices}/100)",
+                    f"Lighthouse marca best-practices < {LIGHTHOUSE_BEST_PRACTICES_MIN_CRITICAL}. "
+                    "Causas comunes: mixed content HTTPS/HTTP, vulnerabilidades JS "
+                    "conocidas (jQuery viejo, etc.), console errors. "
+                    "Detalles: https://web.dev/best-practices-score/",
+                    ResidualCategory.POST_GO_LIVE,
+                )
+            if (
+                lh_for_extras.seo is not None
+                and lh_for_extras.seo < LIGHTHOUSE_SEO_MIN_CRITICAL
+            ):
+                _add(
+                    f"Mejorar SEO técnico (score {lh_for_extras.seo}/100)",
+                    f"Lighthouse marca SEO < {LIGHTHOUSE_SEO_MIN_CRITICAL}. "
+                    "Causas comunes: títulos/descriptions duplicados o faltantes, "
+                    "robots.txt mal, structured data ausente, links sin texto. "
+                    "Detalles: https://web.dev/lighthouse-seo/",
+                    ResidualCategory.POST_GO_LIVE,
+                )
+
         if html_errors > HTML_ERRORS_MAX_CRITICAL:
             _add(
                 f"HTML inválido ({html_errors} errores W3C)",
@@ -345,11 +413,25 @@ class QaRunnerAgent(BaseAgent):
                 ResidualCategory.POST_GO_LIVE,
             )
 
-        if broken_links > BROKEN_LINKS_MAX_CRITICAL:
+        # ADR-053 — broken_links proporcional. Más estricto en webs
+        # pequeñas (2 broken en 5 páginas), más laxo en grandes (15 en 500).
+        broken_threshold = max(
+            BROKEN_LINKS_MIN_ABSOLUTE,
+            int(total_links_checked * BROKEN_LINKS_RATIO_THRESHOLD),
+        )
+        if broken_links > broken_threshold:
+            ratio_pct = (
+                int(broken_links * 100 / total_links_checked)
+                if total_links_checked > 0
+                else 0
+            )
             _add(
-                f"Links rotos en el destino ({broken_links} URLs 4xx/5xx)",
+                f"Links rotos en el destino ({broken_links}/{total_links_checked} URLs 4xx/5xx, {ratio_pct}%)",
                 f"Detectados {broken_links} links del propio dominio que "
-                "responden 4xx/5xx. Lista detallada en qa_reports.report_json. "
+                f"responden 4xx/5xx, sobre {total_links_checked} comprobados "
+                f"(threshold proporcional: > max({BROKEN_LINKS_MIN_ABSOLUTE}, "
+                f"{int(BROKEN_LINKS_RATIO_THRESHOLD * 100)}% del total) = "
+                f"{broken_threshold}). Lista detallada en qa_reports.report_json. "
                 "Causas típicas: páginas migradas con paths distintos, redirects "
                 "rotos, recursos eliminados.",
                 ResidualCategory.BLOCKING_GO_LIVE,

@@ -87,6 +87,11 @@ def _wire(
     res_mock.all = MagicMock(return_value=residual_rows or [])
     execute_results.append(res_mock)
 
+    # ADR-052 — pages_with_many_unknowns count (SELECT count subquery).
+    unknowns_mock = MagicMock()
+    unknowns_mock.scalar_one = MagicMock(return_value=0)
+    execute_results.append(unknowns_mock)
+
     fake_session.execute = AsyncMock(side_effect=execute_results)
 
 

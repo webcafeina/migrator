@@ -28,6 +28,7 @@ from wcm_api.services.source_credentials import (
     encrypt_source_credentials,
 )
 from wcm_api.tasks.enqueue import enqueue_project_pipeline, enqueue_project_rollback
+from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_db.models.qa_reports import QaReport
@@ -452,6 +453,11 @@ class ProjectSummary(BaseModel):
     residual_open: int
     residual_done: int
 
+    # ADR-052 — páginas con "muchos UNKNOWN": >= 3 absolutos Y >= 50%
+    # del total de bloques de la página. Calculado on-the-fly desde
+    # content_blocks. UI muestra badge ámbar en header si > 0.
+    pages_with_many_unknowns: int = 0
+
 
 @router.get("/{project_id}/summary", response_model=ProjectSummary)
 async def project_summary(
@@ -532,6 +538,29 @@ async def project_summary(
     # que el operador aún tiene que tocar.
     residual_open = residual_total - residual_done - residual_by.get(ResidualStatus.SKIPPED, 0)
 
+    # ADR-052 — páginas con "muchos UNKNOWN": agregación por page_id
+    # con doble criterio (>= 3 absolutos Y >= 50% del total). Sin tabla
+    # nueva — query barata sobre content_blocks.
+    unknown_subq = (
+        select(
+            ContentBlock.page_id.label("page_id"),
+            func.count().filter(ContentBlock.block_type == "unknown").label("unknown_count"),
+            func.count().label("total"),
+        )
+        .where(ContentBlock.project_id == project_id)
+        .group_by(ContentBlock.page_id)
+        .having(func.count().filter(ContentBlock.block_type == "unknown") >= 3)
+        .having(
+            func.count().filter(ContentBlock.block_type == "unknown") * 1.0
+            / func.count()
+            >= 0.5
+        )
+        .subquery()
+    )
+    pages_with_many_unknowns = (
+        await session.execute(select(func.count()).select_from(unknown_subq))
+    ).scalar_one()
+
     return ProjectSummary(
         project_id=project.id,
         lead_origin=lead_origin,
@@ -544,6 +573,7 @@ async def project_summary(
         residual_total=residual_total,
         residual_open=residual_open,
         residual_done=residual_done,
+        pages_with_many_unknowns=int(pages_with_many_unknowns or 0),
     )
 
 
@@ -607,14 +637,31 @@ async def resume_project(
     project_id: int,
     session: Annotated[AsyncSession, Depends(get_session)],
     _: Annotated[object, Depends(_operator_or_admin)],
+    force_rerun_all: bool = Query(
+        default=False,
+        description=(
+            "ADR-043 — Si True, re-ejecuta TODAS las fases (incluso "
+            "COMPLETED). Si False (default), Resume rápido salta las "
+            "ya completed. Útil si sospechas que una fase COMPLETED "
+            "dejó algo inconsistente (raro)."
+        ),
+    ),
 ) -> dict:
     project = await session.get(Project, project_id)
     if project is None:
         raise NotFoundError(f"Project {project_id} no encontrado")
     project.status = ProjectStatus.RUNNING
     await session.commit()
-    task_id = enqueue_project_pipeline(project_id, resume=True)
-    return {"task_id": task_id, "status": "queued", "project_id": project_id, "resume": True}
+    task_id = enqueue_project_pipeline(
+        project_id, resume=True, force_rerun_all=force_rerun_all
+    )
+    return {
+        "task_id": task_id,
+        "status": "queued",
+        "project_id": project_id,
+        "resume": True,
+        "force_rerun_all": force_rerun_all,
+    }
 
 
 @router.post("/{project_id}/cancel", status_code=status.HTTP_200_OK)

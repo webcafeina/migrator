@@ -16,11 +16,23 @@ log = logging.getLogger("wcm.worker.tasks.orchestrator")
 
 
 @celery_app.task(name="wcm.orchestrator.run_project", bind=True, max_retries=0)
-def run_project(self, project_id: int, resume: bool = False) -> dict:
-    log.info("orchestrator_start", extra={"project_id": project_id, "resume": resume})
+def run_project(
+    self,
+    project_id: int,
+    resume: bool = False,
+    force_rerun_all: bool = False,
+) -> dict:
+    log.info(
+        "orchestrator_start",
+        extra={
+            "project_id": project_id,
+            "resume": resume,
+            "force_rerun_all": force_rerun_all,
+        },
+    )
 
     with session_scope() as session:
-        orch = Orchestrator(session, resume=resume)
+        orch = Orchestrator(session, resume=resume, force_rerun_all=force_rerun_all)
         outcome = orch.run_project(project_id)
 
     return {

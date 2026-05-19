@@ -116,10 +116,15 @@ class Orchestrator:
         *,
         phases: tuple[_PhaseSpec, ...] | None = None,
         resume: bool = False,
+        force_rerun_all: bool = False,
     ) -> None:
         self.session = session
         self.phases = phases or _DEFAULT_PHASES
         self.resume = resume
+        # ADR-043 — si force_rerun_all=True en un Resume, re-ejecuta TODA
+        # la lista (comportamiento anterior). Si False (default), salta
+        # las fases ya COMPLETED → Resume rápido.
+        self.force_rerun_all = force_rerun_all
 
     def run_project(self, project_id: int) -> OrchestrationOutcome:
         project = self.session.get(Project, project_id)
@@ -136,6 +141,21 @@ class Orchestrator:
         outcome = OrchestrationOutcome(project_id=project_id, completed_phases=[], skipped_phases=[])
 
         for spec in self.phases:
+            # ADR-043 — Resume rápido: si esta fase ya está COMPLETED en
+            # un Resume sin force_rerun_all, la saltamos SIN tocar su
+            # estado (sigue COMPLETED) y la contamos como completed_phases.
+            if (
+                self.resume
+                and not self.force_rerun_all
+                and self._is_already_completed(project_id, spec.phase_name)
+            ):
+                log.info(
+                    "phase_skipped_already_completed_in_resume",
+                    extra={"phase": spec.phase_name, "project_id": project_id},
+                )
+                outcome.completed_phases.append(spec.phase_name)
+                continue
+
             if not self._should_run(spec, project):
                 outcome.skipped_phases.append(spec.phase_name)
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.SKIPPED, summary="condition no cumplida")
@@ -193,6 +213,17 @@ class Orchestrator:
         if spec.condition_attr is None:
             return True
         return bool(getattr(project, spec.condition_attr, False))
+
+    def _is_already_completed(self, project_id: int, phase_name: str) -> bool:
+        """ADR-043 — chequea si una fase ya está en estado COMPLETED.
+        Usado por Resume rápido para saltar trabajo idempotente."""
+        existing = self.session.execute(
+            select(ProjectPhase).where(
+                ProjectPhase.project_id == project_id,
+                ProjectPhase.phase_name == phase_name,
+            )
+        ).scalar_one_or_none()
+        return existing is not None and existing.status == ProjectPhaseStatus.COMPLETED
 
     def _run_phase(self, spec: _PhaseSpec, project_id: int) -> None:
         # Marcar phase como RUNNING antes de ejecutar
