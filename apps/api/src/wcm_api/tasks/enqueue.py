@@ -94,3 +94,14 @@ def enqueue_residual_sync_clickup(project_id: int) -> str:
         "wcm.clickup.sync_residuals", kwargs={"project_id": project_id}
     )
     return result.id
+
+
+def enqueue_project_rollback(project_id: int) -> str:
+    """v0.19.0 — borra las páginas WP creadas por wp-deployer y marca
+    el proyecto como ROLLED_BACK. Útil tras qa_failed o si el
+    operador descubre un problema con el deploy."""
+    result = celery_app.send_task(
+        "wcm.rollback.run_project",
+        kwargs={"project_id": project_id},
+    )
+    return result.id

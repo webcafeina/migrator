@@ -73,6 +73,9 @@ class ProjectStatus(StrEnum):
     QA_FAILED = "qa_failed"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
+    #: v0.19.0 — operador ejecutó rollback tras qa_failed/completed.
+    #: Las páginas creadas por wp-deployer fueron eliminadas vía REST.
+    ROLLED_BACK = "rolled_back"
 
 
 class ProjectPhaseStatus(StrEnum):

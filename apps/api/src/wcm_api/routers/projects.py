@@ -27,7 +27,7 @@ from wcm_api.services.source_credentials import (
     FernetNotConfiguredError,
     encrypt_source_credentials,
 )
-from wcm_api.tasks.enqueue import enqueue_project_pipeline
+from wcm_api.tasks.enqueue import enqueue_project_pipeline, enqueue_project_rollback
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_db.models.qa_reports import QaReport
@@ -390,6 +390,40 @@ async def cancel_project(
     project.status = ProjectStatus.CANCELLED
     await session.commit()
     return {"status": "cancelled", "project_id": project_id}
+
+
+@router.post("/{project_id}/rollback", status_code=status.HTTP_202_ACCEPTED)
+async def rollback_project(
+    project_id: int,
+    payload: dict,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.19.0 — deshace el deploy borrando las páginas WP creadas.
+
+    Requiere body `{"confirm": true}` para evitar disparos accidentales
+    (es destructivo). Solo permitido si status ∈ {qa_failed, completed,
+    blocked_human_input}. Marca el proyecto como ROLLED_BACK al terminar.
+    """
+    if not payload.get("confirm"):
+        raise ConflictError(
+            "Rollback es destructivo. Envía `{\"confirm\": true}` para confirmar."
+        )
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    allowed = {
+        ProjectStatus.QA_FAILED,
+        ProjectStatus.COMPLETED,
+        ProjectStatus.BLOCKED_HUMAN_INPUT,
+    }
+    if project.status not in allowed:
+        raise ConflictError(
+            f"Rollback solo permitido si status ∈ {{qa_failed, completed, "
+            f"blocked_human_input}}. Estado actual: {project.status.value}."
+        )
+    task_id = enqueue_project_rollback(project_id)
+    return {"task_id": task_id, "status": "queued", "project_id": project_id}
 
 
 @router.get("/{project_id}/phases", response_model=list[ProjectPhaseRead])

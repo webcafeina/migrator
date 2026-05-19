@@ -20,6 +20,7 @@ from wcm_worker.agents.outreach_sender import OutreachSenderAgent
 from wcm_worker.agents.prospector import ProspectorAgent
 from wcm_worker.agents.qa_runner import QaRunnerAgent
 from wcm_worker.agents.resend_notifier import ResendNotifierAgent
+from wcm_worker.agents.rollback import RollbackAgent
 from wcm_worker.agents.scraper_origin import ScraperOriginAgent
 from wcm_worker.agents.seo_preserver import SeoPreserverAgent
 from wcm_worker.agents.visual_diff import VisualDiffAgent
@@ -45,6 +46,7 @@ __all__ = [
     "ProspectorAgent",
     "QaRunnerAgent",
     "ResendNotifierAgent",
+    "RollbackAgent",
     "ScraperOriginAgent",
     "SeoPreserverAgent",
     "VisualDiffAgent",

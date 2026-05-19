@@ -12,4 +12,5 @@ from wcm_worker.tasks import (  # noqa: F401
     outreach,
     outreach_send,
     prospector,
+    rollback,
 )

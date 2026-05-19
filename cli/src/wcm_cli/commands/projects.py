@@ -143,6 +143,50 @@ def cancel_project(project_id: Annotated[int, typer.Argument()]) -> None:
     output.success(f"Proyecto {project_id} marcado como cancelled")
 
 
+@app.command("rollback")
+def rollback_project(
+    project_id: Annotated[int, typer.Argument()],
+    yes: Annotated[
+        bool,
+        typer.Option(
+            "--yes",
+            "-y",
+            help="Confirma sin prompt interactivo. Requerido para CI/scripts.",
+        ),
+    ] = False,
+) -> None:
+    """v0.19.0 — deshace el deploy borrando las páginas WP creadas.
+
+    Destructivo: requiere `--yes` o confirmación interactiva. Solo
+    permitido si status ∈ {qa_failed, completed, blocked_human_input}.
+    Marca el proyecto como ROLLED_BACK.
+    """
+    if not yes:
+        confirm = typer.confirm(
+            f"Esto borrará las páginas WP del proyecto {project_id}. ¿Continuar?",
+            default=False,
+        )
+        if not confirm:
+            output.info("Rollback cancelado por el usuario.")
+            raise typer.Exit(code=0)
+
+    client = ApiClient()
+    result = client.post(
+        f"/api/v1/projects/{project_id}/rollback",
+        json={"confirm": True},
+    )
+    task_id = (
+        result.get("task_id", "") if isinstance(result, dict) else ""
+    )
+    output.success(
+        f"Rollback encolado para proyecto {project_id} · task {task_id[:8]}…"
+    )
+    output.info(
+        "Sigue el progreso con: [accent]wcm projects watch "
+        f"{project_id}[/]"
+    )
+
+
 @app.command("export-checklist")
 def export_checklist(
     project_id: Annotated[int, typer.Argument()],
