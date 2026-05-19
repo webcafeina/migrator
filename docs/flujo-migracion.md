@@ -2072,6 +2072,17 @@ bricks_json se intentó deployar?) y para re-deploy futuro.
 Para borrar el proyecto entero (BD + assets R2) hay un endpoint
 `DELETE /api/v1/projects/{id}` separado, admin-only, con confirm explícito.
 
+> **Próximo cambio (ADR-054 — programado para v0.20.0+)**: implementación
+> real del endpoint `DELETE /api/v1/projects/{id}` (hoy solo conceptual).
+> Admin-only. Requiere body `{"confirm": "DELETE PROJECT N"}` literal
+> (texto exacto incluyendo ID). Borra en cascada: audit_log entry →
+> rollback inline si status != ROLLED_BACK → R2 assets → file:// fallback →
+> CASCADE BD. UI: botón "Eliminar proyecto" en ProjectActions con doble
+> confirmación (inline + modal con input literal). CLI: `wcm projects
+> delete ID --confirm "DELETE PROJECT N"`. Rollback y Delete se mantienen
+> conceptualmente distintos — rollback es "deshago para iterar", delete
+> es "libero recursos definitivamente".
+
 ### 10.8 Los 3 caminos de recuperación según el problema
 
 Cheatsheet de cuándo usar qué:

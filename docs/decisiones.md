@@ -1981,6 +1981,119 @@ Tareas listadas en TaskList con prefijo `[ADR-053]`:
 
 ---
 
+## ADR-054 — H2+H4 sin cambios + nuevo endpoint `DELETE /projects/{id}` separado
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: El `RollbackAgent` MVP (v0.19.0) tiene dos comportamientos asumidos:
+
+- **H2**: borra páginas WP con `force=true` (salta papelera, irrecuperable desde wp-admin).
+- **H4**: tras rollback, las tablas BD del proyecto se conservan intactas (scraped_pages, content_blocks, bricks_pages.bricks_json, assets, visual_diffs, qa_reports, residual_tasks). Solo se resetea `bricks_pages.wp_post_id = NULL`.
+
+Razones originales: H2 — la papelera es para clientes en wp-admin, no para nosotros; si hicimos rollback fue intencional. H4 — el rollback es "deshacer lo que llegó al destino", no "borrar el proyecto"; los datos pre-deploy son útiles para diagnóstico y re-deploy.
+
+Problemas potenciales identificados:
+
+- **H2**: si el operador rollback por error, no hay recuperación desde wp-admin. Algunos workflows usan papelera como moderación.
+- **H4**: tras varios rollback+re-arrancar iterativos, las tablas crecen (30 scraped_pages viejas + 30 nuevas). Para proyectos cancelados ("el cliente decidió no continuar"), `scraped_pages.html_raw` contiene material del cliente que queremos liberar.
+
+Se evaluaron 5 opciones combinadas.
+
+**Decisión**: **Opción 5 — mantener H2 + H4 sin cambios + añadir endpoint `DELETE /api/v1/projects/{id}` separado** para el caso "limpieza profunda / cancelación del proyecto".
+
+Razón clave: **rollback y delete son conceptualmente distintos** y merecen endpoints separados:
+
+- **Rollback**: "deshago el deploy para iterar". 95% de los casos. Mantiene el proyecto vivo en BD.
+- **Delete**: "el proyecto se canceló o terminó, libero recursos". Caso mucho menos frecuente pero claro. Borra todo.
+
+Mezclar ambos en un mismo endpoint con flag `--purge` (opción 4 evaluada) confunde — el operador puede activar el flag por error pensando que es solo "rollback más limpio" y perder datos.
+
+### Contrato del endpoint nuevo
+
+```
+DELETE /api/v1/projects/{id}
+Auth: admin-only (no operator — esto es destructivo definitivo)
+Body: {"confirm": "DELETE PROJECT 7"}  # texto exacto incluyendo el ID
+```
+
+Validación:
+
+- Si `confirm != f"DELETE PROJECT {id}"` → 409 con mensaje claro "envía body `{\"confirm\": \"DELETE PROJECT {id}\"}` para confirmar".
+- Solo permitido si `status ∈ {completed, cancelled, qa_failed, rolled_back, blocked_human_input}`. En `running` → 409 (el worker tiene la sesión).
+- Auditoría obligatoria antes del DELETE.
+
+Lo que hace en orden:
+
+1. **Audit log entry** con datos preservados:
+   ```
+   AuditLog(
+     action=DELETE,
+     entity_type="project",
+     entity_id=project_id,
+     actor=current_user_id,
+     payload={
+       "client_name": project.client_name,
+       "source_url": project.source_url,
+       "target_domain": project.target_domain,
+       "status_at_delete": project.status.value,
+       "created_at": project.created_at.isoformat(),
+       "deleted_at": now.isoformat(),
+     }
+   )
+   ```
+   La fila del audit_log queda permanentemente para trazabilidad (es la tabla que NO se borra en CASCADE).
+
+2. **Si status != ROLLED_BACK**: ejecuta rollback inline primero. Aplica snapshot restore si está disponible (ADR-042) o DELETE de páginas (MVP).
+
+3. **Borra assets**:
+   - R2: enumerar y borrar `projects/{id}/...` (usar paginated listing si > 1000 objetos).
+   - Local `file://` fallback: `rm -rf /tmp/wcm-{visual-diff,checklist}/projects/{id}`.
+
+4. **CASCADE delete en BD**: `DELETE FROM projects WHERE id={id}`. Las tablas relacionadas (scraped_pages, content_blocks, assets, bricks_pages, woo_products, woo_orders, visual_diffs, qa_reports, residual_tasks, project_phases, seo_redirects) tienen FK `ON DELETE CASCADE` por diseño — se vacían automáticamente.
+
+5. Devuelve `204 No Content`.
+
+### UX en dashboard
+
+- En `<ProjectActions>` cuando `status` ∈ {completed, cancelled, qa_failed, rolled_back, blocked_human_input} → segundo botón "Eliminar proyecto" (rojo destructivo, icon `Trash2`, separado visualmente del botón "Rollback").
+- Click → confirmación inline DOBLE:
+  - **Paso 1**: "¿Eliminar este proyecto y todo su historial?" + "Sí, eliminar" / "Cancelar".
+  - **Paso 2 (modal)**: input que requiere escribir literal `DELETE PROJECT {id}`. Botón "Eliminar definitivamente" deshabilitado hasta que el texto coincida exacto.
+- Tras éxito → redirect a `/projects` con toast destructivo "Proyecto N eliminado".
+
+### CLI
+
+```bash
+wcm projects delete ID --confirm "DELETE PROJECT N"
+```
+
+Sin flag interactivo (no `typer.confirm`). Esto es admin destructivo — mejor explicitud forzada que prompt fácil de aceptar por hábito. Si el `--confirm` no coincide exacto, exit 2 con mensaje claro.
+
+**Consecuencias**:
+
+- ✅ H2 y H4 confirmadas como correctas para el caso "iteración con rollback".
+- ✅ Separación conceptual clara: rollback = deshacer, delete = liberar.
+- ✅ Doble confirmación (admin-only + body `confirm` exacto con ID + UI modal con input) protege contra disparos accidentales — análogo a `git push --force` que requiere `--force-with-lease`.
+- ✅ Audit log preservado garantiza trazabilidad incluso tras delete completo (la entrada del audit_log es la fuente de verdad post-delete).
+- ✅ CASCADE delete ya está implementado en los modelos (FK `ON DELETE CASCADE`) — el endpoint usa la infraestructura existente.
+- ⚠️ Operador con permisos admin puede borrar proyectos definitivamente. Si hubo error humano (borró el equivocado), no hay recuperación — la fila se ha ido. Mitigación: el body `confirm` con ID literal hace casi imposible el "borré el equivocado" (escribirías `DELETE PROJECT 7` y pensarías "espera, ¿quería borrar el 7 o el 17?").
+- ⚠️ Borrado de R2 puede ser lento para proyectos grandes (muchos screenshots, assets optimizados). El endpoint puede tardar 5-30s. Mitigación: encolar la limpieza R2 como task Celery + devolver 202 si > N assets; respuesta inmediata 204 si < N. Documentado en OpenAPI.
+- ⚠️ Si el rollback inline (paso 2) falla, el DELETE se aborta — el proyecto queda parcialmente en su estado original. Mitigación: el operador puede pulsar "Eliminar" de nuevo (idempotente desde audit_log). O hacer rollback manualmente primero y luego delete.
+
+**Implementación**: programada para v0.20.0+. Estimación ~3-4 días.
+
+Tareas listadas en TaskList con prefijo `[ADR-054]`:
+- `DELETE /api/v1/projects/{id}` admin-only con validación de `confirm` literal (~50 LOC + 6 tests).
+- Service `_delete_project_cascade` que ejecuta los 5 pasos (audit → rollback inline → R2 cleanup → CASCADE DB → 204) (~80 LOC + 4 tests).
+- UI: botón "Eliminar proyecto" en `<ProjectActions>` + modal con input literal de confirmación (~120 LOC + 5 vitest).
+- CLI `wcm projects delete ID --confirm "DELETE PROJECT N"` (~30 LOC + 4 tests).
+- Documentar en `docs/playbook-operativo.md` sección "Cuándo usar Delete vs Rollback".
+
+`docs/flujo-migracion.md` se actualizará con sección 10.10 nueva ("Delete proyecto — distinto al rollback") explicando los dos caminos.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
