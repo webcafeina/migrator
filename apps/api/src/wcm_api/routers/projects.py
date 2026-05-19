@@ -166,6 +166,126 @@ async def project_stats(
     )
 
 
+class ProjectFleetItem(BaseModel):
+    """v0.19.0 — vista compacta de cada proyecto para la grid fleet.
+
+    Agrega el estado de las 15 fases en 5 buckets de alto nivel para
+    pintar un mini-stepper de 5 dots por proyecto sin N+1 fetches.
+    """
+
+    id: int
+    client_name: str
+    source_url: str
+    target_domain: str | None
+    builder_source: BuilderType | None
+    status: ProjectStatus
+    visual_diff_avg_score: float | None
+    has_ecommerce: bool
+    is_multilang: bool
+    started_at: datetime | None
+    phase_summary: dict[str, str] = Field(
+        description="{scrape, transpile, deploy, qa, notify} con status agregado por bucket."
+    )
+    current_phase_name: str | None = Field(
+        description="Última fase RUNNING/COMPLETED para diagnóstico rápido."
+    )
+
+
+#: Mapping de fase canónica → bucket de alto nivel para vista fleet.
+_PHASE_BUCKETS: dict[str, str] = {
+    "scrape_origin": "scrape",
+    "extract_content": "scrape",
+    "preserve_seo": "scrape",
+    "optimize_assets": "scrape",
+    "detect_multilang": "scrape",
+    "transpile_bricks": "transpile",
+    "deploy_wp": "deploy",
+    "migrate_woo": "deploy",
+    "configure_wpml": "deploy",
+    "rebuild_forms": "deploy",
+    "visual_diff": "qa",
+    "qa": "qa",
+    "generate_checklist": "notify",
+    "sync_clickup": "notify",
+    "notify": "notify",
+    "rollback": "notify",
+}
+_BUCKET_ORDER: list[str] = ["scrape", "transpile", "deploy", "qa", "notify"]
+
+
+def _aggregate_bucket_status(phase_statuses: list[str]) -> str:
+    """Reduce los status de las fases de un bucket a UN solo status.
+
+    Prioridades: failed > running > pending > completed (todas) > skipped.
+    """
+    if not phase_statuses:
+        return "pending"
+    if any(s == "failed" for s in phase_statuses):
+        return "failed"
+    if any(s == "running" for s in phase_statuses):
+        return "running"
+    if all(s in ("completed", "skipped") for s in phase_statuses):
+        return "completed" if any(s == "completed" for s in phase_statuses) else "skipped"
+    return "pending"
+
+
+@router.get("/fleet", response_model=list[ProjectFleetItem])
+async def projects_fleet(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> list[ProjectFleetItem]:
+    """v0.19.0 — listado enriquecido para la vista fleet del dashboard.
+
+    Devuelve TODOS los proyectos con phase_summary pre-agregada en
+    5 buckets de alto nivel. Una sola query para evitar N+1 fetches
+    del cliente. Para >50 proyectos, considerar paginación en v0.20.0.
+    """
+    stmt_projects = select(Project).order_by(Project.created_at.desc())
+    projects = list((await session.execute(stmt_projects)).scalars().all())
+    if not projects:
+        return []
+
+    project_ids = [p.id for p in projects]
+    stmt_phases = (
+        select(ProjectPhase.project_id, ProjectPhase.phase_name, ProjectPhase.status)
+        .where(ProjectPhase.project_id.in_(project_ids))
+    )
+    phase_rows = (await session.execute(stmt_phases)).all()
+
+    by_project: dict[int, dict[str, list[str]]] = {pid: {} for pid in project_ids}
+    current_phase: dict[int, str | None] = {pid: None for pid in project_ids}
+    for pid, phase_name, ph_status in phase_rows:
+        s_val = ph_status.value if hasattr(ph_status, "value") else str(ph_status)
+        bucket = _PHASE_BUCKETS.get(phase_name, "notify")
+        by_project[pid].setdefault(bucket, []).append(s_val)
+        if s_val in ("running", "completed"):
+            current_phase[pid] = phase_name
+
+    items: list[ProjectFleetItem] = []
+    for p in projects:
+        buckets = by_project.get(p.id, {})
+        phase_summary = {
+            b: _aggregate_bucket_status(buckets.get(b, [])) for b in _BUCKET_ORDER
+        }
+        items.append(
+            ProjectFleetItem(
+                id=p.id,
+                client_name=p.client_name,
+                source_url=p.source_url,
+                target_domain=p.target_domain,
+                builder_source=p.builder_source,
+                status=p.status,
+                visual_diff_avg_score=p.visual_diff_avg_score,
+                has_ecommerce=p.has_ecommerce,
+                is_multilang=p.is_multilang,
+                started_at=p.started_at,
+                phase_summary=phase_summary,
+                current_phase_name=current_phase.get(p.id),
+            )
+        )
+    return items
+
+
 @router.post("", response_model=ProjectRead, status_code=status.HTTP_201_CREATED)
 async def create_project(
     payload: ProjectCreate,

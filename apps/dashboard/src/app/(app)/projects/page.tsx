@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { LayoutGrid, List } from "lucide-react";
 
 import { FilterChips, type FilterChip } from "@/components/filter-chips";
 import { KpiStrip, type Kpi } from "@/components/kpi-strip";
 import { api } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import type { ProjectRead } from "@/types/api";
 
+import {
+  ProjectsFleetGrid,
+  type ProjectFleetItem,
+} from "./_components/projects-fleet-grid";
 import { ProjectsTable } from "./_components/projects-table";
 
 interface ProjectStatsResponse {
@@ -21,6 +27,9 @@ interface ProjectStatsResponse {
 interface SearchParams {
   /** Filtro del listado por estado (project_status del API). */
   status?: string;
+  /** v0.19.0 — toggle entre vistas. `fleet` = grid de tarjetas con
+   *  mini-stepper; `table` (default) = tabla densa actual. */
+  view?: "fleet" | "table";
 }
 
 /** Etiquetas castellanas para los chips de filtro. Coinciden con el
@@ -53,7 +62,11 @@ export default async function ProjectsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const [projects, stats] = await Promise.all([
+  const view: "fleet" | "table" = params.view === "fleet" ? "fleet" : "table";
+  // En vista fleet fetcha el endpoint enriquecido /projects/fleet
+  // (con phase_summary pre-agregada); en table mantiene el list+stats
+  // ya existente.
+  const [projects, stats, fleet] = await Promise.all([
     api
       .get<ProjectRead[]>("/api/v1/projects", {
         searchParams: params.status ? { project_status: params.status } : {},
@@ -74,7 +87,17 @@ export default async function ProjectsPage({
             avg_visual_diff_score: null,
           }) satisfies ProjectStatsResponse,
       ),
+    view === "fleet"
+      ? api
+          .get<ProjectFleetItem[]>("/api/v1/projects/fleet")
+          .catch(() => [] as ProjectFleetItem[])
+      : Promise.resolve([] as ProjectFleetItem[]),
   ]);
+  // Filtro client-side por status en la vista fleet (el endpoint
+  // devuelve todos; el listado base ya filtra server-side).
+  const fleetFiltered = params.status
+    ? fleet.filter((f) => f.status === params.status)
+    : fleet;
 
   const kpis: Kpi[] = [
     { label: "Proyectos", value: stats.total },
@@ -105,9 +128,8 @@ export default async function ProjectsPage({
           </p>
         </div>
         <Link
-          href="/leads"
+          href="/projects/new"
           className="rounded-sm bg-wcm-accent px-3 py-1.5 text-xs font-semibold text-wcm-primary hover:brightness-105"
-          title="Los proyectos nacen de un lead cualificado — selecciona uno con score alto y convíertelo desde su ficha"
         >
           + Nuevo proyecto
         </Link>
@@ -117,25 +139,33 @@ export default async function ProjectsPage({
 
       <section className="space-y-3">
         <header className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-            Listado
-          </h2>
-          <span className="text-[10.5px] tabular-nums text-muted-foreground">
-            {`${projects.length} resultado${projects.length === 1 ? "" : "s"}`}
-            {params.status
-              ? ` · filtrado por ${STATUS_LABEL[params.status] ?? params.status}`
-              : ""}
-          </span>
+          <div className="flex items-baseline gap-3">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+              Listado
+            </h2>
+            <span className="text-[10.5px] tabular-nums text-muted-foreground">
+              {view === "fleet"
+                ? `${fleetFiltered.length} resultado${fleetFiltered.length === 1 ? "" : "s"}`
+                : `${projects.length} resultado${projects.length === 1 ? "" : "s"}`}
+              {params.status
+                ? ` · filtrado por ${STATUS_LABEL[params.status] ?? params.status}`
+                : ""}
+            </span>
+          </div>
+          {/* v0.19.0 — toggle entre vista fleet (grid) y tabla densa. */}
+          <ViewToggle activeView={view} activeStatus={params.status ?? null} />
         </header>
         {stats.total > 0 && (
           <FilterChips chips={buildStatusChips(stats)} />
         )}
-        {projects.length === 0 ? (
+        {(view === "fleet" ? fleetFiltered.length : projects.length) === 0 ? (
           stats.total === 0 ? (
             <EmptyProjects />
           ) : (
             <EmptyFilterResult activeStatus={params.status ?? null} />
           )
+        ) : view === "fleet" ? (
+          <ProjectsFleetGrid projects={fleetFiltered} />
         ) : (
           <ProjectsTable projects={projects} />
         )}
@@ -191,6 +221,57 @@ function buildStatusChips(stats: ProjectStatsResponse): FilterChip[] {
     },
   ];
 }
+
+/**
+ * Toggle visual entre vista fleet (grid de tarjetas con mini-stepper)
+ * y vista tabla densa (v0.19.0).
+ *
+ * Preserva el filtro `status` actual al cambiar de vista.
+ */
+function ViewToggle({
+  activeView,
+  activeStatus,
+}: {
+  activeView: "fleet" | "table";
+  activeStatus: string | null;
+}) {
+  const baseParams = activeStatus ? `&status=${encodeURIComponent(activeStatus)}` : "";
+  return (
+    <div
+      role="group"
+      aria-label="Cambiar vista"
+      className="inline-flex rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30"
+    >
+      <Link
+        href={`/projects?view=table${baseParams}`}
+        aria-current={activeView === "table" ? "true" : undefined}
+        className={cn(
+          "inline-flex items-center gap-1 px-2 py-1 text-[10.5px] uppercase tracking-wider",
+          activeView === "table"
+            ? "bg-wcm-accent/15 text-wcm-accent"
+            : "text-muted-foreground hover:text-wcm-text",
+        )}
+      >
+        <List className="h-3 w-3" aria-hidden />
+        Tabla
+      </Link>
+      <Link
+        href={`/projects?view=fleet${baseParams}`}
+        aria-current={activeView === "fleet" ? "true" : undefined}
+        className={cn(
+          "inline-flex items-center gap-1 px-2 py-1 text-[10.5px] uppercase tracking-wider",
+          activeView === "fleet"
+            ? "bg-wcm-accent/15 text-wcm-accent"
+            : "text-muted-foreground hover:text-wcm-text",
+        )}
+      >
+        <LayoutGrid className="h-3 w-3" aria-hidden />
+        Fleet
+      </Link>
+    </div>
+  );
+}
+
 
 /**
  * Empty state cuando hay proyectos en el sistema pero el filtro actual
