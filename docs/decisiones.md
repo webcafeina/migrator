@@ -1785,6 +1785,41 @@ Tareas listadas en TaskList con prefijo `[ADR-050]`:
 
 ---
 
+## ADR-051 — Adapter API complementa el scraping (no sustituye) — confirmación
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: ✅ Aceptada (confirmación tras evaluación explícita)
+
+**Contexto**: Cuando un proyecto tiene `source_access_mode='api'` + credenciales válidas Wix/Webflow, el agente `scrape_origin` obtiene la lista canónica de URLs desde el adapter API. Esas URLs se **prepend al `to_visit`** del BFS — el crawler sigue buscando enlaces internos en cada página visitada via `<a href>`.
+
+```python
+seed_urls = self._seed_from_api(project)
+to_visit = [source_url, *seed_urls]
+# BFS sigue buscando enlaces internos en cada página visitada
+```
+
+Es decir, la API **complementa** el scraping (aporta URLs canónicas que el BFS podría no descubrir), pero el HTML se sigue obteniendo via fetch público — el BFS de enlaces internos también corre.
+
+Se evaluaron 3 opciones (mantener, API sustituye totalmente, modo configurable por proyecto).
+
+**Decisión**: **Mantener comportamiento actual** — API complementa, BFS también corre.
+
+Razones para no cambiar:
+
+- **Cobertura unión > cualquier fuente sola**: la API lista páginas canónicas del editor (incluso no enlazadas desde menú: legales, drafts publicados, blog posts antiguos). El BFS de enlaces cubre páginas creadas fuera del editor oficial (hooks, redirects custom, hardcoded en otras páginas). La unión es estrictamente mejor.
+- **Penalty del BFS "redundante" es mínima**: el set `visited` evita re-fetch. Lo único redundante es parsear `<a href>` con BS4 (~ms por página), inferior al coste de Playwright (~3-5s/página) o el fetch HTTP en sí.
+- **La opción 2 (API sustituye) tiene pérdida silenciosa**: gaps de la API (drafts ocultos del editor que se publican públicamente, páginas custom con hooks WordPress-style) no son visibles para el operador. Diagnóstico difícil.
+- **La opción 3 (modo configurable) es over-engineering**: un campo técnico que pocos operadores entenderán. Sin caso real que lo justifique, es complejidad gratuita.
+
+**Consecuencias**:
+
+- ✅ Decisión confirmada explícitamente. Si dentro de 6 meses alguien cuestiona "¿por qué hacemos BFS si tenemos la API?", este ADR responde.
+- ✅ Cero código adicional, cero coste.
+- ⚠️ Si en el futuro detectamos que la API y el BFS producen el mismo set ≥95% del tiempo y el coste del BFS empieza a ser problemático (raro en webs medianas), revisar con datos reales — no a priori.
+- ⚠️ La estrategia "complementa" depende de que `_seed_from_api` falle elegantemente (devuelve `[]` si la API cae). Ya implementado en v0.18.0 (fallback silencioso).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
