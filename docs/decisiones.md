@@ -1452,6 +1452,75 @@ Tareas listadas en TaskList con prefijo `[ADR-045]`:
 
 ---
 
+## ADR-046 — Confirmación de 6 decisiones sin cambios tras revisión
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: ✅ Aceptada — todas confirmadas tras evaluación explícita
+
+**Contexto**: Durante la revisión sistemática de las 23 decisiones implícitas/explícitas del flujo de migración, 6 fueron evaluadas y se determinó que **el comportamiento actual es correcto sin necesidad de cambios**. Este ADR las registra como confirmadas para que dentro de 6-12 meses, si alguien las cuestiona, vea que ya fueron consideradas y por qué se mantienen.
+
+### Decisión A1 — Credenciales del back del origen son admin-only
+
+**Comportamiento actual**: el endpoint `PUT /api/v1/projects/{id}/source-credentials` requiere rol `admin`. Solo admins pueden introducir/borrar credenciales API de Wix/Webflow.
+
+**Por qué se mantiene**: son secretos del cliente con valor económico (acceso al back de su negocio). El nivel de privilegio "admin" es estricto pero apropiado para evitar exposición accidental. Si un operator necesita configurar credenciales, escala a un admin — es un workflow aceptable.
+
+**Alternativa descartada**: permitir a `operator` para fluidez. Rechazada — Webcafeína prefiere fricción admin sobre riesgo de fuga de credenciales del cliente.
+
+### Decisión A3 — Rollback requiere `{"confirm": true}` en body
+
+**Comportamiento actual**: el endpoint `POST /api/v1/projects/{id}/rollback` exige `{"confirm": true}` en el body. Sin él → 409. Cualquier cliente programático (scripts CI, herramientas terceras) tiene que confirmar explícitamente.
+
+**Por qué se mantiene**: es una acción destructiva (borra páginas WP, no se puede deshacer trivialmente). La doble confirmación (botón inline en UI + body `confirm`) evita disparos accidentales por scripts mal configurados o llamadas API duplicadas.
+
+**Alternativa descartada**: solo confirmación inline en UI, sin `confirm` en body. Rechazada — la UI confirma al humano, el `confirm` en body protege de errores de máquina.
+
+### Decisión B1 — Preflight con 4 chequeos (WP destino, plugins, origen, credenciales back)
+
+**Comportamiento actual**: el preflight ejecuta 4 chequeos en paralelo (`asyncio.gather`, timeout 10s c/u). Más check no añade valor proporcional al coste.
+
+**Por qué se mantiene**: tras la mejora de ADR-037 (Bricks bloqueante), los 4 cubren los failure modes reales del primer arranque: target inaccesible, plugin esencial faltante, origen caído, credenciales API inválidas. Otros checks evaluados (Lighthouse pre-deploy del origen, DNS del target, espacio en disco) tienen ROI bajo — el operador raramente los necesita.
+
+**Alternativa descartada**: añadir más checks. Rechazada — la latencia del preflight (~10s) ya es la máxima tolerable en un wizard interactivo; añadir checks empujaría hacia 20-30s y deterioraría el UX del wizard.
+
+### Decisión C1 — Pipeline secuencial, sin paralelismo entre fases
+
+**Comportamiento actual**: el `Orchestrator` ejecuta las 15 fases una a una en orden, dentro de una sesión SQLAlchemy larga. El paralelismo intra-fase (ej. descargar 5 assets a la vez) sí existe; el inter-fase no.
+
+**Por qué se mantiene**: cada fase tiene dependencias implícitas con la anterior (extract_content necesita scraped_pages, transpile_bricks necesita content_blocks, etc.). Paralelizar requeriría grafo de dependencias explícito + tracking de inputs/outputs, complejidad sustancial. El tiempo total del pipeline (~10-25 min) es aceptable para batch — no es real-time.
+
+**Alternativa descartada**: paralelizar fases independientes (preserve_seo + optimize_assets pueden correr en paralelo, por ejemplo). Rechazada hasta tener evidencia de que el tiempo del pipeline es problema operativo real. Es over-engineering preventivo.
+
+### Decisión D2 — No respeta `robots.txt` en migración (sí en prospección)
+
+**Comportamiento actual**: `scrape_origin` ignora `robots.txt` del origen — accede a todas las URLs accesibles. La fase de **prospección** comercial sí lo respeta (es scraping no consentido).
+
+**Por qué se mantiene**: en migración el cliente (dueño del origen) **nos da consentimiento explícito** al crearse el proyecto. Es "su" web — `robots.txt` es directiva para crawlers terceros, no para el dueño que ha contratado servicio de migración. La distinción está bien hecha y es legal/éticamente correcta.
+
+**Alternativa descartada**: respetar `robots.txt` siempre (más conservador). Rechazada — bloquearía migración legítima de áreas como `/admin/`, `/checkout/`, `/cart/` que el cliente sí quiere conservar.
+
+### Decisiones E2 + E4 — No migrar historial de envíos forms ni pasarela de pago
+
+**Comportamiento actual**: el sistema NO migra historial de envíos de formularios (E2) ni configuración de pasarela de pago (E4). Ambos generan ResidualTask informativas para que el operador los gestione manualmente.
+
+**Por qué se mantienen** (tras revisión completa en ADR-045 que sí automatizó E1 historial pedidos):
+
+- **E2**: Wix Forms y Webflow Forms **NO exponen entries vía API pública**. La automatización sería técnicamente imposible sin permisos elevados que no obtenemos. El operador exporta manualmente del admin del origen si el cliente lo necesita (raramente lo pide — los entries históricos en sistema migrado tienen poco valor).
+- **E4**: 5+ pasarelas (Stripe, Redsys, PayPal, Bizum, etc.), cada una con su API, sandbox, webhooks, plugin WC específico. Coste de mantenimiento no escala. La residual manual (~30-60 min/proyecto) es la decisión correcta y duradera. Cualquier cliente nuevo con pasarela rara abre frente nuevo de mantenimiento.
+
+**Alternativa descartada**: automatizar al menos Stripe (la más común). Rechazada — incluso con UNA pasarela, el coste de mantener integración + tests del sandbox + manejo de webhooks ≈ 15-20 días/año. Mejor 30-60 min/proyecto manual.
+
+---
+
+**Consecuencias generales** de este ADR:
+
+- ✅ Las 6 decisiones quedan **explícitamente confirmadas**. Futuras revisiones (operadores nuevos, auditorías) verán el ADR y entenderán por qué no cambiar.
+- ✅ Cero código adicional. Cero coste de implementación.
+- ✅ Reduce ruido en sprints futuros — estas 6 no compiten por atención.
+- ⚠️ Las decisiones siguen siendo revisables si surge evidencia nueva (cliente exigiendo lo contrario, regulación cambiando, performance issue real). La confirmación es **provisional pero firme**.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
