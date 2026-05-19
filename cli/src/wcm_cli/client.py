@@ -127,3 +127,31 @@ class ApiClient:
 
     def delete(self, path: str, **kwargs: Any) -> Any:
         return self._request("DELETE", path, **kwargs)
+
+    def get_bytes(self, path: str, *, params: dict | None = None) -> bytes:
+        """Descarga bruta del endpoint siguiendo redirects (v0.16.0).
+
+        Pensado para entregables binarios — `/checklist/download` redirige
+        302 a R2 (https) o devuelve stream local (file://). httpx con
+        `follow_redirects=True` resuelve el flujo.
+        """
+        url = f"{self.config.api_url}{path}"
+        try:
+            with httpx.Client(
+                timeout=self.config.timeout_s,
+                verify=self.config.verify_ssl,
+                follow_redirects=True,
+            ) as client:
+                response = client.get(url, params=params, headers=self.headers)
+        except httpx.ConnectError as e:
+            raise CliConfigError(
+                f"No se pudo conectar al API ({self.config.api_url}).",
+                hint="Comprueba que la API está arrancada.",
+            ) from e
+        except httpx.TimeoutException as e:
+            raise CliApiError(
+                f"Timeout esperando al API ({self.config.timeout_s}s).",
+            ) from e
+        if response.status_code != 200:
+            self._raise_from_response(response)
+        return response.content

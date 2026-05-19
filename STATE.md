@@ -29,6 +29,27 @@
 
 ## Última versión publicada
 
+**v0.16.0** (2026-05-19) — sprint MINOR (5 bloques): cierre del flujo
+de migración. Los 3 agentes transversales del pipeline pasan de stub
+a implementación real — **12/15 fases reales** (vs. 9/15 previas).
+`visual-diff` con Playwright + pixelmatch + R2 captura origen/destino,
+genera overlay con diferencias en rojo y persiste score por página.
+`qa-runner` ejecuta Lighthouse desktop+mobile, validación HTML W3C,
+link checker httpx+bs4, verificación HTTPS + robots.txt + sitemap.xml,
+generando residual tasks por fallos críticos. `checklist-generator`
+renderiza Markdown + PDF Webcafeína-branded (paleta `#B1F100`, A4) y
+sube a R2 o file:// fallback. UI dashboard nueva `/qa` con scorecards
++ `/diff` real con galería interactiva + botones descarga PDF/MD en
+checklist. CLI `wcm projects diff/qa-report/export-checklist`.
+Migración Alembic 0007 (tablas `visual_diffs` + `qa_reports` +
+2 cols en `projects`). +57 backend, +12 vitest, +6 CLI. Suite **664
+pytest + 237 vitest = 901 verde**. Degradación grácil masiva
+(Playwright/WeasyPrint/Lighthouse opcionales). **Acción pendiente del
+operador**: en el servidor producción instalar Playwright deps + lighthouse
+global + WeasyPrint libs SO (ver CHANGELOG §Dependencias). Restan
+v0.17.0 los 3 stubs nicho (woo-migrator + forms-rebuilder +
+wpml-configurator).
+
 **v0.15.0** (2026-05-19) — sprint MINOR (5 bloques + pre-fix v0.14.1):
 editor visual del layout maestro `/settings/email-layout` con form de
 24 controles (colores · branding · tipografía · espaciado · bordes)

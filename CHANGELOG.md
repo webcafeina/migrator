@@ -11,6 +11,151 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.16.0] — 2026-05-19
+
+Sprint MINOR: **cierre del flujo de migración** — los 3 agentes
+transversales del pipeline (visual-diff + qa-runner + checklist-generator)
+pasan de stub a implementación real. Con esto el operador puede defender
+visualmente que el destino se parece al origen, pasa QA automático con
+Lighthouse + W3C + links + SEO, y entrega al cliente un PDF Webcafeína
+con los residuales pendientes. Tras este sprint: 12/15 fases reales
+(vs. 9/15 previas). Restan v0.17.0 los 3 stubs nicho (woo-migrator +
+forms-rebuilder + wpml-configurator).
+
+### Added
+
+- **Agente `visual-diff` real** (`apps/worker/src/wcm_worker/agents/visual_diff.py`):
+  Playwright sync con `screenshot_session()` context manager que reusa
+  1 browser + 1 context para N páginas. Captura origen + destino,
+  compara con `pixelmatch` (threshold 0.15), genera overlay PNG con
+  diferencias en rojo. UPSERT en `visual_diffs` con
+  `pg_insert.on_conflict_do_update`. Recalcula `projects.visual_diff_avg_score`.
+- **Agente `qa-runner` real** (`apps/worker/src/wcm_worker/agents/qa_runner.py`):
+  ejecuta 6 checks — Lighthouse desktop+mobile vía subprocess Node
+  (parsing JSON 0-100), validación HTML W3C de hasta 50 páginas con
+  throttle 1.2s/req, link checker httpx+bs4 con dedupe del dominio
+  (HEAD primero, GET ranged si 405), verificación HTTPS válido,
+  robots.txt accesible, sitemap.xml accesible. Genera ResidualTask
+  automática por cada fallo crítico (perf<50, html_errors>20,
+  broken>5, https inválido, robots/sitemap inaccesibles).
+- **Agente `checklist-generator` real** (`apps/worker/src/wcm_worker/agents/checklist_generator.py`):
+  carga residuales agrupadas por categoría canónica
+  (blocking_go_live → client_config → visual_content → post_go_live
+  → other), renderiza Markdown con template Jinja2 + PDF con WeasyPrint
+  + CSS Webcafeína-branded (paleta `#B1F100`, A4, page-counter).
+  Sube a R2 (`projects/{id}/checklist/{checklist.md|checklist.pdf}`)
+  o fallback file:// local. Persiste URLs en `projects.checklist_md_url`
+  + `projects.checklist_pdf_url`.
+- **Tabla `visual_diffs`** (migración 0007): `(id PK, project_id FK,
+  page_path, source/target/overlay_url, score, viewport_width,
+  timestamps)` con UNIQUE `(project_id, page_path)` — una fila por
+  página, sobrescritura idempotente entre runs.
+- **Tabla `qa_reports`** (migración 0007): `(id PK, project_id FK,
+  lighthouse_perf_desktop/mobile, lighthouse_a11y_avg,
+  lighthouse_best_practices_avg, lighthouse_seo_avg,
+  html_validator_errors/warnings_count, broken_links_count,
+  total_links_checked, https_valid, robots_accessible,
+  sitemap_accessible, report_json JSONB, timestamps)`. Una fila por
+  ejecución (la última gana, las antiguas se conservan para histórico).
+- **Endpoints API**:
+  - `GET /api/v1/projects/{id}/visual-diffs` → list de páginas
+    comparadas con score + URLs.
+  - `GET /api/v1/projects/{id}/qa-report` → último QA report o `null`.
+  - `GET /api/v1/projects/{id}/checklist/download?format=pdf|md` →
+    302 a R2 si https, stream local con `content-disposition: attachment`
+    si file://.
+- **UI dashboard** `/projects/[id]/diff` real: Server Component fetcha
+  `visual-diffs` y renderiza `DiffGallery` con thumbnails 3x
+  (source/target/overlay) + ScoreBadge (verde ≥85, ámbar 70-85, rojo
+  <70). Click abre modal full-size lado a lado. Fallback "(local)" si
+  R2 no configurado.
+- **UI dashboard** `/projects/[id]/qa` nuevo: Server Component con
+  `QaScorecards` — 5 ScoreCards Lighthouse (threshold 80/50), 2
+  CountCards HTML W3C, 2 CountCards links, 3 BoolCards SEO/SSL +
+  tabla detallada de links rotos si hay >0.
+- **Tab "QA"** en `ProjectTabs` con icon `GaugeCircle`.
+- **Botones "Descargar PDF" / "MD"** en header de
+  `/projects/[id]/checklist` → endpoint download del API.
+- **CLI**:
+  - `wcm projects diff ID` → tabla con score por página.
+  - `wcm projects qa-report ID` → resumen del último QA report.
+  - `wcm projects export-checklist ID --out FILE --format pdf|md`
+    (era stub) → descarga real siguiendo redirects 302.
+- **`ApiClient.get_bytes()`** en cliente CLI: descarga bruta con
+  `follow_redirects=True` para entregables binarios.
+- **Schemas pydantic**: `VisualDiffRead`, `VisualDiffsListResponse`,
+  `QaReportRead` + extensión de `ProjectRead` con
+  `checklist_md_url` / `checklist_pdf_url`. Re-exports en
+  `shared-types/__init__.py` y `types/api.ts` regenerados.
+- **Helpers worker**:
+  - `apps/worker/src/wcm_worker/integrations/playwright_screenshot.py`
+    — `screenshot_session()` context manager + `PlaywrightNotAvailableError`.
+  - `apps/worker/src/wcm_worker/integrations/visual_diff_compare.py`
+    — `compare()` con pixelmatch.
+  - `apps/worker/src/wcm_worker/integrations/lighthouse.py`,
+    `html_validator.py`, `link_checker.py`,
+    `pdf_generator.py` (WeasyPrint + markdown-it-py).
+
+### Changed
+
+- **Pipeline**: las 3 fases `visual-diff`, `qa-runner`,
+  `checklist-generator` salen del listado de stubs activos
+  (`apps/worker/tests/unit/test_agents_stubs.py`). El test verifica
+  que NO están registradas como `AgentNotImplementedError`.
+- **Plantilla checklist Jinja2** (`apps/worker/src/wcm_worker/templates/checklist/checklist.md.j2`):
+  header proyecto + tabla resumen + secciones por categoría + tareas
+  con title/status/estimated/generated_by/assignee/ClickUp + footer
+  Webcafeína (CIF, dirección, contacto legal).
+
+### Decisions
+
+- **ADR no formal** — degradación grácil masiva: Playwright no
+  instalado / WeasyPrint deps SO faltan / Lighthouse no en PATH → la
+  fase devuelve summary explicativo + warnings, NO rompe el pipeline.
+  Cada caso genera ResidualTask documentada para el operador.
+- **R2 ausente → file:// fallback**: el dashboard detecta y muestra
+  "(local)" en thumbnails. CLI no se ve afectada (sigue redirects).
+- **Categorías canónicas del checklist**: `blocking_go_live` →
+  `client_config` → `visual_content` → `post_go_live` → `other`,
+  garantizando orden estable en el PDF entregable.
+- **Renderer canónico con `string.Template` PEP 292** (sintaxis
+  `$nombre`) en pdf_generator para NO chocar con slots `{{ }}` Jinja2
+  del composer.
+
+### Migración
+
+- `0007_visual_diff_qa_reports.py` — crea tablas `visual_diffs` y
+  `qa_reports` + añade `projects.checklist_md_url` y
+  `projects.checklist_pdf_url` (VARCHAR 500 nullable). Una sola
+  migración para los 3 cambios del sprint.
+
+### Dependencias
+
+- **apps/worker** añade: `playwright>=1.45`, `pixelmatch>=0.4`,
+  `weasyprint>=68.0`, `markdown-it-py>=3.0`.
+- **Dependencias SO en servidor producción** (documentar en
+  `docs/despliegue.md`):
+  - Playwright: `playwright install-deps && playwright install chromium`
+  - WeasyPrint: `apt install libpango-1.0-0 libpangoft2-1.0-0 libcairo2 libgdk-pixbuf2.0-0`
+  - Lighthouse: `npm install -g lighthouse@^12`
+
+### Tests
+
+- **Backend**: +57 tests (visual-diff 18, qa-runner 21, checklist 18).
+  Total Python: **664 verde** (10 skipped).
+- **Dashboard**: +12 vitest (`diff-gallery` 6, `qa-scorecards` 6).
+  Total: **237 verde**.
+- **CLI**: +6 tests (`test_projects_diff_qa.py`).
+
+### Próximo sprint
+
+- **v0.17.0** — los 3 stubs nicho: `woo-migrator` (WooCommerce),
+  `forms-rebuilder` (Gravity Forms), `wpml-configurator` (sin licencia
+  WPML → siempre residual task). UI con badges de features por
+  proyecto. CLI ampliada.
+
+---
+
 ## [0.15.0] — 2026-05-19
 
 Sprint MINOR: **editor visual del layout maestro + preview lateral
