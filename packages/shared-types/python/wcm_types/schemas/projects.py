@@ -49,6 +49,10 @@ class ProjectRead(ProjectBase, TimestampedRead):
     hosting_target_json: dict[str, Any] | None
     theme_styles_origin: dict[str, Any] | None
     visual_diff_avg_score: float | None
+    # v0.16.0 — URLs R2 del entregable PDF + MD. Pobladas por
+    # checklist-generator. null hasta que el agent ejecute.
+    checklist_md_url: str | None = None
+    checklist_pdf_url: str | None = None
     status: ProjectStatus
     started_at: datetime | None
     completed_at: datetime | None

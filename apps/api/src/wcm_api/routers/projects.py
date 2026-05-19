@@ -12,7 +12,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
+from fastapi.responses import RedirectResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -453,3 +454,51 @@ async def get_latest_qa_report(
     if report is None:
         return None
     return QaReportRead.model_validate(report)
+
+
+@router.get("/{project_id}/checklist/download")
+async def download_checklist(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+    format: Annotated[str, Query(pattern="^(pdf|md)$")] = "pdf",
+) -> Response:
+    """Descarga el entregable del checklist (v0.16.0).
+
+    Comportamiento:
+    - URL es HTTPS (R2 público) → 302 redirect al cliente.
+    - URL es `file://` (R2 no configurado, fallback dev) → stream del
+      fichero local con content-type apropiado.
+    - URL es `null` (agent aún no ejecutado o falló) → 404.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    url = project.checklist_pdf_url if format == "pdf" else project.checklist_md_url
+    if not url:
+        raise NotFoundError(
+            f"Checklist {format} aún no generado para project {project_id}. "
+            "Re-ejecuta el pipeline o el agent checklist-generator."
+        )
+
+    if url.startswith(("http://", "https://")):
+        return RedirectResponse(url=url, status_code=302)
+
+    # Fallback dev: file:// → stream local.
+    if url.startswith("file://"):
+        path = url[len("file://") :]
+        try:
+            with open(path, "rb") as f:
+                content = f.read()
+        except OSError as e:
+            raise NotFoundError(f"Fichero local no accesible: {path} ({e})") from e
+        media_type = "application/pdf" if format == "pdf" else "text/markdown"
+        filename = f"checklist-project-{project_id}.{format}"
+        return Response(
+            content=content,
+            media_type=media_type,
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+    raise NotFoundError(f"URL del checklist no reconocida: {url[:60]}")

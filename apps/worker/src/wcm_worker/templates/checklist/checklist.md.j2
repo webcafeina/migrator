@@ -1,0 +1,72 @@
+# Checklist de migración · {{ client_name }}
+
+**Proyecto #{{ project_id }}** · {{ source_url }} → {{ target_domain or "destino pendiente" }}
+**Fecha del informe:** {{ generated_at }}
+**Estado del proyecto:** {{ project_status }}
+
+---
+
+{% if total_open == 0 and total_in_progress == 0 %}
+## ✓ Sin tareas pendientes
+
+La migración no tiene tareas residuales abiertas. Lista para entregar al cliente.
+
+{% if total_done > 0 %}
+{{ total_done }} tarea(s) ya cerradas durante el proyecto (ver al pie).
+{% endif %}
+{% else %}
+## Resumen
+
+| Estado | Cantidad |
+|---|---|
+| Abiertas | {{ total_open }} |
+| En curso | {{ total_in_progress }} |
+| Bloqueadas | {{ total_blocked }} |
+| Saltadas | {{ total_skipped }} |
+| Hechas | {{ total_done }} |
+| **Total pendiente** | **{{ total_pending }}** |
+| Tiempo estimado pendiente | {{ estimated_minutes_total }} min ({{ estimated_hours_human }}) |
+
+{% endif %}
+
+{% for category_block in categories %}
+{% if category_block.tasks %}
+## {{ category_block.label }}
+
+{% if category_block.description %}
+_{{ category_block.description }}_
+{% endif %}
+
+{% for task in category_block.tasks %}
+### {{ loop.index }}. {{ task.title }}
+
+**Estado:** `{{ task.status_label }}`{% if task.estimated_minutes %} · **Tiempo estimado:** {{ task.estimated_minutes }} min{% endif %}{% if task.generated_by %} · **Detectado por:** `{{ task.generated_by }}`{% endif %}
+
+{{ task.description }}
+
+{% if task.assignee_hint %}
+**Sugerencia de asignación:** {{ task.assignee_hint }}
+{% endif %}
+
+{% if task.clickup_task_id %}
+**ClickUp:** [#{{ task.clickup_task_id }}](https://app.clickup.com/t/{{ task.clickup_task_id }})
+{% endif %}
+
+---
+
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+## Pie
+
+Este checklist se ha generado automáticamente por **Webcafeína Migrator** tras
+finalizar el pipeline de migración. Las tareas marcadas como abiertas requieren
+acción humana antes de entregar el sitio al cliente.
+
+Para sincronizar con ClickUp, ejecuta el agente `clickup-syncer` desde el
+dashboard o `wcm projects start {{ project_id }}` (re-run).
+
+---
+
+_Webcafeína S.L. · {{ company_contact_email }} · {{ company_address }}_

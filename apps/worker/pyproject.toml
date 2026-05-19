@@ -41,6 +41,15 @@ dependencies = [
     # está, el agent marca SKIPPED + crea residual task.
     "playwright>=1.45",
     "pixelmatch>=0.4",
+    # v0.16.0 — checklist-generator: PDF entregable al cliente con
+    # tareas residuales. WeasyPrint requiere libpango + libcairo en
+    # Linux (apt install). En macOS dev viene con brew. Si no está,
+    # el agent genera solo el MD + residual task instalación.
+    "weasyprint>=68.0",
+    # `markdown-it-py` para convertir MD → HTML en el pipeline
+    # MD→HTML→PDF de WeasyPrint. Mantiene la fuente de verdad en MD
+    # (legible/diffable en review) y deriva HTML para layout.
+    "markdown-it-py>=3.0",
     "pgvector>=0.3",
     "boto3>=1.40",
     "resend>=2.0",

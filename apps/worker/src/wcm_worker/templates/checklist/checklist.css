@@ -1,0 +1,141 @@
+/* Webcafeína checklist PDF — paleta marca + tipografía system-ui.
+   Optimizado para WeasyPrint (A4 portrait, márgenes generosos). */
+
+@page {
+  size: A4;
+  margin: 2cm 1.8cm 2.5cm 1.8cm;
+
+  @bottom-center {
+    content: "Webcafeína Migrator · página " counter(page) " de " counter(pages);
+    font-size: 9pt;
+    color: #6B7280;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               Helvetica, Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: #1F2937;
+}
+
+/* ---------- Tipografía ---------- */
+
+h1 {
+  font-size: 22pt;
+  font-weight: 700;
+  color: #0E1218;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  border-bottom: 3pt solid #B1F100;
+  padding-bottom: 0.3em;
+}
+
+h2 {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #0E1218;
+  margin: 1.4em 0 0.5em;
+  padding-bottom: 0.2em;
+  border-bottom: 1pt solid #E5E7EB;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: #0E1218;
+  margin: 1em 0 0.3em;
+  page-break-after: avoid;
+}
+
+p {
+  margin: 0 0 0.6em;
+}
+
+/* ---------- Énfasis ---------- */
+
+strong {
+  font-weight: 600;
+  color: #0E1218;
+}
+
+em {
+  color: #4B5563;
+  font-style: italic;
+}
+
+a {
+  color: #5A8A00;
+  text-decoration: underline;
+}
+
+code {
+  font-family: "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  background-color: #F5F6F8;
+  border: 1pt solid #E5E7EB;
+  border-radius: 2pt;
+  padding: 0.5pt 4pt;
+  font-size: 9.5pt;
+  color: #0E1218;
+}
+
+/* ---------- Tablas ---------- */
+
+table {
+  border-collapse: collapse;
+  margin: 0.8em 0 1em;
+  width: 100%;
+  page-break-inside: avoid;
+}
+
+th, td {
+  text-align: left;
+  padding: 6pt 10pt;
+  border-bottom: 1pt solid #E5E7EB;
+  font-size: 10pt;
+}
+
+th {
+  background-color: #F5F6F8;
+  font-weight: 700;
+  color: #0E1218;
+  border-bottom: 2pt solid #B1F100;
+}
+
+tr:nth-child(even) td {
+  background-color: #FAFBFC;
+}
+
+/* ---------- Separadores ---------- */
+
+hr {
+  border: none;
+  border-top: 1pt solid #E5E7EB;
+  margin: 1em 0;
+}
+
+/* ---------- Bloques especiales ---------- */
+
+/* Footer del documento (último párrafo con _italic_). */
+p:last-of-type em {
+  color: #6B7280;
+  font-size: 9pt;
+}
+
+/* Listas */
+ul, ol {
+  margin: 0 0 0.6em 1.5em;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.2em;
+}
+
+/* Saltos de página inteligentes: cada h2 inicia nueva (salvo el primero). */
+h2:not(:first-of-type) {
+  page-break-before: auto;
+}
