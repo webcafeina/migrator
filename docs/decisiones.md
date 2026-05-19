@@ -1018,6 +1018,58 @@ Razones:
 
 ---
 
+## ADR-039 — Default draft + botón "Publicar todo" único
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: Tras `wp-deployer`, `migrate_woo` y `rebuild_forms`, los recursos creados en el WP destino quedan en estado **draft/inactive**:
+
+| Recurso | Status tras deploy | Quién publica |
+|---|---|---|
+| Páginas WP | `draft` | Operador o cliente, manualmente desde wp-admin |
+| Productos WooCommerce | `draft` | Idem |
+| Formularios Gravity | `is_active: "0"` (inactivo) | Idem |
+
+La filosofía original ("nada que toque el frontend hasta que un humano lo apruebe") es correcta — evita deploys nocturnos accidentales, permite QA visual sin que aparezca en Google, refuerza el "go-live" como momento explícito.
+
+Pero la práctica revela 2 problemas:
+
+1. **Trabajo manual repetitivo post-deploy**: 5-10 min de clicks en wp-admin (bulk-select páginas, productos, activar forms uno a uno). Propenso a olvidos.
+2. **QA no es 100% representativo**: `visual_diff` y Lighthouse corren contra preview links autenticados (`?preview=true`), pero **menus, redirects y links públicos** solo muestran páginas publicadas. Existe una diferencia silenciosa entre lo que valida el QA y lo que verá el visitante final tras publicar.
+
+Se evaluaron 4 opciones (mantener actual, publish por defecto, flag en wizard, botón único).
+
+**Decisión**: **Mantener default draft/inactive** + añadir **endpoint y UI nuevos "Publicar todo"** que en una sola acción atómica:
+
+- Páginas: `POST /wp/v2/pages/{id}` con `{"status": "publish"}` para cada `bricks_pages.wp_post_id`.
+- Productos: `PUT /wc/v3/products/{id}` con `{"status": "publish"}` para cada `woo_products.wp_product_id`.
+- Forms: `PUT /gf/v2/forms/{id}` con `is_active: "1"`.
+- Genera ResidualTask informativa "Verificar redirects 301 + cache del destino + DNS final (si aplica)".
+
+Restricciones:
+
+- Endpoint `POST /api/v1/projects/{id}/publish` (operator+), requiere `{"confirm": true}` (como rollback).
+- Solo permitido si `status ∈ {completed, qa_failed}` — queremos que QA haya corrido al menos una vez.
+- UI: botón "Publicar todo" en `<ProjectActions>` cuando status lo permita. Confirmación inline en lima (acción positiva, no roja): "¿Publicar N páginas + M productos + K forms?".
+- CLI: `wcm projects publish ID [--yes/-y]` con prompt interactivo como `rollback`.
+- Eventos SSE: `publish_phase_event(project_id, "publish", "running"|"completed"|"failed")`.
+
+**Consecuencias**:
+
+- ✅ Conserva seguridad — nada se publica accidentalmente, el "publish" sigue siendo decisión explícita del operador.
+- ✅ Elimina 5-10 min de clicks por migración.
+- ✅ Coherente con patrón de rollback (acción única con confirmación inline + endpoint con `confirm` obligatorio).
+- ✅ El visual_diff puede seguir comparando contra preview (no cambia su comportamiento).
+- ⚠️ Tras "Publicar todo" pueden surgir problemas que QA no detectó (menus malformados, redirects circulares en producción). El operador debe revisar visualmente el dominio público tras la publicación.
+- ⚠️ NO incluye `publish` de páginas/productos/forms **individualmente** desde el dashboard. Es todo-o-nada. Si el operador quiere publicar solo algunas páginas, lo sigue haciendo desde wp-admin. (Caso edge poco frecuente; añadir granularidad si surge necesidad real).
+
+**Implementación**: programada para sprint v0.20.0+. Estimación ~5-7 días: endpoint + service que itera + UI + CLI + tests (mocks REST + endpoint + integration test contra WP sandbox). Tareas listadas en TaskList con prefijo `[ADR-039]`.
+
+**Status del documento**: hasta que se implemente, el flujo sigue siendo "draft + manual publish via wp-admin". Cuando salga v0.20.0+ con el botón, `docs/flujo-migracion.md` se actualizará para describir el flujo completo de publicación.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

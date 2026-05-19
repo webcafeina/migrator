@@ -1038,7 +1038,7 @@ Consecuencias prácticas:
 
 ### 7.4 Por qué `status: "draft"` y no `"publish"`
 
-Decisión consciente. Razones:
+Decisión consciente (ADR-039). Razones:
 
 - El operador o el cliente quieren **revisar** antes de publicar.
 - En `draft`, las páginas no son indexables ni visibles públicamente — el
@@ -1046,9 +1046,11 @@ Decisión consciente. Razones:
   autenticado.
 - Cambiar a `publish` es un paso explícito en el checklist final, tras revisar.
 
-El operador puede cambiar el default vía
-`ctx.extra.get("publish_status", "draft")` en futuras versiones (no expuesto en
-UI todavía).
+> **Próximo cambio (ADR-039 — programado para v0.20.0+)**: se añadirá botón
+> "Publicar todo" en el dashboard + endpoint `POST /projects/{id}/publish` +
+> CLI `wcm projects publish ID` que en una sola acción publica todas las
+> páginas, productos y activa los forms. Hasta entonces, la publicación es
+> manual via wp-admin (5-10 min de clicks por migración típica).
 
 ### 7.5 El truco de WP-CLI para meta grande
 
