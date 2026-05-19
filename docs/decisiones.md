@@ -1344,6 +1344,114 @@ Tareas listadas en TaskList con prefijo `[ADR-044]`:
 
 ---
 
+## ADR-045 — Automatizar historial de pedidos WC + mejorar residual de cupones
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: La decisión MVP original (revisada como E1-E4 del inventario) era **no migrar** historial de pedidos, historial de envíos forms, cupones ni pasarela de pago. Cada uno genera ResidualTask informativa para que el operador lo gestione manualmente.
+
+Tras evaluar caso por caso, Webcafeína decide automatizar **una** de las cuatro (E1 — historial de pedidos) y **mejorar la información** de otra (E3 — cupones, sin automatizar). Las otras dos se mantienen sin cambios (E2 historial forms, E4 pasarela de pago).
+
+Razonamiento:
+
+- **E1 sí**: Webcafeína espera leads e-commerce establecidos con clientes recurrentes que necesitan ver "mis pedidos anteriores" — para ellos el historial es valor real. Wix Stores y Webflow Ecommerce **sí exponen** pedidos vía API con permisos admin, lo que hace la automatización viable cuando el operador captura credenciales en el wizard (`source_access_mode=api`).
+- **E3 sí, pero solo mejorar info, no automatizar**: los cupones del origen con códigos específicos (`WIX2024`, `BLACK24`) raramente sirven literal en el destino. El operador casi siempre crea nuevos al lanzar. Pero **listar los cupones detectados** en la residual (con código, descuento, condiciones) le da contexto útil sin asumir la decisión por él.
+- **E2 no**: Wix Forms y Webflow Forms no permiten exportar entries vía API pública. La automatización sería imposible sin permisos elevados.
+- **E4 no**: 5+ pasarelas (Stripe, Redsys, PayPal, Bizum, etc.) cada una con su API/sandbox/webhooks. Coste de mantenimiento no escala. La residual manual (~30-60 min) es la decisión correcta y duradera.
+
+**Decisión — Parte A: Automatizar E1**:
+
+Solo si **hay credenciales del back** (`project.source_access_mode == "api"` + `source_credentials_encrypted` válido) y `project.has_ecommerce == True`. Sin credenciales API, fallback al comportamiento actual (residual manual).
+
+Comportamiento:
+
+1. **Nueva tabla `woo_orders`** (migración Alembic 0011):
+   ```
+   id (PK)
+   project_id (FK)
+   source_order_id (str, ID en origen)
+   wp_order_id (int NULL, ID en WC destino tras migración)
+   order_number (str)
+   customer_email (str, normalized)
+   customer_name (str)
+   billing_address_json (JSONB)
+   shipping_address_json (JSONB)
+   line_items_json (JSONB, lista [{sku, qty, price, total}])
+   total NUMERIC(12, 2)
+   currency CHAR(3)
+   status VARCHAR(20)  -- mapeado: completed | processing | pending | refunded | cancelled
+   order_date TIMESTAMPTZ
+   raw_origin_json (JSONB, dump completo del API por si necesario diagnóstico)
+   migrated_at TIMESTAMPTZ NULL
+   migration_error TEXT NULL
+   ```
+2. **Extender adapters Wix/Webflow** con `list_orders()`:
+   - `WixApiClient.list_orders()` → `GET /stores/v2/orders` con paginación cursor (Wix Stores API).
+   - `WebflowApiClient.list_orders()` → `GET /ecommerce/v1/orders/{site_id}` con paginación.
+   - Mapea fields a estructura canónica `OrderInfo` (idéntica para ambos builders).
+   - Errores tipados ya existentes (`WixApiAuthError`, etc.).
+3. **`WooMigratorAgent` extendido**:
+   - Tras migrar productos (lógica actual), si `source_access_mode == "api"` + credenciales válidas:
+     - Llama al adapter correspondiente, lista pedidos del origen.
+     - Persiste en `woo_orders` (UPSERT por `(project_id, source_order_id)`).
+     - Por cada `WooOrder` con `wp_order_id IS NULL`, crea pedido en WC via `POST /wc/v3/orders` con `status=completed` (o el mapeado), `set_paid=false` (no marca pagado — solo migra estructura), `line_items` referenciando SKUs ya migrados.
+     - Persiste `wp_order_id` tras éxito.
+   - Si fallo individual de pedido → log warning, sigue. ResidualTask "N pedidos fallaron al migrar" si hay >0 errores.
+   - Si NO hay credenciales API → comportamiento actual (residual manual "exportar CSV desde origen + WC importer").
+
+**Decisión — Parte B: Mejorar residual de cupones (sin automatizar)**:
+
+El agente NO crea cupones en WC. Pero **lista los detectados** en el origen para que la residual sea accionable:
+
+1. Extender adapters con `list_coupons()`:
+   - `WixApiClient.list_coupons()` → `GET /stores/v3/coupons` (si hay).
+   - `WebflowApiClient.list_coupons()` → `GET /ecommerce/v1/coupons/{site_id}`.
+2. La residual generada incluye en la `description`:
+   ```markdown
+   ### Cupones detectados en el origen (3)
+   
+   | Código | Descuento | Condiciones | Activo |
+   |--------|-----------|-------------|--------|
+   | WELCOME10 | 10% | min. 30€ | sí |
+   | BLACK24 | 25% | productos categoría "ofertas" | no (caducó) |
+   | FREE-SHIP | envío gratis | min. 50€ | sí |
+   
+   Decide si los recreas con esos códigos en WC (Marketing → Cupones → 
+   Crear) o si prefieres códigos nuevos. WC no soporta el mismo set de 
+   condiciones que Wix/Webflow — algunas reglas avanzadas (exclusiones 
+   por usuario, fechas custom) requerirán ajuste manual.
+   ```
+3. Sin credenciales API → la residual sigue siendo genérica como hoy ("Revisar cupones manualmente en el origen y recrear en WC si aplica").
+
+**Consecuencias**:
+
+- ✅ Clientes e-commerce establecidos reciben historial migrado — valor real para Webcafeína al cerrar leads grandes.
+- ✅ Cupones: operador tiene contexto sin asumir trabajo de recreación automática (que sería frágil por diferencias de condiciones entre plataformas).
+- ✅ Backward compat: proyectos sin credenciales API se comportan como hoy (residual manual).
+- ⚠️ **RGPD — datos personales del cliente final**: los pedidos contienen email, nombre y direcciones de los clientes del cliente. Webcafeína actúa como **encargado del tratamiento** (art. 28 RGPD); el cliente (dueño de la web) es el responsable. Necesitamos:
+  - Cláusula en el contrato cliente↔Webcafeína autorizando el tratamiento como parte del servicio de migración.
+  - Persistencia de `woo_orders` cifrada en reposo (Postgres tiene `pgcrypto`, alternativa Fernet aplicada a `billing_address_json` y `shipping_address_json`).
+  - Borrado de `woo_orders` tras N días de la migración completada (default 30 días). Configurable por proyecto en futuro ADR.
+  - Auditoría en `audit_log` de cada lectura/escritura masiva de `woo_orders`.
+- ⚠️ **Coste de mantenimiento**: las APIs de Wix/Webflow para pedidos cambian. Tests con sandboxes reales necesarios al menos trimestralmente. Documentar en `docs/playbook-operativo.md`.
+- ⚠️ **No migra pagos reales** (datos de tarjeta tokens, transactions). Solo cabecera + line items. La pasarela del cliente (E4) seguirá siendo manual.
+- ⚠️ Mapeo de status puede tener gaps: Wix tiene `paid|unpaid|refunded|partially_refunded|canceled` (5), WC tiene `pending|processing|on-hold|completed|cancelled|refunded|failed` (7). El mapeo es lossy pero documentado.
+
+**Implementación**: programada para v0.20.0+. Estimación ~6-8 días (la más grande de los ADRs registrados hasta ahora). Sprint dedicado o como bloque grande dentro de v0.20.0.
+
+Tareas listadas en TaskList con prefijo `[ADR-045]`:
+- Migración Alembic 0011 — tabla `woo_orders` + cifrado PII.
+- Extender `WixApiClient` con `list_orders()` + `list_coupons()`.
+- Extender `WebflowApiClient` con `list_orders()` + `list_coupons()`.
+- `WooMigratorAgent` extendido (pedidos + plantilla cupones).
+- Tarea de borrado programado de `woo_orders` (Celery beat, 30 días).
+- Cláusula RGPD para contrato cliente (acción humana — registrada como TODO en `docs/playbook-operativo.md`).
+
+`docs/flujo-migracion.md` se actualizará con nota en sección 8.1 (`migrate_woo`).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

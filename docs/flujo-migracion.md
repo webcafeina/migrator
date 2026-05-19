@@ -1241,12 +1241,26 @@ ResidualTask(
 )
 ```
 
-#### Lo que NO migra
+#### Lo que NO migra (hoy)
 
 - **Historial de pedidos**: decisión MVP. Si el cliente lo necesita, hay
   residual task con instrucciones de exportar/importar manualmente.
 - **Cupones**: idem.
 - **Métodos de envío**: el operador los configura desde WC settings.
+
+> **Próximos cambios (ADR-045 — programado para v0.20.0+)**:
+>
+> - **Historial de pedidos**: SÍ se migrará automáticamente si el proyecto
+>   tiene credenciales del back (`source_access_mode='api'`). Nueva tabla
+>   `woo_orders` con PII cifrada (Fernet) + borrado programado tras 30 días
+>   (RGPD). Sin credenciales API → residual manual como hoy.
+> - **Cupones**: NO se crean automáticamente en WC, pero la residual mostrará
+>   la lista detectada en el origen (código, descuento, condiciones) para que
+>   el operador decida recrearlos.
+> - **Métodos de envío y pasarela de pago**: SIN cambios. Manual como hoy.
+>
+> Requiere cláusula RGPD nueva en el contrato cliente↔Webcafeína (acción
+> humana, ver `docs/playbook-operativo.md` cuando se implemente).
 
 #### Output
 
