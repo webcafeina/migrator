@@ -1583,6 +1583,54 @@ Comportamiento:
 
 ---
 
+## ADR-048 — `POST /projects/{id}/start` siempre re-ejecuta preflight
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: Hoy el botón "Start" en `/projects/{id}` encola el pipeline directamente sin re-ejecutar preflight. Si el operador hizo el wizard hace 1 hora con bloqueantes y eligió "Guardar sin arrancar", luego puede pulsar Start y arrancar el pipeline con esos bloqueantes olvidados. El operador no recibe alerta — la migración falla (o entrega páginas vacías por Bricks ausente, etc.).
+
+Adicionalmente: aunque el preflight haya pasado verde hace minutos, el WP destino puede haberse caído desde entonces, el plugin puede haberse desactivado, el origen puede estar 503. **El preflight tiene un TTL natural de validez muy corto** porque depende de estado externo volátil.
+
+Se evaluaron 4 opciones (mantener actual, siempre re-ejecutar, cache 5 min, deshabilitar guardar sin arrancar).
+
+**Decisión**: **`POST /api/v1/projects/{id}/start` siempre re-ejecuta preflight antes de encolar**. Sin cache. Sin TTL. Invariante estricta: "Start nunca arranca un pipeline sin preflight fresh OK".
+
+Comportamiento:
+
+1. Cliente llama `POST /api/v1/projects/{id}/start` (o pulsa botón Start en UI, o `wcm projects start ID` en CLI).
+2. Endpoint internamente ejecuta `run_preflight(project)` (~10s en el caso típico).
+3. Persiste el resultado en `projects.preflight_results_json` + `preflight_at` (sobrescribe el anterior).
+4. Si `preflight.can_start == False` → **NO arranca**, devuelve `409 Conflict` con `{preflight_results}` para que el cliente lo vea. El proyecto queda en `queued`.
+5. Si `preflight.can_start == True` → marca `status=RUNNING`, encola task Celery, devuelve `202 Accepted` con `{task_id}` como hoy.
+
+Excepción documentada: el endpoint nuevo `POST /api/v1/projects/with-start` (ADR-047) acepta `skip_preflight=true` como flag para scripts conscientes. Eso sigue siendo válido — es endpoint distinto con público distinto (programático, no UI). El endpoint `/start` clásico no admite skip — siempre re-ejecuta.
+
+UX en el dashboard:
+
+- Botón "Start" en `<ProjectActions>` mantiene su apariencia visual.
+- Al click, mostrar spinner inline "Ejecutando preflight (≤10s)…".
+- Si 409: mostrar toast destructivo con el blocking_issue principal + redirect a `/projects/{id}` (que muestra el preflight actualizado en la UI).
+- Si 202: toast success "Encolado · task {task_id[:8]}…" + `router.refresh()` para que el stepper se active.
+
+CLI: `wcm projects start ID` mantiene comportamiento exterior; internamente espera el preflight. Si falla, exit 1 con detalle del primer blocking_issue.
+
+**Consecuencias**:
+
+- ✅ Invariante clara y defendible: **el pipeline NUNCA arranca sin preflight fresh OK**. Modelo mental simple.
+- ✅ Detecta cambios en el entorno desde el último preflight (WP caído, plugin desactivado, origen 503). El operador no se sorprende a mitad de pipeline.
+- ✅ Sin lógica de cache TTL — código más simple, menos casos límite.
+- ✅ Coherente con la filosofía "Start es momento explícito + comprobado" del ADR-047.
+- ⚠️ **Penalty UX de ~10s en cada Start**. Operador que acabó wizard hace 30s lo espera de nuevo. Aceptable porque (a) el operador ya esperó en el wizard, (b) la garantía vale el coste, (c) en CLI el delay es invisible si forma parte de un script batch.
+- ⚠️ Si el endpoint del preflight tiene un bug que devuelve 5xx, el Start tampoco arranca — preflight pasa a ser dependencia dura del pipeline. Mitigación: el preflight ya tiene `try/except` por check individual; un check que falle no debe romper toda la respuesta (devuelve `ok=false` con `message="error: <tipo>"` y sigue).
+- ⚠️ Operador en flujo iterativo (arrancar→fallar→arreglar→arrancar→fallar→...) suma ~10s por iteración. Acumulable pero soportable. Si surge problema real, ADR futuro puede revisitar la opción cache TTL 5 min como concesión.
+
+**Implementación**: programada para v0.20.0+. Estimación ~2 días: refactor del endpoint `start` (invocar `run_preflight` + decidir según `can_start`) + actualizar tests del endpoint + UI spinner durante el preflight + actualizar `docs/flujo-migracion.md` §3.1 (encolado) explicando que ahora Start re-ejecuta preflight. Tarea registrada en TaskList con prefijo `[ADR-048]`.
+
+`POST /api/v1/projects/{id}/resume` se mantiene SIN re-ejecutar preflight (es un reintento, no un arranque nuevo). Si en futuro queremos lo mismo para Resume, será ADR separado.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

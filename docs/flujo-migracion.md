@@ -197,6 +197,14 @@ Cuando pulsas "Start" (UI), "Crear y arrancar" (wizard) o
 El API **no ejecuta nada inline** — solo persiste el cambio de status y deja el
 job en la cola Redis. El worker Celery (proceso separado) lo recoge.
 
+> **Próximo cambio (ADR-048 — programado para v0.20.0+)**: `POST /start`
+> pasará a **re-ejecutar siempre el preflight** antes de encolar. Si
+> `can_start=False` → 409 con detalle, NO arranca. Invariante "el pipeline
+> NUNCA arranca sin preflight fresh OK". Penalty UX ~10s por Start, pero
+> evita arrancar con bloqueantes olvidados (operador que hizo "Guardar sin
+> arrancar" hace 1h con bloqueantes y luego pulsa Start). `/resume` se
+> mantiene SIN re-preflight (es reintento, no arranque nuevo).
+
 ### 3.2 El Orchestrator
 
 `apps/worker/src/wcm_worker/pipeline.py` define una lista declarativa de fases:
