@@ -1696,6 +1696,95 @@ except Exception as e:
 
 ---
 
+## ADR-050 — Cap configurable por proyecto en `scrape_origin` + residual si se alcanza
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: `scrape_origin` tiene un cap hard-coded:
+
+```python
+max_pages = int(ctx.extra.get("max_pages", 50))
+```
+
+50 páginas cubre el 80% de leads corporativos (restauración, abogados, dentistas — típicamente 5-30 páginas). Pero hay 3 tipos de leads donde 50 se queda corto:
+
+- **Tiendas Wix/Shopify con muchos productos**: shop con 200 productos = 200 páginas de producto + ~10 estructurales. Cap a 50 = pérdida silenciosa del 75% del catálogo.
+- **Blogs activos**: 5 años × 1 post/semana = ~250 posts.
+- **Sites multilang**: 20 páginas × 3 idiomas = 60 páginas. Cap a 50 deja un idioma incompleto.
+
+**El cap es silencioso hoy**: no genera residual, el operador no se entera hasta visual_diff o QA (que ven pocas páginas vs lo esperado).
+
+Se evaluaron 4 opciones (mantener, configurable + alerta, eliminar cap, configurable + pausar).
+
+**Decisión**: **Opción 2 — cap configurable por proyecto vía cascada (project > env > default 50)** + **ResidualTask CLIENT_CONFIG si el BFS termina porque alcanzó el cap** (no porque vació el queue).
+
+Cascada de configuración:
+
+1. **Default global**: `SCRAPE_MAX_PAGES_DEFAULT` (env, default `50`).
+2. **Override por proyecto**: `projects.max_pages_scrape INT NULL` (nueva col Alembic 0012). NULL = usa default global. Rango válido: 1-500.
+
+Configuración del cap por proyecto:
+
+- **Wizard `/projects/new`**: NO lo pide (sobrecarga decisión técnica del operador típico). Default sensato del env.
+- **Ficha proyecto `/projects/[id]`**: campo numérico "Máximo de páginas a scrapear" en la sección **"Configuración avanzada"** (collapsible cerrada por defecto). Esa sección ya se planificó en ADR-044 para `visual_diff_threshold` — esta config se añade al mismo componente, agrupando los campos avanzados en un solo sitio.
+- **CLI**: `wcm projects set-max-pages ID --value 200` (o `--default` para reset a NULL).
+
+Comportamiento del agente al terminar el BFS:
+
+```python
+max_pages = (
+    project.max_pages_scrape
+    if project.max_pages_scrape is not None
+    else int(os.environ.get("SCRAPE_MAX_PAGES_DEFAULT", "50"))
+)
+# ... BFS hasta len(results) >= max_pages o to_visit vacío ...
+
+if len(results) >= max_pages and to_visit:
+    # Cap alcanzado con URLs pendientes — residual visible
+    ctx.session.add(ResidualTask(
+        title=f"Scraping cortado a {max_pages} páginas — sitio podría tener más",
+        description=(
+            f"El scraper alcanzó el límite configurado de {max_pages} páginas. "
+            f"Quedaban {len(to_visit)} URLs por procesar en la cola.\n\n"
+            f"Si necesitas migrar más, ajusta `max_pages_scrape` en "
+            f"`/projects/{project.id}` → Configuración avanzada → "
+            f"'Máximo de páginas a scrapear' (default 50, máximo 500). "
+            f"Luego re-arranca el pipeline (ADR-041 'Re-arrancar pipeline').\n\n"
+            f"URLs detectadas no procesadas (primeras 20):\n"
+            + "\n".join(f"- {url}" for url in to_visit[:20])
+        ),
+        category=ResidualCategory.CLIENT_CONFIG,
+        estimated_minutes=5,
+        generated_by="scrape-origin",
+    ))
+```
+
+**Consecuencias**:
+
+- ✅ El default 50 sigue cubriendo el 80% de leads corporativos — no penalty para el caso común.
+- ✅ Cap configurable hasta 500 cubre webs grandes (shops, blogs activos, multilang).
+- ✅ Pérdida silenciosa eliminada: la residual aparece en el checklist con instrucciones claras + lista de URLs no procesadas (top 20 para diagnóstico).
+- ✅ Coherencia: el campo va en la misma sección "Configuración avanzada" que `visual_diff_threshold` (ADR-044). Un solo componente UI agrupa los campos avanzados.
+- ✅ Coherente con ADR-041 (Re-arrancar): tras ajustar el cap, el operador re-arranca el proyecto manteniendo todo el historial.
+- ⚠️ Cap máximo 500 es arbitrario. Para webs >500 páginas (raras pero existen — wikis, marketplaces, periódicos) habría que subirlo o paginar el scraping. Mitigación: el límite de 500 viene del coste de Playwright (500 páginas × ~3s = ~25 min solo scraping). Con SSE/polling el operador ve el progreso; si surge el caso, ADR futuro discute alternativas (scraping incremental, prioridad por sitemap, etc.).
+- ⚠️ Tiempos del pipeline crecen linealmente con `max_pages`. Documentar en `/projects/[id]` config "valor afecta tiempos: 50→~10 min, 200→~30 min, 500→~75 min con Playwright".
+- ⚠️ Coste de espacio (R2 / BD) también crece linealmente: 500 páginas × HTML raw + screenshots + visual_diff overlays. Para shops grandes podría sumar GB. Aceptable hoy; revisar si Webcafeína migra muchas shops grandes.
+
+**Implementación**: programada para v0.20.0+. Estimación ~3 días.
+
+Tareas listadas en TaskList con prefijo `[ADR-050]`:
+- Migración Alembic 0012 — `projects.max_pages_scrape INT NULL` + CHECK constraint 1≤value≤500.
+- Modelo Project + Schema ProjectRead/ProjectUpdate.
+- ScraperOriginAgent — cascada (project > env > 50) + residual si cap alcanzado con queue pendiente.
+- UI: extender sección "Configuración avanzada" (compartida con ADR-044) con campo "Máximo de páginas a scrapear".
+- CLI `wcm projects set-max-pages ID --value X` (o `--default`).
+- Tests: cap por proyecto, fallback env, residual generada con title correcto + URLs en queue, default 50 preservado.
+
+`docs/flujo-migracion.md` se actualizará con nota en sección 4.6 (`scrape_origin` — Lo que NO hace) explicando la nueva configurabilidad.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

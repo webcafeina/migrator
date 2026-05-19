@@ -490,6 +490,15 @@ Importante para entender los límites:
   BeautifulSoup + selectores por builder.
 - **Cap de 50 páginas por defecto** (`max_pages`). Para sitios grandes, se
   ajustaría vía `ctx.extra` en futuras versiones.
+
+> **Próximo cambio (ADR-050 — programado para v0.20.0+)**: cap configurable
+> por proyecto vía `projects.max_pages_scrape` (col nueva Alembic 0012, rango
+> 1-500). Cascada: project > env `SCRAPE_MAX_PAGES_DEFAULT` > 50. Se ajusta
+> desde `/projects/[id]` → "Configuración avanzada" (compartida con
+> `visual_diff_threshold` de ADR-044) o vía CLI `wcm projects set-max-pages
+> ID --value X`. Si el BFS termina porque alcanzó el cap (no porque vació la
+> queue) → ResidualTask CLIENT_CONFIG con el listado de URLs no procesadas
+> + instrucciones para subir el cap y re-arrancar (ADR-041).
 - **Usa httpx hoy** (HTTP simple). Para webs Wix/Webflow muy hidratadas el
   HTML inicial es un esqueleto + bundle JS que httpx no ejecuta — los
   extractores no encuentran bloques y las páginas se generan vacías. Es un
