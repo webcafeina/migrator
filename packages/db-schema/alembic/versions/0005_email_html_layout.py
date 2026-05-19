@@ -32,6 +32,7 @@ from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 
 revision: str = "0005_email_html_layout"
@@ -163,9 +164,11 @@ def upgrade() -> None:
         ),
         sa.Column(
             "updated_by_user_id",
-            sa.Integer(),
+            postgresql.UUID(as_uuid=True),
             sa.ForeignKey(
-                "users.id", ondelete="SET NULL", name="fk_email_layouts_updated_by_user_id_users"
+                "users.id",
+                ondelete="SET NULL",
+                name="fk_email_layouts_updated_by_user_id_users",
             ),
             nullable=True,
         ),

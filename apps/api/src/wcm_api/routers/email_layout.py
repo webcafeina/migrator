@@ -17,6 +17,7 @@ rápida desde la UI sin abrir la timeline.
 from __future__ import annotations
 
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from jinja2 import Environment, TemplateSyntaxError
@@ -79,19 +80,28 @@ async def put_email_layout(
         ) from e
 
     layout = await session.get(EmailLayout, 1)
+    # `user.sub` es el UUID del usuario como string. Lo casteamos a UUID
+    # (silencioso si por algún motivo no es válido — el endpoint sigue
+    # funcionando aunque la trazabilidad inline se pierda; AuditLog
+    # captura siempre el actor).
+    try:
+        user_uuid: UUID | None = UUID(user.sub)
+    except (ValueError, AttributeError):
+        user_uuid = None
+
     if layout is None:
         # Defensa: si la migración no se aplicó, crear el singleton aquí.
         layout = EmailLayout(
             id=1,
             layout_html=payload.layout_html,
             layout_css=payload.layout_css,
-            updated_by_user_id=int(user.sub) if user.sub.isdigit() else None,
+            updated_by_user_id=user_uuid,
         )
         session.add(layout)
     else:
         layout.layout_html = payload.layout_html
         layout.layout_css = payload.layout_css
-        layout.updated_by_user_id = int(user.sub) if user.sub.isdigit() else None
+        layout.updated_by_user_id = user_uuid
 
     session.add(
         AuditLog(

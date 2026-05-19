@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from datetime import datetime
 from typing import Any
 
@@ -15,7 +16,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from wcm_db.base import Base, TimestampMixin
@@ -177,6 +178,7 @@ class EmailLayout(Base, TimestampMixin):
     layout_css: Mapped[str] = mapped_column(Text, nullable=False, default="")
     # Trazabilidad de quién hizo el último cambio (audit-log redundante
     # pero útil para reviews rápidas desde la UI sin abrir la timeline).
-    updated_by_user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL")
+    # users.id es UUID — la FK debe coincidir.
+    updated_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL")
     )

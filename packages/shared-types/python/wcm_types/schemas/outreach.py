@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from uuid import UUID
 
 from pydantic import AliasChoices, ConfigDict, EmailStr, Field
 
@@ -156,7 +157,7 @@ class EmailLayoutRead(TimestampedRead):
     id: int
     layout_html: str
     layout_css: str
-    updated_by_user_id: int | None = None
+    updated_by_user_id: UUID | None = None
 
 
 class EmailLayoutUpdate(WcmModel):
