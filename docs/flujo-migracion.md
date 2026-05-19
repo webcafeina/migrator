@@ -595,6 +595,15 @@ Si el extractor no reconoce un patrón:
 - El `bricks-transpiler` posterior los marca como **tareas residuales**
   ("revisar manualmente este bloque").
 
+> **Próximo cambio (ADR-052 — programado para v0.20.0+)**: el endpoint
+> `/api/v1/projects/{id}/summary` añadirá un campo `pages_with_many_unknowns`
+> calculado on-the-fly desde `content_blocks` (criterio:
+> `unknown_count >= 3 AND unknown_count/total >= 0.5`). Si > 0, el header
+> del proyecto mostrará badge ámbar "⚠ N páginas con muchos UNKNOWN" como
+> link al checklist filtrado por `generated_by=bricks-transpiler`. Detecta
+> páginas "visualmente rotas" temprano (fase 2 de 15) sin bloquear el
+> pipeline ni esperar a visual_diff (fase 11).
+
 #### Metadata adicional (v0.19.0 Hostinger)
 
 Además de `blocks`, el `ExtractionResult` ahora trae 3 dicts estructurados

@@ -1820,6 +1820,75 @@ Razones para no cambiar:
 
 ---
 
+## ADR-052 — Bloques UNKNOWN: threshold + warning visible en header
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: Cuando un extractor (Wix/Webflow/Hostinger) encuentra una estructura no reconocida, crea un `ContentBlock` con `block_type=UNKNOWN` + `notes` describiendo qué encontró. El `bricks_transpiler` posterior los marca como **residual task** "revisar manualmente este bloque" (VISUAL_CONTENT). La fase termina COMPLETED — los UNKNOWN son metadata, no causan fallo.
+
+Filosofía MVP correcta: mejor entregar 95% que no entregar nada. Una página con 1 UNKNOWN de 20 bloques sigue siendo entregable.
+
+El problema sutil: páginas con **muchos UNKNOWN** son "exitosas" técnicamente pero están vacías visualmente. Ejemplo: hero compleja con widget custom + sección testimonios con structure rara + galería plugin third-party = 3 bloques UNKNOWN sobre 5 totales = página destino prácticamente vacía. El operador ve "extract_content: completed" y no se entera hasta visual_diff (fase 11). Si `visual_diff` no se ejecuta (Playwright no instalado, otros motivos), no se entera nunca.
+
+Las residuales individuales por bloque están en el checklist, pero **sin contexto agregado**: el operador ve "revisar bloque 17 página /servicios", "revisar bloque 23 página /servicios", "revisar bloque 31 página /servicios" — pero no ve "página /servicios tiene 3 de 5 bloques UNKNOWN".
+
+Se evaluaron 4 opciones (mantener, FAIL la fase, threshold + warning, configurable).
+
+**Decisión**: **Opción 3 — threshold + warning visible en el header del proyecto** sin FAIL de la fase.
+
+Threshold sensato:
+
+> Una página se marca como "muchos UNKNOWN" si **`unknown_count >= 3` Y `unknown_count / total_blocks >= 0.5`**.
+
+Es decir: al menos 3 UNKNOWN absolutos Y al menos el 50% del total de la página. Una página con 1 UNKNOWN de 20 NO se marca (ratio 5%); una con 3 UNKNOWN de 5 SÍ (ratio 60%).
+
+Razones:
+
+- El doble criterio (absoluto + ratio) evita falsos positivos: páginas con 2 UNKNOWN de 3 (ratio 67%) no son problema real porque son páginas pequeñas; páginas con 5 UNKNOWN de 50 (ratio 10%) tampoco lo son.
+- 3 absolute + 50% ratio captura el caso "página claramente rota" sin disparar el warning para páginas con 1-2 bloques exóticos pero contenido principal OK.
+
+Implementación:
+
+- **Sin nueva columna en BD**: el conteo es **calculable on-the-fly** desde `content_blocks` con una query agregada en el endpoint `GET /api/v1/projects/{id}/summary`. Decisión consciente: la fuente de verdad sigue siendo `content_blocks`, no duplicar estado.
+- **Query**:
+  ```sql
+  SELECT page_id,
+         COUNT(*) FILTER (WHERE block_type = 'unknown') AS unknown_count,
+         COUNT(*) AS total
+  FROM content_blocks
+  WHERE project_id = :project_id
+  GROUP BY page_id
+  HAVING COUNT(*) FILTER (WHERE block_type = 'unknown') >= 3
+     AND COUNT(*) FILTER (WHERE block_type = 'unknown') * 1.0 / COUNT(*) >= 0.5
+  ```
+- **Endpoint `/summary` extendido**: campo nuevo `pages_with_many_unknowns: int` (default 0).
+- **UI — header del proyecto**:
+  - Si `pages_with_many_unknowns > 0` → badge ámbar visible junto a otros KPIs: "⚠ 3 páginas con muchos UNKNOWN".
+  - Click → navega a `/projects/{id}/checklist?filter=generated_by:bricks-transpiler` (filtrado por generador del residual). Las residuales individuales ya existen — el badge solo agrega contexto visual.
+- **No afecta el pipeline**: la fase `extract_content` sigue COMPLETED. No nuevo status, no nuevo bloqueante.
+
+**Consecuencias**:
+
+- ✅ Detecta el caso "página visualmente rota" temprano (en `extract_content`, fase 2 de 15) sin bloquear.
+- ✅ Complementa visual_diff (fase 11) y residuales individuales — capas de detección redundantes pero baratas.
+- ✅ Sin migración Alembic: cálculo on-the-fly con query agregada barata. Sin estado duplicado.
+- ✅ Click en el badge lleva al checklist filtrado — el operador entra con contexto directo.
+- ⚠️ El threshold (3 absolutos + 50% ratio) es arbitrario. Podría no capturar páginas problemáticas con UNKNOWN concentrados visualmente (todos en el hero) pero diluidos en ratio (1 UNKNOWN de 10 que es el hero gigante). Mitigación: visual_diff captura esos casos en fase 11.
+- ⚠️ Si el operador tiene 30 proyectos en la fleet view, el badge ámbar puede ser visualmente ruidoso para los que tienen "muchos UNKNOWN". Aceptable — es señal real, no false positive.
+- ⚠️ La query agregada se ejecuta cada vez que el dashboard fetcha `/summary` (cada 2s via polling o SSE). Coste por proyecto: ~5-10ms. Para 30 proyectos en fleet view = ~150-300ms agregados. Aceptable; si surge problema, cachear 30s.
+
+**Implementación**: programada para v0.20.0+. Estimación ~2 días.
+
+Tareas listadas en TaskList con prefijo `[ADR-052]`:
+- Extender `GET /api/v1/projects/{id}/summary` con `pages_with_many_unknowns` (query agregada SQL).
+- UI: badge ámbar en `<ProjectHeader>` con count + link al checklist filtrado.
+- Tests: query con varios escenarios (0 UNKNOWN, 1 UNKNOWN de 20, 3 UNKNOWN de 5, 3 UNKNOWN de 100, página sin blocks).
+
+`docs/flujo-migracion.md` se actualizará con nota en sección 5.1 explicando el comportamiento.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
