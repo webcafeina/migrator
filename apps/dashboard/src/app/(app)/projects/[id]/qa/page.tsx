@@ -86,7 +86,7 @@ export default async function QaPage({
         }
       />
 
-      <ProjectPoller status={project.status} />
+      <ProjectPoller status={project.status} projectId={project.id} />
 
       <section className="space-y-4">
         <header className="flex flex-wrap items-baseline justify-between gap-2">

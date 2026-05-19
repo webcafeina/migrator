@@ -54,7 +54,7 @@ export default async function ProjectDetailPage({
         }
       />
 
-      <ProjectPoller status={project.status} />
+      <ProjectPoller status={project.status} projectId={project.id} />
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
         <div className="space-y-3">
