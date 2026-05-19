@@ -82,6 +82,21 @@ class Project(Base, TimestampMixin):
     preflight_results_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     preflight_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
+    # v0.20.0 (ADR-042) — snapshot SQL del WP destino antes del deploy_wp.
+    # Path al fichero .sql en el servidor remoto (no en local del worker).
+    # NULL = proyecto pre-v0.20.0 o snapshot falló → rollback MVP (DELETE).
+    pre_deploy_snapshot_path: Mapped[str | None] = mapped_column(String(500))
+    pre_deploy_snapshot_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    # v0.20.0 (ADR-044) — threshold visual_diff configurable por proyecto.
+    # NULL = usa env VISUAL_DIFF_RESIDUAL_THRESHOLD (default 0.70).
+    # Rango 0-1 validado en BD vía CHECK constraint.
+    visual_diff_threshold: Mapped[float | None] = mapped_column(Float)
+
+    # v0.20.0 (ADR-050) — cap max_pages configurable por proyecto.
+    # NULL = usa env SCRAPE_MAX_PAGES_DEFAULT (default 50). Rango 1-500.
+    max_pages_scrape: Mapped[int | None] = mapped_column(Integer)
+
     @property
     def has_source_credentials(self) -> bool:
         """Derived field expuesto en ProjectRead — no expone el

@@ -78,9 +78,36 @@ async def test_get_project_not_found(client, operator_token, fake_session) -> No
 
 
 @pytest.mark.asyncio
-async def test_start_project_enqueues_job(client, operator_token, fake_session) -> None:
+async def test_start_project_enqueues_job(
+    client, operator_token, fake_session, monkeypatch
+) -> None:
+    """ADR-048: Start re-ejecuta preflight; can_start=True → arranca."""
     project = _make_project_mock(status_val="queued")
     fake_session.get.return_value = project
+
+    from datetime import UTC, datetime
+
+    from wcm_api.routers import projects as projects_router
+    from wcm_types.schemas.projects import PreflightCheck, PreflightResult
+
+    fake_result = PreflightResult(
+        wp_target=PreflightCheck(ok=True, blocking=True, message="WP OK"),
+        plugins={"bricks": True, "gravity_forms": True, "woocommerce": True},
+        source=PreflightCheck(ok=True, blocking=True, message="Origen OK"),
+        source_credentials=PreflightCheck(
+            ok=True, blocking=False, message="Sin credenciales"
+        ),
+        can_start=True,
+        blocking_issues=[],
+        warnings=[],
+        executed_at=datetime(2026, 5, 19, 12, 0, tzinfo=UTC),
+    )
+
+    async def _fake_preflight(_p):
+        return fake_result
+
+    monkeypatch.setattr(projects_router, "run_preflight", _fake_preflight)
+    monkeypatch.setattr(projects_router, "serialize_preflight_for_db", lambda r: {})
 
     with patch("wcm_api.routers.projects.enqueue_project_pipeline") as mock_enqueue:
         mock_enqueue.return_value = "task-uuid-xyz"
@@ -92,6 +119,54 @@ async def test_start_project_enqueues_job(client, operator_token, fake_session) 
     assert response.status_code == 202
     assert response.json()["task_id"] == "task-uuid-xyz"
     mock_enqueue.assert_called_once_with(1, resume=False)
+
+
+@pytest.mark.asyncio
+async def test_adr048_start_bloquea_si_preflight_no_can_start(
+    client, operator_token, fake_session, monkeypatch
+) -> None:
+    """ADR-048: Start con preflight bloqueante → 409, NO arranca."""
+    project = _make_project_mock(status_val="queued")
+    fake_session.get.return_value = project
+
+    from datetime import UTC, datetime
+
+    from wcm_api.routers import projects as projects_router
+    from wcm_types.schemas.projects import PreflightCheck, PreflightResult
+
+    fake_result = PreflightResult(
+        wp_target=PreflightCheck(
+            ok=False, blocking=True, message="REST: HTTP 502; SSH: timeout"
+        ),
+        plugins={"bricks": False, "gravity_forms": True, "woocommerce": True},
+        source=PreflightCheck(ok=True, blocking=True, message="Origen OK"),
+        source_credentials=PreflightCheck(
+            ok=True, blocking=False, message="Sin credenciales"
+        ),
+        can_start=False,
+        blocking_issues=["WP destino: REST: HTTP 502; SSH: timeout"],
+        warnings=[],
+        executed_at=datetime(2026, 5, 19, 12, 0, tzinfo=UTC),
+    )
+
+    async def _fake_preflight(_p):
+        return fake_result
+
+    monkeypatch.setattr(projects_router, "run_preflight", _fake_preflight)
+    monkeypatch.setattr(projects_router, "serialize_preflight_for_db", lambda r: {})
+
+    with patch("wcm_api.routers.projects.enqueue_project_pipeline") as mock_enqueue:
+        response = await client.post(
+            "/api/v1/projects/1/start",
+            headers={"Authorization": f"Bearer {operator_token}"},
+        )
+
+    assert response.status_code == 409
+    body = response.json()
+    assert "Preflight bloqueante" in body["error"]["message"]
+    assert "REST: HTTP 502" in body["error"]["message"]
+    # NO se encoló el pipeline
+    mock_enqueue.assert_not_called()
 
 
 @pytest.mark.asyncio

@@ -303,6 +303,110 @@ async def create_project(
     return ProjectRead.model_validate(project)
 
 
+class ProjectWithStartPayload(BaseModel):
+    """Payload del endpoint combinado `POST /projects/with-start` (ADR-047).
+
+    Extiende `ProjectCreate` con 2 flags para scripts/webhooks:
+    - `skip_preflight`: salta el preflight (útil si ya se validó externamente).
+    - `force_start`: arranca aunque el preflight tenga bloqueantes (escape
+      para casos donde el preflight tiene falso positivo).
+
+    Ambos flags son peligrosos — solo usar en scripts conscientes.
+    """
+
+    # Reutilizamos ProjectCreate vía composición en lugar de herencia para
+    # que el schema OpenAPI muestre claramente los 2 flags adicionales.
+    model_config = {"extra": "allow"}
+    skip_preflight: bool = Field(
+        default=False,
+        description="Si True, salta el preflight antes de arrancar (peligroso).",
+    )
+    force_start: bool = Field(
+        default=False,
+        description="Si True, arranca aunque preflight tenga bloqueantes (peligroso).",
+    )
+
+
+@router.post(
+    "/with-start",
+    status_code=status.HTTP_200_OK,
+    description=(
+        "ADR-047 — Combinador para scripts/webhooks/integraciones. Crea el "
+        "proyecto y opcionalmente lo arranca tras preflight. NO se usa "
+        "desde la UI (la UI sigue 3 botones explícitos en el wizard)."
+    ),
+)
+async def create_project_with_start(
+    payload: dict,  # validamos manualmente para combinar ProjectCreate + flags
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    # Separar flags de ProjectCreate
+    skip_preflight = bool(payload.pop("skip_preflight", False))
+    force_start = bool(payload.pop("force_start", False))
+
+    # Validar ProjectCreate con el resto del payload
+    try:
+        project_create = ProjectCreate.model_validate(payload)
+    except Exception as e:  # pydantic ValidationError
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=422, detail=str(e)) from e
+
+    # 1. Crear el proyecto
+    data = project_create.model_dump(exclude_none=True)
+    if "source_url" in data:
+        data["source_url"] = str(data["source_url"])
+    project = Project(**data)
+    session.add(project)
+    await session.commit()
+    await session.refresh(project)
+
+    response_base = {
+        "project_id": project.id,
+        "project": ProjectRead.model_validate(project).model_dump(mode="json"),
+    }
+
+    # 2. Preflight (a menos que skip)
+    preflight_dict: dict | None = None
+    if not skip_preflight:
+        preflight = await run_preflight(project)
+        project.preflight_results_json = serialize_preflight_for_db(preflight)
+        project.preflight_at = preflight.executed_at
+        preflight_dict = preflight.model_dump(mode="json")
+
+        if not preflight.can_start and not force_start:
+            # 409 con preflight detallado; proyecto YA está creado
+            # (queda en queued) — el script puede consultar o eliminar.
+            await session.commit()
+            from fastapi import HTTPException
+
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "message": (
+                        "Preflight bloqueante; usa force_start=true si entiendes "
+                        "el riesgo, o resuelve los bloqueantes y vuelve a intentar."
+                    ),
+                    "project_id": project.id,
+                    "preflight": preflight_dict,
+                },
+            )
+
+    # 3. Arrancar el pipeline
+    project.status = ProjectStatus.RUNNING
+    project.started_at = datetime.now(UTC)
+    await session.commit()
+    task_id = enqueue_project_pipeline(project.id, resume=False)
+
+    return {
+        **response_base,
+        "task_id": task_id,
+        "status": "queued",
+        "preflight": preflight_dict,
+    }
+
+
 @router.get("/{project_id}", response_model=ProjectRead)
 async def get_project(
     project_id: int,
@@ -467,11 +571,30 @@ async def start_project(
     session: Annotated[AsyncSession, Depends(get_session)],
     _: Annotated[object, Depends(_operator_or_admin)],
 ) -> dict:
+    """Arranca el pipeline de migración. ADR-048: re-ejecuta SIEMPRE el
+    preflight antes de encolar — invariante "el pipeline NUNCA arranca
+    sin preflight fresh OK". Si `can_start=False` → 409 con detalle,
+    proyecto queda en `queued`.
+    """
     project = await session.get(Project, project_id)
     if project is None:
         raise NotFoundError(f"Project {project_id} no encontrado")
     if project.status == ProjectStatus.RUNNING:
         raise ConflictError(f"Project {project_id} ya está en ejecución")
+
+    # ADR-048 — re-ejecutar preflight antes de cada Start
+    preflight = await run_preflight(project)
+    project.preflight_results_json = serialize_preflight_for_db(preflight)
+    project.preflight_at = preflight.executed_at
+
+    if not preflight.can_start:
+        await session.commit()  # persiste el preflight actualizado
+        raise ConflictError(
+            "Preflight bloqueante: "
+            + "; ".join(preflight.blocking_issues)
+            + ". Resuelve los issues y vuelve a intentar."
+        )
+
     project.status = ProjectStatus.RUNNING
     project.started_at = datetime.now(UTC)
     await session.commit()

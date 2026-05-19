@@ -163,11 +163,17 @@ class Orchestrator:
             except Exception as e:  # noqa: BLE001
                 log.exception("phase_unexpected_error", extra={"phase": spec.phase_name})
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.FAILED, summary=f"{type(e).__name__}: {e}")
-                project.status = ProjectStatus.BLOCKED_HUMAN_INPUT
                 outcome.failed_phase = spec.phase_name
-                outcome.final_status = ProjectStatus.BLOCKED_HUMAN_INPUT
-                self.session.flush()
-                return outcome
+                # ADR-049 — el flag `required` gobierna lo que para o no,
+                # no el tipo de excepción. En no-required, Exception genérica
+                # se trata igual que AgentError: marca FAILED y sigue con la
+                # siguiente fase. En required, mantiene comportamiento
+                # conservador (BLOCKED + aborta).
+                if spec.required:
+                    project.status = ProjectStatus.BLOCKED_HUMAN_INPUT
+                    outcome.final_status = ProjectStatus.BLOCKED_HUMAN_INPUT
+                    self.session.flush()
+                    return outcome
 
         # Si llegamos aquí sin failed_phase requerido, el proyecto se completa
         if outcome.failed_phase is None:

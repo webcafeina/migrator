@@ -145,6 +145,69 @@ def test_orchestrator_optional_phase_failure_continues(fake_session) -> None:
     assert outcome.final_status == ProjectStatus.QA_FAILED
 
 
+# ADR-049 — Exception genérica en fase no required ahora continúa.
+
+
+def test_adr049_exception_generica_no_required_continua(fake_session) -> None:
+    """ADR-049: Exception (no AgentError) en fase no-required → FAILED + sigue."""
+    project = _make_project_mock()
+    fake_session.get.return_value = project
+    fake_session.execute.return_value.scalar_one_or_none.return_value = None
+
+    class _Bad(_StubAgent):
+        name = "bad"
+        phase_name = "phase_bad"
+        _raises = RuntimeError("unexpected lib error")
+
+    class _After(_StubAgent):
+        name = "after"
+        phase_name = "phase_after"
+
+    orch = _orch_with_phases(
+        fake_session,
+        (
+            _PhaseSpec("phase_bad", _Bad, required=False),
+            _PhaseSpec("phase_after", _After),
+        ),
+    )
+    outcome = orch.run_project(42)
+
+    # phase_bad falló con Exception genérica pero NO era requerida → sigue
+    assert outcome.failed_phase == "phase_bad"
+    assert "phase_after" in outcome.completed_phases
+    assert outcome.final_status == ProjectStatus.QA_FAILED
+
+
+def test_adr049_exception_generica_required_sigue_abortando(fake_session) -> None:
+    """ADR-049: Exception genérica en fase REQUIRED sigue siendo BLOCKED + aborta."""
+    project = _make_project_mock()
+    fake_session.get.return_value = project
+    fake_session.execute.return_value.scalar_one_or_none.return_value = None
+
+    class _Bad(_StubAgent):
+        name = "bad"
+        phase_name = "phase_bad"
+        _raises = RuntimeError("unexpected lib error")
+
+    class _After(_StubAgent):
+        name = "after"
+        phase_name = "phase_after"
+
+    orch = _orch_with_phases(
+        fake_session,
+        (
+            _PhaseSpec("phase_bad", _Bad, required=True),
+            _PhaseSpec("phase_after", _After),
+        ),
+    )
+    outcome = orch.run_project(42)
+
+    # phase_bad required + Exception → BLOCKED + aborta
+    assert outcome.failed_phase == "phase_bad"
+    assert "phase_after" not in outcome.completed_phases
+    assert outcome.final_status == ProjectStatus.BLOCKED_HUMAN_INPUT
+
+
 def test_orchestrator_skips_phase_when_condition_false(fake_session) -> None:
     project = _make_project_mock(has_ecommerce=False)
     fake_session.get.return_value = project

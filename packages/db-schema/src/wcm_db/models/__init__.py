@@ -21,6 +21,7 @@ from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_db.models.seo_redirects import SeoRedirect
 from wcm_db.models.users import User
 from wcm_db.models.visual_diffs import VisualDiff
+from wcm_db.models.woo_orders import WooOrder
 from wcm_db.models.woo_products import WooProduct
 
 __all__ = [
@@ -45,5 +46,6 @@ __all__ = [
     "SeoRedirect",
     "User",
     "VisualDiff",
+    "WooOrder",
     "WooProduct",
 ]
