@@ -14,7 +14,6 @@ from wcm_worker.agents import (
     ChecklistGeneratorAgent,
     FormsRebuilderAgent,
     QaRunnerAgent,
-    VisualDiffAgent,
     WooMigratorAgent,
     WpmlConfiguratorAgent,
 )
@@ -24,11 +23,11 @@ from wcm_worker.errors import AgentNotImplementedError
 # Promocionados a real (no son stubs):
 # - Fase 9: ProspectorAgent, OutreachComposerAgent
 # - Fase 10: ClickupSyncerAgent, ResendNotifierAgent, AssetOptimizerAgent
+# - v0.16.0: VisualDiffAgent (cubierto en test_visual_diff_agent.py)
 _STUB_AGENTS = [
     WooMigratorAgent,
     WpmlConfiguratorAgent,
     FormsRebuilderAgent,
-    VisualDiffAgent,
     ChecklistGeneratorAgent,
     QaRunnerAgent,
 ]

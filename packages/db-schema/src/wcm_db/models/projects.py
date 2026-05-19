@@ -55,6 +55,13 @@ class Project(Base, TimestampMixin):
     deploy_credentials_encrypted: Mapped[str | None] = mapped_column(Text)
 
     plan: Mapped[str | None] = mapped_column(String(40))  # basic | standard | premium
+
+    # v0.16.0 — URLs R2 del checklist generado por `checklist-generator`.
+    # `null` hasta que el agent ejecute. Si R2 no está configurado el
+    # agent persiste paths `file://...` locales (utilidad limitada).
+    checklist_md_url: Mapped[str | None] = mapped_column(String(500))
+    checklist_pdf_url: Mapped[str | None] = mapped_column(String(500))
+
     status: Mapped[ProjectStatus] = mapped_column(
         Enum(ProjectStatus, name="project_status", native_enum=False, length=32),
         nullable=False,

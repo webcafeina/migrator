@@ -24,6 +24,7 @@ from wcm_api.tasks.enqueue import enqueue_project_pipeline
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
 from wcm_db.models.residual_tasks import ResidualTask
+from wcm_db.models.visual_diffs import VisualDiff
 from wcm_types.enums import (
     BuilderType,
     ProjectPhaseStatus,
@@ -36,6 +37,10 @@ from wcm_types.schemas.projects import (
     ProjectPhaseRead,
     ProjectRead,
     ProjectUpdate,
+)
+from wcm_types.schemas.visual_diffs import (
+    VisualDiffRead,
+    VisualDiffsListResponse,
 )
 
 router = APIRouter(prefix="/projects", tags=["projects"])
@@ -71,9 +76,7 @@ class ProjectStats(BaseModel):
     running: int = Field(description="Proyectos con pipeline en curso.")
     blocked: int = Field(description="Bloqueados esperando input humano.")
     completed: int = Field(description="Migraciones cerradas con éxito.")
-    failed_or_cancelled: int = Field(
-        description="QA fallido o cancelados manualmente."
-    )
+    failed_or_cancelled: int = Field(description="QA fallido o cancelados manualmente.")
     distinct_builders: int = Field(
         description="Builders origen únicos detectados, sin unknown/null."
     )
@@ -93,21 +96,15 @@ async def project_stats(
     Tabla pequeña en MVP (<100 proyectos esperados); cuando crezca
     consideraremos un único GROUP BY.
     """
-    total = (
-        await session.execute(select(func.count()).select_from(Project))
-    ).scalar_one()
+    total = (await session.execute(select(func.count()).select_from(Project))).scalar_one()
     queued = (
         await session.execute(
-            select(func.count())
-            .select_from(Project)
-            .where(Project.status == ProjectStatus.QUEUED)
+            select(func.count()).select_from(Project).where(Project.status == ProjectStatus.QUEUED)
         )
     ).scalar_one()
     running = (
         await session.execute(
-            select(func.count())
-            .select_from(Project)
-            .where(Project.status == ProjectStatus.RUNNING)
+            select(func.count()).select_from(Project).where(Project.status == ProjectStatus.RUNNING)
         )
     ).scalar_one()
     blocked = (
@@ -128,11 +125,7 @@ async def project_stats(
         await session.execute(
             select(func.count())
             .select_from(Project)
-            .where(
-                Project.status.in_(
-                    [ProjectStatus.QA_FAILED, ProjectStatus.CANCELLED]
-                )
-            )
+            .where(Project.status.in_([ProjectStatus.QA_FAILED, ProjectStatus.CANCELLED]))
         )
     ).scalar_one()
     distinct_builders = (
@@ -301,9 +294,7 @@ async def project_summary(
     residual_done = residual_by.get(ResidualStatus.DONE, 0)
     # "Abiertos" = todo lo que NO está done/skipped. Operativamente lo
     # que el operador aún tiene que tocar.
-    residual_open = residual_total - residual_done - residual_by.get(
-        ResidualStatus.SKIPPED, 0
-    )
+    residual_open = residual_total - residual_done - residual_by.get(ResidualStatus.SKIPPED, 0)
 
     return ProjectSummary(
         project_id=project.id,
@@ -402,3 +393,34 @@ async def list_project_phases(
     )
     phases = (await session.execute(stmt)).scalars().all()
     return [ProjectPhaseRead.model_validate(p) for p in phases]
+
+
+@router.get("/{project_id}/visual-diffs", response_model=VisualDiffsListResponse)
+async def list_visual_diffs(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> VisualDiffsListResponse:
+    """Lista comparaciones visuales página-a-página del proyecto (v0.16.0).
+
+    Alimenta `/projects/[id]/diff` del dashboard. Cada fila apunta a
+    3 PNG en R2 (origen, destino, overlay) + score 0-1. `avg_score`
+    es el promedio de scores no-nulos del proyecto.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    stmt = (
+        select(VisualDiff)
+        .where(VisualDiff.project_id == project_id)
+        .order_by(VisualDiff.page_path.asc())
+    )
+    rows = (await session.execute(stmt)).scalars().all()
+    pages = [VisualDiffRead.model_validate(r) for r in rows]
+    return VisualDiffsListResponse(
+        project_id=project_id,
+        avg_score=project.visual_diff_avg_score,
+        pages_total=len(pages),
+        pages=pages,
+    )

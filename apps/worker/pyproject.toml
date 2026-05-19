@@ -34,6 +34,13 @@ dependencies = [
     # respetan reglas en `<style>` externos.
     "beautifulsoup4>=4.12",
     "premailer>=3.10.0",
+    # v0.16.0 — visual-diff agent (screenshots + comparación pixelmatch)
+    # + qa-runner agent (Lighthouse vía subprocess Node, no requiere
+    # pip). Playwright requiere `playwright install chromium` + en
+    # Linux `playwright install-deps` (docs/despliegue.md). Si no
+    # está, el agent marca SKIPPED + crea residual task.
+    "playwright>=1.45",
+    "pixelmatch>=0.4",
     "pgvector>=0.3",
     "boto3>=1.40",
     "resend>=2.0",

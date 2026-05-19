@@ -28,6 +28,8 @@ EXPECTED_TABLES = {
     "audit_log",
     "error_log",
     "campaigns",
+    "visual_diffs",
+    "qa_reports",
 }
 
 
@@ -57,10 +59,12 @@ def test_models_module_exports_all_entities() -> None:
         "OutreachTemplate",
         "Project",
         "ProjectPhase",
+        "QaReport",
         "ResidualTask",
         "ScrapedPage",
         "SeoRedirect",
         "User",
+        "VisualDiff",
         "WooProduct",
     }
     actual = {name for name in dir(wcm_models) if not name.startswith("_")}
