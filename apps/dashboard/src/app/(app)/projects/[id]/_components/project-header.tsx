@@ -26,6 +26,8 @@ export interface ProjectSummaryData {
   residual_total: number;
   residual_open: number;
   residual_done: number;
+  /** ADR-052 — número de páginas con muchos content_blocks UNKNOWN. */
+  pages_with_many_unknowns?: number;
 }
 
 interface ProjectHeaderProps {
@@ -97,6 +99,14 @@ export function ProjectHeader({
               phases={phases}
               className="mt-2"
             />
+          )}
+          {(summary.pages_with_many_unknowns ?? 0) > 0 && (
+            <span
+              className="mt-2 inline-flex items-center gap-1 rounded-sm border border-wcm-warning/50 bg-wcm-warning/10 px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-wcm-warning"
+              title="content-extractor no supo clasificar muchos bloques. Revisar la página en /diff y ajustar manualmente en Bricks."
+            >
+              ⚠ {summary.pages_with_many_unknowns} págs con UNKNOWN
+            </span>
           )}
         </div>
         {actions && <div className="shrink-0">{actions}</div>}

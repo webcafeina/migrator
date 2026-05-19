@@ -31,17 +31,28 @@ capability `manage_woocommerce`.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import select
 
 from wcm_db.models.projects import Project
 from wcm_db.models.residual_tasks import ResidualTask
+from wcm_db.models.woo_orders import WooOrder
 from wcm_db.models.woo_products import WooProduct
 from wcm_types.enums import ResidualCategory, ResidualStatus
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import WooMigratorError
+from wcm_worker.integrations.source_credentials import (
+    CredentialsDecryptError,
+    FernetNotConfiguredError,
+    decrypt_source_credentials,
+    encrypt_source_credentials,
+)
+from wcm_worker.integrations.webflow_api import WebflowApiClient, WebflowApiError
+from wcm_worker.integrations.wix_api import WixApiClient, WixApiError
 from wcm_wp_client import WpClientConfig, WpRestClient
 from wcm_wp_client.errors import WpRestError
 
@@ -189,7 +200,7 @@ class WooMigratorAgent(BaseAgent):
                     )
 
             # 4. Pasarela de pago — residual obligatoria (nunca migramos).
-            payment_residual = _add_residual(
+            residuals_created = _add_residual(
                 ctx,
                 project.id,
                 title="Configurar pasarela de pago en WooCommerce",
@@ -208,21 +219,161 @@ class WooMigratorAgent(BaseAgent):
                 estimated_minutes=45,
             )
 
+            # 5. ADR-045 — importar pedidos históricos a woo_orders + residual cupones.
+            orders_imported = self._import_orders(ctx, project)
+            residuals_created += self._coupons_residual(ctx, project)
+
             ctx.session.flush()
 
             return AgentResult(
                 summary=(
                     f"Project {project.id}: {migrated} productos migrados, "
-                    f"{failed} fallidos. Pasarela de pago: residual obligatoria."
+                    f"{failed} fallidos, {orders_imported} pedidos importados. "
+                    "Pasarela de pago + cupones: residuales obligatorias."
                 ),
                 outputs={
                     "woocommerce_available": True,
                     "products_migrated": migrated,
                     "products_failed": failed,
+                    "orders_imported": orders_imported,
                 },
                 warnings=warnings,
-                residual_tasks_created=payment_residual,
+                residual_tasks_created=residuals_created,
             )
+
+    def _import_orders(self, ctx: AgentContext, project: Project) -> int:
+        """ADR-045 — descarga pedidos del adapter Wix/Webflow y los persiste
+        en woo_orders con PII cifrada (Fernet). Si el adapter no es API o
+        falla, devuelve 0 (no crítico). Cupones se manejan aparte como residual."""
+        if project.source_access_mode != "api" or not project.source_credentials_encrypted:
+            return 0
+        try:
+            orders = asyncio.run(self._fetch_orders(project))
+        except (WixApiError, WebflowApiError) as e:
+            log.warning(
+                "woo_migrator_orders_fetch_failed",
+                extra={"project_id": project.id, "error": str(e)},
+            )
+            return 0
+        except (FernetNotConfiguredError, CredentialsDecryptError) as e:
+            log.warning(
+                "woo_migrator_orders_creds_failed",
+                extra={"project_id": project.id, "error": str(e)},
+            )
+            return 0
+
+        rows = []
+        for o in orders:
+            rows.append(
+                WooOrder(
+                    project_id=project.id,
+                    external_id=o.get("external_id"),
+                    order_number=o.get("order_number"),
+                    status=o.get("status"),
+                    financial_status=o.get("financial_status"),
+                    total_amount=o.get("total_amount"),
+                    total_currency=o.get("total_currency"),
+                    customer_email_encrypted=_encrypt_pii(o.get("customer_email")),
+                    customer_name_encrypted=_encrypt_pii(o.get("customer_name")),
+                    billing_address_encrypted=_encrypt_pii(
+                        json.dumps(o.get("billing_address") or {})
+                    ),
+                    shipping_address_encrypted=_encrypt_pii(
+                        json.dumps(o.get("shipping_address") or {})
+                    ),
+                    line_items_json=o.get("line_items") or [],
+                    placed_at=_parse_dt(o.get("placed_at")),
+                    payment_method=o.get("payment_method"),
+                    migrated_at=datetime.now(UTC),
+                )
+            )
+        ctx.session.add_all(rows)
+        return len(rows)
+
+    async def _fetch_orders(self, project: Project) -> list[dict]:
+        creds = decrypt_source_credentials(project.source_credentials_encrypted)
+        builder = (
+            project.builder_source.value if project.builder_source else ""
+        ).lower()
+        if builder == "wix":
+            async with WixApiClient(
+                api_key=creds["api_key"], site_id=creds["site_id"]
+            ) as wix:
+                return await wix.list_orders()
+        if builder == "webflow":
+            async with WebflowApiClient(
+                api_token=creds["api_token"], site_id=creds["site_id"]
+            ) as wf:
+                return await wf.list_orders()
+        return []
+
+    def _coupons_residual(self, ctx: AgentContext, project: Project) -> int:
+        """ADR-045 — residual mejorada con conteo real + tabla de equivalencia."""
+        coupons_count: int | None = None
+        coupons_sample: list[str] = []
+        if (
+            project.source_access_mode == "api"
+            and project.source_credentials_encrypted
+        ):
+            try:
+                coupons = asyncio.run(self._fetch_coupons(project))
+                coupons_count = len(coupons)
+                coupons_sample = [
+                    str(c.get("code") or c.get("id") or "")[:32]
+                    for c in coupons[:10]
+                ]
+            except Exception as e:  # noqa: BLE001 — fallback silencioso
+                log.warning(
+                    "woo_migrator_coupons_fetch_failed",
+                    extra={"project_id": project.id, "error": str(e)},
+                )
+
+        count_line = (
+            f"Detectados {coupons_count} cupones en el origen."
+            if coupons_count is not None
+            else "Conteo no disponible (sin credenciales del back o adapter falló)."
+        )
+        sample_line = (
+            f"\n\nMuestra de códigos: {', '.join(coupons_sample)}"
+            if coupons_sample
+            else ""
+        )
+        return _add_residual(
+            ctx,
+            project.id,
+            title="Migrar cupones de descuento a WooCommerce",
+            description=(
+                f"{count_line}{sample_line}\n\n"
+                "Los cupones NO se migran automáticamente porque cada "
+                "plataforma usa reglas/condiciones distintas (porcentaje, "
+                "monto fijo, free shipping, mínimo de compra, productos "
+                "específicos). Pasos:\n\n"
+                "1. Marketing → Cupones en WooCommerce → Añadir cupón.\n"
+                "2. Para cada cupón del origen, replicar: código, tipo "
+                "(percent_product / fixed_cart / fixed_product), valor, "
+                "fecha caducidad, uso mínimo/máximo, productos elegibles.\n"
+                "3. Comunicar a clientes si algún código quedó retirado."
+            ),
+            category=ResidualCategory.BLOCKING_GO_LIVE,
+            estimated_minutes=20 + 5 * (coupons_count or 0),
+        )
+
+    async def _fetch_coupons(self, project: Project) -> list[dict]:
+        creds = decrypt_source_credentials(project.source_credentials_encrypted)
+        builder = (
+            project.builder_source.value if project.builder_source else ""
+        ).lower()
+        if builder == "wix":
+            async with WixApiClient(
+                api_key=creds["api_key"], site_id=creds["site_id"]
+            ) as wix:
+                return await wix.list_coupons()
+        if builder == "webflow":
+            async with WebflowApiClient(
+                api_token=creds["api_token"], site_id=creds["site_id"]
+            ) as wf:
+                return await wf.list_coupons()
+        return []
 
 
 # ---------- helpers públicos al módulo ----------
@@ -333,3 +484,23 @@ def _add_residual(
         )
     )
     return 1
+
+
+def _encrypt_pii(value: str | None) -> str | None:
+    """Cifra PII (email/nombre/direcciones) con la misma Fernet que las
+    credenciales. Devuelve None si value es None — para que la columna
+    quede NULL en vez de un blob vacío."""
+    if value is None or value == "":
+        return None
+    return encrypt_source_credentials(value)
+
+
+def _parse_dt(value: str | None):
+    """ISO 8601 → datetime. Si no parsea, None (no rompemos el import por
+    un timestamp mal formateado de la API origen)."""
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None

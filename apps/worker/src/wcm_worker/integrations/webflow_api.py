@@ -147,6 +147,45 @@ class WebflowApiClient:
             "WebflowApiClient.list_collections: pendiente para futuro sprint."
         )
 
+    async def list_orders(self) -> list[dict[str, Any]]:
+        """ADR-045 — historial pedidos Webflow Ecommerce. Endpoint:
+        GET /sites/{site_id}/orders."""
+        r = await self._http.get(f"/sites/{self.site_id}/orders")
+        self._raise_for_status(r)
+        body = r.json()
+        return [self._map_order(o) for o in body.get("orders", [])]
+
+    async def list_coupons(self) -> list[dict[str, Any]]:
+        """ADR-045 — descuentos activos Webflow Ecommerce. Endpoint:
+        GET /sites/{site_id}/promo_codes (deprecated, pero único en API v2)."""
+        r = await self._http.get(f"/sites/{self.site_id}/promo_codes")
+        self._raise_for_status(r)
+        body = r.json()
+        return body.get("promoCodes", body.get("items", []))
+
+    @staticmethod
+    def _map_order(o: dict[str, Any]) -> dict[str, Any]:
+        """Normaliza shape Webflow → schema woo_orders común."""
+        customer = o.get("customerInfo", {}) or {}
+        shipping = o.get("shippingAddress", {}) or {}
+        billing = o.get("billingAddress", {}) or shipping
+        totals = o.get("totals", {}) or {}
+        return {
+            "external_id": str(o.get("orderId") or o.get("id") or ""),
+            "order_number": str(o.get("orderNumber", "")),
+            "status": o.get("status", "unknown"),
+            "financial_status": o.get("paymentProcessed") and "paid" or "pending",
+            "total_amount": totals.get("total"),
+            "total_currency": o.get("currency"),
+            "customer_email": customer.get("email"),
+            "customer_name": customer.get("fullName"),
+            "billing_address": billing,
+            "shipping_address": shipping,
+            "line_items": o.get("purchasedItems", []),
+            "placed_at": o.get("acceptedOn") or o.get("orderTime"),
+            "payment_method": o.get("paymentMethod"),
+        }
+
     @staticmethod
     def _raise_for_status(response: httpx.Response) -> None:
         s = response.status_code

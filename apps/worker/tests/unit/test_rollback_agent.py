@@ -20,9 +20,10 @@ from wcm_worker.agents.rollback import RollbackAgent
 from wcm_worker.errors import RollbackAgentError
 
 
-def _project_mock() -> MagicMock:
+def _project_mock(*, snapshot_path: str | None = None) -> MagicMock:
     p = MagicMock()
     p.id = 7
+    p.pre_deploy_snapshot_path = snapshot_path
     return p
 
 
@@ -132,3 +133,63 @@ def test_pagina_individual_falla_no_para_rollback(fake_session) -> None:
     # La página fallida mantiene wp_post_id, la OK lo resetea.
     assert pages[0].wp_post_id == 11
     assert pages[1].wp_post_id is None
+
+
+# ADR-042 — branch snapshot/MVP.
+
+
+def test_adr042_branch_snapshot_restaura_via_wp_db_import(fake_session) -> None:
+    """Si project.pre_deploy_snapshot_path está set → restauración por snapshot."""
+    project = _project_mock(snapshot_path="/var/backups/wcm-snapshots/project-7-x.sql")
+    fake_session.get.return_value = project
+    pages = [_page_mock(11, "home"), _page_mock(22, "contacto")]
+    result_mock = MagicMock()
+    result_mock.scalars = MagicMock(return_value=MagicMock(all=lambda: pages))
+    fake_session.execute.return_value = result_mock
+
+    with patch.object(
+        RollbackAgent, "_restore_snapshot", new=AsyncMock(return_value=None)
+    ):
+        result = RollbackAgent(wp_config=_fake_wp_config()).run(
+            AgentContext(session=fake_session, project_id=7)
+        )
+
+    assert result.outputs["strategy"] == "snapshot_restore"
+    assert result.outputs["pages_reset"] == 2
+    # wp_post_id reseteados en ambas páginas.
+    assert pages[0].wp_post_id is None
+    assert pages[1].wp_post_id is None
+
+
+def test_adr042_branch_snapshot_falla_fallback_a_rest_delete(fake_session) -> None:
+    """Si wp db import falla → fallback automático a REST DELETE MVP."""
+    from wcm_wp_client.errors import WpCliExecutionError
+
+    project = _project_mock(snapshot_path="/var/backups/wcm-snapshots/project-7-x.sql")
+    fake_session.get.return_value = project
+    pages = [_page_mock(11, "home")]
+    result_mock = MagicMock()
+    result_mock.scalars = MagicMock(return_value=MagicMock(all=lambda: pages))
+    fake_session.execute.return_value = result_mock
+
+    rest = AsyncMock()
+    rest.delete_page = AsyncMock(return_value={"deleted": True})
+
+    with patch.object(
+        RollbackAgent,
+        "_restore_snapshot",
+        new=AsyncMock(
+            side_effect=WpCliExecutionError(
+                "wp db import → exit 2", exit_code=2, stdout="", stderr="missing file"
+            )
+        ),
+    ):
+        with _patch_rest_client(rest):
+            result = RollbackAgent(wp_config=_fake_wp_config()).run(
+                AgentContext(session=fake_session, project_id=7)
+            )
+
+    assert result.outputs["strategy"] == "fallback_rest_after_snapshot_fail"
+    assert result.outputs["pages_deleted"] == 1
+    # Warning sobre el snapshot fallido.
+    assert any("Snapshot" in w for w in result.warnings)

@@ -442,6 +442,10 @@ export interface ProjectRead {
   started_at: string | null;
   completed_at: string | null;
   estimated_go_live_at: string | null;
+  visual_diff_threshold?: number | null;
+  max_pages_scrape?: number | null;
+  pre_deploy_snapshot_path?: string | null;
+  pre_deploy_snapshot_at?: string | null;
 }
 export interface ProjectUpdate {
   client_name?: string | null;
@@ -456,6 +460,8 @@ export interface ProjectUpdate {
   status?: ProjectStatus | null;
   plan?: string | null;
   estimated_go_live_at?: string | null;
+  visual_diff_threshold?: number | null;
+  max_pages_scrape?: number | null;
 }
 /**
  * Lectura de la última fila `qa_reports` de un proyecto.

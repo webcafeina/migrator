@@ -38,6 +38,16 @@ def _fernet() -> Fernet:
         raise FernetNotConfiguredError(f"FERNET_KEY inválida: {e}") from e
 
 
+def encrypt_source_credentials(plaintext: Any) -> str:
+    """Cifra una cadena (o cualquier valor JSON-serializable) con la
+    misma Fernet usada para credenciales. Reutilizado en v0.20.0 para
+    cifrar PII de pedidos (woo_orders.customer_*_encrypted)."""
+    f = _fernet()
+    if not isinstance(plaintext, str):
+        plaintext = json.dumps(plaintext, default=str)
+    return f.encrypt(plaintext.encode("utf-8")).decode("ascii")
+
+
 def decrypt_source_credentials(ciphertext: str) -> dict[str, Any]:
     """Descifra el ciphertext almacenado y devuelve el dict original."""
     f = _fernet()

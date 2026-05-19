@@ -156,6 +156,58 @@ class WixApiClient:
             "el extractor genérico."
         )
 
+    async def list_orders(self) -> list[dict[str, Any]]:
+        """ADR-045 — historial de pedidos Wix Stores. Endpoint:
+        POST /stores/v1/orders/query con paginación cursor.
+
+        Devuelve lista de dicts con shape:
+            {order_number, external_id, status, financial_status,
+             total_amount, total_currency, customer_email, customer_name,
+             billing_address (dict), shipping_address (dict),
+             line_items (list dicts), placed_at, payment_method}
+        """
+        r = await self._http.post(
+            "/stores/v1/orders/query",
+            json={"query": {"paging": {"limit": 100}}},
+        )
+        self._raise_for_status(r)
+        body = r.json()
+        return [self._map_order(o) for o in body.get("orders", [])]
+
+    async def list_coupons(self) -> list[dict[str, Any]]:
+        """ADR-045 — cupones activos Wix Stores. Endpoint:
+        GET /stores/v1/coupons/query."""
+        r = await self._http.get("/stores/v1/coupons/query")
+        self._raise_for_status(r)
+        body = r.json()
+        return body.get("coupons", [])
+
+    @staticmethod
+    def _map_order(o: dict[str, Any]) -> dict[str, Any]:
+        """Normaliza la shape Wix → schema woo_orders común."""
+        totals = o.get("totals", {}) or {}
+        buyer = o.get("buyerInfo", {}) or {}
+        billing = o.get("billingInfo", {}) or {}
+        shipping = (o.get("shippingInfo", {}) or {}).get("shipmentDetails", {}) or {}
+        return {
+            "external_id": str(o.get("id") or o.get("number") or ""),
+            "order_number": str(o.get("number", "")),
+            "status": o.get("status", "unknown"),
+            "financial_status": o.get("paymentStatus"),
+            "total_amount": totals.get("total"),
+            "total_currency": o.get("currency"),
+            "customer_email": buyer.get("email"),
+            "customer_name": (
+                f"{buyer.get('firstName', '')} {buyer.get('lastName', '')}".strip()
+                or None
+            ),
+            "billing_address": billing,
+            "shipping_address": shipping,
+            "line_items": o.get("lineItems", []),
+            "placed_at": o.get("dateCreated"),
+            "payment_method": o.get("paymentGatewayTransactionId"),
+        }
+
     @staticmethod
     def _raise_for_status(response: httpx.Response) -> None:
         s = response.status_code

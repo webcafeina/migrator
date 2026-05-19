@@ -41,6 +41,9 @@ class ProjectUpdate(WcmModel):
     status: ProjectStatus | None = None
     plan: str | None = Field(default=None, max_length=40)
     estimated_go_live_at: datetime | None = None
+    # v0.20.0+ — overrides por proyecto (ADR-044 + ADR-050).
+    visual_diff_threshold: float | None = Field(default=None, ge=0.0, le=1.0)
+    max_pages_scrape: int | None = Field(default=None, ge=1, le=500)
 
 
 class ProjectRead(ProjectBase, TimestampedRead):
@@ -63,6 +66,11 @@ class ProjectRead(ProjectBase, TimestampedRead):
     started_at: datetime | None
     completed_at: datetime | None
     estimated_go_live_at: datetime | None
+    # v0.20.0+ — overrides por proyecto.
+    visual_diff_threshold: float | None = None
+    max_pages_scrape: int | None = None
+    pre_deploy_snapshot_path: str | None = None
+    pre_deploy_snapshot_at: datetime | None = None
 
 
 # ---------- v0.18.0: source credentials por builder ----------

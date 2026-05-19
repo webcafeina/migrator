@@ -128,11 +128,32 @@ def start_project(project_id: Annotated[int, typer.Argument()]) -> None:
 
 
 @app.command("resume")
-def resume_project(project_id: Annotated[int, typer.Argument()]) -> None:
+def resume_project(
+    project_id: Annotated[int, typer.Argument()],
+    force_rerun_all: Annotated[
+        bool,
+        typer.Option(
+            "--force-rerun-all",
+            "-f",
+            help=(
+                "ADR-043 — re-ejecuta TODAS las fases ignorando las ya "
+                "COMPLETED. Default False = Resume rápido salta completed."
+            ),
+        ),
+    ] = False,
+) -> None:
     """Reanuda un proyecto bloqueado/fallido."""
     client = ApiClient()
-    result = client.post(f"/api/v1/projects/{project_id}/resume")
-    output.success(f"Resume encolado: task {result['task_id']}")
+    path = f"/api/v1/projects/{project_id}/resume"
+    if force_rerun_all:
+        path = f"{path}?force_rerun_all=true"
+    result = client.post(path)
+    msg = (
+        f"Resume encolado (re-ejecutando TODO): task {result['task_id']}"
+        if force_rerun_all
+        else f"Resume rápido encolado: task {result['task_id']}"
+    )
+    output.success(msg)
 
 
 @app.command("cancel")
@@ -591,4 +612,118 @@ def wpml_status(project_id: Annotated[int, typer.Argument()]) -> None:
     output.info(
         "Webcafeína NO tiene licencia WPML. La configuración es manual — "
         "consulta el checklist del proyecto para los pasos."
+    )
+
+
+@app.command("restart")
+def restart_project(
+    project_id: Annotated[int, typer.Argument()],
+    yes: Annotated[
+        bool,
+        typer.Option(
+            "--yes", "-y", help="Confirma sin prompt interactivo."
+        ),
+    ] = False,
+) -> None:
+    """v0.20.0 (ADR-041) — re-arranca un proyecto en estado rolled_back.
+
+    Resetea timestamps y encola el pipeline desde cero.
+    """
+    if not yes:
+        confirm = typer.confirm(
+            f"Re-arrancar el proyecto {project_id} desde cero?",
+            default=False,
+        )
+        if not confirm:
+            output.info("Restart cancelado.")
+            raise typer.Exit(code=0)
+
+    client = ApiClient()
+    result = client.post(
+        f"/api/v1/projects/{project_id}/restart", json={"confirm": True}
+    )
+    task_id = result.get("task_id", "") if isinstance(result, dict) else ""
+    output.success(
+        f"Restart encolado · proyecto {project_id} · task {task_id[:8]}…"
+    )
+
+
+@app.command("publish")
+def publish_project(
+    project_id: Annotated[int, typer.Argument()],
+) -> None:
+    """v0.20.0 (ADR-039) — publica todas las páginas migradas (draft → publish)."""
+    client = ApiClient()
+    result = client.post(f"/api/v1/projects/{project_id}/publish")
+    task_id = result.get("task_id", "") if isinstance(result, dict) else ""
+    output.success(
+        f"Publish encolado · proyecto {project_id} · task {task_id[:8]}…"
+    )
+
+
+@app.command("delete")
+def delete_project(
+    project_id: Annotated[int, typer.Argument()],
+    confirm: Annotated[
+        str,
+        typer.Option(
+            "--confirm",
+            help=(
+                "Texto exacto 'DELETE PROJECT N' para confirmar. "
+                "Protege contra borrar el ID equivocado."
+            ),
+        ),
+    ],
+) -> None:
+    """v0.20.0 (ADR-054) — borra permanentemente un proyecto (admin only)."""
+    expected = f"DELETE PROJECT {project_id}"
+    if confirm != expected:
+        output.error(
+            f"--confirm debe ser literalmente '{expected}'. Recibido: '{confirm}'"
+        )
+        raise typer.Exit(code=1)
+
+    client = ApiClient()
+    client.delete(
+        f"/api/v1/projects/{project_id}",
+        json={"confirm": expected},
+    )
+    output.success(f"Proyecto {project_id} eliminado.")
+
+
+@app.command("set-max-pages")
+def set_max_pages(
+    project_id: Annotated[int, typer.Argument()],
+    max_pages: Annotated[
+        int,
+        typer.Argument(min=1, max=500, help="Nuevo cap de páginas (1-500)."),
+    ],
+) -> None:
+    """v0.20.0 (ADR-050) — ajusta projects.max_pages_scrape."""
+    client = ApiClient()
+    client.patch(
+        f"/api/v1/projects/{project_id}",
+        json={"max_pages_scrape": max_pages},
+    )
+    output.success(
+        f"Proyecto {project_id}: max_pages_scrape = {max_pages}"
+    )
+
+
+@app.command("set-visual-threshold")
+def set_visual_threshold(
+    project_id: Annotated[int, typer.Argument()],
+    threshold: Annotated[
+        float,
+        typer.Argument(min=0.0, max=1.0, help="Umbral 0.0-1.0."),
+    ],
+) -> None:
+    """v0.20.0 (ADR-044) — ajusta projects.visual_diff_threshold."""
+    client = ApiClient()
+    client.patch(
+        f"/api/v1/projects/{project_id}",
+        json={"visual_diff_threshold": threshold},
+    )
+    output.success(
+        f"Proyecto {project_id}: visual_diff_threshold = {threshold:.2f}"
     )

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 
 import { ProjectActions } from "./actions";
+import { AdvancedConfigPanel } from "./_components/advanced-config-panel";
 import {
   ProjectHeader,
   type ProjectSummaryData,
@@ -69,6 +70,7 @@ export default async function ProjectDetailPage({
             Configuración técnica
           </h2>
           <ConfigPanel project={project} />
+          <AdvancedConfigPanel project={project} />
         </aside>
       </section>
     </div>
@@ -129,5 +131,6 @@ function emptySummary(projectId: number): ProjectSummaryData {
     residual_total: 0,
     residual_open: 0,
     residual_done: 0,
+    pages_with_many_unknowns: 0,
   };
 }

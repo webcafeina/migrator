@@ -11,6 +11,63 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.20.0] — 2026-05-19
+
+Sprint v0.20.0+ — **18 ADRs (ADR-037 a ADR-054) + 34 tareas de
+implementación** distribuidas en 8 bloques (migraciones → backend →
+adapters → endpoints → UI → CLI → docs). Sprint de cierre técnico previo
+al primer test E2E con cliente real: cubre publicación tras revisión,
+snapshot/rollback por SQL, restart, force-rerun, threshold visual diff
+configurable, importación de pedidos Wix/Webflow con PII cifrada + RGPD,
+Playwright para SPAs, eliminación dura de proyectos con confirmación
+literal, y badges UNKNOWN.
+
+### Added
+
+- **ADR-039** — Endpoint `POST /api/v1/projects/{id}/publish` + PublishAgent + Celery task. Pasa todas las páginas migradas de `draft` a `publish` en lote. CLI `wcm projects publish ID`. Botón "Publicar todo" en `ProjectActions` (solo si status=completed|qa_failed).
+- **ADR-040** — `PlaywrightFetcher` helper async con browser+context reuse. Scraper origin usa Playwright por defecto para Wix y Webflow; httpx para el resto. Override global `SCRAPE_USE_PLAYWRIGHT=true|false`. Fallback automático a httpx si Playwright no está instalado. §10.1 nueva en `docs/despliegue.md` con instalación + verificación.
+- **ADR-041** — Endpoint `POST /api/v1/projects/{id}/restart` para re-arrancar proyectos `rolled_back`. CLI `wcm projects restart ID`. Botón "Re-arrancar".
+- **ADR-042** — `PreDeploySnapshotAgent` nueva fase pipeline antes de `wp_deployer`. `wp db export` por SSH; path en `projects.pre_deploy_snapshot_*`. RollbackAgent con branching: snapshot → `wp db import` (restauración completa); fallback REST DELETE MVP si snapshot inaccesible.
+- **ADR-043** — Orchestrator soporta `force_rerun_all` en Resume. Default False = skip COMPLETED (Resume rápido); True = re-ejecuta TODO. Propagado a enqueue + endpoint `/resume?force_rerun_all=true` + CLI `--force-rerun-all/-f` + toggle UI.
+- **ADR-044** — `projects.visual_diff_threshold` (FLOAT NULL CHECK 0..1). VisualDiffAgent genera ResidualTask VISUAL_CONTENT por página bajo umbral (cascada: project > env `VISUAL_DIFF_RESIDUAL_THRESHOLD` > 0.70). Panel "Configuración avanzada" con inputs editables + CLI `wcm projects set-visual-threshold ID 0.75`.
+- **ADR-045** — Tabla `woo_orders` con PII cifrada Fernet (billing/shipping/email/name). Adapters Wix + Webflow extendidos con `list_orders()` y `list_coupons()`. WooMigratorAgent importa pedidos del adapter + ResidualTask cupones mejorada (conteo real + muestra de códigos). Celery beat `retention_sweep` purga `woo_orders` tras `WOO_ORDERS_RETENTION_DAYS` (default 30d) — cumplimiento RGPD.
+- **ADR-047** — Endpoint combinado `POST /api/v1/projects/with-start` (crear + arrancar en una sola llamada).
+- **ADR-049** — Orchestrator captura Exception genérica — fases `required=False` continúan tras fallo; las `required=True` siguen bloqueando.
+- **ADR-050** — `projects.max_pages_scrape` (INT NULL CHECK 1..500). ScraperOriginAgent aplica cascada (project > env `SCRAPE_MAX_PAGES_DEFAULT=50` > 50) y genera ResidualTask POST_GO_LIVE si el cap se alcanza. UI Configuración avanzada + CLI `wcm projects set-max-pages ID N`.
+- **ADR-052** — Endpoint `/summary` devuelve `pages_with_many_unknowns`. Badge ámbar en `ProjectHeader` cuando >0.
+- **ADR-053** — `qa_runner` con thresholds independientes a11y/best-practices/seo (env vars `LIGHTHOUSE_*_MIN_CRITICAL`) + fórmula proporcional broken links (`max(BROKEN_LINKS_MIN_ABSOLUTE, total * BROKEN_LINKS_RATIO_THRESHOLD)`).
+- **ADR-054** — Endpoint `DELETE /api/v1/projects/{id}` admin-only con confirmación literal `{"confirm": "DELETE PROJECT N"}`. 409 si status=running. UI con input que valida el texto exacto antes de habilitar el botón. CLI `wcm projects delete ID --confirm "DELETE PROJECT N"`.
+
+### Changed
+
+- **ADR-037** — Preflight: Bricks bloqueante (con WPML opcional). Sin tema Bricks, no se permite Start.
+- **ADR-048** — `POST /projects/{id}/start` ahora SIEMPRE re-ejecuta preflight (no cachea). Garantiza que el operador no arranque con un destino que cayó entre creación y arranque.
+- CLI `wcm projects resume` ya no fuerza re-ejecutar todo — opt-in con `-f`.
+- `api.delete` (dashboard) acepta body opcional (necesario para DELETE con `{"confirm": ...}`).
+
+### Database
+
+- `0009_pre_deploy_snapshot.py` — `projects.pre_deploy_snapshot_path TEXT NULL` + `_at TIMESTAMPTZ NULL`.
+- `0010_visual_diff_threshold.py` — `projects.visual_diff_threshold FLOAT NULL CHECK 0..1`.
+- `0011_woo_orders.py` — Tabla nueva con PII cifrada + índice `(project_id, migrated_at)`.
+- `0012_max_pages_scrape.py` — `projects.max_pages_scrape INT NULL CHECK 1..500`.
+
+### Decisions (ADRs nuevos)
+
+ADR-037 a ADR-054 (18 ADRs). Detalle completo en `docs/decisiones.md`.
+
+### Tests
+
+- 858 pytest verde (apps + packages + cli, ignorando integration).
+- 276 vitest verde (32 archivos).
+- Ruff + ESLint + tsc verde.
+
+### Dependencies
+
+- Sin nuevas dependencias Python ni TS (todo construido sobre la stack existente).
+
+---
+
 ## [0.19.0] — 2026-05-19
 
 Sprint MINOR: **reactividad sub-segundo + rollback + Hostinger

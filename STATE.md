@@ -29,6 +29,63 @@
 
 ## Última versión publicada
 
+**v0.20.0** (2026-05-19) — sprint **18 ADRs + 34 tareas en 8 bloques**
+de cierre técnico previo al primer test E2E con cliente real. Tras
+revisar las "decisiones" pendientes en `docs/flujo-migracion.md`, se
+documentaron como ADR-037 a ADR-054 en `docs/decisiones.md` y se
+implementaron las 34 tareas derivadas.
+
+**Bloque migraciones DB**: 4 nuevas (0009 pre_deploy_snapshot_path/at,
+0010 visual_diff_threshold con CHECK 0..1, 0011 woo_orders con PII
+cifrada Fernet + índice migrated_at, 0012 max_pages_scrape con CHECK
+1..500).
+
+**Bloque backend**: PreDeploySnapshotAgent inserta `wp db export` por
+SSH antes de wp_deployer (ADR-042); RollbackAgent refactorizado con
+branching snapshot → `wp db import` (restauración completa) o REST
+DELETE MVP si snapshot inaccesible; PublishAgent + Celery task pasa
+páginas de draft→publish en lote (ADR-039); Orchestrator soporta
+`force_rerun_all` para Resume rápido vs re-ejecutar todo (ADR-043);
+Orchestrator captura Exception genérica con cascada required/optional
+(ADR-049); ScraperOriginAgent aplica cap configurable + residual si se
+alcanza (ADR-050); VisualDiffAgent genera ResidualTask VISUAL_CONTENT
+por página bajo threshold (ADR-044); qa_runner con thresholds
+independientes a11y/bp/seo + fórmula proporcional broken links
+(ADR-053); preflight Bricks bloqueante (ADR-037); start re-ejecuta
+preflight (ADR-048).
+
+**Bloque adapters Wix/Webflow**: `list_orders()` + `list_coupons()`
+mapeando shape ajeno → schema woo_orders común. WooMigratorAgent
+importa pedidos con PII cifrada y genera residual cupones mejorada con
+conteo real + muestra de códigos. Celery beat purga woo_orders tras
+`WOO_ORDERS_RETENTION_DAYS` (default 30d) — RGPD.
+
+**Bloque endpoints**: `POST /projects/with-start` combinador (ADR-047),
+`POST /projects/{id}/restart` para re-arrancar rolled_back (ADR-041),
+`POST /projects/{id}/publish` (ADR-039), `DELETE /projects/{id}`
+admin-only con confirmación literal `"DELETE PROJECT N"` (ADR-054),
+`/summary` con `pages_with_many_unknowns` (ADR-052).
+
+**Bloque UI**: ProjectActions con botones Re-arrancar, Publicar todo,
+Eliminar + toggle "re-ejecutar todo" en Resume + modal confirmación
+literal en Eliminar. Panel "Configuración avanzada" con inputs
+visual_diff_threshold + max_pages_scrape. Badge ámbar UNKNOWN warning
+en ProjectHeader cuando >0 páginas con muchos bloques sin clasificar.
+
+**Bloque CLI**: `wcm projects restart|publish|delete|set-max-pages|
+set-visual-threshold`. `wcm projects resume` con flag
+`--force-rerun-all/-f`. `wcm projects delete ID --confirm "DELETE
+PROJECT N"` validación cliente.
+
+**Bloque ADR-040 Playwright**: PlaywrightFetcher helper con
+browser+context reuse. scraper_origin con branching: Playwright para
+Wix/Webflow (SPAs) o si `SCRAPE_USE_PLAYWRIGHT=true`; httpx para todo
+lo demás. Fallback automático a httpx si Playwright no instalado.
+§10.1 nueva en `docs/despliegue.md` con instalación + verificación.
+
+**Tests**: 858 pytest + 276 vitest = **1.134 verde**. Ruff + ESLint +
+tsc verde. Sin nuevas dependencias.
+
 **v0.19.0** (2026-05-19) — sprint MINOR (6 bloques) que cierra la
 deuda visual y operativa antes del primer piloto real:
 

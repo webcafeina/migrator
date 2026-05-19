@@ -26,15 +26,21 @@ ver el último diff.
 from __future__ import annotations
 
 import logging
+import os
 from urllib.parse import urlparse
 
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from wcm_db.models.projects import Project
+from wcm_db.models.residual_tasks import ResidualTask
 from wcm_db.models.scraped_pages import ScrapedPage
 from wcm_db.models.visual_diffs import VisualDiff
-from wcm_types.enums import ScrapeStatus
+from wcm_types.enums import (
+    ResidualCategory,
+    ResidualStatus,
+    ScrapeStatus,
+)
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import VisualDiffError
 from wcm_worker.integrations.playwright_screenshot import (
@@ -86,8 +92,10 @@ class VisualDiffAgent(BaseAgent):
             )
 
         r2 = self._injected_r2 or R2Client.from_env()
+        residual_threshold = self._resolve_residual_threshold(project)
         warnings: list[str] = []
         scores: list[float] = []
+        below_threshold: list[tuple[str, float]] = []
         compared = 0
         failed_pages = 0
 
@@ -168,6 +176,8 @@ class VisualDiffAgent(BaseAgent):
                     )
                     scores.append(result.score)
                     compared += 1
+                    if result.score < residual_threshold:
+                        below_threshold.append((page_path, result.score))
         finally:
             # session_pw cleanup ya por context manager.
             pass
@@ -175,6 +185,14 @@ class VisualDiffAgent(BaseAgent):
         avg_score = sum(scores) / len(scores) if scores else None
         if avg_score is not None:
             project.visual_diff_avg_score = avg_score
+
+        # ADR-044 — una ResidualTask VISUAL_CONTENT por página bajo umbral.
+        for page_path, score in below_threshold:
+            ctx.session.add(
+                self._below_threshold_residual(
+                    project, page_path, score, residual_threshold
+                )
+            )
 
         ctx.session.flush()
 
@@ -189,8 +207,54 @@ class VisualDiffAgent(BaseAgent):
                 "pages_compared": compared,
                 "pages_failed": failed_pages,
                 "avg_score": avg_score,
+                "residual_threshold": residual_threshold,
+                "pages_below_threshold": len(below_threshold),
             },
             warnings=warnings,
+        )
+
+    # ---------- ADR-044 helpers ----------
+
+    def _resolve_residual_threshold(self, project: Project) -> float:
+        """Cascada ADR-044: project.visual_diff_threshold > env > 0.70."""
+        if project.visual_diff_threshold is not None:
+            return float(project.visual_diff_threshold)
+        env_val = os.environ.get("VISUAL_DIFF_RESIDUAL_THRESHOLD")
+        if env_val:
+            try:
+                return float(env_val)
+            except ValueError:
+                log.warning(
+                    "visual_diff_residual_threshold_invalid",
+                    extra={"value": env_val},
+                )
+        return 0.70
+
+    def _below_threshold_residual(
+        self,
+        project: Project,
+        page_path: str,
+        score: float,
+        threshold: float,
+    ) -> ResidualTask:
+        return ResidualTask(
+            project_id=project.id,
+            title=f"Visual diff bajo umbral en {page_path} ({score:.2f} < {threshold:.2f})",
+            description=(
+                f"La página `{page_path}` tiene similitud visual de "
+                f"{score:.2f} respecto al origen, bajo el umbral "
+                f"configurado de {threshold:.2f}. Revisar el overlay en "
+                "/projects/{pid}/diff y decidir si:\n\n"
+                "1. La divergencia es cosmética aceptable (cerrar como skipped).\n"
+                "2. Falta contenido/imagen → editar la página en Bricks.\n"
+                "3. El threshold del proyecto está mal calibrado → ajustar en "
+                "Configuración avanzada del proyecto."
+            ).format(pid=project.id),
+            category=ResidualCategory.VISUAL_CONTENT,
+            estimated_minutes=20,
+            screenshot_paths=[],
+            generated_by="visual-diff",
+            status=ResidualStatus.OPEN,
         )
 
     # ---------- helpers ----------

@@ -63,7 +63,8 @@ def test_retention_sweep_task_returns_aggregated_stats() -> None:
          patch.object(mod, "_purge_stale_discovered", return_value=1), \
          patch.object(mod, "_move_outreach_to_discarded", return_value=2), \
          patch.object(mod, "_purge_old_discarded", return_value=3), \
-         patch.object(mod, "_purge_error_logs", return_value=4):
+         patch.object(mod, "_purge_error_logs", return_value=4), \
+         patch.object(mod, "_purge_old_woo_orders", return_value=5):
         result = mod.retention_sweep.apply().get()
     assert result["status"] == "ok"
     assert result["stats"] == {
@@ -71,5 +72,6 @@ def test_retention_sweep_task_returns_aggregated_stats() -> None:
         "leads_outreach_to_discarded": 2,
         "leads_discarded_purged": 3,
         "error_logs_purged": 4,
+        "woo_orders_purged": 5,
     }
     session.add.assert_called_once()

@@ -9,6 +9,7 @@ Operaciones expuestas:
 
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 from typing import Annotated
 
@@ -27,7 +28,11 @@ from wcm_api.services.source_credentials import (
     FernetNotConfiguredError,
     encrypt_source_credentials,
 )
-from wcm_api.tasks.enqueue import enqueue_project_pipeline, enqueue_project_rollback
+from wcm_api.tasks.enqueue import (
+    enqueue_project_pipeline,
+    enqueue_project_publish,
+    enqueue_project_rollback,
+)
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
@@ -54,6 +59,8 @@ from wcm_types.schemas.visual_diffs import (
     VisualDiffRead,
     VisualDiffsListResponse,
 )
+
+log = logging.getLogger("wcm.api.projects")
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -714,6 +721,140 @@ async def rollback_project(
         )
     task_id = enqueue_project_rollback(project_id)
     return {"task_id": task_id, "status": "queued", "project_id": project_id}
+
+
+@router.post("/{project_id}/publish", status_code=status.HTTP_202_ACCEPTED)
+async def publish_project(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.20.0 (ADR-039) — pone todas las páginas migradas en status=publish.
+
+    Disparable por el operador tras validar visual diff + QA en draft.
+    No es destructivo (publicar es reversible vía POST de nuevo con
+    {status: draft}). Solo permitido si status ∈ {completed, qa_failed}.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    allowed = {ProjectStatus.COMPLETED, ProjectStatus.QA_FAILED}
+    if project.status not in allowed:
+        raise ConflictError(
+            f"Publish solo permitido si status ∈ {{completed, qa_failed}}. "
+            f"Estado actual: {project.status.value}."
+        )
+    task_id = enqueue_project_publish(project_id)
+    return {"task_id": task_id, "status": "queued", "project_id": project_id}
+
+
+@router.post("/{project_id}/restart", status_code=status.HTTP_202_ACCEPTED)
+async def restart_project(
+    project_id: int,
+    payload: dict,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """ADR-041 — Re-arranca un proyecto que está en ROLLED_BACK.
+
+    Resetea timestamps + cambia status a QUEUED + encola pipeline
+    completo. NO borra historial (visual_diffs, qa_reports, residual_tasks,
+    bricks_pages.bricks_json conservados — útiles para diagnóstico
+    comparativo entre intentos).
+
+    Requiere body `{"confirm": true}`. Solo permitido si status =
+    ROLLED_BACK (409 cualquier otro).
+    """
+    if not payload.get("confirm"):
+        raise ConflictError(
+            'Re-arranque requiere `{"confirm": true}` en el body.'
+        )
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if project.status != ProjectStatus.ROLLED_BACK:
+        raise ConflictError(
+            f"Re-arranque solo permitido si status=rolled_back. "
+            f"Estado actual: {project.status.value}."
+        )
+    # Reset timestamps + status. No tocamos bricks_pages.bricks_json
+    # (lo conservamos para que el próximo pipeline lo UPSERT si scrape
+    # detecta cambios). visual_diffs/qa_reports/residual_tasks
+    # también se conservan para diagnóstico comparativo.
+    project.status = ProjectStatus.QUEUED
+    project.started_at = None
+    project.completed_at = None
+    await session.commit()
+    task_id = enqueue_project_pipeline(project_id, resume=False)
+    return {
+        "task_id": task_id,
+        "status": "queued",
+        "project_id": project_id,
+        "restarted": True,
+    }
+
+
+@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(
+    project_id: int,
+    payload: dict,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_admin_only)],
+) -> Response:
+    """ADR-054 — Borrar proyecto + datos asociados en cascada.
+
+    Admin-only. Requiere body `{"confirm": "DELETE PROJECT N"}` literal
+    (texto exacto incluyendo el ID) — protege contra borrar el equivocado.
+
+    Pasos:
+    1. Audit log entry con datos preservados (trazabilidad post-delete).
+    2. CASCADE delete BD — todas las tablas relacionadas con FK
+       ON DELETE CASCADE se vacían (scraped_pages, content_blocks,
+       bricks_pages, assets, woo_products, woo_orders, visual_diffs,
+       qa_reports, residual_tasks, project_phases, seo_redirects).
+
+    NOTA: este MVP NO borra assets R2 ni file:// locales todavía (queda
+    para ADR-054 tarea #101 — service cascade completo). Tampoco ejecuta
+    rollback inline si status != ROLLED_BACK. El operador debería hacer
+    rollback primero si quiere limpiar también el WP destino.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if project.status == ProjectStatus.RUNNING:
+        raise ConflictError(
+            "No se puede borrar un proyecto en ejecución. Cancela primero."
+        )
+
+    expected_confirm = f"DELETE PROJECT {project_id}"
+    actual_confirm = payload.get("confirm", "")
+    if actual_confirm != expected_confirm:
+        raise ConflictError(
+            f'Borrado requiere body {{"confirm": "{expected_confirm}"}} literal '
+            "(texto exacto incluyendo el ID). Protege contra borrar el "
+            "equivocado por error."
+        )
+
+    # Audit: log structlog estructurado con datos preservados (la fila
+    # del audit_log NO se borra en CASCADE). Para v0.20.0+ se reemplaza
+    # por entry en tabla audit_log via wcm_db.models.AuditLog (ADR-054
+    # tarea #101 service cascade).
+    log.warning(
+        "project_deleted",
+        extra={
+            "project_id": project.id,
+            "client_name": project.client_name,
+            "source_url": project.source_url,
+            "target_domain": project.target_domain,
+            "status_at_delete": project.status.value,
+        },
+    )
+
+    # CASCADE delete — todas las tablas con FK ondelete=CASCADE se vacían.
+    await session.delete(project)
+    await session.commit()
+    return Response(status_code=204)
 
 
 @router.get("/{project_id}/phases", response_model=list[ProjectPhaseRead])

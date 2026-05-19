@@ -54,6 +54,11 @@ def _project_mock(*, builder: str | None = None, has_creds: bool = False) -> Mag
     p.created_at = now
     p.updated_at = now
     p.has_source_credentials = has_creds
+    # v0.20.0+ — campos nullables nuevos.
+    p.visual_diff_threshold = None
+    p.max_pages_scrape = None
+    p.pre_deploy_snapshot_path = None
+    p.pre_deploy_snapshot_at = None
     return p
 
 

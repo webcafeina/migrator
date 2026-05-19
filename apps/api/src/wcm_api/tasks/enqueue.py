@@ -118,3 +118,13 @@ def enqueue_project_rollback(project_id: int) -> str:
         kwargs={"project_id": project_id},
     )
     return result.id
+
+
+def enqueue_project_publish(project_id: int) -> str:
+    """v0.20.0 (ADR-039) — publica todas las páginas migradas (draft → publish).
+    No modifica project.status."""
+    result = celery_app.send_task(
+        "wcm.publish.run_project",
+        kwargs={"project_id": project_id},
+    )
+    return result.id

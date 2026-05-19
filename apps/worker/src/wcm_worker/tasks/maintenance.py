@@ -17,6 +17,7 @@ escribe un audit_log con `actor='retention-sweep'`.
 from __future__ import annotations
 
 import logging
+import os
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import and_, delete, exists, update
@@ -24,6 +25,7 @@ from sqlalchemy import and_, delete, exists, update
 from wcm_db.models.audit import AuditLog, ErrorLog
 from wcm_db.models.leads import Lead
 from wcm_db.models.outreach import OutreachSequence
+from wcm_db.models.woo_orders import WooOrder
 from wcm_types.enums import AuditAction, LeadStatus
 from wcm_worker.celery_app import celery_app
 from wcm_worker.db import session_scope
@@ -36,6 +38,16 @@ DISCARDED_TTL_DAYS = 6 * 30  # 6 meses extra antes de borrar definitivamente
 ERROR_LOG_TTL_DAYS = 90
 
 
+def _woo_orders_retention_days() -> int:
+    """ADR-045 — retención woo_orders (PII cifrada). Default 30 días."""
+    raw = os.environ.get("WOO_ORDERS_RETENTION_DAYS", "30")
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        log.warning("woo_orders_retention_days_invalid", extra={"value": raw})
+        return 30
+
+
 @celery_app.task(name="wcm.maintenance.retention_sweep", bind=True, max_retries=0)
 def retention_sweep(self) -> dict:
     """Aplica la política de retención. Llamada por Celery beat 1x/día."""
@@ -46,6 +58,7 @@ def retention_sweep(self) -> dict:
             "leads_outreach_to_discarded": _move_outreach_to_discarded(session, now),
             "leads_discarded_purged": _purge_old_discarded(session, now),
             "error_logs_purged": _purge_error_logs(session, now),
+            "woo_orders_purged": _purge_old_woo_orders(session, now),
         }
         session.add(
             AuditLog(
@@ -119,6 +132,21 @@ def _purge_error_logs(session, now: datetime) -> int:
     stmt = (
         delete(ErrorLog)
         .where(ErrorLog.at < threshold)
+        .execution_options(synchronize_session=False)
+    )
+    result = session.execute(stmt)
+    return int(result.rowcount or 0)
+
+
+def _purge_old_woo_orders(session, now: datetime) -> int:
+    """ADR-045 — borra woo_orders con migrated_at más antiguo que el TTL.
+    La PII está cifrada en BD pero la mantenemos solo el tiempo mínimo
+    necesario para que el operador valide la migración (default 30d)."""
+    ttl = _woo_orders_retention_days()
+    threshold = now - timedelta(days=ttl)
+    stmt = (
+        delete(WooOrder)
+        .where(WooOrder.migrated_at < threshold)
         .execution_options(synchronize_session=False)
     )
     result = session.execute(stmt)

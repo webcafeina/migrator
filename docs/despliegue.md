@@ -166,6 +166,46 @@ curl -s http://127.0.0.1:8000/health/deep | jq
 - **pg_dump** (cron): backup diario 03:00.
 - **certbot** / **AutoSSL**: gestionado por cPanel automáticamente.
 
+## 10.1. Playwright en worker (ADR-040, v0.20.0+)
+
+A partir de v0.20.0 el `scraper_origin` usa Playwright por defecto para
+Wix y Webflow (SPAs con JS pesado) y httpx para todo lo demás. Override
+global vía env `SCRAPE_USE_PLAYWRIGHT=true|false`. Asimismo `visual_diff`
+y `qa_runner` ya lo usaban.
+
+**Instalación en el server (una vez por nodo worker):**
+
+```bash
+# Como usuario `wcm` (no root):
+source /opt/webcafeina-migrator/venv/bin/activate
+pip install 'playwright>=1.45'
+playwright install chromium
+
+# Como root, dependencias del sistema (Debian/Ubuntu/CentOS):
+sudo playwright install-deps chromium
+```
+
+En WHM/cPanel sin sudo accesible: `playwright install-deps` falla y hay
+que instalar manualmente `libnss3 libatk-bridge2.0-0 libxss1 libasound2
+libgbm1 libxshmfence1` con `yum`/`apt` según distro.
+
+**Verificación:**
+
+```bash
+sudo -u wcm /opt/webcafeina-migrator/venv/bin/python -c \
+  "from playwright.sync_api import sync_playwright; \
+   sync_playwright().start().chromium.launch(headless=True).close(); print('ok')"
+```
+
+Si falla, el scraper hace fallback automático a httpx (loguea
+`scraper_origin_playwright_unavailable_fallback_httpx`) y el pipeline
+sigue, pero los sites SPA quedan sin hidratación → checklist con
+residual VISUAL_CONTENT probable.
+
+**Recursos:** Chromium consume ~250MB RAM por sesión. Worker con
+concurrency=4 puede llegar a 1GB extra solo por Playwright. Ajustar
+`WCM_WORKER_CONCURRENCY` si el server está justo de RAM.
+
 ## 11. Escala (cuando haga falta)
 
 - **API**: subir `--workers` en `wcm-api.service` o añadir un segundo nodo + loadbalancer.

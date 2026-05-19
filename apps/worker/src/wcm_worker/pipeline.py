@@ -40,6 +40,7 @@ from wcm_worker.agents import (
     ContentExtractorAgent,
     FormsRebuilderAgent,
     MultilangHandlerAgent,
+    PreDeploySnapshotAgent,
     QaRunnerAgent,
     ResendNotifierAgent,
     ScraperOriginAgent,
@@ -81,6 +82,10 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     _PhaseSpec("optimize_assets", AssetOptimizerAgent, required=False),
     _PhaseSpec("detect_multilang", MultilangHandlerAgent),
     _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
+    # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
+    # poder rollback restaurando vía `wp db import`. required=True: sin
+    # snapshot no se debe arrancar el deploy.
+    _PhaseSpec("pre_deploy_snapshot", PreDeploySnapshotAgent),
     _PhaseSpec("deploy_wp", WpDeployerAgent),
     _PhaseSpec("migrate_woo", WooMigratorAgent, required=False, condition_attr="has_ecommerce"),
     _PhaseSpec("configure_wpml", WpmlConfiguratorAgent, required=False, condition_attr="is_multilang"),
