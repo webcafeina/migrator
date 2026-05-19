@@ -29,6 +29,28 @@
 
 ## Última versión publicada
 
+**v0.15.0** (2026-05-19) — sprint MINOR (5 bloques + pre-fix v0.14.1):
+editor visual del layout maestro `/settings/email-layout` con form de
+24 controles (colores · branding · tipografía · espaciado · bordes)
+que regenera HTML+CSS server-side desde plantilla canónica
+(`string.Template` para no chocar con slots Jinja2 del composer).
+Tab "Código" sigue como fallback experto. Singleton gana columna
+`theme_config JSONB NULL` (migración 0006). Endpoint
+`POST /email-layout/preview` con debounce 600 ms + AbortController.
+Preview lateral integrado en `/settings/templates` (tab "Vista
+previa" eliminado, ahora siempre visible al lado del form). Toolbar
+RichTextEditor amplía con TextStyle+Color+TextAlign. CLI
+`wcm email-layout theme show/reset/set` (15 flags). +33 tests. Suite
+**599 pytest + 225 vitest = 824 verde**. **Sin acción del operador**
+post-release: pulsar "Restaurar valores por defecto" en
+`/settings/email-layout` para activar el tab Visual (queda
+deshabilitado por defecto al aplicar 0006).
+
+**v0.14.1** (2026-05-18) — hotfix: FK `email_layouts.updated_by_user_id`
+declarado como Integer pero `users.id` es UUID. Migración 0005
+fallaba en Postgres real. Corregido modelo + migración + schema +
+endpoint. Sin breaking.
+
 **v0.14.0** (2026-05-18) — sprint MINOR grande (6 bloques): correos
 de outreach HTML estilados de marca. Pipeline completo composer →
 sender → Resend con HTML inlined por premailer. Singleton

@@ -11,6 +11,151 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.15.0] — 2026-05-19
+
+Sprint MINOR: **editor visual del layout maestro + preview lateral
+en plantillas + toolbar Tiptap ampliado**. El operador ya no necesita
+saber HTML email-safe para personalizar la marca de los correos —
+edita colores, branding, tipografía y espaciado con un form y ve el
+resultado en un iframe lateral. Las plantillas individuales también
+ganan preview en vivo al lado del WYSIWYG (sin tab).
+
+### Added
+
+- **Tema visual del layout maestro** (`/settings/email-layout` tab
+  Visual): form con 24 controles agrupados en Colores · CTA / Colores ·
+  Fondo y texto / Branding / Tipografía / Espaciado / Bordes. Cada
+  cambio dispara preview en vivo (debounce 600 ms +
+  AbortController). Botón "Guardar tema" + "Restaurar valores por
+  defecto". Tab "Código" sigue disponible como fallback experto.
+- **Singleton `email_layouts.theme_config`** (JSONB nullable) — si
+  poblado, el tema visual está activo; si NULL, modo Código manual y
+  el tab Visual se deshabilita con tooltip "Restaura el tema por
+  defecto para activarlo".
+- **Schema `EmailLayoutTheme`** (23 campos pydantic) con validaciones
+  HEX 6 chars, bounds numéricos (ancho 320-720 px, padding 8-64 px,
+  radius 0-12 px), tipografía Literal email-safe (system-ui / serif /
+  Inter). 422 antes de tocar BD.
+- **Renderer canónico server-side**
+  (`apps/api/src/wcm_api/email_layout_renderer.py`): función pura
+  `generate_layout_from_theme(theme) -> (html, css)` usando
+  `string.Template` (sintaxis `$nombre`) para NO colisionar con los
+  slots `{{ content | safe }}` del composer. Idempotente, testeable.
+- **Endpoint `POST /api/v1/email-layout/preview`** (admin,
+  rate-limit 60/min): recibe theme y devuelve `{html, css}` sin
+  persistir. Alimenta el LivePreview del form Visual.
+- **Componente `ColorField`** reutilizable: `<input type="color">`
+  nativo + HEX text input sincronizado. Validación cliente regex
+  HEX 6 chars — inválido se muestra en rojo pero NO propaga al
+  estado para evitar 422 ruidosos.
+- **Componente `ThemeEditorForm`** con 24 controles agrupados.
+- **Refactor `EmailLayoutEditor`**: tabs custom inline Visual/Código,
+  LivePreview compartido (ahora 720 px sticky), botón "Restaurar
+  tema por defecto" con `window.confirm`.
+- **Preview lateral en `/settings/templates`**: `TemplateForm` y
+  `TemplateView` con layout 2-col (`xl:grid-cols-[1fr_500px]`).
+  Form actual a la izquierda, iframe preview sticky a la derecha
+  que se actualiza con debounce 600 ms a `POST /templates/preview`
+  (endpoint nuevo any_user, rate-limit 60/min — genera HTML con un
+  payload `OutreachTemplateBase` SIN persistir). Tab "Vista previa"
+  del TemplateView ELIMINADO (queda integrado lateral).
+- **`RichTextEditor` toolbar ampliado**: extensiones nuevas
+  `@tiptap/extension-text-style`, `@tiptap/extension-color`,
+  `@tiptap/extension-text-align`. Toolbar añade 3 botones de
+  alineación (left/center/right) + botón color de texto (palette
+  icon + `<input type="color" sr-only>` que dispara setColor).
+  StarterKit con `link: false` para evitar duplicate-extension
+  warning.
+- **CLI `wcm email-layout theme show/reset/set`**:
+  - `show`: imprime `theme_config` JSON pretty. Avisa si NULL.
+  - `reset --confirm`: PUT con `DEFAULT_THEME` Webcafeína.
+  - `set --cta-bg HEX --font-family Inter ...`: 15 flags para
+    modificar campos puntuales. Merge con tema existente o parte de
+    defaults si no había.
+- **Migración Alembic 0006**: añade `theme_config JSONB NULL` a
+  `email_layouts`. Singleton existente queda con NULL (operador
+  activa el modo Visual con "Restaurar valores por defecto" desde
+  UI o `wcm email-layout theme reset --confirm`).
+- **3 deps Tiptap nuevas** (~25 KB gzip extra) @^3.23.4.
+
+### Changed
+
+- `PUT /api/v1/email-layout` ahora acepta 3 modos: solo
+  `theme_config` (backend regenera HTML+CSS), solo `layout_html` +
+  `layout_css` (modo Código, theme=NULL), o combinación. AuditLog
+  ahora distingue `mode: "visual" | "code"` en su payload.
+- `EmailLayoutUpdate` schema: `layout_html` y `layout_css` ahora
+  `Optional[str]` (antes obligatorios) para soportar modo Visual
+  donde el cliente solo manda `theme_config`.
+- `EmailLayoutRead` schema: expone `theme_config: EmailLayoutTheme | None`.
+- `TemplateView` y `TemplateForm` pasan a layout 2-col interno con
+  preview lateral. Mejora notable de UX al editar.
+- `RichTextEditor` configura StarterKit con `link: false` (eliminé
+  warning de extensión duplicada).
+
+### Decisions
+
+- **`string.Template` (PEP 292) en el renderer canónico** en lugar
+  de Jinja2 — para NO colisionar con los slots `{{ ... }}` del
+  composer. Output Jinja2-válido sin trucos de DebugUndefined.
+- **`<input type="color">` nativo** + HEX text input en vez de
+  librería externa de color picker. UX suficiente, 0 KB de bundle
+  extra, accesibilidad nativa.
+- **Tabs custom inline** (mismo patrón que `template-manager`) sin
+  Radix Tabs — el repo no tenía `tabs.tsx` y no merece la pena
+  introducir Radix Tabs por esto.
+- **Preview server-side con `POST /preview`** (no client-side) para
+  garantizar fidelidad entre lo que ves y lo que llegará al lead.
+  Cancel obsoletos con AbortController.
+- **`TextStyle` + `Color` + `TextAlign` para Tiptap** — output HTML
+  email-safe (`<span style="color">`, `<p style="text-align">`).
+  Premailer los respeta.
+- **Modo Código irreversible sin reset**: si guardas desde tab
+  Código, `theme_config=NULL` y el tab Visual queda bloqueado. Solo
+  "Restaurar valores por defecto" lo reactiva. Es el invariante
+  más sencillo y predecible para el usuario.
+
+### Tests
+
+- **+33 tests nuevos**: 11 renderer canónico (defaults, custom,
+  validaciones, idempotencia, edge cases logo), 6 router preview +
+  put theme + RBAC + HEX inválido, 6 ThemeEditorForm vitest, 5
+  EmailLayoutEditor vitest, 7 CLI theme (show/reset/set/merge).
+- Suite global: **599 pytest + 225 vitest = 824 tests verde**.
+
+### Migración Alembic
+
+- `0006_email_layout_theme_config.py`: añade columna `theme_config
+  JSONB NULL` a `email_layouts`. Downgrade limpio. Compatible con
+  `alembic upgrade head` desde 0005.
+
+### Dependencias
+
+- Frontend: `@tiptap/extension-color@^3.23.4`,
+  `@tiptap/extension-text-align@^3.23.4`,
+  `@tiptap/extension-text-style@^3.23.4` (~25 KB gzip total).
+
+### Post-release: no requiere acción del operador
+
+- Al aplicar la migración 0006, el singleton existente queda con
+  `theme_config=NULL`. Al entrar a `/settings/email-layout` el tab
+  Visual aparece deshabilitado. Para activarlo, pulsa "Restaurar
+  valores por defecto" (o `wcm email-layout theme reset --confirm`)
+  — los defaults Webcafeína se aplican y a partir de ahí editas
+  visualmente.
+- El PNG del logo (pendiente de v0.14.0) sigue siendo opcional.
+
+---
+
+## [0.14.1] — 2026-05-18
+
+Hotfix: bug del FK `email_layouts.updated_by_user_id` declarado como
+`Integer` cuando `users.id` es `UUID`. La migración 0005 fallaba al
+aplicarse en Postgres real. Corregido modelo + migración + schema +
+endpoint. Sin breaking changes.
+
+---
+
 ## [0.14.0] — 2026-05-18
 
 Sprint MINOR: **correos de outreach HTML estilados de marca**. Hasta
