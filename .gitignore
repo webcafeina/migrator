@@ -79,3 +79,8 @@ celerybeat.pid
 # ---- Build artifacts ----
 *.whl
 *.tar.gz
+
+# ---- Zona humana intocable (CLAUDE.md §2.11) ----
+# docs/humanos/ es documentación operativa mantenida por el equipo humano
+# fuera del control de Claude Code. NO se versiona en este repo.
+docs/humanos/
