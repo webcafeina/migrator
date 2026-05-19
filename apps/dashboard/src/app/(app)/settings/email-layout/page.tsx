@@ -3,12 +3,17 @@ import Link from "next/link";
 import { api, ApiError } from "@/lib/api";
 
 import { EmailLayoutEditor } from "./_components/email-layout-editor";
+import type { EmailLayoutTheme } from "./_components/theme-editor-form";
 
 interface EmailLayoutRead {
   id: number;
   layout_html: string;
   layout_css: string;
-  updated_by_user_id: number | null;
+  /** v0.15.0 — si poblado, el tab Visual está habilitado y precarga
+   *  estos valores. Si NULL, el operador editó código a mano y debe
+   *  hacer "Restaurar valores por defecto" para reactivar Visual. */
+  theme_config: EmailLayoutTheme | null;
+  updated_by_user_id: string | null;
   created_at: string;
   updated_at: string;
 }
