@@ -11,6 +11,110 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.19.0] — 2026-05-19
+
+Sprint MINOR: **reactividad sub-segundo + rollback + Hostinger
+mejorado + vista fleet**. Cuatro ejes que cierran la deuda visual y
+operativa antes del primer piloto real.
+
+### Added
+
+- **SSE backend** — `apps/api/src/wcm_api/services/events.py` con
+  `channel_for(id)`, `subscribe_to_project_events(id)`, `format_sse`,
+  heartbeat 25s. Endpoint `GET /api/v1/projects/{id}/events`
+  (`text/event-stream`). 503 si Redis no disponible (cliente cae a
+  polling).
+- **Worker publisher** — `apps/worker/src/wcm_worker/integrations/events.py`
+  con `publish_phase_event(project_id, phase_name, status)`. Llamado
+  desde `_mark_phase()` del orchestrator. Silencioso si Redis falla
+  (el pipeline NUNCA rompe por canal SSE caído).
+- **SSE frontend** — `ProjectPoller` refactor: abre EventSource, cada
+  mensaje dispara `router.refresh()`. Si conexión falla (onerror +
+  readyState=CLOSED) cae automáticamente a polling 2s tradicional.
+  Banner muestra modo activo (`stream SSE` vs `polling 2s`).
+- **Status `ROLLED_BACK`** en `ProjectStatus` enum. La columna VARCHAR
+  acepta el nuevo valor sin migración.
+- **`RollbackAgent`** (`apps/worker/src/wcm_worker/agents/rollback.py`):
+  itera `bricks_pages.wp_post_id NOT NULL`, hace `DELETE
+  /wp/v2/pages/{id}?force=true` vía REST. Idempotente: si un DELETE
+  falla, continúa con el siguiente y permite re-ejecución.
+- **Endpoint `POST /api/v1/projects/{id}/rollback`** (operator+).
+  Requiere `{"confirm": true}` en body. Solo permitido si status ∈
+  {qa_failed, completed, blocked_human_input}.
+- **UI rollback**: botón "Rollback" (icon Undo2) en ProjectActions
+  con confirmación inline en rojo (sin `window.confirm`). Status
+  `rolled_back` se muestra como "proyecto revertido".
+- **CLI `wcm projects rollback ID [--yes/-y]`** con prompt interactivo
+  por defecto (typer.confirm). Sugiere `wcm projects watch ID` para
+  seguir progreso.
+- **Extractor Hostinger AI mejorado**: form fields canónicos con
+  data-role/data-field-type (Hostinger moderno) + fallback heurístico.
+  Theme estructurado: `result.theme_colors` y `result.theme_fonts`
+  como dict (antes solo nota). Contact info: `result.contact_info`
+  con email/phone/social estructurados desde footer.
+- **Fixture nueva** `tests/fixtures/hostinger/restaurante.html`
+  (Casa Pepa) con form moderno + contact + theme vars.
+- **Endpoint `GET /api/v1/projects/fleet`** (any_user). Devuelve
+  todos los proyectos con `phase_summary` pre-agregada en 5 buckets
+  canónicos. Una sola query (sin N+1 fetches del cliente).
+- **`ProjectsFleetGrid`** dashboard: grid 1/2/3 cols con tarjetas
+  por proyecto. Mini-stepper de 5 dots conectados (scrape/transpile/
+  deploy/qa/notify) con animate-pulse en running. FeaturePills
+  (Woo/WPML/builder) + DiffScoreBadge en footer.
+- **ViewToggle `/projects?view=fleet|table`** preservando filtro
+  status entre vistas. Default sigue siendo `table`.
+
+### Changed
+
+- **Botón "+ Nuevo proyecto"** en `/projects` ahora apunta a
+  `/projects/new` (wizard v0.18.0) en lugar de `/leads`.
+- **Pipeline orchestrator** publica eventos SSE tras cada `_mark_phase`.
+
+### Decisions
+
+- **Polling como fallback, no sustitución**: SSE preferido pero
+  polling 2s queda activo automáticamente si Redis no responde. UX
+  graceful: el banner muestra qué modo está activo.
+- **`_aggregate_bucket_status` prioridad**: failed > running >
+  pending > completed (todas) > skipped. Razón: en un dashboard de
+  fleet, el rojo (failed) debe destacar inmediatamente, el running
+  con pulse debe llamar la atención secundaria.
+- **Rollback MVP sin snapshot**: solo borra las páginas creadas por
+  wp-deployer; NO restaura cambios a páginas existentes. Suficiente
+  para el escenario común "deploy salió mal, quiero empezar limpio".
+  Snapshot SQL completo queda para v0.20.0+ si surge necesidad real.
+- **Hostinger sin API de admin oficial** (confirmado): el sprint
+  invierte en mejorar el extractor de scraping en lugar de adapter
+  API (que no existe).
+
+### Tests
+
+- **Backend**: +33 (events service 6, events endpoint 4, events
+  publisher 5, rollback agent 5, rollback endpoint 6, fleet endpoint
+  12 - 5 helpers ya contados). Total Python: **788 verde** (10 skipped).
+- **Dashboard**: +13 vitest (project-poller 5, projects-fleet-grid 8).
+  Total: **274 verde**.
+- **Scraper-core**: +6 (form estructurado/fallback, theme dict,
+  contact estructurado/fallback). Suite scraper-core 24/24 verde.
+- **CLI**: +4 (rollback con --yes, sin --yes confirma/cancela,
+  409 propaga).
+
+### Acción pendiente del operador (despliegue)
+
+- `REDIS_URL` debe estar configurada en `.env` del API y del worker
+  (ya lo estaba para Celery). Sin ella, SSE devuelve 503 y el
+  dashboard cae a polling 2s — funcional pero menos elegante.
+- Para que el rollback funcione, el WP destino debe seguir respondiendo
+  a las credenciales `WP_DEFAULT_REST_*` del deploy original.
+
+### Siguiente
+
+- v0.20.0 candidatos: snapshot SQL pre-deploy para rollback robusto,
+  adapter API si Hostinger publica una, paginación en endpoint /fleet
+  cuando crezca el catálogo.
+
+---
+
 ## [0.18.0] — 2026-05-19
 
 Sprint MINOR: **vista viva del pipeline + onboarding asistido +

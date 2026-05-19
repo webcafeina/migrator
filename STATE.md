@@ -29,6 +29,40 @@
 
 ## Última versión publicada
 
+**v0.19.0** (2026-05-19) — sprint MINOR (6 bloques) que cierra la
+deuda visual y operativa antes del primer piloto real:
+
+**Reactividad sub-segundo (SSE)**: el worker publica cada cambio de
+fase al canal Redis `wcm:project:{id}:events` tras cada `_mark_phase`.
+El API expone `GET /events` con `StreamingResponse text/event-stream`
++ heartbeat 25s. El frontend (`ProjectPoller`) abre EventSource y
+cada mensaje dispara `router.refresh()`. Si SSE falla → fallback
+automático al polling 2s (graceful degradation). Banner muestra modo
+activo.
+
+**Rollback MVP**: status nuevo `ROLLED_BACK`. `RollbackAgent` borra
+las páginas WP creadas vía `DELETE /wp/v2/pages/{id}?force=true`,
+resetea `wp_post_id=None`, idempotente. Endpoint `POST /rollback`
+requiere `{"confirm": true}` y status ∈ {qa_failed, completed,
+blocked_human_input}. UI: botón "Rollback" con confirmación inline
+en rojo. CLI: `wcm projects rollback ID [--yes]` con prompt
+interactivo.
+
+**Extractor Hostinger mejorado**: `theme_colors` + `theme_fonts` +
+`contact_info` como dicts estructurados (antes solo notas). Form
+fields canónicos con data-role/data-field-type (Hostinger moderno)
++ fallback heurístico. Fixture nueva Casa Pepa.
+
+**Vista fleet**: endpoint `/api/v1/projects/fleet` agrega las 15
+fases en 5 buckets (scrape/transpile/deploy/qa/notify) en una sola
+query. Componente `ProjectsFleetGrid` con tarjetas + mini-stepper
+de 5 dots conectados (animate-pulse en running). ViewToggle
+fleet|table en `/projects`. Default sigue siendo table.
+
++33 backend / +13 vitest / +6 scraper-core / +4 CLI. Suite **788
+pytest + 274 vitest = 1.062 verde**. Sin migración (status nuevo
+cabe en VARCHAR existente; cols no añadidas).
+
 **v0.18.0** (2026-05-19) — sprint MINOR (6 bloques) tras feedback del
 operador: el proceso de migración debe verse GRÁFICO y vivo + el
 producto necesita onboarding + soporte para credenciales del back
