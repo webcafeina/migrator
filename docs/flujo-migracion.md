@@ -1962,15 +1962,13 @@ Tras rollback el proyecto queda en `ROLLED_BACK`. ¿Cómo vuelvo a desplegar?
    `{"status": "queued"}` y luego `POST /start`. Avanzado, requiere conocer el
    endpoint.
 
-Decisión consciente: `ROLLED_BACK` como terminal **fuerza la decisión
-consciente** "¿quiero realmente re-desplegar este proyecto, o crear uno
-limpio?". Si la migración salió tan mal que necesité rollback, probablemente
-quiero re-pensar (otro target_domain, ajustar credenciales, otro builder
-detectado, etc.).
-
-En v0.20.0 candidato: botón "Re-arrancar" en `ROLLED_BACK` que resetea las
-tablas (`bricks_pages.wp_post_id = NULL`, `visual_diffs` y `qa_reports`
-borradas) y vuelve a `queued`.
+> **Próximo cambio (ADR-041 — programado para v0.20.0+)**: botón
+> "Re-arrancar pipeline" en ProjectActions cuando status=`rolled_back`,
+> endpoint `POST /api/v1/projects/{id}/restart` y CLI `wcm projects restart
+> ID`. Resetea timestamps + vuelve a `queued` sin borrar historial (visual
+> diffs, residuales, transpilado conservados). Cierra el ciclo de iteración
+> en 1 click para casos típicos durante pilotos (ajustar config y re-deployar
+> sin recrear proyecto duplicado).
 
 ### 10.7 Lo que el operador NO necesita hacer (rollback automático)
 

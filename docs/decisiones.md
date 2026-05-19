@@ -1112,6 +1112,54 @@ Razones para preferir simplicidad sobre velocidad:
 
 ---
 
+## ADR-041 — Botón "Re-arrancar" para proyectos en ROLLED_BACK
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: Tras un rollback exitoso (ADR-039 / v0.19.0), `project.status = ROLLED_BACK` es **terminal**. Desde la UI no hay forma de re-arrancar ese mismo proyecto. Las opciones documentadas eran (a) crear proyecto nuevo desde el wizard, (b) PATCH manual del status vía API.
+
+La filosofía original ("rollback fuerza decisión consciente de replantear") es sensata para el caso "proyecto un desastre, mejor empezar de cero". Pero falla en el ciclo de iteración típico durante el desarrollo de un piloto:
+
+1. Crear proyecto piloto v1.
+2. Arrancar pipeline → falla algo (config WP errónea, env var faltante, plugin desactivado).
+3. Rollback (limpia páginas creadas).
+4. Operador arregla el problema en `.env` o en el WP destino.
+5. **Quiere re-arrancar el mismo proyecto** sin perder el preflight, las residuales, las visual_diffs históricos, los bricks_pages transpilados. **Hoy no puede** sin PATCH manual o crear duplicado.
+
+En todos estos casos toda la información del proyecto está intacta en BD. Forzar a recrear desperdicia trabajo y ralentiza el ciclo de iteración.
+
+**Decisión**: Añadir endpoint y UI nuevos "Re-arrancar pipeline" para proyectos en `ROLLED_BACK`. Conserva el historial; solo resetea los timestamps de ejecución y vuelve a encolar la task Celery.
+
+Comportamiento:
+
+- `POST /api/v1/projects/{id}/restart` (operator+, requiere `{"confirm": true}` como rollback).
+- Solo permitido si `project.status == ROLLED_BACK`. Cualquier otro status → 409.
+- Internamente:
+  - `project.status = QUEUED`.
+  - `project.started_at = None`.
+  - `project.completed_at = None`.
+  - `bricks_pages.wp_post_id` ya es NULL desde el rollback (sin tocar).
+  - `bricks_pages.bricks_json` se conserva intacto. El próximo pipeline pasará por `scrape_origin` → ... → `transpile_bricks`, que hace UPSERT por (project_id, slug). Si el HTML del origen cambió, se actualiza; si no, idempotente.
+  - `visual_diffs` y `qa_reports` históricos NO se borran — son útiles para comparar "primer intento vs segundo". El próximo deploy generará nuevas filas (visual_diffs upsert por page_path, qa_reports inserta histórico nuevo).
+  - `residual_tasks` se conservan — el operador puede revisar qué se reportó la vez anterior. Si quiere limpieza, las cierra a mano.
+  - Encola `enqueue_project_pipeline(project_id, resume=False)` — pipeline completo desde fase 1.
+- UI: en `<ProjectActions>` cuando `status=rolled_back`, mostrar botón "Re-arrancar pipeline" (verde lima, icon `RotateCcw`) con confirmación inline en lima: "¿Re-arrancar este proyecto? Mantendrá toda la información acumulada (visual diffs, residuales, transpilado)".
+- CLI: `wcm projects restart ID [--yes/-y]` con prompt `typer.confirm` interactivo.
+
+**Consecuencias**:
+
+- ✅ Cierra el ciclo de iteración en 1 click. No más PATCH manuales ni proyectos duplicados.
+- ✅ Conserva todo el historial del proyecto — diagnóstico comparativo posible ("¿qué cambió entre intento 1 y 2?").
+- ✅ Coherente con patrones rollback (ADR pendiente) y publish (ADR-039): endpoint dedicado + `confirm` obligatorio + UI con confirmación inline.
+- ⚠️ El operador puede re-arrancar sin revisar lo que cambió y caer en el mismo error. Mitigación: el botón se muestra solo en `ROLLED_BACK` (no en `qa_failed`), donde ya hubo un rollback explícito. El operador conoce el contexto.
+- ⚠️ Tras re-arrancar, el pipeline se ejecuta desde la fase 1 (no Resume). Si el problema era específico de una fase tardía (ej. wp-deployer), volvemos a hacer scraping y todo el preprocesado. Coste de tiempo aceptable porque al haber pasado por rollback es razonable querer un re-deploy limpio.
+- ⚠️ Si en el futuro queremos un "Re-arrancar desde fase X" (resume parcial), sería ADR-04X separado. Hoy solo offrecemos el pipeline completo.
+
+**Implementación**: programada para v0.20.0+. Estimación ~2-3 días: endpoint + UI button + CLI + tests. Tareas listadas en TaskList con prefijo `[ADR-041]`.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
