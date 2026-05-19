@@ -1889,6 +1889,98 @@ Tareas listadas en TaskList con prefijo `[ADR-052]`:
 
 ---
 
+## ADR-053 — Thresholds QA: Lighthouse a11y/best-practices/SEO + broken links proporcional
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: El agente `qa_runner` aplica thresholds para generar `ResidualTask` automáticas tras los chequeos. Hoy:
+
+| Check | Threshold | Genera residual |
+|---|---|---|
+| Lighthouse Perf desktop/mobile | `< 50` | POST_GO_LIVE |
+| Lighthouse a11y/best-practices/SEO | sin threshold | NO (solo persiste score) |
+| Broken links | `> 5` absoluto | BLOCKING_GO_LIVE |
+
+Dos gaps reales:
+
+1. **a11y/best-practices/SEO sin threshold**: scores bajos no generan nada. a11y < 70 indica problemas serios para usuarios con discapacidades (potencial demanda legal en algunos países: WCAG 2.1 AA en UE para sitios públicos). best-practices < 75 implica warnings de seguridad (mixed content, console errors). SEO < 80 sugiere títulos/descriptions faltantes, robots.txt errors. El operador no recibe alerta.
+2. **Broken links absoluto desproporcionado**: una web de 5 páginas con 6 broken links es desastrosa (>1 broken/página). Una de 200 páginas con 6 broken links es ~3% del total — aceptable. Mismo threshold, contextos completamente diferentes.
+
+Se evaluaron 4 opciones (mantener, añadir thresholds + proporcional, todo configurable, otras combinaciones).
+
+**Decisión**: **Opción 4 — añadir thresholds a a11y/best-practices/SEO + cambiar broken links a fórmula proporcional**.
+
+### Cambios en G2 — Lighthouse
+
+Constantes nuevas (env-overridable para flexibilidad):
+
+```python
+LIGHTHOUSE_PERF_MIN_CRITICAL = 50           # sin cambios
+LIGHTHOUSE_A11Y_MIN_CRITICAL = 70            # nuevo
+LIGHTHOUSE_BEST_PRACTICES_MIN_CRITICAL = 75  # nuevo
+LIGHTHOUSE_SEO_MIN_CRITICAL = 80             # nuevo
+```
+
+Razones de los umbrales (alineados con la convención de Lighthouse: "good" ≥90, "needs improvement" 50-89, "poor" <50):
+
+- **a11y < 70**: bajo el "needs improvement" claro. WCAG 2.1 AA típicamente exige ≥90 para sitios públicos. < 70 = problemas estructurales graves (sin alt en imágenes, contraste insuficiente, navegación por teclado rota).
+- **best-practices < 75**: warnings de seguridad activos (https mixed content, vulnerabilidades JS conocidas, console errors). Bajo este umbral suele indicar plugins/scripts del cliente con problemas.
+- **SEO < 80**: títulos/descriptions duplicados o faltantes, robots.txt mal, structured data ausente. Bajo este umbral compromete posicionamiento.
+
+Cada uno → `ResidualTask` POST_GO_LIVE (no bloqueante) con title `Mejorar X (score N/100)` + description con causas comunes + link a documentación Lighthouse.
+
+### Cambios en G3 — Broken links proporcional
+
+Fórmula nueva (env-overridable):
+
+```python
+BROKEN_LINKS_MIN_ABSOLUTE = 2      # umbral absoluto mínimo
+BROKEN_LINKS_RATIO_THRESHOLD = 0.03  # 3% del total checkeado
+
+threshold = max(
+    BROKEN_LINKS_MIN_ABSOLUTE,
+    int(total_links_checked * BROKEN_LINKS_RATIO_THRESHOLD)
+)
+if broken_links > threshold:
+    # ResidualTask BLOCKING_GO_LIVE (sigue siendo bloqueante como hoy)
+```
+
+Tabla efectiva resultante:
+
+| total_links_checked | threshold efectivo | Vs. actual |
+|---|---|---|
+| 10 | 2 (mínimo absoluto) | más estricto |
+| 50 | 2 | más estricto |
+| 100 | 3 (3%) | más estricto |
+| 200 | 6 (3%) | comparable |
+| 500 | 15 (3%) | menos estricto |
+| 1000 | 30 (3%) | menos estricto |
+
+Para webs pequeñas, el mínimo absoluto 2 evita que sitios mini parezcan limpios con 4-5 broken. Para webs grandes, el 3% evita que sitios decentes (250 páginas con 8 broken) salten alarma por threshold demasiado bajo.
+
+**Consecuencias**:
+
+- ✅ Cobertura completa de los 5 scores Lighthouse + métrica de links proporcional al tamaño.
+- ✅ Operador recibe alertas accionables sobre accesibilidad, seguridad y SEO técnico — áreas hoy invisibles que pueden tener implicaciones legales/SEO reales.
+- ✅ Broken links proporcional reduce falsos positivos en webs grandes y aumenta sensibilidad en webs pequeñas.
+- ✅ Constantes env-overridable (`LIGHTHOUSE_A11Y_MIN_CRITICAL`, etc.) sin requerir nuevos campos por proyecto — el override por proyecto puede venir en futuro ADR si surge necesidad.
+- ⚠️ Más residuales por migración: ~1-3 nuevas en promedio (cliente típico tiene a11y o SEO con margen de mejora). Aceptable: van todas a POST_GO_LIVE (no bloqueantes). El operador puede cerrarlas como "no aplica" tras revisión.
+- ⚠️ Los thresholds elegidos son opinionados. Si Webcafeína decide ser más laxo (a11y < 50 en lugar de < 70), ajusta env vars. Documentar valores recomendados en `docs/despliegue.md`.
+- ⚠️ La regla "broken_links > threshold → BLOCKING" se mantiene (sin cambio en severidad). Solo cambia cuándo se dispara. Para webs muy pequeñas, esto endurece (2 broken pueden bloquear el go-live ahora vs 5 antes); decisión consciente — un sitio de 5 páginas con 2 broken está mal.
+
+**Implementación**: programada para v0.20.0+. Estimación ~2 días.
+
+Tareas listadas en TaskList con prefijo `[ADR-053]`:
+- `qa_runner._create_residual_tasks` extendido: 3 nuevas constantes Lighthouse + fórmula proporcional broken_links + 4 ResidualTask generators nuevos (a11y, bp, seo, broken proporcional).
+- Plantillas de description con causas comunes + links Lighthouse docs.
+- Tests: 8 nuevos cubriendo cada threshold + casos límite (broken=2 con total=10, broken=15 con total=1000, a11y=70 exact, a11y=69 dispara).
+- Actualizar `.env.example` con los 4 nuevos umbrales documentados.
+
+`docs/flujo-migracion.md` se actualizará con la tabla nueva en sección 9.1 (qa - residual tasks generadas).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

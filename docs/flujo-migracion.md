@@ -1646,6 +1646,16 @@ qa_reports:
 | `robots_accessible=False` | CLIENT_CONFIG | 15 min |
 | `sitemap_accessible=False` | CLIENT_CONFIG | 15 min |
 
+> **Próximo cambio (ADR-053 — programado para v0.20.0+)**: la tabla anterior
+> se extenderá con 3 nuevos triggers Lighthouse (a11y < 70, best_practices
+> < 75, SEO < 80) todos POST_GO_LIVE. El threshold de broken_links pasará
+> de `> 5` absoluto a fórmula proporcional `> max(2, total * 3%)` — más
+> estricto en webs pequeñas (2 broken en sitio de 5 páginas ya bloquea),
+> más laxo en webs grandes (15 broken en sitio de 500 páginas no bloquea).
+> Todos los umbrales serán env-overridable (`LIGHTHOUSE_A11Y_MIN_CRITICAL`,
+> etc.) para ajustar globalmente sin redeploy. Override por proyecto queda
+> para ADR futuro si surge necesidad.
+
 #### Status del proyecto tras `qa`
 
 - Si **algún** check bloqueante falla → la fase termina FAILED, lo que vimos en
