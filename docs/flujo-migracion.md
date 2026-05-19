@@ -296,6 +296,15 @@ Si pulsas "Resume" en `qa_failed` o `blocked_human_input`:
   completen las pendientes. Las COMPLETED son idempotentes (re-deploy WP →
   upsert por slug, no duplica).
 
+> **Próximo cambio (ADR-043 — programado para v0.20.0+)**: Resume saltará
+> las fases COMPLETED por defecto, ejecutando solo las que faltan. Para
+> una migración de 30 páginas que falló en `qa`, el Resume rápido tarda
+> ~1-2 min (qa + checklist + clickup + notify) en lugar de ~15 min (lista
+> entera idempotente). El operador podrá marcar un toggle "Re-ejecutar
+> todo desde el principio" en el botón Resume (UI), pasar
+> `--force-rerun-all` (CLI) o `?force_rerun_all=true` (API) para forzar
+> el comportamiento actual cuando sospeche corrupción.
+
 ### 3.8 Lo que ves desde fuera mientras corre
 
 Tres canales en tiempo real, todos partiendo del mismo `_mark_phase`:

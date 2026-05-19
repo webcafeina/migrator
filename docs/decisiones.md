@@ -1217,6 +1217,55 @@ Comportamiento:
 
 ---
 
+## ADR-043 — Resume salta fases COMPLETED por defecto + selector "Re-ejecutar todo"
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: Cuando un proyecto está en `qa_failed` o `blocked_human_input` y el operador pulsa **Resume**, el `Orchestrator` actual re-recorre **toda la lista de 15 fases**. Las que ya estaban COMPLETED se vuelven a ejecutar — son idempotentes (UPSERT por slug/URL) así que el resultado neto es el mismo, pero **el tiempo de ejecución es igual al pipeline original** (~15-25 min para una migración típica).
+
+Decisión original: simplicidad + robustez ("si algo se desincronizó silenciosamente, re-ejecutar lo arregla"). Sin estado adicional necesario.
+
+El problema en la práctica: el 95% de Resume son "arreglé UN problema, ejecuta solo lo que falta". El operador arregla los `broken_links` (residual), pulsa Resume y espera 15 min para que se ejecute `qa` (~30s) + el resto (~30s). El feedback es malísimo.
+
+Se evaluaron 4 opciones (mantener actual, saltar siempre, saltar + flag, control fino con selección manual de fases).
+
+**Decisión**: **Saltar fases COMPLETED por defecto** + **selector "Re-ejecutar todo desde el principio"** disponible en los 3 frentes (UI, CLI, API). El 5% de casos donde se sospecha corrupción tiene escape explícito.
+
+Comportamiento:
+
+- **`Orchestrator.__init__` gana parámetro `force_rerun_all: bool = False`**. La task Celery `wcm.orchestrator.run_project` lo recibe vía kwargs.
+- **`_should_run(spec, project)` extendido**:
+  ```python
+  if not self.resume: return True            # primer Start: siempre ejecuta
+  if self.force_rerun_all: return True       # operador pidió rerun total
+  # Resume normal: saltar fases ya COMPLETED
+  existing = self._get_existing_phase(project.id, spec.phase_name)
+  if existing and existing.status == ProjectPhaseStatus.COMPLETED:
+      return False
+  return True
+  ```
+- **`enqueue_project_pipeline(project_id, *, resume=False, force_rerun_all=False)`** propaga el flag.
+- **Endpoint `POST /api/v1/projects/{id}/resume?force_rerun_all=true`** (query param opcional, default false).
+- **UI — `<ProjectActions>` botón Resume modificado**:
+  - Click simple → modo rápido (saltar COMPLETED).
+  - Toggle inline junto al botón: checkbox "Re-ejecutar todo desde el principio" (default desmarcado). Si marcado, el POST lleva `?force_rerun_all=true`. Microcopy debajo: "Útil si sospechas que una fase COMPLETED dejó algo inconsistente (raro)".
+- **CLI — `wcm projects resume ID [--force-rerun-all/-f]`** con prompt explicativo si el flag está activo: "Re-ejecutará TODAS las 15 fases, no solo las pendientes. Tarda ~15-25 min. ¿Continuar?".
+
+**Consecuencias**:
+
+- ✅ Resume rápido en el 95% de casos: tras arreglar broken_links, Resume tarda ~1-2 min (solo qa + checklist + clickup + notify) en lugar de ~15 min.
+- ✅ Feedback inmediato al operador — se acaba la mala UX de "esperar el mismo tiempo que el pipeline original para verificar un fix pequeño".
+- ✅ Escape `force_rerun_all` cubre el caso raro de "una fase COMPLETED dejó algo corrupto" (típicamente tras crash del worker, kill -9, etc.).
+- ✅ Paridad triple (API + CLI + UI) coherente con la regla de paridad funcional del CLAUDE.md §6.
+- ⚠️ Confianza en `project_phases.status` como fuente de verdad. Si el operador edita manualmente la tabla (no debería) o un crash deja el status en COMPLETED erróneamente, el Resume normal lo salta. El flag está para eso.
+- ⚠️ Las fases saltadas por COMPLETED **no actualizan timestamps ni incrementan attempt**. Eso podría confundir al diagnóstico: "¿cuándo corrió scrape_origin?" → la última vez que NO se saltó. Aceptable; en logs queda "[skipped: already completed in resume]" para trazabilidad.
+- ⚠️ Si una fase COMPLETED depende de output de otra que el operador quiere reejecutar, el flag `--force-rerun-all` es la opción. No hay reejecución selectiva por ahora.
+
+**Implementación**: programada para v0.20.0+. Estimación ~3-4 días: lógica orchestrator + propagación flag (enqueue helper, task Celery kwargs, endpoint, CLI, UI) + tests (saltar COMPLETED, force_rerun_all ignora skip, mezcla con condition_attr) + actualizar `docs/flujo-migracion.md` §3.7 explicando los dos modos. Tareas listadas en TaskList con prefijo `[ADR-043]`.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
