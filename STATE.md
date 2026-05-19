@@ -29,6 +29,39 @@
 
 ## Última versión publicada
 
+**v0.18.0** (2026-05-19) — sprint MINOR (6 bloques) tras feedback del
+operador: el proceso de migración debe verse GRÁFICO y vivo + el
+producto necesita onboarding + soporte para credenciales del back
+del origen. Los 3 ejes en un solo release.
+
+**Vista viva del pipeline**: nuevo componente `PipelineStepper` con
+15 segmentos icono+tooltip (verde completed, lima pulse running, rojo
+failed, ámbar skipped, gris pending). `ProjectPoller` cliente con
+`setInterval(router.refresh, 2000)` activo solo si status ∈
+{queued, running}. Banner "vista viva · actualiza cada 2s" en las 4
+sub-páginas. CLI `wcm projects watch ID` con Rich Live panel.
+
+**Onboarding asistido**: nueva ruta `/projects/new` con wizard 4 pasos
+(origen + credenciales opcionales / destino / features / preflight visual).
+Endpoint `POST /preflight` ejecuta los 4 chequeos en paralelo
+(WP REST+SSH, plugins, origen, credenciales) con timeouts 10s. Persiste
+en `projects.preflight_results_json`. "Crear y arrancar" deshabilitado
+hasta `can_start=true`. CLI `wcm projects preflight` con exit code 1 si
+no can_start.
+
+**Acceso al back del origen**: 4 cols nuevas en projects (Alembic 0008)
+— `source_access_mode` (none/api/full), `source_credentials_encrypted`
+(Fernet). Adapters `WixApiClient` (REST v3) y `WebflowApiClient` (API v2)
+con `list_page_urls()`. Branching en `scraper-origin`: si hay
+credenciales válidas, siembra el BFS con URLs canónicas de la API;
+cualquier fallo → fallback a Playwright tradicional. Endpoint PUT/DELETE
+`/source-credentials` admin-only. CLI `wcm projects set-source-credentials`
+nunca imprime credenciales en stdout.
+
++30 backend / +18 vitest / +7 CLI. Suite **741 pytest + 261 vitest =
+1.002 verde**. Acción operador: aplicar Alembic 0008 + configurar
+`FERNET_KEY` en `.env` del API y worker (misma clave).
+
 **v0.17.0** (2026-05-19) — sprint MINOR (5 bloques): los 3 stubs nicho
 del pipeline pasan a implementación real. **15/15 fases reales** (vs.
 12/15 previas). El flujo de migración cierra su gap funcional.

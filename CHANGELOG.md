@@ -11,6 +11,141 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.18.0] — 2026-05-19
+
+Sprint MINOR: **vista viva del pipeline + onboarding asistido +
+acceso al back del origen (Wix / Webflow)**. Tres ejes que faltaban
+para que el operador pueda usar el producto en su día a día sin
+recargar manualmente, sin fallar a mitad del pipeline por configs
+ausentes, y aprovechando credenciales API del origen cuando el
+cliente las da.
+
+### Added
+
+- **Vista viva del pipeline** — `PipelineStepper` horizontal de 15
+  segmentos con iconos por status (Check verde, Loader2 spin lima,
+  Circle gris, X rojo, SkipForward ámbar). Tooltip CSS-only con
+  duración + summary + error truncado. Scroll-x con snap en mobile.
+  `ProjectPoller` cliente con `setInterval(router.refresh, 2000)`
+  activo solo si status ∈ {queued, running}. Banner "vista viva ·
+  actualiza cada 2s" en las 4 sub-páginas del proyecto.
+- **Migración Alembic 0008** — `0008_source_creds_preflight.py`. Añade
+  a `projects`: `source_access_mode` (CHECK none/api/full, default
+  none), `source_credentials_encrypted` (Fernet TEXT), `preflight_results_json`
+  (JSONB cache), `preflight_at` (TIMESTAMPTZ).
+- **Endpoint `POST /api/v1/projects/{id}/preflight`** — ejecuta 4
+  chequeos en paralelo con `asyncio.gather` (timeout 10s c/u):
+  1. WP destino accesible (REST + SSH TCP banner) — BLOQUEA si falla.
+  2. Plugins (Bricks/GF/WC vía HEAD `/wp-json/{}/`) — informativo.
+  3. Origen accesible (GET source_url) — BLOQUEA si 4xx/5xx.
+  4. Credenciales del origen (Wix/Webflow API ping) — warning, NO
+     bloquea (pipeline cae a scraping Playwright público).
+  Persiste resultado en `projects.preflight_results_json` + `preflight_at`.
+- **Endpoint `PUT /api/v1/projects/{id}/source-credentials`** (admin-only)
+  con schema discriminado por builder (Wix vs Webflow). Cifra con
+  Fernet antes de persistir. NUNCA devuelve credenciales en claro;
+  `ProjectRead.has_source_credentials` solo expone el flag.
+- **Endpoint `DELETE /api/v1/projects/{id}/source-credentials`** vuelve
+  a modo `none` y limpia el ciphertext.
+- **Adapter Wix REST v3** (`apps/worker/src/wcm_worker/integrations/wix_api.py`):
+  `WixApiClient` async con `list_page_urls()` que devuelve URLs canónicas
+  combinando `/site-properties/v4/properties` + `/site-pages/v1/pages`.
+  Errores tipados: `WixApiAuthError`, `WixApiNotFoundError`,
+  `WixApiRateLimitError`. `list_products()` stub para v0.19.0+.
+- **Adapter Webflow Sites API v2** (`webflow_api.py`): espejo del Wix.
+  Combina `/sites/{id}` + `/sites/{id}/pages`. Fallback a subdominio
+  `*.webflow.io` si no hay `customDomain`. `list_collections()` stub.
+- **Branching en `scraper-origin`**: si `project.source_access_mode='api'`
+  y credenciales descifrables → siembra el BFS con las URLs canónicas
+  de la API. Si falla por cualquier motivo (auth/network/descifrado)
+  → cae al BFS tradicional sin propagar. Mejor cobertura: detecta
+  páginas no enlazadas desde el menú público.
+- **Wizard `/projects/new` 4 pasos** (sustituye al `ConvertToProjectDialog`):
+  1. Origen + builder + credenciales opcionales (panel se muestra solo
+     si builder ∈ {wix, webflow}).
+  2. Destino + nota sobre env vars WP_DEFAULT_*.
+  3. Features (e-commerce / multilang / preserve_paths).
+  4. Crear + Preflight visual con `<PreflightDisplay>` (4 cards grid
+     2x2 + lista de blocking_issues + warnings) → "Crear y arrancar"
+     deshabilitado hasta `can_start=true`.
+  Pre-rellena desde `?lead_id=N` si viene.
+- **Componente `PreflightDisplay`**: 4 cards visuales reutilizables.
+  Verde lima OK / rojo bloqueante / ámbar aviso / gris pendiente.
+  Plugins card con counter `presentes/total`.
+- **CLI v0.18.0**:
+  - `wcm projects preflight ID` — ejecuta los 4 checks, imprime cada
+    uno con icono ✓/✗/⚠ y devuelve exit code 1 si `can_start=false`.
+  - `wcm projects watch ID [--interval 2.0]` — Rich `Live` panel con
+    stepper 15 fases actualizándose hasta status terminal. Ctrl+C limpio.
+  - `wcm projects set-source-credentials ID --builder wix|webflow
+    --api-key/--api-token X --site-id Y` — admin-only. NUNCA imprime
+    credenciales en stdout.
+- **Helpers Fernet duplicados**: API
+  (`apps/api/src/wcm_api/services/source_credentials.py` con encrypt+decrypt)
+  y worker (`apps/worker/src/wcm_worker/integrations/source_credentials.py`
+  solo decrypt). Extraer a paquete compartido es scope futuro.
+
+### Changed
+
+- **`ConvertToProjectDialog` eliminado**. El botón "Convertir a
+  proyecto" del lead navega a `/projects/new?lead_id=N`.
+- **`ProjectHeader`** acepta prop nueva `phases?: ProjectPhaseRead[]` y
+  renderiza `<PipelineStepper>` debajo de la `PhaseProgressBar` cuando
+  está disponible.
+- **`Project.has_source_credentials`** — `@property` derivada de
+  `source_credentials_encrypted` para exponer el flag sin revelar el
+  ciphertext (Pydantic con `from_attributes=True` lo recoge).
+
+### Decisions
+
+- **Polling 2s vs SSE**: elegimos polling con `router.refresh()` por
+  simplicidad y compatibilidad con SSR de Next 15. SSE queda planificado
+  pero fuera de sprint.
+- **Wix Headless / REST v3 únicamente** (no Wix clásico XML). Documentado
+  como limitación.
+- **Credenciales del origen siempre admin-only**: PUT/DELETE requieren
+  rol admin (no operator). Razón: son secretos del cliente.
+- **Fernet duplicado en API + worker**: pragmático (30 LOC × 2)
+  vs. paquete compartido (over-engineering en v0.18.0).
+- **Cifrar credenciales antes de persistir**: trade-off conocido — si
+  el operador rota `FERNET_KEY` hay que re-introducirlas. Mismo riesgo
+  que `deploy_credentials_encrypted`.
+
+### Migración
+
+- `0008_source_creds_preflight.py` — 4 cols nuevas en `projects`. Sin
+  downtime, default `none` para `source_access_mode` (compatible con
+  proyectos existentes).
+
+### Tests
+
+- **Backend**: +30 (preflight router 6, source-credentials router 7,
+  source-credentials service 5, Wix API 9, Webflow API 8, scraper-origin
+  branching 6). Total Python: **741 verde** (10 skipped).
+- **Dashboard**: +18 vitest (pipeline-stepper 6, preflight-display 6,
+  new-project-wizard 6). Total: **261 verde**.
+- **CLI**: +7 (preflight + set-source-credentials con todas las
+  validaciones de CLI flags).
+
+### Acción pendiente del operador (despliegue)
+
+- Aplicar migración 0008: `alembic upgrade head` con
+  `DATABASE_SYNC_URL` apuntando a Postgres del entorno.
+- Configurar `FERNET_KEY` en el `.env` del API y del worker (misma
+  clave): `python -c 'from cryptography.fernet import Fernet;
+  print(Fernet.generate_key().decode())'`. Sin ella, el PUT
+  /source-credentials devuelve 503 (graceful).
+- Para probar adapters Wix/Webflow end-to-end: lead piloto + API key
+  real de uno de los dos builders. Sin esto el bloque D va con mocks
+  pero la fase no se valida real.
+
+### Siguiente
+
+- v0.19.0: SSE para reactividad sub-segundo, adapter Hostinger AI,
+  vista "fleet" multi-proyecto con stepper resumido.
+
+---
+
 ## [0.17.0] — 2026-05-19
 
 Sprint MINOR: **los 3 stubs nicho del pipeline pasan a implementación
