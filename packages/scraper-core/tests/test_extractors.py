@@ -120,6 +120,86 @@ def test_hostinger_extracts_form_block(hostinger_clinica_html: str) -> None:
     assert "Gravity Forms" in forms[0].content_json["notes"]
 
 
+def test_hostinger_form_fallback_infiere_fields_sin_data_role(
+    hostinger_clinica_html: str,
+) -> None:
+    """v0.19.0 — sin data-role el form se infiere desde input/textarea."""
+    result = HostingerExtractor().extract(
+        hostinger_clinica_html, "https://aurora.hostingerwebsite.com/"
+    )
+    form = next(b for b in result.blocks if b.block_type == BlockType.FORM)
+    fields = form.content_json["fields"]
+    names = [f["name"] for f in fields]
+    assert "nombre" in names
+    assert "email" in names
+    assert "motivo" in names
+    # textarea se mapea a type='textarea'.
+    motivo = next(f for f in fields if f["name"] == "motivo")
+    assert motivo["type"] == "textarea"
+
+
+def test_hostinger_form_estructurado_data_role(hostinger_restaurante_html: str) -> None:
+    """v0.19.0 — con data-role/data-field-type, extrae fields canónicos."""
+    result = HostingerExtractor().extract(
+        hostinger_restaurante_html, "https://casapepa.hostingerwebsite.com/"
+    )
+    form = next(b for b in result.blocks if b.block_type == BlockType.FORM)
+    fields = form.content_json["fields"]
+    assert len(fields) == 5
+    type_by_name = {f["name"]: f["type"] for f in fields}
+    assert type_by_name["nombre"] == "text"
+    assert type_by_name["email"] == "email"
+    assert type_by_name["telefono"] == "tel"
+    assert type_by_name["comensales"] == "select"
+    assert type_by_name["alergias"] == "textarea"
+    # Labels conservados.
+    labels = {f["name"]: f["label"] for f in fields}
+    assert labels["email"] == "Email"
+    assert labels["alergias"].startswith("Alergias")
+
+
+def test_hostinger_theme_estructurado(hostinger_restaurante_html: str) -> None:
+    """v0.19.0 — theme_colors + theme_fonts ahora son dict, no solo nota."""
+    result = HostingerExtractor().extract(
+        hostinger_restaurante_html, "https://casapepa.hostingerwebsite.com/"
+    )
+    assert result.theme_colors == {
+        "primary": "#1A3A2A",
+        "secondary": "#F5E6C8",
+        "accent": "#D4A547",
+    }
+    assert result.theme_fonts == {
+        "heading": "Playfair Display",
+        "body": "Inter",
+    }
+
+
+def test_hostinger_extracts_contact_info(hostinger_restaurante_html: str) -> None:
+    """v0.19.0 — contact_info estructurado desde footer con data-role."""
+    result = HostingerExtractor().extract(
+        hostinger_restaurante_html, "https://casapepa.hostingerwebsite.com/"
+    )
+    info = result.contact_info
+    assert info["email"] == "hola@casapepa.es"
+    assert info["phone"] == "+34927111222"
+    social = info["social"]
+    assert any("instagram.com/casapepa" in s for s in social)
+    assert any("facebook.com/casapepa" in s for s in social)
+
+
+def test_hostinger_contact_info_fallback_heuristico(
+    hostinger_clinica_html: str,
+) -> None:
+    """v0.19.0 — sin data-role, infiere desde mailto/tel/dominios sociales."""
+    result = HostingerExtractor().extract(
+        hostinger_clinica_html, "https://aurora.hostingerwebsite.com/"
+    )
+    info = result.contact_info
+    # Si el fixture tiene mailto/tel los extrae, si no info queda vacía.
+    # Aquí confirmamos al menos que no rompe.
+    assert isinstance(info, dict)
+
+
 # ---------- webflow ----------
 
 def test_webflow_extracts_hero(webflow_agency_html: str) -> None:

@@ -77,6 +77,8 @@ class HostingerExtractor:
         result.asset_urls = self._extract_image_urls(soup)
         result.font_urls = self._extract_font_urls(html)
         result.video_urls = self._extract_video_urls(soup)
+        # v0.19.0 — info de contacto estructurada.
+        result.contact_info = self._extract_contact_info(soup)
 
         return result
 
@@ -138,9 +140,57 @@ class HostingerExtractor:
                 "author": author.get_text(strip=True) if author else "",
             }
         if block_type is BlockType.FORM:
-            return {"fields": [], "notes": "Hostinger Form — recrear en Gravity Forms"}
+            return self._extract_form(section)
         # default
         return {"raw_html": str(section)[:3000]}
+
+    def _extract_form(self, section: Tag) -> dict:
+        """v0.19.0 — extrae fields estructurados del form Hostinger.
+
+        Hostinger marca cada campo con `data-role="form-field"` y
+        `data-field-type` (text/email/tel/textarea/select). Lo mapeamos
+        a {type, name, label, required} para que `forms-rebuilder` no
+        tenga que re-parsear el HTML.
+        """
+        fields: list[dict] = []
+        # Camino estructurado moderno con data-role.
+        for el in section.find_all(attrs={"data-role": "form-field"}):
+            field_type = (el.get("data-field-type") or "text").lower()
+            name_input = el.find(["input", "textarea", "select"])
+            name = name_input.get("name") if name_input else None
+            label_el = el.find(attrs={"data-role": "field-label"}) or el.find("label")
+            fields.append(
+                {
+                    "type": field_type,
+                    "name": name or "",
+                    "label": label_el.get_text(strip=True) if label_el else "",
+                    "required": (name_input.get("required") is not None) if name_input else False,
+                }
+            )
+        # Fallback: si no hay data-role, inferir desde input/textarea/select del DOM.
+        if not fields:
+            for inp in section.find_all(["input", "textarea", "select"]):
+                t = (inp.get("type") if inp.name == "input" else inp.name) or "text"
+                if t.lower() in {"submit", "button", "hidden"}:
+                    continue
+                label_for_id = inp.get("id")
+                label = ""
+                if label_for_id:
+                    lbl = section.find("label", attrs={"for": label_for_id})
+                    if lbl:
+                        label = lbl.get_text(strip=True)
+                fields.append(
+                    {
+                        "type": t.lower(),
+                        "name": inp.get("name") or "",
+                        "label": label,
+                        "required": inp.get("required") is not None,
+                    }
+                )
+        return {
+            "fields": fields,
+            "notes": "Hostinger Form — recrear en Gravity Forms",
+        }
 
     def _extract_hero(self, section: Tag) -> dict:
         headline = section.find(attrs={"data-role": "headline"}) or section.find("h1")
@@ -165,19 +215,82 @@ class HostingerExtractor:
         return {"html": str(section)[:10000]}
 
     def _collect_theme_hints(self, html: str, result: ExtractionResult) -> None:
+        """Extrae paleta + tipografía a campos estructurados (v0.19.0).
+
+        Antes solo se añadía un note humano-legible; ahora se rellenan
+        `result.theme_colors` y `result.theme_fonts` para que el
+        bricks-transpiler los aplique a Theme Styles globales.
+        """
         # CSS variables --hostai-* del <html>
         colors = re.findall(r'--hostai-(primary|secondary|accent):\s*([^;]+);', html)
         if colors:
+            for key, val in colors:
+                result.theme_colors[key] = val.strip()
             result.notes.append(
                 "Theme colors detectados: "
-                + ", ".join(f"{k}={v.strip()}" for k, v in colors)
+                + ", ".join(f"{k}={v}" for k, v in result.theme_colors.items())
             )
         fonts = re.findall(r'--hostai-font-(heading|body):\s*([^;]+);', html)
         if fonts:
+            for key, val in fonts:
+                result.theme_fonts[key] = val.strip().strip('"\'')
             result.notes.append(
                 "Theme fonts detectados: "
-                + ", ".join(f"{k}={v.strip()}" for k, v in fonts)
+                + ", ".join(f"{k}={v}" for k, v in result.theme_fonts.items())
             )
+
+    def _extract_contact_info(self, soup: BeautifulSoup) -> dict[str, str | list[str]]:
+        """Email + teléfono + social desde footer/header con `data-role`.
+
+        Patrones soportados:
+        - `data-role="contact-email"`, `contact-phone`, `social-link`.
+        - Fallback: `<a href="mailto:...">`, `<a href="tel:...">`,
+          dominios sociales conocidos en `<a href>`.
+        """
+        info: dict[str, str | list[str]] = {}
+        # Estructurado — preferimos el href (sin espacios) cuando exista
+        # (los humanos formatean teléfonos con espacios, pero tel: debe ir
+        # canónico sin ellos para la API/CRM).
+        email_el = soup.find(attrs={"data-role": "contact-email"})
+        if email_el:
+            href = email_el.get("href", "").removeprefix("mailto:").split("?")[0]
+            info["email"] = href or email_el.get_text(strip=True)
+        phone_el = soup.find(attrs={"data-role": "contact-phone"})
+        if phone_el:
+            href = phone_el.get("href", "").removeprefix("tel:")
+            info["phone"] = href or phone_el.get_text(strip=True)
+        socials: list[str] = []
+        for s in soup.find_all(attrs={"data-role": "social-link"}):
+            if s.get("href"):
+                socials.append(s["href"])
+        # Fallback heurístico (a href mailto/tel + dominios sociales).
+        if "email" not in info:
+            mail_a = soup.find("a", href=re.compile(r"^mailto:"))
+            if mail_a:
+                info["email"] = mail_a["href"].removeprefix("mailto:").split("?")[0]
+        if "phone" not in info:
+            tel_a = soup.find("a", href=re.compile(r"^tel:"))
+            if tel_a:
+                info["phone"] = tel_a["href"].removeprefix("tel:")
+        if not socials:
+            social_domains = (
+                "facebook.com",
+                "instagram.com",
+                "twitter.com",
+                "x.com",
+                "linkedin.com",
+                "youtube.com",
+                "tiktok.com",
+            )
+            for a in soup.find_all("a", href=True):
+                h = a["href"]
+                if any(d in h for d in social_domains):
+                    socials.append(h)
+        if socials:
+            # Dedupe preservando orden.
+            seen = set()
+            info["social"] = [s for s in socials if not (s in seen or seen.add(s))]
+        return info
 
     def _extract_image_urls(self, soup: BeautifulSoup) -> list[str]:
         urls: set[str] = set()

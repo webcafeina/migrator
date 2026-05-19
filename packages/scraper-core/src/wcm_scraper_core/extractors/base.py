@@ -42,6 +42,14 @@ class ExtractionResult:
     page_title: str | None = None
     detected_classes: set[str] = field(default_factory=set)
     notes: list[str] = field(default_factory=list)
+    #: v0.19.0 — Theme colors detectados (`{primary, secondary, accent}`).
+    #: Bricks-transpiler los aplica a Theme Styles globales.
+    theme_colors: dict[str, str] = field(default_factory=dict)
+    #: v0.19.0 — Theme fonts detectados (`{heading, body}`).
+    theme_fonts: dict[str, str] = field(default_factory=dict)
+    #: v0.19.0 — Información de contacto extraída (email, phone, social).
+    #: Útil para sembrar el form de contacto y residuales del checklist.
+    contact_info: dict[str, str | list[str]] = field(default_factory=dict)
 
 
 class BuilderExtractor(Protocol):

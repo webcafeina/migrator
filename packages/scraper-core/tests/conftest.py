@@ -24,5 +24,12 @@ def hostinger_clinica_html() -> str:
 
 
 @pytest.fixture()
+def hostinger_restaurante_html() -> str:
+    """Fixture v0.19.0 con form estructurado (data-role/data-field-type),
+    contact info en footer y theme variables."""
+    return _load("hostinger/restaurante.html")
+
+
+@pytest.fixture()
 def webflow_agency_html() -> str:
     return _load("webflow/agency.html")
