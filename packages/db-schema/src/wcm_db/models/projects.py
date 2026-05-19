@@ -62,6 +62,33 @@ class Project(Base, TimestampMixin):
     checklist_md_url: Mapped[str | None] = mapped_column(String(500))
     checklist_pdf_url: Mapped[str | None] = mapped_column(String(500))
 
+    # v0.18.0 — acceso al back del origen + onboarding asistido.
+    # `source_access_mode`:
+    #   - 'none' (default): scraping HTTP público, sin credenciales.
+    #   - 'api': el cliente nos dio API key/token oficial (Wix REST v3,
+    #     Webflow Sites API) → `scraper-origin` la usa con fallback a
+    #     Playwright si falla.
+    #   - 'full': acceso completo al back (login admin). Reservado para
+    #     futuro; hoy se trata como 'api'.
+    source_access_mode: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="none", server_default="none"
+    )
+    # JSON cifrado con Fernet (misma clave que deploy_credentials_encrypted).
+    # Estructura depende del builder:
+    #   Wix:     {"api_key": "...", "site_id": "..."}
+    #   Webflow: {"api_token": "...", "site_id": "..."}
+    source_credentials_encrypted: Mapped[str | None] = mapped_column(Text)
+    # Cache del último resultado del endpoint POST /preflight.
+    preflight_results_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    preflight_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    @property
+    def has_source_credentials(self) -> bool:
+        """Derived field expuesto en ProjectRead — no expone el
+        ciphertext, solo si hay algo configurado. Pydantic con
+        `from_attributes=True` lo recoge automáticamente."""
+        return bool(self.source_credentials_encrypted)
+
     status: Mapped[ProjectStatus] = mapped_column(
         Enum(ProjectStatus, name="project_status", native_enum=False, length=32),
         nullable=False,

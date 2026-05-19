@@ -46,10 +46,15 @@ from wcm_types.schemas.outreach import (
     OutreachSequenceRead,
 )
 from wcm_types.schemas.projects import (
+    PreflightCheck,
+    PreflightResult,
     ProjectCreate,
     ProjectPhaseRead,
     ProjectRead,
     ProjectUpdate,
+    SourceCredentialsUpdate,
+    WebflowSourceCredentials,
+    WixSourceCredentials,
 )
 from wcm_types.schemas.qa_reports import QaReportRead
 from wcm_types.schemas.residual_tasks import ResidualTaskCreate, ResidualTaskRead
@@ -94,11 +99,16 @@ __all__ = [
     "OutreachSendRead",
     "OutreachSequenceCreate",
     "OutreachSequenceRead",
+    "PreflightCheck",
+    "PreflightResult",
     "ProjectCreate",
     "ProjectPhaseRead",
     "ProjectRead",
     "ProjectUpdate",
     "QaReportRead",
+    "SourceCredentialsUpdate",
+    "WebflowSourceCredentials",
+    "WixSourceCredentials",
     "ResidualTaskCreate",
     "ResidualTaskRead",
     "ScrapedPageRead",

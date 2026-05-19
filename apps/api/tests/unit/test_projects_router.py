@@ -45,6 +45,8 @@ async def test_create_project(client, operator_token, fake_session) -> None:
         obj.status = ProjectStatus.QUEUED
         obj.created_at = datetime.now(UTC)
         obj.updated_at = datetime.now(UTC)
+        # v0.18.0 — server defaults nuevos
+        obj.source_access_mode = "none"
 
     fake_session.refresh.side_effect = _refresh_side_effect
 

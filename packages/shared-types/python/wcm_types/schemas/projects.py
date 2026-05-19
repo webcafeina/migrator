@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Annotated, Any, Literal
 
 from pydantic import Field, HttpUrl
 
@@ -53,10 +53,69 @@ class ProjectRead(ProjectBase, TimestampedRead):
     # checklist-generator. null hasta que el agent ejecute.
     checklist_md_url: str | None = None
     checklist_pdf_url: str | None = None
+    # v0.18.0 — acceso al back del origen + cache preflight.
+    # Las credenciales NUNCA se exponen en claro; solo el modo es público.
+    source_access_mode: Literal["none", "api", "full"] = "none"
+    has_source_credentials: bool = False
+    preflight_results_json: dict[str, Any] | None = None
+    preflight_at: datetime | None = None
     status: ProjectStatus
     started_at: datetime | None
     completed_at: datetime | None
     estimated_go_live_at: datetime | None
+
+
+# ---------- v0.18.0: source credentials por builder ----------
+
+
+class WixSourceCredentials(WcmModel):
+    """Credenciales para Wix REST v3 (Wix Headless API)."""
+
+    builder: Literal["wix"]
+    api_key: str = Field(min_length=20, max_length=512)
+    site_id: str = Field(min_length=8, max_length=64)
+
+
+class WebflowSourceCredentials(WcmModel):
+    """Credenciales para Webflow Sites/CMS API v2."""
+
+    builder: Literal["webflow"]
+    api_token: str = Field(min_length=20, max_length=512)
+    site_id: str = Field(min_length=8, max_length=64)
+
+
+#: Union discriminada por el campo `builder`. Cualquier futuro adapter
+#: (Squarespace, Shopify, Hostinger) añade su tipo aquí y FastAPI valida
+#: el payload de PUT /source-credentials automáticamente.
+SourceCredentialsUpdate = Annotated[
+    WixSourceCredentials | WebflowSourceCredentials,
+    Field(discriminator="builder"),
+]
+
+
+# ---------- v0.18.0: preflight ----------
+
+
+class PreflightCheck(WcmModel):
+    """Resultado de un check individual del preflight."""
+
+    ok: bool
+    message: str
+    blocking: bool = False
+    extras: dict[str, Any] | None = None
+
+
+class PreflightResult(WcmModel):
+    """Respuesta completa de POST /projects/{id}/preflight."""
+
+    wp_target: PreflightCheck
+    plugins: dict[str, bool]  # {"bricks": True, "gravity_forms": True, ...}
+    source: PreflightCheck
+    source_credentials: PreflightCheck
+    can_start: bool
+    blocking_issues: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    executed_at: datetime
 
 
 class ProjectPhaseRead(WcmModel):

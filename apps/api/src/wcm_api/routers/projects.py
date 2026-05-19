@@ -21,6 +21,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import require_role
+from wcm_api.services.preflight import run_preflight, serialize_preflight_for_db
+from wcm_api.services.source_credentials import (
+    FernetNotConfiguredError,
+    encrypt_source_credentials,
+)
 from wcm_api.tasks.enqueue import enqueue_project_pipeline
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
@@ -35,10 +40,12 @@ from wcm_types.enums import (
     UserRole,
 )
 from wcm_types.schemas.projects import (
+    PreflightResult,
     ProjectCreate,
     ProjectPhaseRead,
     ProjectRead,
     ProjectUpdate,
+    SourceCredentialsUpdate,
 )
 from wcm_types.schemas.qa_reports import QaReportRead
 from wcm_types.schemas.visual_diffs import (
@@ -50,6 +57,7 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 
 _any_user = require_role(UserRole.ADMIN.value, UserRole.OPERATOR.value, UserRole.VIEWER.value)
 _operator_or_admin = require_role(UserRole.ADMIN.value, UserRole.OPERATOR.value)
+_admin_only = require_role(UserRole.ADMIN.value)
 
 
 @router.get("", response_model=list[ProjectRead])
@@ -502,3 +510,94 @@ async def download_checklist(
         )
 
     raise NotFoundError(f"URL del checklist no reconocida: {url[:60]}")
+
+
+# ---------- v0.18.0: preflight + source credentials ----------
+
+
+@router.post("/{project_id}/preflight", response_model=PreflightResult)
+async def preflight_project(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> PreflightResult:
+    """Ejecuta los 4 chequeos pre-Start del proyecto y persiste el
+    resultado en `projects.preflight_results_json` + `preflight_at`
+    para cache client-side.
+
+    Los 4 chequeos:
+    1. WP destino accesible (REST + SSH) — BLOQUEA si falla.
+    2. Plugins detectados (Bricks/GF/WC) — informativo.
+    3. Origen accesible — BLOQUEA si 4xx/5xx.
+    4. Credenciales del origen (si configuradas) — warning, NO bloquea.
+
+    Cada chequeo tiene timeout 10s. Ejecutados en paralelo (~10s total).
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    result = await run_preflight(project)
+    project.preflight_results_json = serialize_preflight_for_db(result)
+    project.preflight_at = result.executed_at
+    await session.commit()
+    return result
+
+
+@router.put("/{project_id}/source-credentials", response_model=ProjectRead)
+async def put_source_credentials(
+    project_id: int,
+    payload: SourceCredentialsUpdate,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_admin_only)],
+) -> ProjectRead:
+    """Guarda credenciales del back del origen cifradas con Fernet.
+
+    Admin-only — son secretos. El endpoint nunca devuelve las
+    credenciales en claro; `ProjectRead.has_source_credentials` solo
+    indica si están configuradas.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    payload_dict = payload.model_dump()
+    builder = payload_dict.pop("builder")
+    # Sanity: el builder del payload debe coincidir con el del proyecto
+    # (si está fijado). Evita configurar Wix por error en un proyecto Webflow.
+    if project.builder_source and project.builder_source.value != builder:
+        raise ConflictError(
+            f"El proyecto tiene builder_source={project.builder_source.value} "
+            f"pero las credenciales son para builder={builder}."
+        )
+
+    try:
+        encrypted = encrypt_source_credentials(payload_dict)
+    except FernetNotConfiguredError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=503, detail=str(e)) from e
+
+    project.source_credentials_encrypted = encrypted
+    project.source_access_mode = "api"
+    await session.commit()
+    await session.refresh(project)
+    return ProjectRead.model_validate(project)
+
+
+@router.delete("/{project_id}/source-credentials", status_code=204)
+async def delete_source_credentials(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_admin_only)],
+) -> Response:
+    """Borra las credenciales del back del origen y vuelve a modo `none`."""
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    project.source_credentials_encrypted = None
+    project.source_access_mode = "none"
+    await session.commit()
+    return Response(status_code=204)
+
+

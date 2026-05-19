@@ -1,7 +1,7 @@
 // AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
 // Source: packages/shared-types/python/wcm_types/
 // Regenerate with: pnpm gen:types  (or bash scripts/gen-ts.sh)
-// Generated at: 2026-05-19T09:51:20Z
+// Generated at: 2026-05-19T11:16:47Z
 
 /* tslint:disable */
 /* eslint-disable */
@@ -349,6 +349,32 @@ export interface OutreachSequenceRead {
   legal_validation_passed: boolean;
   legal_validator_version: string | null;
 }
+/**
+ * Resultado de un check individual del preflight.
+ */
+export interface PreflightCheck {
+  ok: boolean;
+  message: string;
+  blocking?: boolean;
+  extras?: {
+    [k: string]: unknown;
+  } | null;
+}
+/**
+ * Respuesta completa de POST /projects/{id}/preflight.
+ */
+export interface PreflightResult {
+  wp_target: PreflightCheck;
+  plugins: {
+    [k: string]: boolean;
+  };
+  source: PreflightCheck;
+  source_credentials: PreflightCheck;
+  can_start: boolean;
+  blocking_issues?: string[];
+  warnings?: string[];
+  executed_at: string;
+}
 export interface ProjectCreate {
   client_name: string;
   source_url: string;
@@ -406,6 +432,12 @@ export interface ProjectRead {
   visual_diff_avg_score: number | null;
   checklist_md_url?: string | null;
   checklist_pdf_url?: string | null;
+  source_access_mode?: "none" | "api" | "full";
+  has_source_credentials?: boolean;
+  preflight_results_json?: {
+    [k: string]: unknown;
+  } | null;
+  preflight_at?: string | null;
   status: ProjectStatus;
   started_at: string | null;
   completed_at: string | null;
@@ -556,6 +588,22 @@ export interface VisualDiffsListResponse {
   avg_score?: number | null;
   pages_total: number;
   pages: VisualDiffRead[];
+}
+/**
+ * Credenciales para Webflow Sites/CMS API v2.
+ */
+export interface WebflowSourceCredentials {
+  builder: "webflow";
+  api_token: string;
+  site_id: string;
+}
+/**
+ * Credenciales para Wix REST v3 (Wix Headless API).
+ */
+export interface WixSourceCredentials {
+  builder: "wix";
+  api_key: string;
+  site_id: string;
 }
 export interface WooProductRead {
   created_at: string;
