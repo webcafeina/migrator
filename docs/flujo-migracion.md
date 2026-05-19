@@ -282,6 +282,15 @@ dashboard se entere al instante.
 | **`Exception` genérico** | marca FAILED + BLOCKED + aborta | marca FAILED + BLOCKED + aborta (más conservador) |
 | **(éxito)** | COMPLETED + sigue | COMPLETED + sigue |
 
+> **Próximo cambio (ADR-049 — programado para v0.20.0+)**: la fila
+> "`Exception` genérico + `required=False`" pasará a **continuar** (mismo
+> comportamiento que `AgentError` en no required). El flag `required`
+> gobernará lo que para o no, no el tipo de excepción. Una imagen corrupta
+> en `optimize_assets`, un Chromium crash en `visual_diff` o un W3C
+> validator caído en `qa` ya no abortarán el pipeline entero — quedarán
+> como `failed_phase` para diagnóstico pero el resto sigue. `required=True`
+> mantiene el comportamiento conservador (aborta).
+
 ### 3.6 Estado final del proyecto
 
 Tras procesar las 15 fases, el orchestrator decide el status final:

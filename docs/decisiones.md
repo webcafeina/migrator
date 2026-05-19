@@ -1631,6 +1631,71 @@ CLI: `wcm projects start ID` mantiene comportamiento exterior; internamente espe
 
 ---
 
+## ADR-049 — `Exception` genérica en fase no required: FAILED pero continúa
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: El `Orchestrator` actual maneja 3 tipos de error en cada fase:
+
+```python
+except AgentNotImplementedError:    # SKIPPED + sigue
+except AgentError:                    # FAILED + sigue si required=False, aborta si required=True
+except Exception:                     # FAILED + aborta SIEMPRE (incluso si required=False)
+```
+
+El último caso (catch-all de `Exception`) es **más conservador** que `AgentError`: cualquier excepción no tipada aborta el pipeline aunque la fase sea `required=False`. La intención original: una excepción no esperada sugiere bug, mejor parar a investigar.
+
+El problema en la práctica: hay excepciones legítimas que los agentes no anticiparon como `AgentError` tipado:
+
+- `playwright._impl._errors.Error` si Chromium crashea con un PNG corrupto durante visual_diff.
+- `httpx.ConnectError` si el W3C validator está caído (caso raro pero real).
+- `PIL.UnidentifiedImageError` si una imagen del origen está corrupta en optimize_assets.
+
+Hoy estas excepciones abortan TODO el pipeline aunque la fase es `required=False`. El operador investiga 30 min para descubrir que era una imagen rota que ya está marcada FAILED en `assets`.
+
+Se evaluaron 4 opciones (mantener, alinear con AgentError, whitelist recuperables, cada agente declara).
+
+**Decisión**: **Opción 2 — `Exception` genérica en fase `required=False` se trata igual que `AgentError`: FAILED + continúa**. La fase queda marcada como `failed_phase` para diagnóstico, pero el pipeline sigue procesando las siguientes fases.
+
+Para `required=True` el comportamiento sigue siendo "aborta el pipeline" (sin cambios).
+
+Comportamiento exacto del catch-all extendido:
+
+```python
+except Exception as e:
+    log.exception("phase_unexpected_error", extra={"phase": spec.phase_name})
+    self._mark_phase(
+        project_id, spec.phase_name, ProjectPhaseStatus.FAILED,
+        summary=f"{type(e).__name__}: {e}"
+    )
+    outcome.failed_phase = spec.phase_name
+    if spec.required:
+        # required → aborta como antes
+        project.status = ProjectStatus.BLOCKED_HUMAN_INPUT
+        outcome.final_status = ProjectStatus.BLOCKED_HUMAN_INPUT
+        self.session.flush()
+        return outcome
+    # ADR-049: no required → continúa con la siguiente fase
+    # (mismo comportamiento que AgentError en no required)
+```
+
+**Consecuencias**:
+
+- ✅ Principio simple y predecible: **el flag `required` gobierna lo que para o no**, no el tipo de excepción.
+- ✅ Una corrupción aislada (imagen rota, validator W3C caído, Chromium crash en una página) no detiene el pipeline entero. Las fases posteriores corren y entregan el valor parcial.
+- ✅ Cambio mínimo (~3 LOC del except + tests). Bajo riesgo.
+- ✅ Coherente con la filosofía "el pipeline degrada elegantemente" que ya gobierna `migrate_woo`, `rebuild_forms`, etc.
+- ⚠️ Si la excepción es de un problema sistémico (OOM, disco lleno, BD corrupta), las fases siguientes probablemente también fallarán → el pipeline para naturalmente. No perdemos protección frente a problemas graves.
+- ⚠️ Operador puede ver "QA_FAILED" al final del pipeline aunque ninguna fase required falló — porque alguna fase no required tuvo Exception genérica. La UI ya muestra `failed_phase` en el header, queda claro qué pasó.
+- ⚠️ Los logs structlog con `phase_unexpected_error` siguen siendo críticos para diagnóstico — el operador debe revisar la fase concreta tras un `QA_FAILED`.
+
+**Decisión adicional**: la regla "Exception genérica en `required=True` aborta + BLOCKED" se mantiene **estrictamente** porque las fases required son el camino crítico — un fallo allí no debe enmascararse. La asimetría required/no-required es deliberada.
+
+**Implementación**: programada para v0.20.0+. Estimación ~1 día (3 LOC del orchestrator + 4 tests cubriendo: Exception en required=True sigue abortando, Exception en required=False ahora continúa, AgentError sigue siendo manejada como antes, sin regresión en `failed_phase` tracking). Tarea registrada en TaskList con prefijo `[ADR-049]`.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
