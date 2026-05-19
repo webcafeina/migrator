@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { GitCompare, Info } from "lucide-react";
 
 import { ApiError, api } from "@/lib/api";
 import type { ProjectRead } from "@/types/api";
@@ -10,13 +9,32 @@ import {
   type ProjectSummaryData,
 } from "../_components/project-header";
 
+import { DiffGallery } from "./_components/diff-gallery";
+
+interface VisualDiffsResponse {
+  project_id: number;
+  avg_score: number | null;
+  pages_total: number;
+  pages: Array<{
+    id: number;
+    project_id: number;
+    page_path: string;
+    source_screenshot_url: string | null;
+    target_screenshot_url: string | null;
+    overlay_url: string | null;
+    score: number | null;
+    viewport_width: number;
+    created_at: string;
+    updated_at: string;
+  }>;
+}
+
 /**
- * `/projects/[id]/diff` — placeholder consciente. La galería visual
- * diff origen vs destino sigue pendiente de implementación. Mientras,
- * mostramos el header coherente con las otras sub-páginas y una
- * tarjeta explicando el flujo previsto (sin la mentira "Fase 10" del
- * placeholder anterior — visual diff ya tiene infra en
- * `packages/visual-diff/`, falta solo conectarlo a esta UI).
+ * `/projects/[id]/diff` — galería visual diff origen vs destino (v0.16.0).
+ *
+ * Server Component que fetcha los 3 datos en paralelo (project,
+ * summary, visual_diffs) y los pasa al `<DiffGallery>` cliente para
+ * interacción (modal full-size).
  */
 export default async function DiffPage({
   params,
@@ -32,14 +50,17 @@ export default async function DiffPage({
     throw e;
   }
 
-  const summary = await api
-    .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
-    .catch(() => emptySummary(project.id));
+  const [summary, diffs] = await Promise.all([
+    api
+      .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
+      .catch(() => emptySummary(project.id)),
+    api
+      .get<VisualDiffsResponse>(`/api/v1/projects/${id}/visual-diffs`)
+      .catch(() => emptyDiffs(project.id)),
+  ]);
 
   const scorePct =
-    project.visual_diff_avg_score != null
-      ? Math.round(project.visual_diff_avg_score * 100)
-      : null;
+    diffs.avg_score != null ? Math.round(diffs.avg_score * 100) : null;
 
   return (
     <div className="space-y-5">
@@ -54,7 +75,8 @@ export default async function DiffPage({
       <section className="space-y-3">
         <header className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-            Visual diff
+            Visual diff · {diffs.pages_total} página
+            {diffs.pages_total === 1 ? "" : "s"}
           </h2>
           {scorePct != null && (
             <span className="text-[10.5px] tabular-nums text-muted-foreground">
@@ -64,55 +86,13 @@ export default async function DiffPage({
           )}
         </header>
 
-        <div className="rounded-sm border border-wcm-detail/40 bg-wcm-secondary/30 p-6">
-          <div className="flex items-start gap-3">
-            <GitCompare
-              className="h-5 w-5 shrink-0 text-wcm-accent"
-              aria-hidden
-            />
-            <div className="space-y-3 text-sm text-wcm-text/80">
-              <p>
-                La galería visual diff (origen vs destino con overlay de
-                divergencias) está pendiente de conectar a esta UI. La
-                infraestructura del worker ya existe en{" "}
-                <code className="text-wcm-text">
-                  packages/visual-diff/
-                </code>
-                .
-              </p>
-              <ol className="ml-4 list-decimal space-y-1 text-xs text-muted-foreground">
-                <li>
-                  <code className="text-wcm-text">VisualDiffAgent</code>
-                  {" "}toma screenshots de origen y destino con Playwright
-                  para cada página clave.
-                </li>
-                <li>
-                  Aplica <code className="text-wcm-text">pixelmatch</code>
-                  {" "}con threshold 0.85 (§13 CLAUDE.md) y genera 3
-                  imágenes por página (source/target/overlay).
-                </li>
-                <li>
-                  Sube los assets a R2 y persiste el score por página +
-                  el agregado en{" "}
-                  <code className="text-wcm-text">
-                    projects.visual_diff_avg_score
-                  </code>
-                  .
-                </li>
-                <li>
-                  Esta vista mostrará la galería con navegación entre
-                  páginas, zoom y filtro por score &lt; threshold.
-                </li>
-              </ol>
-              <p className="flex items-start gap-2 rounded-sm border border-wcm-warning/30 bg-wcm-warning/[0.06] p-3 text-xs text-wcm-warning">
-                <Info className="h-3.5 w-3.5 shrink-0 translate-y-px" aria-hidden />
-                Mientras tanto, el score agregado del proyecto se ve en
-                la columna &quot;Diff&quot; del listado de proyectos y en
-                el header de esta página.
-              </p>
-            </div>
-          </div>
-        </div>
+        <DiffGallery pages={diffs.pages} />
+
+        <p className="text-[10px] text-muted-foreground">
+          Las páginas se comparan con <code>pixelmatch</code> (threshold
+          0.15). Score ≥85% verde, 70-85% ámbar, &lt;70% rojo. Click en
+          cualquier thumbnail abre la comparación full-size.
+        </p>
       </section>
     </div>
   );
@@ -131,5 +111,14 @@ function emptySummary(projectId: number): ProjectSummaryData {
     residual_total: 0,
     residual_open: 0,
     residual_done: 0,
+  };
+}
+
+function emptyDiffs(projectId: number): VisualDiffsResponse {
+  return {
+    project_id: projectId,
+    avg_score: null,
+    pages_total: 0,
+    pages: [],
   };
 }

@@ -78,12 +78,35 @@ export default async function ChecklistPage({
 
       <section className="space-y-3">
         <header className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-            Checklist humano
-          </h2>
-          <span className="text-[10.5px] tabular-nums text-muted-foreground">
-            {`${summary.residual_open} abiertas · ${summary.residual_done} cerradas · ${tasks.length} total`}
-          </span>
+          <div className="flex flex-wrap items-baseline gap-3">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+              Checklist humano
+            </h2>
+            <span className="text-[10.5px] tabular-nums text-muted-foreground">
+              {`${summary.residual_open} abiertas · ${summary.residual_done} cerradas · ${tasks.length} total`}
+            </span>
+          </div>
+          {/* v0.16.0 — descarga del entregable PDF/MD del checklist
+             generado por `checklist-generator`. Si el agent aún no
+             ejecutó, los links devuelven 404 con mensaje claro. */}
+          <div className="flex gap-2">
+            <a
+              href={`/api/v1/projects/${project.id}/checklist/download?format=pdf`}
+              className="rounded-sm border border-wcm-accent/50 bg-wcm-accent/10 px-3 py-1 text-xs font-semibold text-wcm-accent hover:bg-wcm-accent/20"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Descargar PDF
+            </a>
+            <a
+              href={`/api/v1/projects/${project.id}/checklist/download?format=md`}
+              className="rounded-sm border border-wcm-detail/60 px-3 py-1 text-xs text-wcm-text/80 hover:border-wcm-detail hover:text-wcm-text"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              MD
+            </a>
+          </div>
         </header>
 
         {tasks.length === 0 ? (

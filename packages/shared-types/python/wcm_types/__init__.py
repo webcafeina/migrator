@@ -51,10 +51,12 @@ from wcm_types.schemas.projects import (
     ProjectRead,
     ProjectUpdate,
 )
+from wcm_types.schemas.qa_reports import QaReportRead
 from wcm_types.schemas.residual_tasks import ResidualTaskCreate, ResidualTaskRead
 from wcm_types.schemas.scraped_pages import ScrapedPageRead
 from wcm_types.schemas.seo_redirects import SeoRedirectRead
 from wcm_types.schemas.users import UserCreate, UserRead
+from wcm_types.schemas.visual_diffs import VisualDiffRead, VisualDiffsListResponse
 from wcm_types.schemas.woo_products import WooProductRead
 
 __all__ = [
@@ -96,11 +98,14 @@ __all__ = [
     "ProjectPhaseRead",
     "ProjectRead",
     "ProjectUpdate",
+    "QaReportRead",
     "ResidualTaskCreate",
     "ResidualTaskRead",
     "ScrapedPageRead",
     "SeoRedirectRead",
     "UserCreate",
     "UserRead",
+    "VisualDiffRead",
+    "VisualDiffsListResponse",
     "WooProductRead",
 ]

@@ -28,12 +28,15 @@ import type {
   ProjectPhaseRead,
   ProjectRead,
   ProjectUpdate,
+  QaReportRead,
   ResidualTaskCreate,
   ResidualTaskRead,
   ScrapedPageRead,
   SeoRedirectRead,
   UserCreate,
   UserRead,
+  VisualDiffRead,
+  VisualDiffsListResponse,
   WooProductRead,
 } from "@webcafeina/shared-types";
 
@@ -55,12 +58,15 @@ export type {
   ProjectPhaseRead,
   ProjectRead,
   ProjectUpdate,
+  QaReportRead,
   ResidualTaskCreate,
   ResidualTaskRead,
   ScrapedPageRead,
   SeoRedirectRead,
   UserCreate,
   UserRead,
+  VisualDiffRead,
+  VisualDiffsListResponse,
   WooProductRead,
 };
 

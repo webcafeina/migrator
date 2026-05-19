@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck,
+  GaugeCircle,
   GitCompare,
   LayoutDashboard,
 } from "lucide-react";
@@ -31,6 +32,7 @@ const TABS: TabSpec[] = [
   { label: "Overview", icon: LayoutDashboard, suffix: "" },
   { label: "Checklist", icon: ClipboardCheck, suffix: "/checklist" },
   { label: "Visual diff", icon: GitCompare, suffix: "/diff" },
+  { label: "QA", icon: GaugeCircle, suffix: "/qa" },
 ];
 
 /**
