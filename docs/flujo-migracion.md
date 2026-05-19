@@ -1239,11 +1239,17 @@ ResidualTask(
 
 **Cuándo corre**: solo si `project.is_multilang=True`.
 
-#### La decisión arquitectónica
+#### La decisión arquitectónica (ADR-038)
 
 Webcafeína **no tiene licencia WPML**. El agente NUNCA instala ni configura
 nada en el destino. Su único trabajo es generar una `ResidualTask` muy
-detallada para el operador:
+detallada para el operador.
+
+> **Revisión planificada (ADR-038)**: cuando Webcafeína acumule ≥3 proyectos
+> multilang completados al año, se abrirá ADR-04X para evaluar implementar
+> `wpml-configurator` real (comprar licencia $99/año + ~5-7 días de desarrollo).
+> Hasta entonces, la fase es manual y la residual contiene la guía paso a paso
+> completa.
 
 ```
 ResidualTask(

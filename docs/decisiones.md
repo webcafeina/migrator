@@ -982,6 +982,42 @@ El comportamiento original mezclaba un nivel crítico (Bricks) con dos opcionale
 
 ---
 
+## ADR-038 — WPML manual confirmado; revisión cuando ≥3 multilangs/año
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: ✅ Aceptada (provisional — revisar con datos de uso)
+
+**Contexto**: Webcafeína no tiene licencia WPML. El agente `wpml-configurator` (v0.17.0+) NUNCA instala ni configura nada en el destino — solo genera UNA ResidualTask BLOCKING muy detallada con guía paso a paso de configuración manual (6 pasos, ~30 min base + 5 min por página secundaria).
+
+Al revisar esta decisión se valoraron 4 alternativas:
+
+1. **Mantener actual**: $0 inversión, 1-3h manuales por migración multilang.
+2. **Comprar licencia + fase sigue manual**: $99/año, sigue 1-2h manuales.
+3. **Comprar licencia + automatizar `wpml-configurator` real**: $99/año + 5-7 días desarrollo, reduce a 5-15 min por migración.
+4. **Soporte opcional con licencia del cliente**: 7-10 días + flujo de captura de clave.
+
+**Decisión**: **Mantener opción 1**. Posponemos la inversión en automatizar WPML hasta tener datos reales de cuántas migraciones multilang aceptamos al año.
+
+Razones:
+
+- Coste de oportunidad alto: 5-7 días en `wpml-configurator` real antes de validar que el producto encuentra mercado en webs multilang es prematuro.
+- La residual actual es lo suficientemente detallada para que cualquier operador la complete sin formación adicional.
+- WPML "Multilingual CMS" cuesta $99/año por seat — invertir sin certeza de volumen no escala.
+- Primero validar end-to-end con 1-2 migraciones manuales que el flujo multilang funciona correctamente (scraper detecta idiomas, transpiler genera Bricks pages traducidas, etc.). Si los 1-2 pilotos fallan en algo no-WPML, la inversión habría sido en vano.
+
+**Criterio explícito de revisión**: si Webcafeína detecta que está aceptando 3 o más proyectos multilang al año, **abrir revisión inmediata para implementar opción 3** (`wpml-configurator` real). El umbral de 3/año amortiza la licencia + tiempo de desarrollo (~5-7h por proyecto manual × 3 = ~20h vs. ~50h de implementación una vez; el corte está antes pero damos margen).
+
+**Consecuencias**:
+
+- ✅ Cero inversión hoy, cero riesgo técnico.
+- ✅ Capacidad de migrar webs multilang sigue existiendo (solo más lenta).
+- ⚠️ Cada lead multilang requiere ~1-3h extra de operador + decisión sobre quién compra la licencia (Webcafeína o el cliente). Documentar en el playbook operativo.
+- ⚠️ Si Webcafeína decide priorizar leads multilang en prospección comercial, esta decisión debe revisarse antes de captarlos masivamente.
+
+**Métrica de seguimiento**: contar `projects.is_multilang=True` completados por año en el dashboard. Cuando llegue a 3, abrir ADR-04X "automatización WPML".
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
