@@ -1930,8 +1930,16 @@ directamente.
 | **Redirects 301** | Inyectados en el plugin Redirection | Borrar desde Tools → Redirection |
 
 Decisión MVP: el rollback solo borra las **páginas** (que es el 90% del valor
-en una migración típica web corporativa). Para limpieza profunda se necesita el
-rollback "robusto" (snapshot SQL pre-deploy), planificado para v0.20.0+.
+en una migración típica web corporativa).
+
+> **Próximo cambio (ADR-042 — programado para v0.20.0+)**: nueva fase
+> `pre_deploy_snapshot` justo antes de `deploy_wp` que ejecuta `wp db export`
+> vía SSH y persiste el path en `projects.pre_deploy_snapshot_path`. El
+> `RollbackAgent` pasa a hacer `wp db import` (restore atómico) → recupera
+> literalmente todo (páginas, productos, forms, menús, opciones, todo). Si
+> no hay snapshot (proyectos pre-v0.20.0+), fallback al MVP actual. Trade-off:
+> downtime ~10-60s del WP destino durante restore. Para piloto interno sin
+> tráfico real es irrelevante; para producción se mostrará warning explícito.
 
 ### 10.5 Idempotencia
 

@@ -1160,6 +1160,63 @@ Comportamiento:
 
 ---
 
+## ADR-042 — Snapshot SQL pre-deploy + restore en rollback (supersede H1 MVP de ADR-039)
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: El `RollbackAgent` MVP (v0.19.0) hace DELETE solo de páginas WP creadas por `wp-deployer`. **NO** revierte:
+
+- Cambios a páginas existentes pre-migración (no había snapshot).
+- Menús nav (Bricks los crea como side-effect de `nav-menu` elements).
+- Theme Styles + opciones Bricks (inyectados directamente).
+- Productos WooCommerce (post_type=product, no tocado por rollback).
+- Forms Gravity Forms (tabla custom GF).
+- Media library (imágenes subidas por `optimize_assets`).
+- Redirects 301 (plugin Redirection).
+
+Tras N iteraciones de pilotos, el WP destino acumula basura visual y de catálogo. Cada limpieza manual es ~15-30 min de wp-admin.
+
+Durante el primer piloto real, el operador necesitará iterar 5-10 veces hasta dar con la configuración buena (envs, plugins, parámetros). Sin snapshot, cada iteración deja huellas — el siguiente pipeline no parte de un WP "como estaba originalmente".
+
+Se evaluaron 4 opciones (mantener MVP, rollback extendido sin SQL, snapshot SQL completo, opcional con `--full`).
+
+**Decisión**: **Snapshot SQL pre-deploy + restore atómico vía WP-CLI** (opción 3). El rollback pasa a ser **perfecto** (recupera literalmente todo el estado del WP destino al momento previo al deploy), no parcial.
+
+Comportamiento:
+
+1. **Nueva fase `pre_deploy_snapshot`** en el pipeline, insertada justo **antes** de `deploy_wp` (orden: 6.5). `required=False` — si falla, el pipeline sigue pero el operador queda sin posibilidad de rollback completo (residual task informativa).
+2. Agente ejecuta vía SSH (reusando `WpCliSshClient` existente):
+   ```bash
+   wp db export /tmp/wcm-snapshot-{project_id}-{timestamp}.sql \
+     --path={wp_path} --add-drop-table
+   ```
+3. Path persistido en `projects.pre_deploy_snapshot_path` (migración Alembic 0009 — nueva columna nullable VARCHAR(500)) + `projects.pre_deploy_snapshot_at` (TIMESTAMPTZ).
+4. **`RollbackAgent` extendido** (supersede comportamiento MVP):
+   - Si `pre_deploy_snapshot_path` está poblado y el archivo existe en el servidor → restore via `wp db import {path} --path={wp_path}`. Ignora la lógica anterior de DELETE página-a-página.
+   - Si no hay snapshot (proyecto creado antes de v0.20.0+ o snapshot falló) → fallback al rollback actual (DELETE por wp_post_id). Backward compat completo.
+5. UI: la confirmación inline del botón Rollback cambia copy si hay snapshot disponible:
+   - Con snapshot: "¿Restaurar el WP destino al estado previo al deploy (snapshot del DD/MM HH:MM)? Recupera páginas + productos + menús + opciones + todo el contenido."
+   - Sin snapshot: copy actual ("¿Borrar las páginas WP?").
+6. **Cleanup de snapshots**: tras restore exitoso, el snapshot se conserva en disco del servidor para auditoría. Snapshot viejo se borra automáticamente cuando un nuevo deploy genera el siguiente snapshot (rotación 1-en-1). Tarea programada por sprint v0.21+ si crece el espacio.
+
+**Consecuencias**:
+
+- ✅ Rollback **realmente atómico**: revierte el estado completo del WP destino, no solo páginas.
+- ✅ Iteración rápida durante pilotos: cada pipeline parte de WP "como estaba" sin acumular basura.
+- ✅ Reusa infraestructura existente (`WpCliSshClient`, patrón vía SSH del wp-deployer).
+- ✅ Backward compat: proyectos pre-v0.20.0+ (sin snapshot) usan el rollback MVP. No rompe nada.
+- ⚠️ **Downtime del WP destino durante restore**: `wp db import` lockea tablas ~10-60s según tamaño. Para piloto interno sin tráfico real, irrelevante. Para producción real (cliente final con tráfico), debería mostrar warning visible "el WP destino estará inaccesible ~1 min".
+- ⚠️ **Espacio en disco del servidor**: cada snapshot ~10-50 MB. Con rotación 1-en-1 (1 snapshot activo por proyecto), N proyectos × 1 snapshot = ~500 MB para 10 proyectos. Aceptable. Si crece, sprint v0.21+ añade rotación por edad.
+- ⚠️ **Requiere root o permisos similares** al `wp db` (CREATE TABLE, DROP TABLE, INSERT). En cPanel típico el usuario MySQL ya los tiene, pero verificar en preflight de v0.20.0+ (nuevo chequeo "puedes hacer wp db export").
+- ⚠️ Si el WP destino tiene plugins que mantienen estado externo (caches Redis del propio WP, índices Elasticsearch, etc.), el restore SQL no los toca → quedan inconsistentes. Mitigación: ResidualTask post-restore "invalidar cache y reindexar si aplica".
+
+**Implementación**: programada para v0.20.0+. Estimación ~4-5 días: migración Alembic 0009 + nuevo agente `pre_deploy_snapshot` (sync vía WpCliSshClient + persiste path) + refactor `RollbackAgent` con branching snapshot/MVP + tests con SSH mockeado + actualizar `docs/flujo-migracion.md` y `docs/despliegue.md`. Tareas listadas en TaskList con prefijo `[ADR-042]`.
+
+**Acción operador antes del primer deploy v0.20.0+**: verificar que el usuario MySQL del WP destino tiene permisos `CREATE`, `DROP`, `INSERT`, `SELECT` en su database (cPanel suele darlos por defecto al phpMyAdmin user). Si no, el snapshot falla en preflight.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
