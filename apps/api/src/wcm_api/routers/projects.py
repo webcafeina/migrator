@@ -12,8 +12,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
-from fastapi.responses import RedirectResponse, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from wcm_api.db import get_session
 from wcm_api.errors import ConflictError, NotFoundError
 from wcm_api.security import require_role
+from wcm_api.services.events import subscribe_to_project_events
 from wcm_api.services.preflight import run_preflight, serialize_preflight_for_db
 from wcm_api.services.source_credentials import (
     FernetNotConfiguredError,
@@ -599,5 +600,44 @@ async def delete_source_credentials(
     project.source_access_mode = "none"
     await session.commit()
     return Response(status_code=204)
+
+
+# ---------- v0.19.0: SSE events ----------
+
+
+@router.get("/{project_id}/events")
+async def project_events(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> StreamingResponse:
+    """SSE — stream-ea cambios de fase del pipeline en tiempo real.
+
+    El cliente conecta con `EventSource('/api/v1/projects/{id}/events')`.
+    Cada evento llega como `data: <json>\\n\\n` y el cliente llama
+    `router.refresh()` para re-fetchar.
+
+    Si Redis no responde → 503 (cliente cae a polling 2s).
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    try:
+        # Verificación temprana de la conexión Redis (lazy en el generator,
+        # pero queremos 503 inmediato si falla la subscripción inicial).
+        stream = subscribe_to_project_events(project_id)
+    except ConnectionError as e:
+        raise HTTPException(status_code=503, detail=str(e)) from e
+
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",  # nginx: no bufferear
+            "Connection": "keep-alive",
+        },
+    )
 
 

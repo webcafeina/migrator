@@ -55,6 +55,7 @@ from wcm_worker.errors import (
     AgentNotImplementedError,
     UnrecoverableProjectError,
 )
+from wcm_worker.integrations.events import publish_phase_event
 
 log = logging.getLogger("wcm.worker.pipeline")
 
@@ -244,3 +245,12 @@ class Orchestrator:
                 existing.error_log = summary
 
         self.session.flush()
+
+        # v0.19.0 — publica al canal Redis SSE. Silencioso si Redis falla
+        # (el pipeline NO depende de la disponibilidad del canal).
+        publish_phase_event(
+            project_id=project_id,
+            phase_name=phase_name,
+            status=status.value if hasattr(status, "value") else str(status),
+            summary=summary,
+        )
