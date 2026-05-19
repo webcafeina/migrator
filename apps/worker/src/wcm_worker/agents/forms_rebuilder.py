@@ -130,7 +130,7 @@ class FormsRebuilderAgent(BaseAgent):
         self,
         wp_config: WpClientConfig,
         project: Project,
-        detected: list["DetectedForm"],
+        detected: list[DetectedForm],
         notify_email: str,
         ctx: AgentContext,
     ) -> AgentResult:

@@ -11,6 +11,130 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.17.0] — 2026-05-19
+
+Sprint MINOR: **los 3 stubs nicho del pipeline pasan a implementación
+real**. Tras este sprint **15/15 fases del pipeline son reales** (vs.
+12/15 previas). El flujo de migración cierra su gap funcional y queda
+solo trabajo de QA manual + integración con WP destino real.
+
+### Added
+
+- **Agente `woo-migrator` real**
+  (`apps/worker/src/wcm_worker/agents/woo_migrator.py`):
+  Auto-detecta WooCommerce vía
+  `GET /wp-json/wc/v3/system_status/tools`. Si responde 401/403/404 →
+  ResidualTask BLOCKING 'instalar WooCommerce' + fase SKIPPED sin
+  romper pipeline.
+  Si WC disponible:
+  - Sin productos en `woo_products` → ResidualTask 'migrar manualmente'.
+  - Con productos → upsert categorías por slug (con cache) + upsert
+    productos por SKU (`GET /wc/v3/products?sku=...` para detectar,
+    POST si no existe / PUT si sí). Persiste `wp_product_id`.
+  - **Siempre** crea ResidualTask BLOCKING 'configurar pasarela de
+    pago' (Stripe/Redsys/PayPal — requieren credenciales del cliente).
+  Fallo individual de producto no para la migración (continúa + warning).
+- **Agente `forms-rebuilder` real**
+  (`apps/worker/src/wcm_worker/agents/forms_rebuilder.py`):
+  Parsea `html_raw` de `scraped_pages` con BeautifulSoup, extrae
+  `<form>` con sus campos. Dedupe por título normalizado.
+  Mapea HTML5 types → Gravity Forms types (text/email/url/tel/number/
+  date/file/hidden, textarea, select con choices del DOM).
+  - Sin forms detectados → fase salta sin tocar destino (caso típico
+    web corporativa).
+  - Forms detectados + Gravity Forms no responde en `/wp-json/gf/v2/`
+    → ResidualTask BLOCKING 'instalar Gravity Forms'.
+  - GF disponible → lista forms existentes (dedupe), crea los nuevos
+    como `inactive` con notificación email al admin (env
+    `WP_DEFAULT_NOTIFY_EMAIL` → `COMPANY_CONTACT_EMAIL` →
+    `info@webcafeina.com`).
+  - ResidualTask CLIENT_CONFIG con resumen + acciones manuales
+    (activar forms, insertar shortcodes, configurar integraciones).
+- **Agente `wpml-configurator` real**
+  (`apps/worker/src/wcm_worker/agents/wpml_configurator.py`):
+  Webcafeína NO tiene licencia WPML — decisión arquitectónica.
+  Si `project.is_multilang=False` → fase salta limpia.
+  Si `is_multilang=True` → SIEMPRE genera UNA ResidualTask BLOCKING
+  muy detallada con:
+  - Idiomas detectados (primary + secundarios).
+  - Páginas agrupadas por idioma (URL origen + slug destino), cap 50/lang.
+  - Guía paso-a-paso WPML: adquirir licencia → instalar plugins
+    (core + String + Translation + Media) → activar → idiomas +
+    switcher → traducciones.
+  - Validación final (hreflang, sitemap multi-idioma).
+  - Estimación: 30 min base + 5 min por página secundaria.
+- **UI dashboard — `FeatureBadges`**
+  (`apps/dashboard/src/app/(app)/projects/[id]/_components/feature-badges.tsx`):
+  Badges WooCommerce / Gravity Forms / WPML en el header del proyecto.
+  Solo aparece el que aplica (`has_ecommerce`, fase rebuild_forms
+  ejecutó, `is_multilang`). Color por estado de la fase: verde lima =
+  completed, ámbar = skipped con residual, rojo = failed, gris =
+  pending. Click navega a `/residual-tasks?generated_by=<agente>`.
+  Integrado en las 4 sub-páginas del proyecto.
+- **CLI v0.17.0**:
+  - `wcm projects woo-status ID` → resumen del agente woo-migrator
+    (WC detectado, productos migrados / fallidos).
+  - `wcm projects forms-status ID` → resumen del agente
+    forms-rebuilder (GF detectado, forms detectados / creados).
+  - `wcm projects wpml-status ID` → resumen del agente
+    wpml-configurator (idiomas, primary, páginas por idioma) +
+    aviso "Webcafeína NO tiene licencia WPML".
+
+### Changed
+
+- **Pipeline 15/15 fases reales**. Se elimina
+  `apps/worker/tests/unit/test_agents_stubs.py` — ya no quedan stubs
+  (regression test cumplió su misión).
+
+### Decisions
+
+- **WPML sin licencia → residual manual obligatoria**. No instalamos
+  ni configuramos nada en el destino. El agente sigue ejecutándose
+  para documentar el trabajo pendiente del operador, incluso si
+  Webcafeína adquiere licencia en el futuro se puede extender este
+  agent para llamar `/wpml/v1/languages`.
+- **Detección de plugins por auto-degradación**: tanto WC como GF
+  comprueban su disponibilidad vía REST con `GET` que devuelve 404 si
+  el plugin no está activo. Decisión: 401/403/404 → "no disponible";
+  5xx/network → propagar para investigación. Sin esto el agent
+  rompía cuando el WP destino no tenía los plugins instalados (caso
+  cliente típico al primer despliegue).
+- **forms-rebuilder no es condicional en pipeline** — corre siempre,
+  detecta y salta si no hay forms. Razón: la mayoría de webs
+  corporativas tienen al menos contacto, no podemos confiar en una
+  flag previa del proyecto.
+- **Pasarela de pago = residual SIEMPRE** aunque la migración WC
+  vaya OK. Las credenciales son del cliente y la pasarela origen
+  (Wix Stores típicamente) usa proveedores distintos a los WC
+  habituales.
+
+### Tests
+
+- **Backend**: +27 tests (woo 10, forms 10, wpml 7). Total Python:
+  **694 verde** (10 skipped). Test `test_agents_stubs.py` eliminado.
+- **Dashboard**: +6 vitest (`feature-badges`). Total: **243 verde**.
+- **CLI**: +6 tests (`test_projects_status_v017.py`).
+
+### Acción pendiente del operador
+
+Antes de probar el flujo end-to-end con un lead real, asegurarse de
+que el WordPress destino tiene los plugins necesarios según el caso:
+
+- **Web corporativa** (típico): Bricks Builder, Gravity Forms.
+- **Tienda online**: + WooCommerce.
+- **Multilang**: comprar licencia WPML (la guía paso a paso queda
+  en el checklist generado por el pipeline).
+
+Cualquier ausencia se detecta automáticamente y genera ResidualTask
+clara en el checklist — el pipeline NO rompe.
+
+### Siguiente
+
+Pipeline funcional al 100%. Próximos pasos: QA manual end-to-end con
+un lead real corporativo, ajustes según hallazgos del piloto.
+
+---
+
 ## [0.16.0] — 2026-05-19
 
 Sprint MINOR: **cierre del flujo de migración** — los 3 agentes

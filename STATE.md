@@ -29,6 +29,28 @@
 
 ## Última versión publicada
 
+**v0.17.0** (2026-05-19) — sprint MINOR (5 bloques): los 3 stubs nicho
+del pipeline pasan a implementación real. **15/15 fases reales** (vs.
+12/15 previas). El flujo de migración cierra su gap funcional.
+
+`woo-migrator` auto-detecta WooCommerce vía `/wp-json/wc/v3/`, upserta
+categorías + productos por SKU, persiste `wp_product_id`, y SIEMPRE
+crea ResidualTask BLOCKING 'configurar pasarela de pago' (Stripe/Redsys
+requieren credenciales cliente). `forms-rebuilder` parsea html_raw con
+BS4, mapea HTML5 → Gravity Forms types, dedupe por título, crea forms
+`inactive` con notificación email; auto-detecta GF y degrada con
+residual si no está. `wpml-configurator` SIEMPRE genera residual
+manual con guía paso-a-paso (no hay licencia WPML).
+
+UI: badges Woo/Forms/WPML en header del proyecto (verde lima ok,
+ámbar skipped con residual, rojo failed, gris pending). CLI:
+`wcm projects {woo,forms,wpml}-status ID`. Pipeline ahora corre los
+15 agentes (uno por slot). Pre-requisito en WP destino: instalar los
+plugins según features del proyecto — cualquier ausencia se detecta y
+genera ResidualTask sin romper. +27 backend / +6 vitest / +6 CLI.
+Suite **694 pytest + 243 vitest = 937 verde**. Próximo paso: QA manual
+end-to-end con un lead corporativo real.
+
 **v0.16.0** (2026-05-19) — sprint MINOR (5 bloques): cierre del flujo
 de migración. Los 3 agentes transversales del pipeline pasan de stub
 a implementación real — **12/15 fases reales** (vs. 9/15 previas).

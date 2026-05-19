@@ -34,7 +34,6 @@ import asyncio
 import logging
 from typing import Any
 
-import httpx
 from sqlalchemy import select
 
 from wcm_db.models.projects import Project

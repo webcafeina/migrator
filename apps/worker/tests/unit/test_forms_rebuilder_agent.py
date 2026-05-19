@@ -13,11 +13,11 @@ import pytest
 
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.forms_rebuilder import (
+    _FIELD_TYPE_MAP,
+    DetectedForm,
     FormsRebuilderAgent,
     _build_gf_payload,
     _detect_forms,
-    DetectedForm,
-    _FIELD_TYPE_MAP,
 )
 from wcm_worker.errors import FormsRebuilderError
 

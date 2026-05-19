@@ -247,3 +247,92 @@ def _fmt_bool(value: bool | None) -> str:
     if value is None:
         return "—"
     return "OK" if value else "FAIL"
+
+
+# ---------- v0.17.0: status de features condicionales ----------
+
+
+def _get_phase(client: ApiClient, project_id: int, phase_name: str) -> dict | None:
+    """Helper: descarga las fases del proyecto y devuelve la indicada o None."""
+    phases = client.get(f"/api/v1/projects/{project_id}/phases")
+    if not isinstance(phases, list):
+        return None
+    for p in phases:
+        if p.get("phase_name") == phase_name:
+            return p
+    return None
+
+
+@app.command("woo-status")
+def woo_status(project_id: Annotated[int, typer.Argument()]) -> None:
+    """Resumen ejecución del agente woo-migrator del proyecto."""
+    client = ApiClient()
+    phase = _get_phase(client, project_id, "migrate_woo")
+    if phase is None:
+        output.info("Fase migrate_woo aún no ejecutada.")
+        return
+    summary = phase.get("output_summary") or {}
+    if output.is_json_mode():
+        output.emit_json(phase)
+        return
+    output.header(f"WooCommerce — proyecto {project_id}")
+    output.key_value({
+        "status": phase.get("status"),
+        "iniciado": phase.get("started_at") or "—",
+        "completado": phase.get("completed_at") or "—",
+        "WooCommerce detectado": _fmt_bool(summary.get("woocommerce_available")),
+        "productos migrados": summary.get("products_migrated", "—"),
+        "productos fallidos": summary.get("products_failed", "—"),
+    })
+
+
+@app.command("forms-status")
+def forms_status(project_id: Annotated[int, typer.Argument()]) -> None:
+    """Resumen ejecución del agente forms-rebuilder del proyecto."""
+    client = ApiClient()
+    phase = _get_phase(client, project_id, "rebuild_forms")
+    if phase is None:
+        output.info("Fase rebuild_forms aún no ejecutada.")
+        return
+    summary = phase.get("output_summary") or {}
+    if output.is_json_mode():
+        output.emit_json(phase)
+        return
+    output.header(f"Gravity Forms — proyecto {project_id}")
+    output.key_value({
+        "status": phase.get("status"),
+        "iniciado": phase.get("started_at") or "—",
+        "completado": phase.get("completed_at") or "—",
+        "Gravity Forms detectado": _fmt_bool(summary.get("gravity_forms_available")),
+        "forms detectados origen": summary.get("forms_detected", "—"),
+        "forms creados destino": summary.get("forms_created", "—"),
+    })
+
+
+@app.command("wpml-status")
+def wpml_status(project_id: Annotated[int, typer.Argument()]) -> None:
+    """Resumen ejecución del agente wpml-configurator del proyecto."""
+    client = ApiClient()
+    phase = _get_phase(client, project_id, "configure_wpml")
+    if phase is None:
+        output.info("Fase configure_wpml aún no ejecutada.")
+        return
+    summary = phase.get("output_summary") or {}
+    if output.is_json_mode():
+        output.emit_json(phase)
+        return
+    output.header(f"WPML — proyecto {project_id}")
+    pages_per_lang = summary.get("pages_per_lang") or {}
+    output.key_value({
+        "status": phase.get("status"),
+        "iniciado": phase.get("started_at") or "—",
+        "completado": phase.get("completed_at") or "—",
+        "idiomas": ", ".join(summary.get("langs") or []) or "—",
+        "idioma principal": summary.get("primary_lang") or "—",
+        "páginas total": summary.get("pages_total", "—"),
+        "páginas por idioma": ", ".join(f"{k}={v}" for k, v in pages_per_lang.items()) or "—",
+    })
+    output.info(
+        "Webcafeína NO tiene licencia WPML. La configuración es manual — "
+        "consulta el checklist del proyecto para los pasos."
+    )
