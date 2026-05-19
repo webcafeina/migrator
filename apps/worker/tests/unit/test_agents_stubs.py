@@ -12,7 +12,6 @@ import pytest
 
 from wcm_worker.agents import (
     FormsRebuilderAgent,
-    WooMigratorAgent,
     WpmlConfiguratorAgent,
 )
 from wcm_worker.agents.base import AgentContext
@@ -22,8 +21,8 @@ from wcm_worker.errors import AgentNotImplementedError
 # - Fase 9: ProspectorAgent, OutreachComposerAgent
 # - Fase 10: ClickupSyncerAgent, ResendNotifierAgent, AssetOptimizerAgent
 # - v0.16.0: VisualDiffAgent, QaRunnerAgent, ChecklistGeneratorAgent
+# - v0.17.0: WooMigratorAgent
 _STUB_AGENTS = [
-    WooMigratorAgent,
     WpmlConfiguratorAgent,
     FormsRebuilderAgent,
 ]
