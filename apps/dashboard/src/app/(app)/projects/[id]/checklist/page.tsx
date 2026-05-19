@@ -9,6 +9,7 @@ import {
   ProjectHeader,
   type ProjectSummaryData,
 } from "../_components/project-header";
+import { ProjectPoller } from "../_components/project-poller";
 
 /** Orden canónico de categorías por urgencia operativa (las bloqueantes
  *  primero, las post go-live al final). Coincide con el agrupamiento
@@ -79,6 +80,8 @@ export default async function ChecklistPage({
           <ProjectActions projectId={project.id} status={project.status} />
         }
       />
+
+      <ProjectPoller status={project.status} />
 
       <section className="space-y-3">
         <header className="flex flex-wrap items-baseline justify-between gap-2">

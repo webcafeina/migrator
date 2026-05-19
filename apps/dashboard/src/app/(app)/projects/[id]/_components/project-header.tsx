@@ -6,6 +6,7 @@ import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 
 import { FeatureBadges } from "./feature-badges";
 import { PhaseProgressBar } from "./phase-progress-bar";
+import { PipelineStepper } from "./pipeline-stepper";
 import { ProjectTabs } from "./project-tabs";
 
 export interface ProjectSummaryData {
@@ -110,6 +111,10 @@ export function ProjectHeader({
         />
         <MetaLine summary={summary} />
       </div>
+
+      {phases && phases.length > 0 && (
+        <PipelineStepper phases={phases} />
+      )}
 
       <ProjectTabs
         projectId={project.id}

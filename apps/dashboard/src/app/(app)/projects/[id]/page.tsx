@@ -10,6 +10,7 @@ import {
   type ProjectSummaryData,
 } from "./_components/project-header";
 import { ProjectPhasesTimeline } from "./_components/project-phases-timeline";
+import { ProjectPoller } from "./_components/project-poller";
 
 /**
  * `/projects/[id]` — overview del proyecto con header compartido +
@@ -52,6 +53,8 @@ export default async function ProjectDetailPage({
           <ProjectActions projectId={project.id} status={project.status} />
         }
       />
+
+      <ProjectPoller status={project.status} />
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
         <div className="space-y-3">

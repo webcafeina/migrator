@@ -9,6 +9,7 @@ import {
   ProjectHeader,
   type ProjectSummaryData,
 } from "../_components/project-header";
+import { ProjectPoller } from "../_components/project-poller";
 
 import { QaScorecards } from "./_components/qa-scorecards";
 
@@ -84,6 +85,8 @@ export default async function QaPage({
           <ProjectActions projectId={project.id} status={project.status} />
         }
       />
+
+      <ProjectPoller status={project.status} />
 
       <section className="space-y-4">
         <header className="flex flex-wrap items-baseline justify-between gap-2">
