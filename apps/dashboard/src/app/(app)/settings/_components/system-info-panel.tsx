@@ -1,3 +1,9 @@
+"use client";
+
+import { RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+
+import { api, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export interface SystemInfoData {
@@ -15,20 +21,97 @@ export interface SystemInfoData {
 }
 
 interface SystemInfoPanelProps {
+  /** Datos iniciales fetcheados por el Server Component padre — evita
+   *  spinner en el primer render. */
   info: SystemInfoData | null;
 }
 
+const POLL_INTERVAL_MS = 30_000;
+
 /**
  * Runtime info del API: version, environment, alembic revision, uptime
- * y resumen de health. Estructura kv-densa idéntica a `UserCard`. El
- * health summary aparece como sub-bloque con dots de color por dep.
+ * y resumen de health. v0.15.x:
+ *
+ * - Polling silencioso cada 30 s para que health/uptime reflejen el
+ *   estado actual sin recargar la página.
+ * - Botón "Refrescar" para forzar fetch inmediato tras intervenciones
+ *   del operador (reinicio de servicio, redeploy).
+ * - Dot pulsando junto a "Estado" cuando llega un dato más reciente
+ *   (indicador visual sutil de que la info viene del último poll).
  */
-export function SystemInfoPanel({ info }: SystemInfoPanelProps) {
+export function SystemInfoPanel({ info: initialInfo }: SystemInfoPanelProps) {
+  const [info, setInfo] = useState<SystemInfoData | null>(initialInfo);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(
+    initialInfo ? new Date() : null,
+  );
+  const [pulsing, setPulsing] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  const refresh = useCallback(
+    (manual: boolean = false) => {
+      if (abortRef.current) abortRef.current.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const exec = async () => {
+        try {
+          const data = await api.get<SystemInfoData>("/api/v1/system/info", {
+            signal: controller.signal,
+          });
+          setInfo(data);
+          setLastUpdated(new Date());
+          setFetchError(null);
+          // Pulso visual cortito (600 ms) cuando llega data nueva.
+          setPulsing(true);
+          window.setTimeout(() => setPulsing(false), 600);
+        } catch (err) {
+          if (err instanceof DOMException && err.name === "AbortError") return;
+          setFetchError(
+            err instanceof ApiError ? err.message : "Error al refrescar",
+          );
+        }
+      };
+      if (manual) startTransition(exec);
+      else void exec();
+    },
+    [],
+  );
+
+  // Sincroniza el state interno cuando el prop `initialInfo` cambia
+  // (router.refresh() del padre o re-render externo). Sin esto, el
+  // componente quedaría stale ante actualizaciones del Server.
+  useEffect(() => {
+    setInfo(initialInfo);
+    if (initialInfo) setLastUpdated(new Date());
+  }, [initialInfo]);
+
+  // Polling 30 s. Se cancela al desmontar; cada poll cancela el anterior
+  // si aún no resolvió (AbortController).
+  useEffect(() => {
+    const id = window.setInterval(() => refresh(false), POLL_INTERVAL_MS);
+    return () => {
+      window.clearInterval(id);
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, [refresh]);
+
   if (!info) {
     return (
       <div className="rounded-sm border border-wcm-danger/40 bg-wcm-danger/[0.05] p-4 text-xs text-wcm-text/80">
-        El API no responde. Comprueba <code>systemctl status
-        webcafeina-api</code> en el servidor.
+        <p>
+          El API no responde. Comprueba <code>systemctl status webcafeina-api</code>
+          {" "}en el servidor.
+        </p>
+        <button
+          type="button"
+          onClick={() => refresh(true)}
+          disabled={pending}
+          className="mt-2 inline-flex items-center gap-1 rounded-sm border border-wcm-detail/60 px-2 py-0.5 text-[10.5px] text-wcm-text hover:border-wcm-accent hover:text-wcm-accent disabled:opacity-50"
+        >
+          <RefreshCw size={11} className={cn(pending && "animate-spin")} />
+          Reintentar
+        </button>
       </div>
     );
   }
@@ -65,6 +148,14 @@ export function SystemInfoPanel({ info }: SystemInfoPanelProps) {
         <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           <span>health</span>
           <OverallBadge overall={info.health.overall} />
+          <span
+            aria-hidden
+            className={cn(
+              "ml-1 h-1.5 w-1.5 rounded-full bg-wcm-accent transition-opacity duration-500",
+              pulsing ? "opacity-100" : "opacity-0",
+            )}
+            title="Acabo de refrescar"
+          />
         </div>
         <ul className="space-y-1">
           <HealthRow label="postgres" status={info.health.db} />
@@ -75,6 +166,26 @@ export function SystemInfoPanel({ info }: SystemInfoPanelProps) {
             note={info.health.r2 === "skipped" ? "(opcional)" : undefined}
           />
         </ul>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 border-t border-wcm-detail/30 pt-2 text-[10.5px] text-muted-foreground">
+        <span>
+          {fetchError ? (
+            <span className="text-wcm-danger">{fetchError}</span>
+          ) : (
+            <>actualizado {formatRelativeShort(lastUpdated)}</>
+          )}
+        </span>
+        <button
+          type="button"
+          onClick={() => refresh(true)}
+          disabled={pending}
+          aria-label="Refrescar datos del sistema"
+          className="inline-flex items-center gap-1 rounded-sm border border-wcm-detail/60 px-2 py-0.5 text-[10.5px] text-wcm-text/80 hover:border-wcm-accent hover:text-wcm-accent disabled:opacity-50"
+        >
+          <RefreshCw size={11} className={cn(pending && "animate-spin")} />
+          {pending ? "Refrescando…" : "Refrescar"}
+        </button>
       </div>
     </div>
   );
@@ -168,4 +279,15 @@ function formatUptime(seconds: number): string {
   if (d > 0) return `${d}d ${h}h ${m}m`;
   if (h > 0) return `${h}h ${m}m`;
   return `${m}m`;
+}
+
+function formatRelativeShort(date: Date | null): string {
+  if (!date) return "—";
+  const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+  if (seconds < 5) return "ahora";
+  if (seconds < 60) return `hace ${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  if (m < 60) return `hace ${m}m`;
+  const h = Math.floor(m / 60);
+  return `hace ${h}h`;
 }
