@@ -176,6 +176,13 @@ class EmailLayout(Base, TimestampMixin):
     # CSS separado por claridad — premailer lo inyecta inline al
     # renderizar. Si está vacío el layout se envía tal cual.
     layout_css: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    # v0.15.0 — configuración serializada del tema visual cuando el
+    # layout se generó desde el form `/settings/email-layout` tab
+    # Visual. Si es NULL, el HTML fue editado manualmente y el tab
+    # Visual del frontend queda deshabilitado hasta "Reset al tema por
+    # defecto". El schema completo de las claves vive en
+    # `wcm_types.schemas.outreach.EmailLayoutTheme`.
+    theme_config: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     # Trazabilidad de quién hizo el último cambio (audit-log redundante
     # pero útil para reviews rápidas desde la UI sin abrir la timeline).
     # users.id es UUID — la FK debe coincidir.

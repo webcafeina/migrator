@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import AliasChoices, ConfigDict, EmailStr, Field
@@ -147,6 +148,90 @@ class OutreachSendRead(WcmModel):
 # --- v0.14.0: Email layout singleton + preview + test-send ---
 
 
+HEX_COLOR_PATTERN = r"^#[0-9A-Fa-f]{6}$"
+
+
+class EmailLayoutTheme(WcmModel):
+    """Configuración del tema visual del layout maestro (v0.15.0).
+
+    Cuando el operador edita desde el tab "Visual" de `/settings/email-layout`,
+    este JSON se persiste en `email_layouts.theme_config` y el backend
+    regenera `layout_html` + `layout_css` desde la plantilla canónica
+    de Webcafeína usando estos valores.
+
+    Todos los campos tienen defaults que coinciden con la marca
+    Webcafeína (acento lima `#B1F100` sobre fondo claro, system-ui).
+    El form los puede sobrescribir todos.
+
+    Validaciones:
+    - Colores: HEX 6 chars (`#RRGGBB`).
+    - Dimensiones: bounds razonables para email (ancho 320-720, padding 0-64,
+      radius 0-12). Valores fuera de rango → 422.
+    - Tipografía: literal limitado a opciones email-safe.
+    """
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        str_strip_whitespace=True,
+        # Ignora claves desconocidas en JSONs antiguos (forward-compat
+        # cuando añadamos campos nuevos en futuras versiones del tema).
+        extra="ignore",
+        populate_by_name=True,
+    )
+
+    # --- Colores principales ---
+    cta_bg: str = Field(default="#B1F100", pattern=HEX_COLOR_PATTERN)
+    cta_text: str = Field(default="#0E1218", pattern=HEX_COLOR_PATTERN)
+    cta_border: str = Field(default="#94C800", pattern=HEX_COLOR_PATTERN)
+    page_bg: str = Field(default="#F5F6F8", pattern=HEX_COLOR_PATTERN)
+    card_bg: str = Field(default="#FFFFFF", pattern=HEX_COLOR_PATTERN)
+    card_border: str = Field(default="#E5E7EB", pattern=HEX_COLOR_PATTERN)
+    text_color: str = Field(default="#1F2937", pattern=HEX_COLOR_PATTERN)
+    text_strong: str = Field(default="#0E1218", pattern=HEX_COLOR_PATTERN)
+    link_color: str = Field(default="#5A8A00", pattern=HEX_COLOR_PATTERN)
+    footer_text: str = Field(default="#6B7280", pattern=HEX_COLOR_PATTERN)
+    brand_accent: str = Field(
+        default="#5A8A00",
+        pattern=HEX_COLOR_PATTERN,
+        description="Color del acento de marca ('í' de webcafeína cuando se usa texto en lugar de logo).",
+    )
+
+    # --- Branding ---
+    show_logo: bool = Field(default=True)
+    logo_url_override: str | None = Field(
+        default=None,
+        max_length=500,
+        description="URL alternativa para el logo de este tema. Si None, usa EMAIL_LOGO_URL del env.",
+    )
+    logo_max_width_px: int = Field(default=160, ge=80, le=400)
+
+    # --- Tipografía ---
+    font_family: Literal["system-ui", "serif", "Inter"] = Field(default="system-ui")
+    body_font_size_px: int = Field(default=15, ge=12, le=20)
+    body_line_height: float = Field(default=1.65, ge=1.2, le=2.2)
+    brand_text_size_px: int = Field(default=22, ge=14, le=32)
+
+    # --- Espaciado y dimensiones ---
+    card_max_width_px: int = Field(default=600, ge=320, le=720)
+    content_padding_px: int = Field(default=28, ge=8, le=64)
+    header_padding_px: int = Field(default=28, ge=8, le=64)
+    footer_padding_px: int = Field(default=18, ge=8, le=64)
+
+    # --- Bordes y radius ---
+    card_border_radius_px: int = Field(default=6, ge=0, le=12)
+    cta_border_radius_px: int = Field(default=4, ge=0, le=12)
+    card_border_width_px: int = Field(default=1, ge=0, le=4)
+
+
+def default_theme() -> EmailLayoutTheme:
+    """Construye un EmailLayoutTheme con todos los defaults Webcafeína.
+
+    Atajo para los endpoints "reset" y para el seed inicial del tema
+    en la migración 0006.
+    """
+    return EmailLayoutTheme()
+
+
 class EmailLayoutRead(TimestampedRead):
     """Lectura del singleton `email_layouts` (id=1).
 
@@ -157,16 +242,33 @@ class EmailLayoutRead(TimestampedRead):
     id: int
     layout_html: str
     layout_css: str
+    # v0.15.0 — si NULL, el layout fue editado a código manualmente.
+    # Si poblado, el frontend puede ofrecer edición visual.
+    theme_config: EmailLayoutTheme | None = None
     updated_by_user_id: UUID | None = None
 
 
 class EmailLayoutUpdate(WcmModel):
-    """PUT /email-layout. Ambos campos son obligatorios — la semántica
-    es reemplazo completo, no patch parcial. El operador edita en la
-    UI, ve el preview, y guarda el bloque entero."""
+    """PUT /email-layout. v0.15.0 ahora acepta 3 modos:
 
-    layout_html: str = Field(min_length=1)
-    layout_css: str = Field(default="")
+    1. Solo `theme_config` → backend regenera `layout_html` y `layout_css`
+       desde la plantilla canónica.
+    2. Solo `layout_html` + `layout_css` → backend persiste tal cual y
+       borra `theme_config` (modo Código avanzado).
+    3. Los 3 campos → respeta `theme_config` y usa el HTML/CSS que
+       acompañe (útil si el frontend ya regeneró client-side por consistencia).
+
+    Validaciones mínimas: si llega `layout_html` debe tener min 1 char
+    (no se permite vaciar el layout completamente).
+    """
+
+    layout_html: str | None = Field(default=None, min_length=1)
+    layout_css: str | None = Field(default=None)
+    theme_config: EmailLayoutTheme | None = Field(default=None)
+    # Marcador explícito: si True, el cliente quiere borrar el tema y
+    # dejar `theme_config=NULL` (modo Código). Útil para distinguir
+    # "no se mandó" de "se quiere borrar".
+    clear_theme: bool = Field(default=False)
 
 
 class OutreachPreviewResponse(WcmModel):

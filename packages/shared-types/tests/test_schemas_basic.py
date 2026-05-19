@@ -205,9 +205,22 @@ def test_email_layout_update_requires_html() -> None:
         EmailLayoutUpdate(layout_html="", layout_css="")
 
 
-def test_email_layout_update_css_optional_defaults_empty() -> None:
+def test_email_layout_update_css_optional_defaults_none() -> None:
+    """v0.15.0: layout_css ahora es Optional[str] con default None
+    (antes default "" obligatorio). El router decide: si None, persiste "".
+    """
     upd = EmailLayoutUpdate(layout_html="<html></html>")
-    assert upd.layout_css == ""
+    assert upd.layout_css is None
+    assert upd.theme_config is None
+    assert upd.clear_theme is False
+
+
+def test_email_layout_update_acepta_theme_config_solo() -> None:
+    """v0.15.0: modo Visual envía solo theme; el backend regenera HTML/CSS."""
+    upd = EmailLayoutUpdate(theme_config={"cta_bg": "#FF0000"})
+    assert upd.theme_config is not None
+    assert upd.theme_config.cta_bg == "#FF0000"
+    assert upd.layout_html is None
 
 
 def test_outreach_test_send_payload_validates_email() -> None:

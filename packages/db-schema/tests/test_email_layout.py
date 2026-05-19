@@ -80,3 +80,19 @@ def test_outreach_send_body_html_rendered_added() -> None:
 def test_email_layouts_in_metadata() -> None:
     """La tabla debe estar registrada en Base.metadata para alembic."""
     assert "email_layouts" in Base.metadata.tables
+
+
+# --- v0.15.0: theme_config column ---
+
+
+def test_theme_config_column_present_as_nullable_jsonb() -> None:
+    """`theme_config` añadido en migración 0006. Persiste el JSON del
+    tema cuando el operador edita desde el tab Visual; NULL cuando el
+    layout fue editado a mano por código."""
+    cols = {c.name: c for c in EmailLayout.__table__.columns}
+    assert "theme_config" in cols
+    assert cols["theme_config"].nullable is True
+    # Tipo JSONB (Postgres). El nombre de la clase Python varía pero
+    # debe ser un tipo JSON-compatible.
+    type_name = type(cols["theme_config"].type).__name__
+    assert "JSON" in type_name.upper()
