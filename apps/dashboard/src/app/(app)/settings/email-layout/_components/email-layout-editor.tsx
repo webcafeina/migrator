@@ -67,6 +67,10 @@ export function EmailLayoutEditor({ initialLayout }: EmailLayoutEditorProps) {
   // tras guardar desde Código pasa a false).
   const [themeActive, setThemeActive] = useState(themeAvailable);
 
+  // Confirmación inline del botón "Restaurar valores por defecto"
+  // (sustituye a window.confirm que algunos navegadores bloquean).
+  const [resetConfirming, setResetConfirming] = useState(false);
+
   function handleVisualSaved(savedTheme: EmailLayoutTheme) {
     setThemeActive(true);
     // Re-sincronizar estado de Código con el HTML/CSS regenerado.
@@ -104,14 +108,16 @@ export function EmailLayoutEditor({ initialLayout }: EmailLayoutEditorProps) {
     });
   }
 
-  function handleResetToDefault() {
-    if (
-      !window.confirm(
-        "Restaurar el tema por defecto Webcafeína sobrescribirá el HTML/CSS actual. ¿Continuar?",
-      )
-    ) {
+  function handleResetClick() {
+    // Primer click: pide confirmación inline (cambia el copy del botón).
+    if (!resetConfirming) {
+      setResetConfirming(true);
+      // Auto-cancel tras 5 s si el operador no confirma.
+      window.setTimeout(() => setResetConfirming(false), 5000);
       return;
     }
+    // Segundo click: ejecuta el PUT.
+    setResetConfirming(false);
     codeStartTransition(async () => {
       try {
         await api.put("/api/v1/email-layout", { theme_config: DEFAULT_THEME });
@@ -120,9 +126,7 @@ export function EmailLayoutEditor({ initialLayout }: EmailLayoutEditorProps) {
         setMode("visual");
         router.refresh();
       } catch (err) {
-        toast.error(
-          err instanceof ApiError ? err.message : "Error al restaurar",
-        );
+        toast.error(err instanceof ApiError ? err.message : "Error al restaurar");
       }
     });
   }
@@ -177,11 +181,20 @@ export function EmailLayoutEditor({ initialLayout }: EmailLayoutEditorProps) {
               </p>
               <button
                 type="button"
-                onClick={handleResetToDefault}
+                onClick={handleResetClick}
                 disabled={codePending}
-                className="rounded-sm border border-wcm-warning bg-wcm-warning/20 px-3 py-1 text-xs font-semibold text-wcm-warning hover:bg-wcm-warning/30 disabled:opacity-50"
+                className={cn(
+                  "rounded-sm border px-3 py-1 text-xs font-semibold hover:brightness-110 disabled:opacity-50",
+                  resetConfirming
+                    ? "border-wcm-danger bg-wcm-danger/20 text-wcm-danger"
+                    : "border-wcm-warning bg-wcm-warning/20 text-wcm-warning",
+                )}
               >
-                {codePending ? "Restaurando…" : "Restaurar tema por defecto"}
+                {codePending
+                  ? "Restaurando…"
+                  : resetConfirming
+                    ? "Pulsa otra vez para confirmar"
+                    : "Restaurar tema por defecto"}
               </button>
             </div>
           )}
@@ -225,11 +238,20 @@ export function EmailLayoutEditor({ initialLayout }: EmailLayoutEditorProps) {
               <div className="flex justify-between gap-2">
                 <button
                   type="button"
-                  onClick={handleResetToDefault}
+                  onClick={handleResetClick}
                   disabled={codePending}
-                  className="rounded-sm border border-wcm-detail/60 px-3 py-1 text-xs text-wcm-text/80 hover:border-wcm-detail hover:text-wcm-text disabled:opacity-50"
+                  className={cn(
+                    "rounded-sm border px-3 py-1 text-xs hover:brightness-110 disabled:opacity-50",
+                    resetConfirming
+                      ? "border-wcm-danger bg-wcm-danger/20 text-wcm-danger font-semibold"
+                      : "border-wcm-detail/60 text-wcm-text/80 hover:border-wcm-detail hover:text-wcm-text",
+                  )}
                 >
-                  Restaurar valores por defecto
+                  {codePending
+                    ? "Restaurando…"
+                    : resetConfirming
+                      ? "Pulsa otra vez para confirmar"
+                      : "Restaurar valores por defecto"}
                 </button>
                 <button
                   type="button"

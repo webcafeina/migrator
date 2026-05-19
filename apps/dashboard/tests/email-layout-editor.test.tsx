@@ -153,15 +153,20 @@ describe("EmailLayoutEditor", () => {
     expect(payload).not.toHaveProperty("theme_config");
   });
 
-  it("Restaurar tema por defecto dispara PUT con theme_config = DEFAULT_THEME", async () => {
+  it("Restaurar tema por defecto requiere doble click (confirmación inline) + dispara PUT", async () => {
     apiPut.mockResolvedValue({});
     const user = userEvent.setup();
     render(
       <EmailLayoutEditor initialLayout={_layout({ theme_config: null })} />,
     );
-    // Estamos en tab Código (theme null). Click en "Restaurar..."
+    // Primer click: confirmación inline (botón cambia copy).
     await user.click(
       screen.getByRole("button", { name: /restaurar valores por defecto/i }),
+    );
+    expect(apiPut).not.toHaveBeenCalled();
+    // Segundo click sobre el botón con el copy de confirmación.
+    await user.click(
+      screen.getByRole("button", { name: /pulsa otra vez para confirmar/i }),
     );
     await waitFor(() => expect(apiPut).toHaveBeenCalled());
     const payload = apiPut.mock.calls[0]?.[1];
