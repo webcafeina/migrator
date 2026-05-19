@@ -7,7 +7,6 @@ import { ApiError, api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { LeadRead } from "@/types/api";
 
-import { ConvertToProjectDialog } from "./convert-to-project-dialog";
 import { LeadDeleteDialog } from "./lead-delete-dialog";
 import { MarkOptOutDialog } from "./mark-opt-out-dialog";
 
@@ -40,7 +39,6 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
   const [, startTransition] = useTransition();
   const [state, setState] = useState<ActionState>({ kind: "idle" });
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [convertOpen, setConvertOpen] = useState(false);
   const [optOutOpen, setOptOutOpen] = useState(false);
 
   // Validaciones de pre-condición. Se evalúan antes de habilitar cada
@@ -112,7 +110,7 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
       <ActionButton
         disabled={inflight || convertBlock !== null}
         disabledReason={convertBlock ?? undefined}
-        onClick={() => setConvertOpen(true)}
+        onClick={() => router.push(`/projects/new?lead_id=${lead.id}`)}
       >
         Convertir a proyecto →
       </ActionButton>
@@ -183,12 +181,6 @@ export function LeadActions({ lead, className }: LeadActionsProps) {
           setDeleteOpen(false);
           startTransition(() => router.push("/leads"));
         }}
-      />
-
-      <ConvertToProjectDialog
-        lead={lead}
-        open={convertOpen}
-        onClose={() => setConvertOpen(false)}
       />
 
       <MarkOptOutDialog

@@ -24,6 +24,8 @@ import type {
   OutreachSendRead,
   OutreachSequenceCreate,
   OutreachSequenceRead,
+  PreflightCheck,
+  PreflightResult,
   ProjectCreate,
   ProjectPhaseRead,
   ProjectRead,
@@ -37,6 +39,8 @@ import type {
   UserRead,
   VisualDiffRead,
   VisualDiffsListResponse,
+  WebflowSourceCredentials,
+  WixSourceCredentials,
   WooProductRead,
 } from "@webcafeina/shared-types";
 
@@ -54,6 +58,8 @@ export type {
   OutreachSendRead,
   OutreachSequenceCreate,
   OutreachSequenceRead,
+  PreflightCheck,
+  PreflightResult,
   ProjectCreate,
   ProjectPhaseRead,
   ProjectRead,
@@ -67,6 +73,8 @@ export type {
   UserRead,
   VisualDiffRead,
   VisualDiffsListResponse,
+  WebflowSourceCredentials,
+  WixSourceCredentials,
   WooProductRead,
 };
 
