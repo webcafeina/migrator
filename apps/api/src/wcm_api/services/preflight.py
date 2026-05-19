@@ -61,8 +61,19 @@ async def run_preflight(project: Project) -> PreflightResult:
         blocking_issues.append(f"Origen: {source.message}")
     if not creds.ok and creds.message and creds.extras and creds.extras.get("checked"):
         warnings.append(f"Credenciales origen: {creds.message}")
+    # ADR-037 — Bricks es bloqueante (sin él, deploy_wp deja páginas en
+    # blanco en el frontend porque solo Bricks lee el meta
+    # `_bricks_page_content_2`). GF y WC son informativos porque el
+    # pipeline degrada con ResidualTask claras si faltan.
     for plugin, present in plugins.items():
-        if not present:
+        if present:
+            continue
+        if plugin == "bricks":
+            blocking_issues.append(
+                "Plugin Bricks Builder NO detectado en destino — sin él, las "
+                "páginas se crearán vacías. Instala y activa Bricks antes de arrancar."
+            )
+        else:
             warnings.append(f"Plugin {plugin} no detectado en destino")
 
     can_start = len(blocking_issues) == 0

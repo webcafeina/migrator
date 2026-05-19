@@ -952,6 +952,36 @@ prerequisito antes de promoverse — sin abstracciones prematuras.
 
 ---
 
+## ADR-037 — Bricks bloqueante en preflight; GF/WC informativos
+
+**Fecha**: 2026-05-19 (post-v0.19.0, sprint de revisión de decisiones)
+**Estado**: ✅ Aceptada
+
+**Contexto**: El preflight (`POST /projects/{id}/preflight`) hace HEAD a 3 endpoints REST para detectar plugins instalados en el WP destino: Bricks Builder, Gravity Forms, WooCommerce. Hasta esta decisión, los 3 se trataban igual — como **warnings informativos** que no bloqueaban el botón "Crear y arrancar pipeline". El razonamiento original era "el pipeline degrada elegantemente si falta cualquier plugin".
+
+El problema: los 3 plugins NO son equivalentes en consecuencias.
+
+- **Gravity Forms ausente**: `forms-rebuilder` detecta, genera ResidualTask "instalar GF y configurar manualmente" y la fase salta. El operador instala después, sin pérdida.
+- **WooCommerce ausente**: idem con `migrate_woo`.
+- **Bricks Builder ausente**: el `wp-deployer` crea páginas en WP (`status=draft`), pero el `bricks_json` se escribe en el post meta `_bricks_page_content_2` que **solo Bricks renderiza**. Sin Bricks, las páginas quedan **completamente vacías** en el frontend (post_content está vacío también — Bricks no usa post_content). El operador no se entera hasta que abre el dominio destino y ve páginas en blanco.
+
+El comportamiento original mezclaba un nivel crítico (Bricks) con dos opcionales (GF, WC). Permitía arrancar el pipeline sin Bricks instalado, lo que producía un deploy técnicamente exitoso pero comercialmente inútil.
+
+**Decisión**: En `wcm_api.services.preflight.run_preflight`, tratar **Bricks como bloqueante** (incluirlo en `blocking_issues` con mensaje específico) y mantener GF/WC como warnings. La UI (`PreflightDisplay > PluginsCard`) pinta la card en rojo (`text-wcm-danger`) si Bricks falta, en ámbar si solo faltan GF/WC, en verde si todos OK. Tag visible "bloqueante" junto al item Bricks cuando falla. Microcopy específico sustituye al genérico de "residuales" cuando Bricks falta.
+
+**Consecuencias**:
+
+- ✅ Refleja la realidad técnica: sin Bricks, el deploy no tiene valor visible.
+- ✅ No bloquea proyectos corporativos sin ecommerce (WC ausente sigue siendo warning, no impide arrancar).
+- ✅ Cambio mínimo de complejidad: ~40 LOC backend + frontend + tests.
+- ✅ Refuerza el patrón "el preflight es la garantía de que el deploy va a entregar valor".
+- ⚠️ Sigue siendo posible falso negativo si Bricks está activo pero `/wp-json/bricks/v1/` no responde (configuración del sitio rara). En ese caso el operador no podría arrancar aunque Bricks esté operativo. Mitigación: el mensaje del bloqueante dice "no detectado en destino", no "no instalado" — el operador puede verificar manualmente y, si Bricks está activo pero no expone REST, hay un escape vía `PATCH /api/v1/projects/{id}` para forzar el arranque (avanzado).
+- ⚠️ Si en futuro queremos `forms-rebuilder` o `migrate_woo` también bloqueantes cuando el proyecto los necesite (`has_ecommerce=true` + WC ausente → bloqueante), la opción es ADR-04X "bloqueante condicional" — fuera de scope hoy.
+
+**Implementación**: 4 tests backend (`test_preflight_service.py`) cubren Bricks ausente, GF/WC ausentes, todos presentes, Bricks + WP destino ambos bloqueantes. 2 tests frontend (`preflight-display.test.tsx`) cubren las variantes visuales nuevas.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

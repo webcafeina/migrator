@@ -139,9 +139,15 @@ preflight". Al pulsarlo, el wizard hace 3 cosas en cadena:
 | Check | Bloqueante | Verifica |
 |---|---|---|
 | **WP destino** | sí | `GET /wp-json/` + TCP banner SSH al puerto 22 |
-| **Plugins** | no, informativo | HEAD a `/wp-json/{bricks,gf/v2,wc/v3}/` |
+| **Plugins** | parcial (ver nota) | HEAD a `/wp-json/{bricks,gf/v2,wc/v3}/` |
 | **Origen** | sí | `GET source_url` con redirects, espera HTTP 2xx-3xx |
 | **Credenciales back** | no, warning | Llamada barata a Wix/Webflow API (si se introdujeron) |
+
+> **Plugins — ADR-037**: Bricks Builder es **bloqueante** (sin él el deploy
+> deja páginas vacías porque el contenido vive en el post meta
+> `_bricks_page_content_2` que solo Bricks renderiza). Gravity Forms y
+> WooCommerce son **informativos** — el pipeline degrada con ResidualTask
+> claras si faltan, sin perder valor del deploy.
 
 Si algún chequeo **bloqueante** falla, aparece como rojo en su card + lista al
 pie en sección "Bloqueantes (N)". El botón "Crear y arrancar pipeline" queda

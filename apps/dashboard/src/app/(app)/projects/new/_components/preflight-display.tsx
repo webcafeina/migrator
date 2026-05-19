@@ -173,10 +173,12 @@ function PluginsCard({
   plugins?: Record<string, boolean>;
   loading: boolean;
 }) {
-  const labels: Array<{ key: string; name: string }> = [
-    { key: "bricks", name: "Bricks Builder" },
-    { key: "gravity_forms", name: "Gravity Forms" },
-    { key: "woocommerce", name: "WooCommerce" },
+  const labels: Array<{ key: string; name: string; blocking: boolean }> = [
+    // ADR-037 — Bricks es bloqueante (sin él el deploy deja páginas vacías).
+    // GF y WC son informativos (el pipeline degrada con ResidualTask).
+    { key: "bricks", name: "Bricks Builder", blocking: true },
+    { key: "gravity_forms", name: "Gravity Forms", blocking: false },
+    { key: "woocommerce", name: "WooCommerce", blocking: false },
   ];
   const present = plugins
     ? labels.filter((l) => plugins[l.key]).length
@@ -184,13 +186,17 @@ function PluginsCard({
   const missing = plugins
     ? labels.filter((l) => !plugins[l.key]).length
     : 0;
+  const bricksFails = plugins ? plugins.bricks === false : false;
 
   let cls = "border-wcm-detail/50 bg-wcm-secondary/30 text-muted-foreground";
   if (plugins) {
-    cls =
-      present === labels.length
-        ? "border-wcm-accent/50 bg-wcm-accent/[0.06] text-wcm-accent"
-        : "border-wcm-warning/50 bg-wcm-warning/[0.06] text-wcm-warning";
+    if (bricksFails) {
+      cls = "border-wcm-danger/50 bg-wcm-danger/[0.06] text-wcm-danger";
+    } else if (present === labels.length) {
+      cls = "border-wcm-accent/50 bg-wcm-accent/[0.06] text-wcm-accent";
+    } else {
+      cls = "border-wcm-warning/50 bg-wcm-warning/[0.06] text-wcm-warning";
+    }
   }
 
   return (
@@ -207,7 +213,7 @@ function PluginsCard({
           </span>
         </div>
         <div className="text-[10.5px] opacity-80">
-          informativo · el pipeline degrada si faltan
+          Bricks bloqueante · GF/WC informativos (el pipeline degrada)
         </div>
         <ul className="space-y-0.5 pt-1">
           {labels.map((l) => {
@@ -219,13 +225,24 @@ function PluginsCard({
               >
                 <span aria-hidden>{plugins ? (ok ? "✓" : "✗") : "·"}</span>
                 <span>{l.name}</span>
+                {l.blocking && plugins && !ok && (
+                  <span className="text-[9.5px] uppercase tracking-wider">
+                    bloqueante
+                  </span>
+                )}
               </li>
             );
           })}
         </ul>
-        {plugins && missing > 0 && (
+        {plugins && missing > 0 && !bricksFails && (
           <div className="pt-1 text-[10.5px] opacity-80">
             Los plugins faltantes se documentarán como tareas residuales.
+          </div>
+        )}
+        {plugins && bricksFails && (
+          <div className="pt-1 text-[10.5px] opacity-80">
+            Instala Bricks Builder antes de arrancar — sin él, las páginas
+            se crean vacías.
           </div>
         )}
       </div>

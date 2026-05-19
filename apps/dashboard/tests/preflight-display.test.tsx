@@ -66,6 +66,32 @@ describe("PreflightDisplay", () => {
     expect(screen.getByText(/Los plugins faltantes/)).toBeTruthy();
   });
 
+  it("ADR-037: plugins card pinta rojo y bloqueante si Bricks falta", () => {
+    const { container } = render(
+      <PreflightDisplay
+        plugins={{ bricks: false, gravity_forms: true, woocommerce: true }}
+      />,
+    );
+    // Tag "bloqueante" visible junto a Bricks Builder.
+    expect(screen.getByText("bloqueante")).toBeTruthy();
+    // Microcopy específico que sustituye al genérico de "residuales".
+    expect(screen.getByText(/Instala Bricks Builder antes de arrancar/)).toBeTruthy();
+    // El bloque tiene clase wcm-danger.
+    expect(container.innerHTML).toContain("text-wcm-danger");
+  });
+
+  it("ADR-037: GF/WC faltantes pintan ámbar (no rojo) si Bricks está", () => {
+    const { container } = render(
+      <PreflightDisplay
+        plugins={{ bricks: true, gravity_forms: false, woocommerce: false }}
+      />,
+    );
+    // No hay tag "bloqueante" porque solo Bricks lo es y está OK.
+    expect(screen.queryByText("bloqueante")).toBeNull();
+    // Sigue mostrando el ámbar de plugins faltantes informativos.
+    expect(container.innerHTML).toContain("text-wcm-warning");
+  });
+
   it("loading=true muestra 'comprobando…' en lugar de 'pendiente'", () => {
     render(<PreflightDisplay loading />);
     expect(screen.getAllByText(/comprobando/).length).toBeGreaterThanOrEqual(4);
