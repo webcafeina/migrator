@@ -1070,6 +1070,48 @@ Restricciones:
 
 ---
 
+## ADR-040 — Playwright para todo el scraping del origen (sin branching por builder)
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: `scrape_origin` usa actualmente `httpx` (HTTP simple, sin JavaScript). Funciona bien para webs estáticas (Hostinger AI por SSR, WordPress nativo, sitios corporativos simples) pero **falla silenciosamente** para los 2 builders objetivo principales:
+
+- **Wix Editor X / Studio**: el HTML inicial es un esqueleto + bundle JS gigante. Sin ejecutar JS, BeautifulSoup no encuentra `<h1>`, `<img>`, secciones. `extract_content` devuelve `0 blocks`, `bricks_pages` se generan vacías, `deploy_wp` crea páginas WP con `bricks_json: []`, el destino aparece en blanco. El operador no se entera hasta ver el resultado.
+- **Webflow con Interactions / CMS items**: HTML estático razonable, pero animaciones, lazy-load de imágenes y contenido CMS dinámico no aparecen.
+
+Se evaluaron 4 opciones:
+
+1. **Mantener httpx + documentar limitación**: cero cambios pero bloquea Wix/Webflow.
+2. **Detectar HTML vacío y FAIL**: hace visible el problema sin resolverlo.
+3. **Playwright para Wix/Webflow específicamente; httpx para el resto** (branching por builder): cubre el 95% sin lentificar lo que ya funciona.
+4. **Playwright para TODO** (simple swap): máxima cobertura, tiempos ×10-25, memoria pesada.
+
+**Decisión**: **Opción 4 — Playwright para todo el scraping**. Sin branching por builder. El agente `scrape_origin` usa Playwright + Chromium headless para cada página, respetando el `hydration_wait_selector()` que cada extractor define (Wix `[data-mesh-id]`, Webflow `[data-wf-injected]`, Hostinger `[data-hostai-loaded="true"]`).
+
+Razones para preferir simplicidad sobre velocidad:
+
+- Un único camino de código → menos bugs en el branching, menos casos límite.
+- Cualquier builder nuevo que añadamos (Squarespace, Shopify, plataforma desconocida) funciona out-of-the-box sin decidir si hidrata o no.
+- Lo que ve el operador en su navegador es exactamente lo que scrapeamos — el modelo mental es simple ("Playwright captura como visitante real").
+- Los tiempos largos del pipeline son aceptables porque la migración es batch (no real-time). Una migración típica de 10-15 páginas pasaría de ~30s a ~3-5 min de scraping; total del pipeline ~12-25 min. Sigue siendo aceptable para un proceso que el operador no observa segundo a segundo.
+
+**Consecuencias**:
+
+- ✅ **Simplicidad arquitectónica**: 0 branching, 0 lógica condicional. El fetcher es uno solo.
+- ✅ Cubre el 100% de builders, incluso los que aún no documentamos.
+- ✅ Cero ambigüedad: si la página tiene contenido visible al humano, lo scrapeamos.
+- ⚠️ **Tiempos del pipeline mucho más largos**: scraping pasa de ~200ms/página a ~2-5s/página. Migración 30 páginas: ~10 min solo de scraping (antes ~30s). Total pipeline pasa de ~10-15 min a ~15-25 min. Doc `docs/flujo-migracion.md` y email `notify` deben mencionar tiempos esperados realistas.
+- ⚠️ **Dependencias SO obligatorias en el worker**: `playwright install-deps && playwright install chromium`. Sin ellas, `scrape_origin` falla con `PlaywrightNotAvailableError` y el pipeline se aborta (fase `required=True`). En cPanel sin acceso root podría no ser posible — el operador necesita servidor con privilegios o instalación manual de Chromium + libs (libnss3, libatk, libxss1, libasound2, libnspr4, libgbm1).
+- ⚠️ **Memoria del worker**: Chromium consume ~150-300MB por instancia. Reuso de browser + context (mismo patrón que `screenshot_session` del visual_diff) limita el pico a ~300MB constante. Worker debe tener ≥1GB RAM disponible para no swappear.
+- ⚠️ **Sin fallback a httpx**: si Playwright falla en runtime (chromium crashea), la fase FAIL → pipeline aborta (BLOCKED_HUMAN_INPUT). Decisión consciente: opción 3 (branching) sería un escape, pero contradice el principio "Playwright para todo".
+
+**Implementación**: programada para v0.20.0+. Estimación 3-4 días: helper `PlaywrightFetcher` con context manager + browser reuse + refactor `scrape_origin` para usar el fetcher + tests con Playwright real (no mockeable trivialmente, requiere headless en CI) + actualización docs deployment. Tareas listadas en TaskList con prefijo `[ADR-040]`.
+
+**Acción operador antes del primer deploy v0.20.0+**: instalar Playwright en el worker del servidor producción. Documentar en `docs/despliegue.md` los comandos exactos por distro (Debian/Ubuntu vs CentOS/RHEL).
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

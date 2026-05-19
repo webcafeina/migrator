@@ -464,11 +464,19 @@ Importante para entender los límites:
   BeautifulSoup + selectores por builder.
 - **Cap de 50 páginas por defecto** (`max_pages`). Para sitios grandes, se
   ajustaría vía `ctx.extra` en futuras versiones.
-- **No usa Playwright todavía** en el branch actual del `scrape_origin`. Para
-  webs Wix/Webflow muy hidratadas se prepararon helpers Playwright
-  (`hydration_wait_selector` en cada extractor) pero el agente usa httpx para
-  el MVP. Decisión: Playwright se activará cuando sea estrictamente necesario
-  (probable v0.20.0+).
+- **Usa httpx hoy** (HTTP simple). Para webs Wix/Webflow muy hidratadas el
+  HTML inicial es un esqueleto + bundle JS que httpx no ejecuta — los
+  extractores no encuentran bloques y las páginas se generan vacías. Es un
+  **fallo silencioso** del que el operador solo se entera al ver el destino.
+  Hostinger AI (SSR) y WordPress funcionan bien con httpx.
+
+> **Próximo cambio (ADR-040 — programado para v0.20.0+)**: `scrape_origin`
+> pasará a usar **Playwright + Chromium para todas las webs** (sin branching
+> por builder). Lo que ve el usuario en su navegador es lo que scrapeamos.
+> Trade-off aceptado: tiempos del pipeline ×5-10 (migración 30 páginas
+> ~3-5 min de scraping vs ~30s ahora). Requerirá instalar Playwright +
+> Chromium en el worker (`playwright install-deps && playwright install
+> chromium`).
 
 ---
 
