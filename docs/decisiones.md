@@ -1521,6 +1521,68 @@ Tareas listadas en TaskList con prefijo `[ADR-045]`:
 
 ---
 
+## ADR-047 — UI sin auto-arranque + endpoint API combinado `POST /projects/with-start`
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — UI sin cambios; endpoint nuevo programado para v0.20.0+
+
+**Contexto**: Tras el preflight del wizard (paso 4), aparecen 3 botones: "Crear y arrancar pipeline", "Re-ejecutar preflight", "Guardar sin arrancar". El proyecto NUNCA arranca solo, incluso con preflight perfecto. Decisión consciente: el "Start" del pipeline es momento irrevocable a corto plazo, debe ser acción explícita del humano.
+
+Casos donde la doble acción "Crear → Arrancar" se siente burocrática:
+
+- **Piloto interno batch**: Webcafeína quiere probar el pipeline con N URLs en secuencia (validar regresiones, comparar resultados). Click por click es fricción.
+- **Trigger desde sistemas externos** (webhook ClickUp, integración CRM al cerrar lead, scripts CI): cada uno requiere lógica adicional para llamar `POST /projects` + `POST /start` secuencialmente.
+- **Operador con confianza alta** tras N migraciones exitosas: el doble click se siente innecesario.
+
+Se evaluaron 4 opciones (mantener actual, checkbox auto-arranque, preferencia global, endpoint combinado API).
+
+**Decisión**: **Combinación (a) + (d)** — mantener UI sin cambios (3 botones siempre, "Start" explícito) **+ añadir nuevo endpoint API combinado** `POST /api/v1/projects/with-start` para uso programático.
+
+Razones:
+
+- La UI sigue siendo conservadora: cero footgun para operadores humanos. El modelo mental "nunca arranca solo" se preserva.
+- Los scripts batch / webhooks / integraciones tienen su atajo limpio sin tener que orquestar 2 llamadas + manejar el preflight.
+- Coste de implementación mínimo (~30 LOC + tests) porque es un combinador de endpoints existentes.
+
+Contrato del endpoint nuevo:
+
+```
+POST /api/v1/projects/with-start
+Auth: operator+
+Body: {
+  ...ProjectCreate (mismo schema que POST /projects),
+  skip_preflight: bool = false,    # opcional, default false
+  force_start: bool = false         # opcional, default false
+}
+```
+
+Comportamiento:
+
+1. Llama internamente `POST /projects` (crea el proyecto).
+2. Si `skip_preflight=false` (default): ejecuta `POST /projects/{id}/preflight`.
+   - Si `preflight.can_start=true` → arranca pipeline + devuelve `200 OK` con `{project_id, task_id, preflight_results}`.
+   - Si `preflight.can_start=false` → **NO arranca** + devuelve `409 Conflict` con `{project_id, preflight_results, message: "preflight bloqueante, usa force_start=true si entiendes el riesgo"}`. El proyecto QUEDA creado en `queued` — el script puede consultar el preflight y decidir.
+3. Si `skip_preflight=true`: arranca directamente sin preflight.
+   - Útil para scripts donde el preflight ya se validó antes (re-ejecutar mismo target N veces).
+   - **Riesgo**: salta protecciones. Documentar claramente que solo para scripts conscientes.
+4. Si `force_start=true` (con `skip_preflight=false`): ejecuta preflight pero arranca aunque `can_start=false`. Devuelve `200 OK` con warnings. Para casos donde el operador sabe que el preflight da falso positivo (raro).
+
+**Consecuencias**:
+
+- ✅ UI intacta — cero cambios visuales, cero riesgo de regresión UX.
+- ✅ Scripts/webhooks tienen atajo limpio: 1 llamada vs 2-3.
+- ✅ El comportamiento por defecto del endpoint nuevo (sin flags) es seguro: ejecuta preflight, no arranca si bloqueante.
+- ✅ Coste mínimo de implementación.
+- ⚠️ Dos formas de hacer "crear proyecto" en la API: el endpoint base `POST /projects` (no arranca) y el combinado `POST /projects/with-start` (arranca tras preflight). La documentación OpenAPI debe aclarar el caso de uso de cada uno.
+- ⚠️ Los flags `skip_preflight` y `force_start` son escapes peligrosos — solo deberían usarse en scripts conscientes. Documentar prominentemente y considerar marcarlos como `deprecated` si nadie los usa tras 6 meses.
+- ⚠️ El endpoint combinado **no** está disponible en la UI ni en CLI. Si surge necesidad real, se añade entonces. Hoy es solo API.
+
+**Implementación**: programada para v0.20.0+. Estimación ~1 día (~30 LOC + 6 tests cubriendo: happy path, preflight bloqueante 409, skip_preflight=true arranca directo, force_start=true ignora bloqueantes, payload inválido propaga 422 del create, 401/403 según rol). Tarea registrada en TaskList con prefijo `[ADR-047]`.
+
+`docs/flujo-migracion.md` no requiere actualización — la sección actual del wizard sigue vigente al 100%. La existencia del endpoint nuevo se documenta solo en OpenAPI + breve mención en `docs/playbook-operativo.md` (cuando se implemente) bajo "Atajos para scripts/automatización".
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
