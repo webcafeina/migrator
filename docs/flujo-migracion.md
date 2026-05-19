@@ -1479,6 +1479,16 @@ Las páginas con score <70% no generan residual automática — el operador deci
 visualmente si las diferencias son aceptables. Si quiere bloqueante, lo
 configura via threshold global (env `VISUAL_DIFF_THRESHOLD`).
 
+> **Próximo cambio (ADR-044 — programado para v0.20.0+)**: el agente generará
+> ResidualTask VISUAL_CONTENT automática para cada página con score < umbral.
+> Umbral configurable por proyecto vía `projects.visual_diff_threshold` (col
+> nueva Alembic 0010, default NULL = usa env global `VISUAL_DIFF_RESIDUAL_THRESHOLD`,
+> default global 0.70). UI nueva sección "Configuración avanzada" en
+> `/projects/[id]` para ajustar por cliente (piloto interno ≥0.50, cliente
+> corporativo ≥0.90). CLI `wcm projects set-visual-threshold ID --value X`.
+> La fase sigue siendo `required=False` — la residual no bloquea, solo asegura
+> que el operador no olvide revisar las páginas críticas.
+
 ### 8.5 Estado del pipeline tras estas 4 fases
 
 ```

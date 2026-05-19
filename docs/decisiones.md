@@ -1266,6 +1266,84 @@ Comportamiento:
 
 ---
 
+## ADR-044 — Visual diff: residual automática + threshold configurable por proyecto
+
+**Fecha**: 2026-05-19 (sprint de revisión de decisiones, post-v0.19.0)
+**Estado**: 🟡 Aceptada — implementación programada para v0.20.0+
+
+**Contexto**: `visual_diff` compara screenshot origen vs destino con `pixelmatch` y produce un `score` por página (0-1). Hoy:
+
+- Solo se persiste en `visual_diffs` + `project.visual_diff_avg_score`.
+- UI pinta thumbnails con ScoreBadge (verde ≥85%, ámbar 70-85%, rojo <70%).
+- **No genera ResidualTask automática** ni bloquea el pipeline.
+- El env `VISUAL_DIFF_THRESHOLD=0.85` existe en `.env.example` pero NO se usa en código (reservado para futuro).
+
+El problema: cada migración requiere ~15-30 min de revisión visual manual del operador (mirar 30 thumbnails, decidir página a página). Y peor: si el operador olvida abrir `/diff` (la fase no es bloqueante), entrega al cliente sin revisar.
+
+Por otro lado, distintos clientes tienen distintas tolerancias visuales. Un piloto interno de pruebas tolera ±25% sin problema (estamos validando el pipeline, no la pixel-perfect-fidelity). Un cliente corporativo exigente exige ≥95%. Hard-codear un umbral global no captura esa variabilidad.
+
+Se evaluaron 5 opciones (mantener, residual con threshold fijo, residual con threshold configurable, bloquear pipeline, threshold por viewport).
+
+**Decisión**: Opción 3 — **residual automática + threshold configurable por proyecto** con cascada de fuentes (default global env → override por proyecto).
+
+Cascada de configuración:
+
+1. **Default global**: `VISUAL_DIFF_RESIDUAL_THRESHOLD` (env, default `0.70`). Usado si el proyecto no tiene override.
+2. **Override por proyecto**: `projects.visual_diff_threshold FLOAT NULL` (nueva col Alembic 0010). NULL = usa default global. Float entre 0 y 1.
+
+Comportamiento del agente al final de `visual_diff.run()`:
+
+```python
+threshold = (
+    project.visual_diff_threshold
+    if project.visual_diff_threshold is not None
+    else float(os.environ.get("VISUAL_DIFF_RESIDUAL_THRESHOLD", "0.70"))
+)
+for diff in visual_diff_rows:
+    if diff.score >= threshold:
+        continue
+    ctx.session.add(ResidualTask(
+        title=f"Visual diff bajo en {diff.page_path} ({int(diff.score * 100)}%)",
+        description="<plantilla con causas posibles + URL overlay + instrucciones>",
+        category=ResidualCategory.VISUAL_CONTENT,
+        estimated_minutes=10,
+        generated_by="visual-diff",
+    ))
+```
+
+Configuración del threshold por proyecto:
+
+- **Wizard `/projects/new`**: NO lo pide (sobrecarga decisión técnica que el operador típico no necesita ajustar). Default sensato del env.
+- **Ficha proyecto `/projects/[id]`**: nueva sección "Configuración avanzada" (collapsible cerrada por defecto) con campo numérico (slider o input 0-100) "Umbral visual diff (genera residual si score < N%)". Default visible: "70% (heredado de env global)". Cambio vía `PATCH /api/v1/projects/{id}` con `visual_diff_threshold`.
+- **CLI**: `wcm projects set-visual-threshold ID --value 0.85` (o `--default` para resetear a NULL).
+- **API**: `ProjectUpdate` schema gana el campo.
+
+Tras cambiar el threshold, el operador puede re-ejecutar `visual_diff` aisladamente (vía Resume con `force_rerun_all=true` por ahora — la reejecución selectiva de UNA fase es ADR futuro). Las residuales viejas (con threshold antiguo) se conservan; las nuevas usan el threshold nuevo.
+
+**Consecuencias**:
+
+- ✅ Operador no puede olvidar páginas con score bajo — aparecen en el checklist con título descriptivo + URL del overlay.
+- ✅ Flexibilidad por cliente: piloto interno ≥0.50, cliente corporativo ≥0.90.
+- ✅ Default sensato (0.70 = el rojo de la UI) — proyectos sin configurar tienen comportamiento razonable inmediato.
+- ✅ No bloquea el pipeline — la fase sigue `required=False`, la residual es VISUAL_CONTENT (no BLOCKING).
+- ⚠️ Falsos positivos posibles (fonts diferentes, widgets dinámicos legítimos). Operador cierra manualmente como DONE — coste ~30s/falso vs ~15 min de revisión manual sin residual.
+- ⚠️ El threshold por proyecto requiere migración + UI nueva (sección "Configuración avanzada"). Si nadie ajusta nunca el threshold, la complejidad añadida es overkill. Mitigación: por defecto la sección está cerrada (collapsed), el campo aparece pre-rellenado con el default global mostrado como heredado. Operador típico no la abre.
+- ⚠️ El default 0.70 es el threshold "rojo" del ScoreBadge UI. Coherencia visual: si pinta rojo, genera residual. Si pinta ámbar (0.70-0.85), no genera residual (operador lo ve visualmente sin que aparezca en checklist).
+
+**Implementación**: programada para v0.20.0+. Estimación ~3-4 días.
+
+Tareas listadas en TaskList con prefijo `[ADR-044]`:
+- Migración Alembic 0010 — `projects.visual_diff_threshold FLOAT NULL`.
+- Modelo Project + Schema ProjectRead/ProjectUpdate.
+- VisualDiffAgent — generar residuales tras umbral con cascada (project > env).
+- UI sección "Configuración avanzada" en `/projects/[id]` + componente collapsible.
+- CLI `wcm projects set-visual-threshold ID --value X` (o `--default`).
+- Tests (agent con/sin threshold por proyecto, fallback env, residual generada con título correcto, UI collapsible).
+
+`docs/flujo-migracion.md` se actualizará con nota en sección 8.4 (visual_diff) explicando el comportamiento que viene.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
