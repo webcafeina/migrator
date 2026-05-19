@@ -2,8 +2,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { ProjectRead } from "@/types/api";
+import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 
+import { FeatureBadges } from "./feature-badges";
 import { PhaseProgressBar } from "./phase-progress-bar";
 import { ProjectTabs } from "./project-tabs";
 
@@ -31,6 +32,8 @@ interface ProjectHeaderProps {
   summary: ProjectSummaryData;
   /** Slot opcional para acciones de proyecto (start/resume/cancel). */
   actions?: React.ReactNode;
+  /** v0.17.0 — si se pasa, pinta badges Woo/Forms/WPML según estado. */
+  phases?: ProjectPhaseRead[];
   className?: string;
 }
 
@@ -55,6 +58,7 @@ export function ProjectHeader({
   project,
   summary,
   actions,
+  phases,
   className,
 }: ProjectHeaderProps) {
   const url = String(project.source_url);
@@ -86,6 +90,13 @@ export function ProjectHeader({
           >
             {`${displayUrl} ↗`}
           </a>
+          {phases && (
+            <FeatureBadges
+              project={project}
+              phases={phases}
+              className="mt-2"
+            />
+          )}
         </div>
         {actions && <div className="shrink-0">{actions}</div>}
       </div>

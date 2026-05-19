@@ -47,6 +47,7 @@ export default async function ProjectDetailPage({
       <ProjectHeader
         project={project}
         summary={summary}
+        phases={phases}
         actions={
           <ProjectActions projectId={project.id} status={project.status} />
         }

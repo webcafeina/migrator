@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ApiError, api } from "@/lib/api";
-import type { ProjectRead } from "@/types/api";
+import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 
 import { ProjectActions } from "../actions";
 import {
@@ -50,13 +50,16 @@ export default async function DiffPage({
     throw e;
   }
 
-  const [summary, diffs] = await Promise.all([
+  const [summary, diffs, phases] = await Promise.all([
     api
       .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
       .catch(() => emptySummary(project.id)),
     api
       .get<VisualDiffsResponse>(`/api/v1/projects/${id}/visual-diffs`)
       .catch(() => emptyDiffs(project.id)),
+    api
+      .get<ProjectPhaseRead[]>(`/api/v1/projects/${id}/phases`)
+      .catch(() => [] as ProjectPhaseRead[]),
   ]);
 
   const scorePct =
@@ -67,6 +70,7 @@ export default async function DiffPage({
       <ProjectHeader
         project={project}
         summary={summary}
+        phases={phases}
         actions={
           <ProjectActions projectId={project.id} status={project.status} />
         }

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { ApiError, api } from "@/lib/api";
 import { cn, formatRelativeTime } from "@/lib/utils";
-import type { ProjectRead, ResidualTaskRead } from "@/types/api";
+import type { ProjectPhaseRead, ProjectRead, ResidualTaskRead } from "@/types/api";
 
 import { ProjectActions } from "../actions";
 import {
@@ -49,7 +49,7 @@ export default async function ChecklistPage({
     throw e;
   }
 
-  const [summary, tasks] = await Promise.all([
+  const [summary, tasks, phases] = await Promise.all([
     api
       .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
       .catch(() => emptySummary(project.id)),
@@ -58,6 +58,9 @@ export default async function ChecklistPage({
         searchParams: { project_id: id },
       })
       .catch(() => [] as ResidualTaskRead[]),
+    api
+      .get<ProjectPhaseRead[]>(`/api/v1/projects/${id}/phases`)
+      .catch(() => [] as ProjectPhaseRead[]),
   ]);
 
   const byCategory: Record<string, ResidualTaskRead[]> = {};
@@ -71,6 +74,7 @@ export default async function ChecklistPage({
       <ProjectHeader
         project={project}
         summary={summary}
+        phases={phases}
         actions={
           <ProjectActions projectId={project.id} status={project.status} />
         }

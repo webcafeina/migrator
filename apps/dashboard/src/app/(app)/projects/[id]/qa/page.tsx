@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Info } from "lucide-react";
 
 import { ApiError, api } from "@/lib/api";
-import type { ProjectRead } from "@/types/api";
+import type { ProjectPhaseRead, ProjectRead } from "@/types/api";
 
 import { ProjectActions } from "../actions";
 import {
@@ -62,13 +62,16 @@ export default async function QaPage({
     throw e;
   }
 
-  const [summary, report] = await Promise.all([
+  const [summary, report, phases] = await Promise.all([
     api
       .get<ProjectSummaryData>(`/api/v1/projects/${id}/summary`)
       .catch(() => emptySummary(project.id)),
     api
       .get<QaReportData | null>(`/api/v1/projects/${id}/qa-report`)
       .catch(() => null),
+    api
+      .get<ProjectPhaseRead[]>(`/api/v1/projects/${id}/phases`)
+      .catch(() => [] as ProjectPhaseRead[]),
   ]);
 
   return (
@@ -76,6 +79,7 @@ export default async function QaPage({
       <ProjectHeader
         project={project}
         summary={summary}
+        phases={phases}
         actions={
           <ProjectActions projectId={project.id} status={project.status} />
         }
