@@ -189,12 +189,14 @@ class WpCliSshClient:
         command: str,
         *,
         timeout_s: float | None = None,
+        stdin_input: str | None = None,
     ) -> WpCliResult:
         """Ejecuta un comando shell arbitrario en el destino (sin wp-cli).
 
         Útil para preparar el entorno antes de wp-cli — p.ej. `mkdir -p`,
-        `echo $HOME` para resolver el home del usuario remoto, etc. El
-        comando se ejecuta tal cual sin envolver en `wp`.
+        `echo $HOME` para resolver el home del usuario remoto, o
+        `cat > /tmp/file` con stdin para subir contenido. El comando
+        se ejecuta tal cual sin envolver en `wp`.
 
         Reutiliza WpCliResult para mantener la misma forma de respuesta.
         """
@@ -202,6 +204,10 @@ class WpCliSshClient:
         log.debug("ssh_shell_exec", extra={"cmd": command, "timeout_s": timeout})
 
         stdin, stdout, stderr = self._client.exec_command(command, timeout=timeout)
+        if stdin_input is not None:
+            stdin.write(stdin_input)
+            stdin.flush()
+            stdin.channel.shutdown_write()
         exit_code = stdout.channel.recv_exit_status()
         out = stdout.read().decode("utf-8", errors="replace")
         err = stderr.read().decode("utf-8", errors="replace")
@@ -301,28 +307,60 @@ class WpCliSshClient:
     async def bricks_import_content(
         self, post_id: int, bricks_json: list[dict[str, Any]]
     ) -> None:
-        """Inyecta el contenido Bricks vía wp post meta update con --format=json.
+        """Inyecta el contenido Bricks como post meta `_bricks_page_content_2`.
 
-        Es la vía RECOMENDADA para Bricks pages grandes (>500 elementos);
-        el REST API puede atragantarse con payloads de varios MB.
+        **Cómo lo hace (2026-05-20)**: el JSON Bricks puede ser MB para
+        páginas grandes. Pasarlo como argv (incluso vía `wp post meta
+        update <id> <key> <json> --format=json`) excede MAX_ARG_STRLEN
+        (~128KB en Linux) y se rompe al cruzar el shell SSH. Y wp-cli NO
+        soporta `-` como value-from-stdin para `post meta update` —
+        lo guarda literal como string "-".
 
-        El JSON se pasa por **stdin** (`-` como value), no como argv —
-        un payload de varios KB pasado como argument excede
-        MAX_ARG_STRLEN (~128KB) o se rompe al cruzar el shell SSH
-        cuando hay muchas comillas anidadas. wp-cli lee el value de stdin
-        cuando el value posicional es `-`. Detectado al migrar
-        mariya.design (2026-05-20).
+        Solución de tres pasos:
+        1. Subir el JSON a `/tmp/wcm-bricks-<post_id>-<ts>.json` por SSH
+           usando `cat > path` con stdin (sin SFTP separado).
+        2. `wp eval` un PHP corto que hace `update_post_meta(<id>, '<key>',
+           json_decode(file_get_contents('<path>'), true))`. El path va
+           como argv corto (~50 chars) — sin problema de tamaño.
+        3. `rm -f /tmp/wcm-bricks-...` para limpiar (best-effort).
+
+        Idempotente: re-ejecutar sobrescribe el meta.
         """
+        import time
+
         payload = json.dumps(bricks_json, ensure_ascii=False)
-        await self.run_or_raise(
-            [
-                "post", "meta", "update",
-                str(post_id), "_bricks_page_content_2", "-",
-                "--format=json",
-            ],
-            timeout_s=180.0,
+        ts = int(time.time() * 1000)
+        remote_path = f"/tmp/wcm-bricks-{post_id}-{ts}.json"
+
+        # 1. Subir el JSON via shell cat (más portable que SFTP separado).
+        await self.run_shell_or_raise(
+            f"cat > {shlex.quote(remote_path)}",
+            timeout_s=60.0,
             stdin_input=payload,
         )
+
+        # 2. wp eval — PHP que lee el fichero y persiste el meta.
+        # json_decode + update_post_meta es la API estándar de WP, idéntica
+        # a lo que haría `wp post meta update --format=json` internamente.
+        php = (
+            "$json = file_get_contents("
+            f"{json.dumps(remote_path)});"
+            f"update_post_meta({int(post_id)}, '_bricks_page_content_2', "
+            "json_decode($json, true));"
+        )
+        try:
+            await self.run_or_raise(["eval", php], timeout_s=180.0)
+        finally:
+            # 3. Cleanup best-effort (si falla, queda en /tmp; el system rm)
+            try:
+                await self.run_shell(
+                    f"rm -f {shlex.quote(remote_path)}", timeout_s=10.0
+                )
+            except Exception:  # noqa: BLE001
+                log.warning(
+                    "bricks_import_cleanup_failed",
+                    extra={"path": remote_path},
+                )
 
     async def post_create(self, payload: dict[str, Any]) -> int:
         """Crea un post/page vía WP-CLI (alternativa a REST).

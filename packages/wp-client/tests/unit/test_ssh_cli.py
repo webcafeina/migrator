@@ -60,21 +60,24 @@ def _quote(s: str) -> str:
     return shlex.quote(s)
 
 
-def test_bricks_import_content_pasa_json_por_stdin(fake_config: WpClientConfig) -> None:
-    """Fix 2026-05-20: el JSON Bricks se envía por stdin (`-` como value)
-    en vez de como argv. Pasarlo por argv excede MAX_ARG_STRLEN (~128KB)
-    para pages con muchos bloques y cruza mal el shell SSH con comillas.
+def test_bricks_import_content_via_wp_eval_y_fichero_temp(fake_config: WpClientConfig) -> None:
+    """Fix 2026-05-20: bricks_import_content sube el JSON a /tmp por SSH
+    (cat > path con stdin) y luego usa `wp eval` con file_get_contents +
+    update_post_meta. Evita los problemas de:
+    - argv > MAX_ARG_STRLEN para JSONs grandes
+    - `-` no funciona como value-from-stdin en `wp post meta update`
+      (lo guarda literal como string)
     """
     import asyncio
     from unittest.mock import MagicMock
 
     client = WpCliSshClient(fake_config)
 
-    # Mock del client SSH ya conectado (paramiko)
-    captured: dict = {}
+    captured: list[dict] = []
 
     def _fake_exec_command(cmd: str, timeout=None):
-        captured["cmd"] = cmd
+        rec = {"cmd": cmd, "stdin": ""}
+        captured.append(rec)
         stdin_mock = MagicMock()
         stdout_mock = MagicMock()
         stdout_mock.channel.recv_exit_status = MagicMock(return_value=0)
@@ -83,8 +86,7 @@ def test_bricks_import_content_pasa_json_por_stdin(fake_config: WpClientConfig) 
         stderr_mock.read = MagicMock(return_value=b"")
 
         def _write(data):
-            captured.setdefault("stdin", "")
-            captured["stdin"] += data
+            rec["stdin"] += data
         stdin_mock.write = _write
         stdin_mock.flush = MagicMock()
         stdin_mock.channel.shutdown_write = MagicMock()
@@ -99,8 +101,24 @@ def test_bricks_import_content_pasa_json_por_stdin(fake_config: WpClientConfig) 
         )
     )
 
-    # El argv contiene `-` (placeholder para leer stdin), NO el JSON inline.
-    assert " - --format=json" in captured["cmd"] or " '-' --format=json" in captured["cmd"]
-    # El JSON va por stdin.
-    assert '"section1"' in captured["stdin"]
-    assert '"name": "text"' in captured["stdin"]
+    # Esperamos 3 comandos: cat > /tmp/file, wp eval ..., rm -f.
+    assert len(captured) == 3, f"se esperaban 3 comandos, vinieron {len(captured)}"
+
+    # 1. cat > /tmp/wcm-bricks-42-<ts>.json con el JSON por stdin.
+    cmd1 = captured[0]["cmd"]
+    assert cmd1.startswith("cat >")
+    assert "/tmp/wcm-bricks-42-" in cmd1
+    assert '"section1"' in captured[0]["stdin"]
+    assert '"name": "text"' in captured[0]["stdin"]
+
+    # 2. wp eval con PHP que lee el fichero y actualiza el meta.
+    cmd2 = captured[1]["cmd"]
+    assert "eval" in cmd2
+    assert "file_get_contents" in cmd2
+    assert "update_post_meta(42" in cmd2
+    assert "_bricks_page_content_2" in cmd2
+
+    # 3. rm -f cleanup del fichero temp.
+    cmd3 = captured[2]["cmd"]
+    assert cmd3.startswith("rm -f")
+    assert "/tmp/wcm-bricks-42-" in cmd3
