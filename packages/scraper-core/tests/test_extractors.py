@@ -210,6 +210,88 @@ def test_wix_classic_no_duplica_si_hay_studio_y_editor() -> None:
     assert len(nav_blocks) == 1
 
 
+# B.5 — wow-image data-image-info parser (2026-05-20).
+# Wix mete las imágenes en <wow-image data-image-info='{...}'> con un
+# JSON serializado. El extractor antes solo leía <img src> y se perdía
+# el 100% de las imágenes reales del CDN Wix.
+
+
+_WIX_WOW_IMAGE_HTML = """\
+<!doctype html>
+<html><body>
+  <section id="comp-1">
+    <h1>Hero</h1>
+    <wow-image data-image-info='{"containerId":"c1","displayMode":"fit","encoding":"AVIF","imageData":{"width":200,"height":200,"uri":"11062b_xxx~mv2.png","name":"","displayMode":"fit"}}'>
+      <img src="" alt="" />
+    </wow-image>
+  </section>
+  <section id="comp-2">
+    <wow-image data-image-info='{"imageData":{"uri":"11062b_yyy~mv2.jpg"}}'>
+      <img />
+    </wow-image>
+    <wow-image data-image-info='{"imageData":{"uri":"https://other.cdn/abs.png"}}'>
+      <img />
+    </wow-image>
+  </section>
+</body></html>
+"""
+
+
+def test_wix_wow_image_extrae_uri_a_cdn_wix() -> None:
+    """URI relativa en imageData.uri → https://static.wixstatic.com/media/{uri}."""
+    result = WixExtractor().extract(_WIX_WOW_IMAGE_HTML, "https://mariya.design/")
+    urls = result.asset_urls
+    assert "https://static.wixstatic.com/media/11062b_xxx~mv2.png" in urls
+    assert "https://static.wixstatic.com/media/11062b_yyy~mv2.jpg" in urls
+
+
+def test_wix_wow_image_uri_absoluta_se_preserva() -> None:
+    """Si imageData.uri ya viene como URL absoluta, no se reescribe."""
+    result = WixExtractor().extract(_WIX_WOW_IMAGE_HTML, "https://mariya.design/")
+    assert "https://other.cdn/abs.png" in result.asset_urls
+
+
+def test_wix_wow_image_json_invalido_no_crashea() -> None:
+    """JSON malformado en data-image-info → silently skipped, no exception."""
+    html = """\
+    <html><body>
+      <wow-image data-image-info='{this is not json'><img /></wow-image>
+      <wow-image data-image-info='{"imageData":{"uri":"good.png"}}'><img /></wow-image>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://x.com/")
+    assert "https://static.wixstatic.com/media/good.png" in result.asset_urls
+
+
+def test_wix_wow_image_sin_data_image_info_se_ignora() -> None:
+    """wow-image sin atributo data-image-info → ignorado (sin error)."""
+    html = """\
+    <html><body>
+      <wow-image><img src="https://x.com/from-img.png" /></wow-image>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://x.com/")
+    # Solo la URL del <img src> sobrevive, la wow-image vacía no aporta nada.
+    assert result.asset_urls == ["https://x.com/from-img.png"]
+
+
+def test_wix_wow_image_imagedata_falta_uri() -> None:
+    """imageData presente pero sin uri → ignorado limpiamente."""
+    from wcm_scraper_core.extractors.wix import _wix_uri_from_data_info
+
+    assert _wix_uri_from_data_info('{"imageData":{"width":200}}') is None
+    assert _wix_uri_from_data_info('{"imageData":{"uri":""}}') is None
+    assert _wix_uri_from_data_info('{"imageData":{"uri":null}}') is None
+
+
+def test_wix_wow_image_data_no_es_dict() -> None:
+    """JSON válido pero no objeto (p.ej. lista) → None."""
+    from wcm_scraper_core.extractors.wix import _wix_uri_from_data_info
+
+    assert _wix_uri_from_data_info("[1, 2, 3]") is None
+    assert _wix_uri_from_data_info('"just a string"') is None
+
+
 def test_wix_classic_solo_secciones_con_comp_prefix() -> None:
     """El fallback debe filtrar <section> sin id="comp-..." para no
     arrastrar HTML genérico que podría existir en mocks o landings."""

@@ -6,12 +6,21 @@ los codificamos como selectores y reglas de extracción concretas.
 
 from __future__ import annotations
 
+import json
+import logging
 import re
 
 from bs4 import BeautifulSoup, Tag
 
 from wcm_scraper_core.extractors.base import ExtractedBlock, ExtractionResult
 from wcm_types.enums import BlockType
+
+log = logging.getLogger("wcm.scraper_core.extractors.wix")
+
+#: CDN Wix base para imágenes. Cada `<wow-image data-image-info>` contiene
+#: un `imageData.uri` relativo (`11062b_xxx~mv2.png`) que se sirve desde
+#: `https://static.wixstatic.com/media/{uri}`.
+WIX_MEDIA_CDN = "https://static.wixstatic.com/media/"
 
 #: Componentes Wix → BlockType del dominio.
 WIX_COMPONENT_MAP: dict[str, BlockType] = {
@@ -285,7 +294,17 @@ class WixExtractor:
                     candidate = entry.strip().split(" ", 1)[0]
                     if candidate:
                         urls.add(candidate)
-        # Filter Wix CDN
+        # B.5 — `<wow-image>` es el wrapper habitual de Wix moderno
+        # (Editor clásico y Studio). El src del <img> interno puede
+        # estar vacío hasta que JS hidrata, pero `data-image-info`
+        # siempre tiene el URI original del CDN.
+        for wow in soup.find_all("wow-image"):
+            info_raw = wow.get("data-image-info")
+            if not info_raw:
+                continue
+            url = _wix_uri_from_data_info(info_raw)
+            if url:
+                urls.add(url)
         return sorted(u for u in urls if u.startswith(("http", "//")))
 
     def _extract_font_urls(self, html: str) -> list[str]:
@@ -307,3 +326,29 @@ class WixExtractor:
             if "youtube" in src or "vimeo" in src:
                 urls.add(src)
         return sorted(urls)
+
+
+def _wix_uri_from_data_info(info_raw: str) -> str | None:
+    """Parsea el JSON de `wow-image data-image-info` y devuelve la URL
+    absoluta en el CDN Wix, o None si el formato no es esperado.
+
+    Formato típico (algunos campos pueden faltar):
+        {"containerId":"...","displayMode":"fit","encoding":"AVIF",
+         "imageData":{"width":200,"height":200,
+                      "uri":"11062b_xxx~mv2.png","name":"","displayMode":"fit"}}
+    """
+    try:
+        data = json.loads(info_raw)
+    except (json.JSONDecodeError, TypeError):
+        log.debug("wix_wow_image_invalid_json", extra={"info_raw_head": info_raw[:80]})
+        return None
+    image_data = data.get("imageData") if isinstance(data, dict) else None
+    if not isinstance(image_data, dict):
+        return None
+    uri = image_data.get("uri")
+    if not isinstance(uri, str) or not uri:
+        return None
+    # uri puede venir ya como URL absoluta (raro) o como filename relativo.
+    if uri.startswith(("http://", "https://")):
+        return uri
+    return f"{WIX_MEDIA_CDN}{uri}"
