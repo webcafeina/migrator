@@ -80,3 +80,54 @@ def test_norm_host_minusculas_y_quita_www() -> None:
     assert ScraperOriginAgent._norm_host("www.foo.co.uk") == "foo.co.uk"
     # Sin prefix `www.` simplemente lowercases
     assert ScraperOriginAgent._norm_host("Foo.COM") == "foo.com"
+
+
+@pytest.mark.parametrize(
+    "url,expected",
+    [
+        # Bug 2026-05-20 A.2 — equivalentes deben colapsar al MISMO canonical
+        ("https://mariya.design/", "https://mariya.design/"),
+        ("https://www.mariya.design/", "https://mariya.design/"),
+        ("https://www.mariya.design", "https://mariya.design/"),
+        ("https://mariya.design", "https://mariya.design/"),
+        # Path simple — sin trailing slash
+        ("https://www.mariya.design/about", "https://mariya.design/about"),
+        ("https://mariya.design/about/", "https://mariya.design/about"),
+        ("https://www.mariya.design/about/", "https://mariya.design/about"),
+        # Path multi-segmento
+        (
+            "https://www.mariya.design/case-studies/sae-ren/",
+            "https://mariya.design/case-studies/sae-ren",
+        ),
+        # Host en mayúsculas → lowercase
+        ("https://Mariya.Design/About", "https://mariya.design/About"),
+        # Fragmento se descarta
+        ("https://mariya.design/about#team", "https://mariya.design/about"),
+        # Query se preserva
+        (
+            "https://mariya.design/search?q=branding",
+            "https://mariya.design/search?q=branding",
+        ),
+        # http vs https — se conserva el scheme del input
+        ("http://mariya.design/about", "http://mariya.design/about"),
+        # URL sin host (mailto/tel) → devuelve tal cual sin canonical
+        ("mailto:foo@bar.com", "mailto:foo@bar.com"),
+    ],
+)
+def test_canonical_url(url: str, expected: str) -> None:
+    assert ScraperOriginAgent._canonical_url(url) == expected
+
+
+def test_canonical_url_dos_variantes_colapsan_iguales() -> None:
+    """Propiedad central del fix: dos URLs `mismo sitio + mismo path` con
+    distinto formato (www, trailing slash, mayúsculas) → canonical idéntico.
+    Esto es lo que hace el `if canonical not in visited` deduplicar."""
+    variants = [
+        "https://mariya.design",
+        "https://www.mariya.design",
+        "https://www.mariya.design/",
+        "https://Mariya.Design/",
+        "https://mariya.design/#hero",
+    ]
+    canonicals = {ScraperOriginAgent._canonical_url(u) for u in variants}
+    assert len(canonicals) == 1, f"esperaba 1 canónica, vinieron: {canonicals}"

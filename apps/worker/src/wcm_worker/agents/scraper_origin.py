@@ -74,14 +74,14 @@ class ScraperOriginAgent(BaseAgent):
 
         # ADR-050 — cascada: project.max_pages_scrape > env SCRAPE_MAX_PAGES_DEFAULT > 50.
         max_pages = self._resolve_max_pages(project, ctx)
-        source_url = project.source_url.rstrip("/")
-        # base_host se conserva tal cual (con o sin `www.`). El filtro de
-        # mismo-sitio (_same_site) normaliza ambos lados quitando `www.`,
-        # así `https://foo.com` y `https://www.foo.com` se tratan como el
-        # mismo sitio. Fix 2026-05-20: el sitio puede declarar source_url
-        # sin www pero servir todos los enlaces internos con www (o
-        # viceversa) — la comparación literal anterior rechazaba el 100%
-        # de las internas.
+        # Fix 2026-05-20 (A.2): canonicalizar el source_url y todas las URLs
+        # que el BFS encuentra. Sin esto, `https://foo.com` y
+        # `https://www.foo.com` se procesan como páginas distintas y
+        # acaban produciendo dos `scraped_pages` para la misma página,
+        # provocando UniqueViolation en fase `transpile_bricks` por slug
+        # duplicado. El canonical fija un solo formato (host sin `www.`,
+        # path sin trailing slash, sin fragmento).
+        source_url = self._canonical_url(project.source_url.rstrip("/"))
         base_host = urlparse(source_url).netloc
 
         # v0.18.0 — Si el cliente nos dio credenciales del back, sembrar el
@@ -89,9 +89,10 @@ class ScraperOriginAgent(BaseAgent):
         # páginas que el menú público NO enlaza directamente (privacidad,
         # legal, landing pages sueltas). Si la API falla por cualquier motivo,
         # caemos al BFS tradicional desde source_url.
-        seed_urls = self._seed_from_api(project)
+        seed_urls = [self._canonical_url(u) for u in self._seed_from_api(project)]
 
         # BFS simple. Por seguridad: nunca seguimos links a otros dominios.
+        # Las URLs en to_visit y visited son SIEMPRE canónicas.
         to_visit: list[str] = [source_url, *seed_urls]
         visited: set[str] = set()
         results: list[ScrapedPage] = []
@@ -227,8 +228,11 @@ class ScraperOriginAgent(BaseAgent):
         results.append(page)
         for a in soup.find_all("a", href=True):
             candidate = urljoin(url, a["href"]).split("#")[0]
-            if self._same_site(candidate, base_host) and candidate not in visited:
-                to_visit.append(candidate)
+            if not self._same_site(candidate, base_host):
+                continue
+            canonical = self._canonical_url(candidate)
+            if canonical not in visited:
+                to_visit.append(canonical)
 
     def _resolve_max_pages(self, project: Project, ctx: AgentContext) -> int:
         """Cascada ADR-050: project.max_pages_scrape > extra > env > 50."""
@@ -358,6 +362,35 @@ class ScraperOriginAgent(BaseAgent):
     def _norm_host(host: str) -> str:
         """Normaliza host para comparación: minúsculas + sin prefix `www.`."""
         return host.lower().removeprefix("www.")
+
+    @staticmethod
+    def _canonical_url(url: str) -> str:
+        """URL canónica para deduplicación en BFS (fix 2026-05-20 A.2).
+
+        Reglas:
+        - Host: minúsculas, sin prefix `www.`
+        - Path: sin trailing slash (excepto raíz `/`)
+        - Sin fragmento (`#...`)
+        - Query preservada (puede afectar contenido en sitios dinámicos)
+
+        Ejemplo:
+            https://Foo.com/about/ → https://foo.com/about
+            https://www.foo.com/   → https://foo.com/
+            https://foo.com#hash   → https://foo.com/
+        """
+        try:
+            parts = urlparse(url)
+        except ValueError:
+            return url
+        if not parts.netloc:
+            return url
+        host = parts.netloc.lower().removeprefix("www.")
+        path = parts.path or "/"
+        if path != "/" and path.endswith("/"):
+            path = path.rstrip("/")
+        query = f"?{parts.query}" if parts.query else ""
+        scheme = parts.scheme or "https"
+        return f"{scheme}://{host}{path}{query}"
 
     @staticmethod
     def _same_site(url: str, ref_host: str) -> bool:
