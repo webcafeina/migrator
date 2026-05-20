@@ -24,7 +24,13 @@ log = logging.getLogger("wcm.worker.playwright_fetcher")
 
 DEFAULT_VIEWPORT_WIDTH = 1280
 DEFAULT_VIEWPORT_HEIGHT = 800
-DEFAULT_WAIT_UNTIL = "networkidle"
+# `domcontentloaded` en lugar de `networkidle`: muchas webs modernas tienen
+# trackers/analytics/heartbeats que mantienen actividad de red constante y
+# nunca alcanzan "sin tráfico durante 500ms". Con `domcontentloaded`
+# tenemos el HTML hidratado tras el DOMContentLoaded, suficiente para
+# extracción. Override por env WCM_PW_WAIT_UNTIL si se necesita esperar
+# más (p.ej. "load" o "networkidle" para sites simples sin trackers).
+DEFAULT_WAIT_UNTIL = "domcontentloaded"
 DEFAULT_TIMEOUT_MS = 30_000
 
 

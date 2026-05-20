@@ -61,6 +61,17 @@ class ScraperOriginAgent(BaseAgent):
         if project is None:
             raise ScraperOriginError(f"Project {ctx.project_id} no encontrado")
 
+        # Idempotencia: si el agent se re-ejecuta (force_rerun_all, restart,
+        # rollback+retry) hay que borrar las scraped_pages previas o el
+        # constraint UNIQUE(project_id, url) levantará IntegrityError al
+        # hacer flush. Hacemos limpieza completa para que el resultado sea
+        # determinista (no mezcla de runs).
+        from sqlalchemy import delete
+        ctx.session.execute(
+            delete(ScrapedPage).where(ScrapedPage.project_id == ctx.project_id)
+        )
+        ctx.session.flush()
+
         # ADR-050 — cascada: project.max_pages_scrape > env SCRAPE_MAX_PAGES_DEFAULT > 50.
         max_pages = self._resolve_max_pages(project, ctx)
         source_url = project.source_url.rstrip("/")

@@ -177,6 +177,11 @@ class Orchestrator:
                 outcome.skipped_phases.append(spec.phase_name)
             except AgentError as e:
                 log.exception("phase_failed", extra={"phase": spec.phase_name})
+                # Si el fallo ocurrió durante un flush, la session queda en
+                # estado de rollback pendiente y no podríamos persistir el
+                # mark_phase(FAILED). Hacemos rollback para que la session
+                # vuelva a estar usable y el FAILED se registre.
+                self.session.rollback()
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.FAILED, summary=str(e))
                 outcome.failed_phase = spec.phase_name
                 if spec.required:
@@ -187,6 +192,8 @@ class Orchestrator:
                 # Si no required, continúa con la siguiente fase
             except Exception as e:  # noqa: BLE001
                 log.exception("phase_unexpected_error", extra={"phase": spec.phase_name})
+                # Mismo motivo: rollback antes de tocar la session.
+                self.session.rollback()
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.FAILED, summary=f"{type(e).__name__}: {e}")
                 outcome.failed_phase = spec.phase_name
                 # ADR-049 — el flag `required` gobierna lo que para o no,
