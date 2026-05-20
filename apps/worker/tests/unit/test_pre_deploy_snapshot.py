@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from wcm_worker.agents.pre_deploy_snapshot import (
-    SNAPSHOT_DIR,
+    DEFAULT_SNAPSHOT_DIR,
     PreDeploySnapshotAgent,
 )
 from wcm_worker.errors import PreDeploySnapshotError
@@ -64,21 +64,49 @@ def test_project_inexistente_levanta_error() -> None:
 
 
 def test_happy_path_persiste_path_y_timestamp() -> None:
+    """Happy path: _snapshot devuelve path absoluto, run() lo persiste."""
     agent = PreDeploySnapshotAgent(wp_config=_wp_config())
     project = _project_mock()
     ctx = _ctx(project)
 
+    expected_path = "/home/webcafeina/wcm-snapshots/project-7-20260520-120000.sql"
     with patch.object(
-        PreDeploySnapshotAgent, "_snapshot", new=AsyncMock(return_value=None)
+        PreDeploySnapshotAgent,
+        "_snapshot",
+        new=AsyncMock(return_value=expected_path),
     ):
         result = agent.run(ctx)
 
-    assert project.pre_deploy_snapshot_path is not None
-    assert project.pre_deploy_snapshot_path.startswith(SNAPSHOT_DIR)
-    assert "project-7-" in project.pre_deploy_snapshot_path
-    assert project.pre_deploy_snapshot_path.endswith(".sql")
+    assert project.pre_deploy_snapshot_path == expected_path
     assert isinstance(project.pre_deploy_snapshot_at, datetime)
-    assert result.outputs["snapshot_path"] == project.pre_deploy_snapshot_path
+    assert result.outputs["snapshot_path"] == expected_path
+
+
+def test_default_snapshot_dir_es_home_tilde() -> None:
+    """ADR-042 fix: el default debe ser `~/wcm-snapshots` (home user SSH),
+    no /var/backups que requiere root y rompe en WHM/cPanel."""
+    assert DEFAULT_SNAPSHOT_DIR == "~/wcm-snapshots"
+
+
+def test_env_override_snapshot_dir(monkeypatch) -> None:
+    """WCM_REMOTE_SNAPSHOT_DIR sobreescribe el default."""
+    monkeypatch.setenv("WCM_REMOTE_SNAPSHOT_DIR", "/custom/path")
+    agent = PreDeploySnapshotAgent(wp_config=_wp_config())
+    project = _project_mock()
+    ctx = _ctx(project)
+
+    captured: dict[str, str] = {}
+
+    async def _fake_snapshot(wp_config, dir_template, project_id):
+        captured["dir"] = dir_template
+        return f"{dir_template}/project-{project_id}-test.sql"
+
+    with patch.object(
+        PreDeploySnapshotAgent, "_snapshot", new=AsyncMock(side_effect=_fake_snapshot)
+    ):
+        agent.run(ctx)
+
+    assert captured["dir"] == "/custom/path"
 
 
 def test_ssh_error_se_envuelve_en_predeploysnapshoterror() -> None:

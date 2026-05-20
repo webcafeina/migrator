@@ -1,8 +1,15 @@
 """PreDeploySnapshotAgent — snapshot SQL del WP destino antes de wp_deployer (ADR-042, v0.20.0+).
 
 Ejecuta `wp db export` por SSH y deja un fichero `.sql` con timestamp en
-`/var/backups/wcm-snapshots/project-{id}-{ts}.sql`. Persiste la ruta y la
-hora en `projects.pre_deploy_snapshot_path/at`.
+`<dir>/project-{id}-{ts}.sql`. Persiste la ruta y la hora en
+`projects.pre_deploy_snapshot_path/at`.
+
+**Directorio destino**: por defecto `~/wcm-snapshots` (home del usuario
+SSH). El `~` se resuelve server-side ejecutando `echo $HOME` antes del
+export. Override vía env var `WCM_REMOTE_SNAPSHOT_DIR`. **Importante**:
+en WHM/cPanel el usuario SSH es de cuenta (no root) y solo tiene
+permisos sobre `/home/USUARIO/...` — usar `/var/backups/...` requiere
+root y rompe con exit 1.
 
 Esta fase se inserta antes de `wp_deployer`. Si el WP destino aún no
 contiene contenido (instalación fresca), el snapshot es prácticamente
@@ -21,6 +28,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+import shlex
 from datetime import UTC, datetime
 
 from wcm_db.models.projects import Project
@@ -31,7 +40,10 @@ from wcm_wp_client.errors import WpCliExecutionError, WpSshError
 
 log = logging.getLogger("wcm.worker.pre_deploy_snapshot")
 
-SNAPSHOT_DIR = "/var/backups/wcm-snapshots"
+#: Directorio remoto por defecto. `~` se resuelve server-side al home del
+#: usuario SSH. Override vía env var WCM_REMOTE_SNAPSHOT_DIR si quieres
+#: un path absoluto (p.ej. /var/backups/wcm-snapshots con setup root).
+DEFAULT_SNAPSHOT_DIR = "~/wcm-snapshots"
 
 
 class PreDeploySnapshotAgent(BaseAgent):
@@ -59,11 +71,16 @@ class PreDeploySnapshotAgent(BaseAgent):
                 f"Config WP destino incompleta en .env: {e}"
             ) from e
 
-        ts = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
-        snapshot_path = f"{SNAPSHOT_DIR}/project-{project.id}-{ts}.sql"
+        snapshot_dir_template = os.environ.get(
+            "WCM_REMOTE_SNAPSHOT_DIR", DEFAULT_SNAPSHOT_DIR
+        )
 
         try:
-            asyncio.run(self._snapshot(wp_config, snapshot_path))
+            snapshot_path = asyncio.run(
+                self._snapshot(
+                    wp_config, snapshot_dir_template, project.id
+                )
+            )
         except (WpSshError, WpCliExecutionError) as e:
             raise PreDeploySnapshotError(
                 f"Snapshot SQL falló para project {project.id}: "
@@ -95,14 +112,44 @@ class PreDeploySnapshotAgent(BaseAgent):
         )
 
     @staticmethod
-    async def _snapshot(wp_config: WpClientConfig, snapshot_path: str) -> None:
-        """Ejecuta `mkdir -p` + `wp db export` por SSH."""
+    async def _snapshot(
+        wp_config: WpClientConfig,
+        snapshot_dir_template: str,
+        project_id: int,
+    ) -> str:
+        """Resuelve `~` si lo lleva, asegura el directorio y ejecuta
+        `wp db export`. Devuelve el path absoluto del fichero creado.
+        """
         async with WpCliSshClient(wp_config) as cli:
-            await cli.run_or_raise(
-                ["cli", "info"],  # smoke check: WP-CLI alcanzable
-                timeout_s=15.0,
+            # 1. Smoke check WP-CLI alcanzable.
+            await cli.run_or_raise(["cli", "info"], timeout_s=15.0)
+
+            # 2. Resolver `~` al home real del SSH user (si aplica).
+            if snapshot_dir_template.startswith("~"):
+                home_result = await cli.run_shell_or_raise(
+                    "echo $HOME", timeout_s=10.0
+                )
+                home = home_result.stdout.strip()
+                if not home:
+                    raise WpCliExecutionError(
+                        "$HOME vacío en el shell remoto — no se puede resolver `~`",
+                        exit_code=0, stdout="", stderr="", command="echo $HOME",
+                    )
+                snapshot_dir = snapshot_dir_template.replace("~", home, 1)
+            else:
+                snapshot_dir = snapshot_dir_template
+
+            # 3. Crear directorio si no existe (idempotente).
+            await cli.run_shell_or_raise(
+                f"mkdir -p {shlex.quote(snapshot_dir)}", timeout_s=10.0
             )
+
+            # 4. Construir path y exportar.
+            ts = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
+            snapshot_path = f"{snapshot_dir}/project-{project_id}-{ts}.sql"
             await cli.run_or_raise(
                 ["db", "export", snapshot_path],
                 timeout_s=300.0,  # bases medianas tardan minutos
             )
+
+        return snapshot_path

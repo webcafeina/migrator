@@ -184,6 +184,42 @@ class WpCliSshClient:
             )
         return result
 
+    async def run_shell(
+        self,
+        command: str,
+        *,
+        timeout_s: float | None = None,
+    ) -> WpCliResult:
+        """Ejecuta un comando shell arbitrario en el destino (sin wp-cli).
+
+        Útil para preparar el entorno antes de wp-cli — p.ej. `mkdir -p`,
+        `echo $HOME` para resolver el home del usuario remoto, etc. El
+        comando se ejecuta tal cual sin envolver en `wp`.
+
+        Reutiliza WpCliResult para mantener la misma forma de respuesta.
+        """
+        timeout = timeout_s if timeout_s is not None else self._default_timeout_s
+        log.debug("ssh_shell_exec", extra={"cmd": command, "timeout_s": timeout})
+
+        stdin, stdout, stderr = self._client.exec_command(command, timeout=timeout)
+        exit_code = stdout.channel.recv_exit_status()
+        out = stdout.read().decode("utf-8", errors="replace")
+        err = stderr.read().decode("utf-8", errors="replace")
+        return WpCliResult(exit_code=exit_code, stdout=out, stderr=err, command=command)
+
+    async def run_shell_or_raise(self, command: str, **kwargs: Any) -> WpCliResult:
+        """Como `run_shell` pero levanta WpCliExecutionError si exit_code != 0."""
+        result = await self.run_shell(command, **kwargs)
+        if not result.ok:
+            raise WpCliExecutionError(
+                f"{command} → exit {result.exit_code}",
+                exit_code=result.exit_code,
+                stdout=result.stdout,
+                stderr=result.stderr,
+                command=result.command,
+            )
+        return result
+
     # ---------- high-level helpers ----------
 
     async def core_version(self) -> str:
