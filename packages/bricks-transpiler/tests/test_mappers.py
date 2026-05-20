@@ -222,6 +222,89 @@ def test_testimonial_with_quote_and_author() -> None:
     assert "text-basic" in names
 
 
+# B.7 — map_grid (Wix repeater → section + container + N cards)
+
+
+def test_grid_empty_is_residual() -> None:
+    mapper = get_mapper(BlockType.GRID)
+    res = mapper({"items": []}, 0, BlockType.GRID, "0", _ctx())
+    assert res.elements == []
+    assert res.residual is not None
+    assert "Grid vacío" in res.residual.title
+
+
+def test_grid_three_items_full() -> None:
+    """3 items con image + heading + link → section + container + 3 cards
+    (cada card: block + image + heading + button)."""
+    mapper = get_mapper(BlockType.GRID)
+    res = mapper(
+        {
+            "items": [
+                {"image_url": "https://cdn/i1.png", "heading": "A", "link": "/a"},
+                {"image_url": "https://cdn/i2.png", "heading": "B", "link": "/b"},
+                {"image_url": "https://cdn/i3.png", "heading": "C", "link": "/c"},
+            ]
+        },
+        0, BlockType.GRID, "0", _ctx(),
+    )
+    names = [e.name for e in res.elements]
+    # 1 section + 1 container + 3 (block) + 3 (image) + 3 (heading) + 3 (button) = 14
+    assert names[0] == "section"
+    assert names[1] == "container"
+    assert names.count("block") == 3
+    assert names.count("image") == 3
+    assert names.count("heading") == 3
+    assert names.count("button") == 3
+    assert len(res.elements) == 14
+
+    # Heading interno usa h3 + el texto correcto.
+    headings = [e for e in res.elements if e.name == "heading"]
+    assert headings[0].settings["text"] == "A"
+    assert headings[0].settings["tag"] == "h3"
+
+    # Image external.
+    images = [e for e in res.elements if e.name == "image"]
+    assert images[0].settings["image"]["external"] is True
+    assert images[0].settings["image"]["url"] == "https://cdn/i1.png"
+
+
+def test_grid_item_solo_heading_no_emite_image_ni_button() -> None:
+    """Item sin image_url y sin link → solo block + heading (sin image, sin button)."""
+    mapper = get_mapper(BlockType.GRID)
+    res = mapper(
+        {"items": [{"heading": "Title only"}]},
+        0, BlockType.GRID, "0", _ctx(),
+    )
+    names = [e.name for e in res.elements]
+    # 1 section + 1 container + 1 block + 1 heading = 4
+    assert names == ["section", "container", "block", "heading"]
+
+
+def test_grid_container_es_flex_row_wrap() -> None:
+    """El container debe usar layout flex row con wrap para grid responsive."""
+    mapper = get_mapper(BlockType.GRID)
+    res = mapper(
+        {"items": [{"heading": "x"}]},
+        0, BlockType.GRID, "0", _ctx(),
+    )
+    container = next(e for e in res.elements if e.name == "container")
+    assert container.settings["_direction"] == "row"
+    assert container.settings["_flexWrap"] == "wrap"
+    assert container.settings["_gap"] == "32px"
+
+
+def test_grid_cards_son_terceras_partes() -> None:
+    """Width de cada card = calc((100% - 64px) / 3) → 3 columnas con gap 32."""
+    mapper = get_mapper(BlockType.GRID)
+    res = mapper(
+        {"items": [{"heading": str(i)} for i in range(3)]},
+        0, BlockType.GRID, "0", _ctx(),
+    )
+    cards = [e for e in res.elements if e.name == "block"]
+    for card in cards:
+        assert card.settings["_width"] == "calc((100% - 64px) / 3)"
+
+
 def test_pricing_with_two_tiers() -> None:
     mapper = get_mapper(BlockType.PRICING)
     res = mapper(

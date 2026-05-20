@@ -204,6 +204,17 @@ class WixExtractor:
                 content_json=self._extract_gallery(section),
             )
 
+        # B.4 — Sección con `wixui-repeater`: lista/grid de items
+        # repetidos (case-studies, servicios, testimonios). Antes caía
+        # a UNKNOWN porque no había mapping. Caso real: "Selected work"
+        # en mariya.design con 3 case-studies.
+        if section.find(class_=re.compile(r"wixui-repeater")):
+            return ExtractedBlock(
+                block_type=BlockType.GRID,
+                order_index=0,
+                content_json=self._extract_grid(section),
+            )
+
         # Faq (collapsible-text)
         if section.find(class_=re.compile(r"wixui-collapsible-text")):
             return ExtractedBlock(
@@ -267,6 +278,48 @@ class WixExtractor:
             "asset_ids": [],  # se rellenan tras asset_resolver
             "image_urls": [img.get("src") for img in imgs if img.get("src")],
             "layout": "carousel" if section.find(class_=re.compile(r"slideshow")) else "grid",
+        }
+
+    def _extract_grid(self, section: Tag) -> dict:
+        """Extrae los items de un `wixui-repeater` como lista de cards.
+
+        Cada item del repeater es un elemento con role="listitem" o con
+        la clase `wixui-repeater__item`. De cada uno extraemos:
+        - imagen (url del CDN Wix vía wow-image data-image-info, fallback a img src)
+        - heading (h1/h2/h3 dentro del item)
+        - link (primer <a href> dentro del item)
+
+        Las URLs de imagen también se exponen en `result.asset_urls` por
+        `_extract_image_urls` (que ya itera todos los wow-image del DOM).
+        """
+        items: list[dict] = []
+        item_nodes = section.find_all(
+            class_=re.compile(r"wixui-repeater__item")
+        ) or section.find_all(attrs={"role": "listitem"})
+        for item in item_nodes:
+            heading_tag = item.find(["h1", "h2", "h3", "h4"])
+            link_tag = item.find("a", href=True)
+            img_url: str | None = None
+            # Preferir wow-image (URL real) sobre <img src> (puede ser vacío).
+            wow = item.find("wow-image")
+            if wow and wow.get("data-image-info"):
+                img_url = _wix_uri_from_data_info(wow["data-image-info"])
+            if img_url is None:
+                img_tag = item.find("img")
+                if img_tag and img_tag.get("src"):
+                    img_url = img_tag["src"]
+            items.append({
+                "heading": heading_tag.get_text(strip=True) if heading_tag else None,
+                "link": link_tag.get("href") if link_tag else None,
+                "image_url": img_url,
+            })
+        return {
+            "items": items,
+            "layout": "grid",
+            "notes": (
+                "Wix repeater — reconstruir en destino como Bricks Pricing / "
+                "Image Cards / Loop. El operador valida el layout final."
+            ),
         }
 
     def _extract_faq(self, section: Tag) -> dict:

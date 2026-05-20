@@ -128,6 +128,9 @@ class BlockType(StrEnum):
     DIVIDER = "divider"
     NAV = "nav"
     FOOTER = "footer"
+    #: Grid/lista de items (cards repetidas con img+heading+link). Caso
+    #: típico: `wixui-repeater` con N case-studies o servicios. B.4 (2026-05-20).
+    GRID = "grid"
     UNKNOWN = "unknown"
 
 

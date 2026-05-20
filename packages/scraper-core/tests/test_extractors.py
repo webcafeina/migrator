@@ -292,6 +292,97 @@ def test_wix_wow_image_data_no_es_dict() -> None:
     assert _wix_uri_from_data_info('"just a string"') is None
 
 
+# B.4 — wixui-repeater → BlockType.GRID. Caso real "Selected work" en
+# mariya.design: 3 case-studies con imagen + heading + link.
+
+
+_WIX_REPEATER_HTML = """\
+<!doctype html>
+<html><body>
+  <section id="comp-mfz5vuhy">
+    <h2>Selected work</h2>
+    <div class="ArRNfA wixui-repeater" id="comp-mfz5vuia5">
+      <div class="comp-mfz5vuia5-container" role="list">
+        <div class="wixui-repeater__item" role="listitem">
+          <h3>Sae Ren</h3>
+          <wow-image data-image-info='{"imageData":{"uri":"case1.png"}}'><img /></wow-image>
+          <a href="https://mariya.design/case-studies/sae-ren">View</a>
+        </div>
+        <div class="wixui-repeater__item" role="listitem">
+          <h3>VKA</h3>
+          <wow-image data-image-info='{"imageData":{"uri":"case2.png"}}'><img /></wow-image>
+          <a href="https://mariya.design/case-studies/vka">View</a>
+        </div>
+        <div class="wixui-repeater__item" role="listitem">
+          <h3>Sports Timing Systems</h3>
+          <wow-image data-image-info='{"imageData":{"uri":"case3.png"}}'><img /></wow-image>
+          <a href="https://mariya.design/case-studies/sts">View</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</body></html>
+"""
+
+
+def test_wix_repeater_genera_block_grid() -> None:
+    """wixui-repeater → BlockType.GRID (antes caía a UNKNOWN)."""
+    result = WixExtractor().extract(_WIX_REPEATER_HTML, "https://mariya.design/")
+    grids = [b for b in result.blocks if b.block_type == BlockType.GRID]
+    assert len(grids) == 1
+    items = grids[0].content_json["items"]
+    assert len(items) == 3
+    assert items[0]["heading"] == "Sae Ren"
+    assert items[0]["link"] == "https://mariya.design/case-studies/sae-ren"
+    assert items[0]["image_url"] == "https://static.wixstatic.com/media/case1.png"
+
+
+def test_wix_repeater_no_marca_unknown() -> None:
+    """Confirmación negativa: un repeater limpio NO cae a UNKNOWN."""
+    result = WixExtractor().extract(_WIX_REPEATER_HTML, "https://mariya.design/")
+    types = [b.block_type for b in result.blocks]
+    assert BlockType.UNKNOWN not in types
+
+
+def test_wix_repeater_items_sin_imagen_no_crashea() -> None:
+    """Item sin wow-image ni img → image_url=None, sin excepción."""
+    html = """\
+    <html><body>
+      <section id="comp-1">
+        <div class="wixui-repeater">
+          <div class="wixui-repeater__item">
+            <h3>Title only</h3>
+          </div>
+        </div>
+      </section>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://x.com/")
+    grids = [b for b in result.blocks if b.block_type == BlockType.GRID]
+    assert grids
+    items = grids[0].content_json["items"]
+    assert items[0]["heading"] == "Title only"
+    assert items[0]["image_url"] is None
+    assert items[0]["link"] is None
+
+
+def test_wix_repeater_fallback_role_listitem_sin_clase_item() -> None:
+    """Si items usan role=listitem sin la clase wixui-repeater__item."""
+    html = """\
+    <html><body>
+      <section id="comp-1">
+        <div class="wixui-repeater">
+          <div role="listitem"><h3>Item A</h3><a href="/a">a</a></div>
+          <div role="listitem"><h3>Item B</h3><a href="/b">b</a></div>
+        </div>
+      </section>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://x.com/")
+    grid = next(b for b in result.blocks if b.block_type == BlockType.GRID)
+    assert len(grid.content_json["items"]) == 2
+
+
 def test_wix_classic_solo_secciones_con_comp_prefix() -> None:
     """El fallback debe filtrar <section> sin id="comp-..." para no
     arrastrar HTML genérico que podría existir en mocks o landings."""

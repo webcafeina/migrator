@@ -23,6 +23,7 @@ from wcm_bricks_transpiler.mappers.composite import (
     map_footer,
     map_form,
     map_gallery,
+    map_grid,
     map_hero,
     map_nav,
     map_pricing,
@@ -49,6 +50,7 @@ REGISTRY: dict[BlockType, BlockMapper] = {
     BlockType.DIVIDER: map_divider,
     BlockType.NAV: map_nav,
     BlockType.FOOTER: map_footer,
+    BlockType.GRID: map_grid,
     BlockType.UNKNOWN: map_unknown,
 }
 

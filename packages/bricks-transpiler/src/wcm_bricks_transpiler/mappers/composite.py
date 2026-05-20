@@ -203,6 +203,108 @@ def map_gallery(
     return MapperResult(elements=[el])
 
 
+# ---------- grid (B.7 — Wix repeater → grid de cards) ----------
+
+
+def map_grid(
+    block: dict[str, Any],
+    order_index: int,
+    block_type: BlockType,
+    parent_id: str,
+    ctx: MapperContext,
+) -> MapperResult:
+    """B.7 — Repeater de Wix mapeado a section + container + N cards.
+
+    Cada item produce un `block` con imagen (si la hay), heading y
+    botón link. El layout queda como flex column por defecto en Bricks;
+    el operador puede ajustarlo a grid de N columnas desde el editor.
+    Si la URL de imagen es externa (CDN Wix o R2 no procesado), se usa
+    como external image — el asset-optimizer no la habrá registrado si
+    no estaba en `image_urls` global del extractor.
+    """
+    items = block.get("items") or []
+    if not items:
+        return MapperResult(
+            residual=ResidualHint(
+                title=f"Grid vacío (orden {order_index})",
+                description=(
+                    "El bloque grid (wix repeater) no tiene items. "
+                    "Revisar scraping o estructura del repeater origen."
+                ),
+                estimated_minutes=10,
+            )
+        )
+
+    section, container = _section_with_container(
+        order_index, parent_id, ctx, block_label="grid",
+    )
+    container.settings["_direction"] = "row"
+    container.settings["_flexWrap"] = "wrap"
+    container.settings["_gap"] = "32px"
+
+    elements: list[BricksElement] = [section, container]
+    sub_index = 2
+
+    for item in items:
+        card_id = ctx.id_gen.fresh(order_index, "grid", sub_index=sub_index)
+        sub_index += 1
+        container.children.append(card_id)
+        card = BricksElement(
+            id=card_id,
+            name="block",
+            parent=container.id,
+            children=[],
+            settings={"_width": "calc((100% - 64px) / 3)"},
+        )
+        elements.append(card)
+
+        if image_url := item.get("image_url"):
+            img_id = ctx.id_gen.fresh(order_index, "grid", sub_index=sub_index)
+            sub_index += 1
+            card.children.append(img_id)
+            elements.append(
+                BricksElement(
+                    id=img_id,
+                    name="image",
+                    parent=card_id,
+                    settings={
+                        "image": {"url": image_url, "external": True},
+                    },
+                )
+            )
+
+        if heading := item.get("heading"):
+            h_id = ctx.id_gen.fresh(order_index, "grid", sub_index=sub_index)
+            sub_index += 1
+            card.children.append(h_id)
+            elements.append(
+                BricksElement(
+                    id=h_id,
+                    name="heading",
+                    parent=card_id,
+                    settings={"text": heading, "tag": "h3"},
+                )
+            )
+
+        if link := item.get("link"):
+            l_id = ctx.id_gen.fresh(order_index, "grid", sub_index=sub_index)
+            sub_index += 1
+            card.children.append(l_id)
+            elements.append(
+                BricksElement(
+                    id=l_id,
+                    name="button",
+                    parent=card_id,
+                    settings={
+                        "text": "View",
+                        "link": {"type": "external", "url": link},
+                    },
+                )
+            )
+
+    return MapperResult(elements=elements)
+
+
 # ---------- form ----------
 
 def map_form(
