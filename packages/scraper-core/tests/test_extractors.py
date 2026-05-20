@@ -122,6 +122,94 @@ def test_wix_classic_editor_fallback_sin_data_mesh_id() -> None:
     assert hero.content_json.get("cta_text") == "Start the Audit"
 
 
+_WIX_CLASSIC_WITH_HEADER_FOOTER = """\
+<!doctype html>
+<html lang="en">
+<body>
+  <section id="comp-h1" class="Lnr3dj wixui-header undefined fwXYgt">
+    <nav><a href="/about">About</a><a href="/work">Work</a></nav>
+  </section>
+  <section id="comp-m1">
+    <h1>Hero title</h1>
+    <a class="wixui-button" href="/cta">CTA</a>
+  </section>
+  <section id="comp-m2">
+    <h2>Heading only</h2>
+  </section>
+  <section id="comp-f1" class="ke5pl1 wixui-footer fwXYgt">
+    <p>© 2026 Mariya Design</p>
+  </section>
+</body>
+</html>
+"""
+
+
+def test_wix_classic_nav_por_clase_wixui_header() -> None:
+    """B.2 — Wix Editor clásico: <section class=wixui-header> → BlockType.NAV.
+    Caso real: mariya.design no tiene id=SITE_HEADER (Studio) y antes
+    el header caía a UNKNOWN.
+    """
+    result = WixExtractor().extract(
+        _WIX_CLASSIC_WITH_HEADER_FOOTER, "https://mariya.design/"
+    )
+    types = [b.block_type for b in result.blocks]
+    assert BlockType.NAV in types
+    # NAV debe aparecer al principio (orden ascendente tras renumbering)
+    assert result.blocks[0].block_type == BlockType.NAV
+
+
+def test_wix_classic_footer_por_clase_wixui_footer() -> None:
+    """B.3 — Equivalente para footer: <section class=wixui-footer>."""
+    result = WixExtractor().extract(
+        _WIX_CLASSIC_WITH_HEADER_FOOTER, "https://mariya.design/"
+    )
+    types = [b.block_type for b in result.blocks]
+    assert BlockType.FOOTER in types
+    # FOOTER es el último bloque tras renumbering
+    assert result.blocks[-1].block_type == BlockType.FOOTER
+
+
+def test_wix_classic_header_footer_no_caen_a_unknown() -> None:
+    """Confirmación negativa: el header y footer ya NO aparecen como UNKNOWN
+    en sites Editor clásico."""
+    result = WixExtractor().extract(
+        _WIX_CLASSIC_WITH_HEADER_FOOTER, "https://mariya.design/"
+    )
+    types = [b.block_type for b in result.blocks]
+    assert BlockType.UNKNOWN not in types
+
+
+def test_wix_studio_id_site_header_sigue_funcionando() -> None:
+    """B.2 no rompe Wix Studio moderno: id=SITE_HEADER también detectado."""
+    html = """\
+    <html><body>
+      <div id="SITE_HEADER"><nav><a href="/x">x</a></nav></div>
+      <section data-mesh-id="root">
+        <h1>Hero</h1><a class="wixui-button">CTA</a>
+      </section>
+      <div id="SITE_FOOTER"><p>© 2026</p></div>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://example.wix.com/")
+    types = [b.block_type for b in result.blocks]
+    assert BlockType.NAV in types
+    assert BlockType.FOOTER in types
+
+
+def test_wix_classic_no_duplica_si_hay_studio_y_editor() -> None:
+    """Si hay ambos formatos (header wixui-header + id=SITE_HEADER) — solo 1 NAV."""
+    html = """\
+    <html><body>
+      <div id="SITE_HEADER"><nav>x</nav></div>
+      <section id="comp-1" class="wixui-header"><nav>y</nav></section>
+      <section id="comp-2" data-mesh-id="x"><h1>Hero</h1><a class="wixui-button">CTA</a></section>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://example.com/")
+    nav_blocks = [b for b in result.blocks if b.block_type == BlockType.NAV]
+    assert len(nav_blocks) == 1
+
+
 def test_wix_classic_solo_secciones_con_comp_prefix() -> None:
     """El fallback debe filtrar <section> sin id="comp-..." para no
     arrastrar HTML genérico que podría existir en mocks o landings."""

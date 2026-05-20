@@ -71,7 +71,45 @@ class WixExtractor:
                 if isinstance(s.get("id"), str) and s.get("id", "").startswith("comp-")
             ]
         order_index = 0
+        nav_detected = False
+        footer_detected = False
         for section in sections:
+            classes = section.get("class") or []
+            # B.2 — Wix Editor clásico: el header es una `<section>` con
+            # clase `wixui-header` (no `id="SITE_HEADER"` como Wix Studio).
+            # Detectarlo aquí evita que el classify lo marque UNKNOWN.
+            if "wixui-header" in classes:
+                if not nav_detected:
+                    result.blocks.insert(
+                        0,
+                        ExtractedBlock(
+                            block_type=BlockType.NAV,
+                            order_index=-1,
+                            content_json={"raw_html": str(section)[:5000]},
+                            lang=result.page_lang,
+                            notes=(
+                                "Wix Editor clásico wixui-header — "
+                                "reconstruir nav-menu en destino"
+                            ),
+                        ),
+                    )
+                    nav_detected = True
+                continue
+            # B.3 — Footer equivalente: `<section class="wixui-footer">`.
+            if "wixui-footer" in classes:
+                if not footer_detected:
+                    result.blocks.append(
+                        ExtractedBlock(
+                            block_type=BlockType.FOOTER,
+                            order_index=order_index,
+                            content_json={"raw_html": str(section)[:5000]},
+                            lang=result.page_lang,
+                            notes="Wix Editor clásico wixui-footer",
+                        )
+                    )
+                    footer_detected = True
+                    order_index += 1
+                continue
             block = self._classify_section(section)
             if block is None:
                 continue
@@ -80,8 +118,10 @@ class WixExtractor:
             result.blocks.append(block)
             order_index += 1
 
-        # Detectar headers/footers
-        if site_header := soup.find(id="SITE_HEADER"):
+        # Wix Studio: header/footer por `id="SITE_HEADER"`/`SITE_FOOTER`
+        # (formato moderno). Solo se aplica si no detectamos ya el
+        # equivalente de Editor clásico, para no duplicar.
+        if not nav_detected and (site_header := soup.find(id="SITE_HEADER")):
             result.blocks.insert(
                 0,
                 ExtractedBlock(
@@ -92,7 +132,7 @@ class WixExtractor:
                     notes="Wix SITE_HEADER — reconstruir nav-menu en destino",
                 ),
             )
-        if site_footer := soup.find(id="SITE_FOOTER"):
+        if not footer_detected and (site_footer := soup.find(id="SITE_FOOTER")):
             result.blocks.append(
                 ExtractedBlock(
                     block_type=BlockType.FOOTER,
