@@ -32,18 +32,17 @@ test.describe("/projects — rediseño", () => {
     ).toBeVisible();
   });
 
-  test("acción primaria '+ Nuevo proyecto' enlaza a /leads", async ({
+  test("acción primaria '+ Nuevo proyecto' enlaza al wizard /projects/new", async ({
     page,
   }) => {
+    // v0.18.0 — se introdujo el wizard /projects/new (4 pasos) como punto
+    // de entrada canónico para crear proyectos. Antes el CTA enlazaba a
+    // /leads y obligaba a "convertir un lead"; ahora se acepta tanto desde
+    // lead pre-rellenado (?lead_id=N) como crear desde cero.
     await page.goto("/projects");
     const cta = page.getByRole("link", { name: /\+ nuevo proyecto/i });
     await expect(cta).toBeVisible();
-    await expect(cta).toHaveAttribute("href", "/leads");
-    // El tooltip explica el modelo mental (proyecto = lead convertido).
-    await expect(cta).toHaveAttribute(
-      "title",
-      /proyectos nacen de un lead cualificado/i,
-    );
+    await expect(cta).toHaveAttribute("href", "/projects/new");
   });
 
   test("header del listado muestra contador de resultados", async ({ page }) => {
