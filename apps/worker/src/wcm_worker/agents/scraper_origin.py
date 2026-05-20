@@ -75,6 +75,13 @@ class ScraperOriginAgent(BaseAgent):
         # ADR-050 — cascada: project.max_pages_scrape > env SCRAPE_MAX_PAGES_DEFAULT > 50.
         max_pages = self._resolve_max_pages(project, ctx)
         source_url = project.source_url.rstrip("/")
+        # base_host se conserva tal cual (con o sin `www.`). El filtro de
+        # mismo-sitio (_same_site) normaliza ambos lados quitando `www.`,
+        # así `https://foo.com` y `https://www.foo.com` se tratan como el
+        # mismo sitio. Fix 2026-05-20: el sitio puede declarar source_url
+        # sin www pero servir todos los enlaces internos con www (o
+        # viceversa) — la comparación literal anterior rechazaba el 100%
+        # de las internas.
         base_host = urlparse(source_url).netloc
 
         # v0.18.0 — Si el cliente nos dio credenciales del back, sembrar el
@@ -220,7 +227,7 @@ class ScraperOriginAgent(BaseAgent):
         results.append(page)
         for a in soup.find_all("a", href=True):
             candidate = urljoin(url, a["href"]).split("#")[0]
-            if urlparse(candidate).netloc == base_host and candidate not in visited:
+            if self._same_site(candidate, base_host) and candidate not in visited:
                 to_visit.append(candidate)
 
     def _resolve_max_pages(self, project: Project, ctx: AgentContext) -> int:
@@ -337,9 +344,38 @@ class ScraperOriginAgent(BaseAgent):
         )
 
     @staticmethod
-    def _url_to_slug(url: str, base_url: str) -> str:
-        path = url.removeprefix(base_url).strip("/")
+    def _url_to_slug(url: str, base_url: str = "") -> str:
+        """Slug = path del URL sin barras. `base_url` se acepta por
+        compatibilidad pero ya no se usa: si el sitio responde con `www.`
+        y `source_url` no lo lleva (o viceversa), el `removeprefix`
+        anterior fallaba y devolvía la URL completa como slug. Ahora
+        usamos `urlparse(url).path` que es agnóstico al host.
+        """
+        path = urlparse(url).path.strip("/")
         return path or "home"
+
+    @staticmethod
+    def _norm_host(host: str) -> str:
+        """Normaliza host para comparación: minúsculas + sin prefix `www.`."""
+        return host.lower().removeprefix("www.")
+
+    @staticmethod
+    def _same_site(url: str, ref_host: str) -> bool:
+        """True si `url` pertenece al mismo sitio que `ref_host`.
+
+        Tolera el prefix `www.` en cualquiera de los dos lados pero NO
+        otros subdominios (`blog.foo.com` ≠ `foo.com`) ni distinto host.
+        Las URLs sin host (mailto, tel, javascript) devuelven False.
+        """
+        try:
+            netloc = urlparse(url).netloc
+        except ValueError:
+            return False
+        if not netloc:
+            return False
+        return ScraperOriginAgent._norm_host(netloc) == ScraperOriginAgent._norm_host(
+            ref_host
+        )
 
 
 def _sanitize_html(soup: BeautifulSoup) -> str:
