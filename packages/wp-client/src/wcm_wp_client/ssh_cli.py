@@ -305,15 +305,23 @@ class WpCliSshClient:
 
         Es la vía RECOMENDADA para Bricks pages grandes (>500 elementos);
         el REST API puede atragantarse con payloads de varios MB.
+
+        El JSON se pasa por **stdin** (`-` como value), no como argv —
+        un payload de varios KB pasado como argument excede
+        MAX_ARG_STRLEN (~128KB) o se rompe al cruzar el shell SSH
+        cuando hay muchas comillas anidadas. wp-cli lee el value de stdin
+        cuando el value posicional es `-`. Detectado al migrar
+        mariya.design (2026-05-20).
         """
         payload = json.dumps(bricks_json, ensure_ascii=False)
         await self.run_or_raise(
             [
                 "post", "meta", "update",
-                str(post_id), "_bricks_page_content_2", payload,
+                str(post_id), "_bricks_page_content_2", "-",
                 "--format=json",
             ],
             timeout_s=180.0,
+            stdin_input=payload,
         )
 
     async def post_create(self, payload: dict[str, Any]) -> int:

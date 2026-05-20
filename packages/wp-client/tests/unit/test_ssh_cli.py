@@ -58,3 +58,49 @@ def _quote(s: str) -> str:
     import shlex
 
     return shlex.quote(s)
+
+
+def test_bricks_import_content_pasa_json_por_stdin(fake_config: WpClientConfig) -> None:
+    """Fix 2026-05-20: el JSON Bricks se envía por stdin (`-` como value)
+    en vez de como argv. Pasarlo por argv excede MAX_ARG_STRLEN (~128KB)
+    para pages con muchos bloques y cruza mal el shell SSH con comillas.
+    """
+    import asyncio
+    from unittest.mock import MagicMock
+
+    client = WpCliSshClient(fake_config)
+
+    # Mock del client SSH ya conectado (paramiko)
+    captured: dict = {}
+
+    def _fake_exec_command(cmd: str, timeout=None):
+        captured["cmd"] = cmd
+        stdin_mock = MagicMock()
+        stdout_mock = MagicMock()
+        stdout_mock.channel.recv_exit_status = MagicMock(return_value=0)
+        stdout_mock.read = MagicMock(return_value=b"")
+        stderr_mock = MagicMock()
+        stderr_mock.read = MagicMock(return_value=b"")
+
+        def _write(data):
+            captured.setdefault("stdin", "")
+            captured["stdin"] += data
+        stdin_mock.write = _write
+        stdin_mock.flush = MagicMock()
+        stdin_mock.channel.shutdown_write = MagicMock()
+        return stdin_mock, stdout_mock, stderr_mock
+
+    fake_ssh = MagicMock()
+    fake_ssh.exec_command = _fake_exec_command
+    client._ssh = fake_ssh
+    asyncio.run(
+        client.bricks_import_content(
+            42, [{"id": "section1", "name": "section"}, {"id": "t1", "name": "text"}]
+        )
+    )
+
+    # El argv contiene `-` (placeholder para leer stdin), NO el JSON inline.
+    assert " - --format=json" in captured["cmd"] or " '-' --format=json" in captured["cmd"]
+    # El JSON va por stdin.
+    assert '"section1"' in captured["stdin"]
+    assert '"name": "text"' in captured["stdin"]
