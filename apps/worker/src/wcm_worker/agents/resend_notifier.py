@@ -19,6 +19,7 @@ from __future__ import annotations
 import logging
 import os
 
+from wcm_db.models.projects import Project
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import ResendNotifierError
 from wcm_worker.integrations.resend import ResendApiError, ResendClient
@@ -43,9 +44,17 @@ class ResendNotifierAgent(BaseAgent):
         subject: str = ctx.extra.get("subject", "")
         body_text: str = ctx.extra.get("body_text", "")
         body_html: str | None = ctx.extra.get("body_html")
+
+        # Si el agent se ejecuta como fase del pipeline (sin ctx.extra
+        # pre-poblado) y hay project_id, auto-construir un resumen del
+        # estado del proyecto y mandarlo a RESEND_NOTIFY_OPERATIONS.
+        if not recipients and not subject and not body_text and ctx.project_id:
+            recipients, subject, body_text = self._build_project_notification(ctx)
+
         if not recipients or not subject or not body_text:
             raise ResendNotifierError(
-                "ResendNotifierAgent requiere recipients, subject y body_text en ctx.extra"
+                "ResendNotifierAgent requiere recipients, subject y body_text en ctx.extra "
+                "(o un project_id válido para auto-generar el aviso)."
             )
 
         for r in recipients:
@@ -84,3 +93,30 @@ class ResendNotifierAgent(BaseAgent):
                 "status": result.status,
             },
         )
+
+    @staticmethod
+    def _build_project_notification(
+        ctx: AgentContext,
+    ) -> tuple[list[str], str, str]:
+        """Defaults para cuando notify se ejecuta como fase del pipeline
+        sin ctx.extra explícito. Lee el project + RESEND_NOTIFY_OPERATIONS
+        y construye un aviso simple del estado final."""
+        project = ctx.session.get(Project, ctx.project_id)
+        if project is None:
+            return [], "", ""
+
+        ops_email = os.environ.get(
+            "RESEND_NOTIFY_OPERATIONS", "info@webcafeina.com"
+        )
+        recipients = [ops_email] if ops_email else []
+        status = project.status.value if project.status else "unknown"
+        subject = f"[wcm] Proyecto #{project.id} {project.client_name} — {status}"
+        body_text = (
+            f"Proyecto #{project.id} ({project.client_name})\n"
+            f"Origen: {project.source_url}\n"
+            f"Destino: {project.target_domain or '(no fijado)'}\n"
+            f"Estado final: {status}\n\n"
+            "Revisa el dashboard para ver fases, residuales, QA y visual diff:\n"
+            f"http://localhost:3000/projects/{project.id}\n"
+        )
+        return recipients, subject, body_text

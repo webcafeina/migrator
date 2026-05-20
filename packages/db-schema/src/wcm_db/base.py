@@ -42,12 +42,17 @@ class TimestampMixin:
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
+        # Default Python como red de seguridad: si una tabla se creó sin
+        # server_default (bug histórico — ver 0013_qa_reports_ts_default),
+        # SQLAlchemy aún envía un valor válido en INSERT en vez de NULL.
+        default=utcnow,
         server_default=func.now(),
         index=True,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
+        default=utcnow,
         server_default=func.now(),
         onupdate=func.now(),
     )

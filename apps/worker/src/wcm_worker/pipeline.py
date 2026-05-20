@@ -168,34 +168,49 @@ class Orchestrator:
 
             try:
                 self._run_phase(spec, project_id)
+                # Cada fase es una unidad de trabajo que debe preservarse:
+                # commit aquí evita que un fallo posterior arrastre con
+                # rollback() el trabajo previo. Tras esto, rollback() solo
+                # afecta a operaciones desde este punto, no a fases ya OK.
+                self.session.commit()
+                # Re-fetch del project tras commit (la sesión sigue la misma
+                # pero los objetos pueden necesitar refresh para invalidar
+                # cache local). Cubierto por el siguiente `session.get()`
+                # en el próximo loop iter — no necesita acción explícita.
                 outcome.completed_phases.append(spec.phase_name)
+                project = self.session.get(Project, project_id)
             except AgentNotImplementedError as e:
                 log.warning("phase_skipped_not_implemented", extra={
                     "phase": spec.phase_name, "reason": str(e)
                 })
+                self.session.rollback()
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.SKIPPED, summary=str(e))
+                self.session.commit()
                 outcome.skipped_phases.append(spec.phase_name)
+                project = self.session.get(Project, project_id)
             except AgentError as e:
                 log.exception("phase_failed", extra={"phase": spec.phase_name})
                 # Si el fallo ocurrió durante un flush, la session queda en
-                # estado de rollback pendiente y no podríamos persistir el
-                # mark_phase(FAILED). Hacemos rollback para que la session
-                # vuelva a estar usable y el FAILED se registre.
+                # estado de rollback pendiente. Rollback restaura solo este
+                # bloque (las fases previas hicieron commit y están a salvo).
                 self.session.rollback()
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.FAILED, summary=str(e))
+                self.session.commit()
                 outcome.failed_phase = spec.phase_name
+                project = self.session.get(Project, project_id)
                 if spec.required:
                     project.status = ProjectStatus.BLOCKED_HUMAN_INPUT
                     outcome.final_status = ProjectStatus.BLOCKED_HUMAN_INPUT
-                    self.session.flush()
+                    self.session.commit()
                     return outcome
                 # Si no required, continúa con la siguiente fase
             except Exception as e:  # noqa: BLE001
                 log.exception("phase_unexpected_error", extra={"phase": spec.phase_name})
-                # Mismo motivo: rollback antes de tocar la session.
                 self.session.rollback()
                 self._mark_phase(project_id, spec.phase_name, ProjectPhaseStatus.FAILED, summary=f"{type(e).__name__}: {e}")
+                self.session.commit()
                 outcome.failed_phase = spec.phase_name
+                project = self.session.get(Project, project_id)
                 # ADR-049 — el flag `required` gobierna lo que para o no,
                 # no el tipo de excepción. En no-required, Exception genérica
                 # se trata igual que AgentError: marca FAILED y sigue con la
@@ -204,7 +219,7 @@ class Orchestrator:
                 if spec.required:
                     project.status = ProjectStatus.BLOCKED_HUMAN_INPUT
                     outcome.final_status = ProjectStatus.BLOCKED_HUMAN_INPUT
-                    self.session.flush()
+                    self.session.commit()
                     return outcome
 
         # Si llegamos aquí sin failed_phase requerido, el proyecto se completa
