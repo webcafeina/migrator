@@ -104,7 +104,13 @@ def test_agent_playwright_no_disponible_marca_skipped(fake_session) -> None:
     res.scalars = MagicMock(return_value=MagicMock(all=lambda: [_page_mock()]))
     fake_session.execute.return_value = res
 
-    with patch("wcm_worker.agents.visual_diff.screenshot_session") as mock_session:
+    # Pre-check D.1 hace `httpx.get(target_url)` antes de Playwright.
+    # En CI no hay barpepe.es real, mockear con 200 para que el flujo
+    # llegue a la rama Playwright failed (que es lo que valida este test).
+    fake_response = MagicMock()
+    fake_response.status_code = 200
+    with patch("wcm_worker.agents.visual_diff.httpx.get", return_value=fake_response), \
+         patch("wcm_worker.agents.visual_diff.screenshot_session") as mock_session:
         mock_session.side_effect = PlaywrightNotAvailableError("chromium missing")
         result = VisualDiffAgent().run(AgentContext(session=fake_session, project_id=7))
 

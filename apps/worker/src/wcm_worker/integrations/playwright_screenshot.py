@@ -64,11 +64,28 @@ class ScreenshotSession:
         self._wait_until = wait_until
         self._timeout_ms = timeout_ms
 
-    def capture(self, url: str, *, full_page: bool = True) -> bytes:
-        """Devuelve el PNG bytes de la captura."""
+    def capture(
+        self,
+        url: str,
+        *,
+        full_page: bool = True,
+        timeout_ms: int | None = None,
+    ) -> bytes:
+        """Devuelve el PNG bytes de la captura.
+
+        `timeout_ms` permite override per-call del timeout default de la
+        sesión. Útil cuando una de las URLs es "probablemente caída"
+        (p.ej. destino con páginas en draft) y se quiere fallar rápido
+        en vez de esperar el timeout default — caso real: visual_diff
+        contra 50 páginas draft consumía 25 min con timeout 30s.
+        """
         page = self._context.new_page()
         try:
-            page.goto(url, wait_until=self._wait_until, timeout=self._timeout_ms)
+            page.goto(
+                url,
+                wait_until=self._wait_until,
+                timeout=timeout_ms if timeout_ms is not None else self._timeout_ms,
+            )
             return page.screenshot(full_page=full_page, type="png")
         finally:
             page.close()

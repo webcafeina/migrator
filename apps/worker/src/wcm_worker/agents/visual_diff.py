@@ -27,8 +27,10 @@ from __future__ import annotations
 
 import logging
 import os
+from dataclasses import dataclass
 from urllib.parse import urlparse
 
+import httpx
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
@@ -62,6 +64,36 @@ DEFAULT_VIEWPORT_HEIGHT = 800
 #: pequeños shifts de typography (anti-aliasing, font rendering OS).
 DEFAULT_DIFF_THRESHOLD = 0.15
 
+#: Timeout corto para captura del target (URL destino). Si las páginas
+#: están en draft (404 público), se acaba en 8s en lugar de 30s del
+#: default. Source sigue con 30s — el origen tarda más en hidratarse
+#: (Wix con trackers). Override por env VISUAL_DIFF_TARGET_TIMEOUT_MS.
+DEFAULT_TARGET_TIMEOUT_MS = 8_000
+
+#: Pre-check: timeout en segundos para la petición HTTP de validación
+#: del destino antes de abrir Playwright. 5s suficiente para confirmar
+#: si el target devuelve 200/3xx o 404.
+DEFAULT_PRECHECK_TIMEOUT_S = 5.0
+
+#: Cap de fallos consecutivos. Si el bucle encadena N timeouts/errores,
+#: abortamos asumiendo que el destino no es accesible y evitamos
+#: consumir minutos en timeouts encadenados. Override por env
+#: VISUAL_DIFF_MAX_CONSECUTIVE_FAILURES.
+DEFAULT_MAX_CONSECUTIVE_FAILURES = 3
+
+
+@dataclass
+class PrecheckResult:
+    """Resultado del pre-check del destino antes del bucle de capturas.
+
+    Si `skip_reason` es non-None, visual_diff aborta inmediatamente con
+    SKIPPED + residual task; no se abre Playwright ni se itera páginas.
+    """
+
+    skip_reason: str | None = None
+    detail: str = ""
+    status_code: int | None = None
+
 
 class VisualDiffAgent(BaseAgent):
     name = "visual-diff"
@@ -93,11 +125,44 @@ class VisualDiffAgent(BaseAgent):
 
         r2 = self._injected_r2 or R2Client.from_env()
         residual_threshold = self._resolve_residual_threshold(project)
+        max_consecutive_failures = self._resolve_max_consecutive_failures()
+        target_timeout_ms = self._resolve_target_timeout_ms()
         warnings: list[str] = []
         scores: list[float] = []
         below_threshold: list[tuple[str, float]] = []
         compared = 0
         failed_pages = 0
+
+        # D.1 — Pre-check antes de abrir Playwright. Si el destino devuelve
+        # 404 para la primera página esperada (caso típico: páginas en
+        # draft tras deploy_wp por ADR-039), abortamos limpio con
+        # SKIPPED + residual. Antes consumíamos 25-45 min en timeouts
+        # encadenados de Playwright.
+        precheck = self._precheck_target(project.target_domain, pages[0])
+        if precheck.skip_reason:
+            ctx.session.add(self._draft_pages_residual(project, precheck.detail))
+            ctx.session.flush()
+            log.info(
+                "visual_diff_precheck_skip",
+                extra={
+                    "project_id": project.id,
+                    "reason": precheck.skip_reason,
+                    "status_code": precheck.status_code,
+                },
+            )
+            return AgentResult(
+                summary=(
+                    f"Project {project.id}: visual-diff SKIPPED — "
+                    f"{precheck.skip_reason}"
+                ),
+                outputs={
+                    "skipped": True,
+                    "reason": precheck.skip_reason,
+                    "pages_compared": 0,
+                    "precheck_status_code": precheck.status_code,
+                },
+                warnings=[precheck.detail],
+            )
 
         try:
             session_cm = screenshot_session(
@@ -118,6 +183,8 @@ class VisualDiffAgent(BaseAgent):
                 warnings=[f"Playwright no instalado: {e}"],
             )
 
+        consecutive_failures = 0
+        aborted_early = False
         try:
             with session_cm as session_pw:
                 for page in pages:
@@ -125,21 +192,46 @@ class VisualDiffAgent(BaseAgent):
                     target_url = _build_target_url(project.target_domain, page_path)
                     try:
                         source_png = session_pw.capture(page.url)
-                        target_png = session_pw.capture(target_url)
+                        # D.2 — timeout corto para target. Si la página no
+                        # existe (draft, 404), falla en target_timeout_ms
+                        # en vez del default 30s.
+                        target_png = session_pw.capture(
+                            target_url, timeout_ms=target_timeout_ms
+                        )
                     except Exception as e:  # noqa: BLE001 — Playwright timeout, DNS, etc.
                         failed_pages += 1
+                        consecutive_failures += 1
                         log.warning(
                             "visual_diff_page_failed",
                             extra={
                                 "project_id": project.id,
                                 "page_path": page_path,
                                 "error": str(e),
+                                "consecutive_failures": consecutive_failures,
                             },
                         )
                         warnings.append(
                             f"Fallo capturando {page_path}: {type(e).__name__}: {str(e)[:120]}"
                         )
+                        # D.3 — cap fallos consecutivos. Si llegamos al
+                        # límite, asumimos que el destino no está
+                        # accesible y abortamos para no quemar minutos.
+                        if consecutive_failures >= max_consecutive_failures:
+                            aborted_early = True
+                            warnings.append(
+                                f"Bucle abortado tras {max_consecutive_failures} "
+                                f"fallos consecutivos."
+                            )
+                            ctx.session.add(
+                                self._consecutive_failures_residual(
+                                    project,
+                                    max_consecutive_failures,
+                                    len(pages) - compared - failed_pages,
+                                )
+                            )
+                            break
                         continue
+                    consecutive_failures = 0
 
                     try:
                         result = compare(source_png, target_png, threshold=DEFAULT_DIFF_THRESHOLD)
@@ -209,6 +301,7 @@ class VisualDiffAgent(BaseAgent):
                 "avg_score": avg_score,
                 "residual_threshold": residual_threshold,
                 "pages_below_threshold": len(below_threshold),
+                "aborted_early": aborted_early,
             },
             warnings=warnings,
         )
@@ -229,6 +322,144 @@ class VisualDiffAgent(BaseAgent):
                     extra={"value": env_val},
                 )
         return 0.70
+
+    def _resolve_max_consecutive_failures(self) -> int:
+        """Cap configurable por env VISUAL_DIFF_MAX_CONSECUTIVE_FAILURES."""
+        env_val = os.environ.get("VISUAL_DIFF_MAX_CONSECUTIVE_FAILURES")
+        if env_val:
+            try:
+                v = int(env_val)
+                if v >= 1:
+                    return v
+            except ValueError:
+                log.warning(
+                    "visual_diff_max_consecutive_failures_invalid",
+                    extra={"value": env_val},
+                )
+        return DEFAULT_MAX_CONSECUTIVE_FAILURES
+
+    def _resolve_target_timeout_ms(self) -> int:
+        """Timeout per-capture del target. Override por env."""
+        env_val = os.environ.get("VISUAL_DIFF_TARGET_TIMEOUT_MS")
+        if env_val:
+            try:
+                v = int(env_val)
+                if v >= 1000:
+                    return v
+            except ValueError:
+                log.warning(
+                    "visual_diff_target_timeout_invalid",
+                    extra={"value": env_val},
+                )
+        return DEFAULT_TARGET_TIMEOUT_MS
+
+    def _precheck_target(
+        self, target_domain: str, first_page: ScrapedPage
+    ) -> PrecheckResult:
+        """D.1 — Verifica que el destino sirva la primera página esperada.
+
+        Caso típico que esto evita: tras `deploy_wp` las páginas WP quedan
+        en `status=draft` (ADR-039) y devuelven 404 público. Sin este
+        pre-check, visual_diff itera las 50 páginas cada una con 30s de
+        timeout Playwright → 25-45 min consumidos en timeouts encadenados.
+
+        Política:
+        - 200/3xx (con follow_redirects)  → OK, continuar.
+        - 404  → skip con razón "páginas en draft".
+        - Otros >=400 → skip con razón "destino con error".
+        - Network error  → skip con razón "destino inaccesible".
+        """
+        page_path = _extract_path(first_page.url)
+        target_url = _build_target_url(target_domain, page_path)
+        try:
+            resp = httpx.get(
+                target_url,
+                timeout=DEFAULT_PRECHECK_TIMEOUT_S,
+                follow_redirects=True,
+                headers={"User-Agent": "WebcafeinaMigrator/0.1 (visual-diff precheck)"},
+            )
+        except httpx.RequestError as e:
+            return PrecheckResult(
+                skip_reason="Destino inaccesible",
+                detail=(
+                    f"GET {target_url} falló: {type(e).__name__}: {str(e)[:200]}. "
+                    "Verifica que el dominio target esté apuntado al WP destino "
+                    "y que el server responda."
+                ),
+            )
+        if resp.status_code == 404:
+            return PrecheckResult(
+                skip_reason="Páginas WP destino en draft (404 público)",
+                detail=(
+                    f"GET {target_url} → HTTP 404. Las páginas creadas por "
+                    "deploy_wp quedan en status=draft por diseño (ADR-039: la "
+                    "publicación es decisión humana). Para validar visualmente: "
+                    "pulsa 'Publicar todo' en el dashboard del proyecto y "
+                    "luego ejecuta Resume sobre visual_diff."
+                ),
+                status_code=404,
+            )
+        if resp.status_code >= 400:
+            return PrecheckResult(
+                skip_reason=f"Destino devuelve HTTP {resp.status_code}",
+                detail=f"GET {target_url} → HTTP {resp.status_code}",
+                status_code=resp.status_code,
+            )
+        return PrecheckResult(status_code=resp.status_code)
+
+    def _draft_pages_residual(self, project: Project, detail: str) -> ResidualTask:
+        """ResidualTask cuando el pre-check detecta drafts (404)."""
+        return ResidualTask(
+            project_id=project.id,
+            title="Publicar páginas WP destino + re-ejecutar visual_diff",
+            description=(
+                "Visual_diff se saltó porque las páginas WP creadas por "
+                "deploy_wp están en `draft` (ADR-039: la publicación es "
+                "decisión humana, no automática).\n\n"
+                f"Diagnóstico: {detail}\n\n"
+                "Pasos:\n"
+                "1. Abre cada página en wp-admin "
+                "(`/wp-admin/edit.php?post_type=page`) y revisa el render "
+                "del Bricks editor.\n"
+                "2. Cuando estés conforme con el contenido, pulsa "
+                "**'Publicar todo'** en el dashboard del proyecto.\n"
+                "3. Reanuda la fase visual_diff: "
+                "`POST /projects/{pid}/resume` con `force_phase=visual_diff`."
+            ).format(pid=project.id),
+            category=ResidualCategory.POST_GO_LIVE,
+            estimated_minutes=15,
+            screenshot_paths=[],
+            generated_by="visual-diff",
+            status=ResidualStatus.OPEN,
+        )
+
+    def _consecutive_failures_residual(
+        self, project: Project, cap: int, remaining: int
+    ) -> ResidualTask:
+        """ResidualTask cuando el bucle aborta por cap de fallos consecutivos."""
+        return ResidualTask(
+            project_id=project.id,
+            title=f"visual_diff abortado tras {cap} fallos consecutivos",
+            description=(
+                f"El bucle se cortó tras {cap} fallos consecutivos al "
+                "capturar el destino. Quedaron aproximadamente "
+                f"{remaining} páginas sin comparar.\n\n"
+                "Causa probable: las páginas WP destino están caídas, "
+                "en draft, o el target_domain apunta a un sitio incorrecto.\n\n"
+                "Acciones:\n"
+                "1. Verifica `https://{target}` en navegador.\n"
+                "2. Si todas las páginas están en draft, publica primero "
+                "y reanuda visual_diff.\n"
+                "3. Si quieres elevar el cap, configura "
+                "`VISUAL_DIFF_MAX_CONSECUTIVE_FAILURES=N` en `.env` y "
+                "reanuda."
+            ).format(target=project.target_domain or "<target_domain>"),
+            category=ResidualCategory.POST_GO_LIVE,
+            estimated_minutes=15,
+            screenshot_paths=[],
+            generated_by="visual-diff",
+            status=ResidualStatus.OPEN,
+        )
 
     def _below_threshold_residual(
         self,
