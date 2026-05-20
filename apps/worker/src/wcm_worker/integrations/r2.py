@@ -116,6 +116,32 @@ class R2Client:
         except Exception as e:  # noqa: BLE001
             raise R2UploadError(f"delete_object falló: {e}") from e
 
+    def delete_prefix(self, prefix: str) -> int:
+        """Borra todos los objetos cuyo Key empieza por `prefix`. Devuelve
+        el número de objetos borrados.
+
+        Usa list_objects_v2 paginado + delete_objects en batches de 1000
+        (límite duro de S3 / R2 por request). Idempotente: si el prefijo
+        está vacío devuelve 0 sin error.
+        """
+        if not prefix:
+            raise R2UploadError("delete_prefix requiere prefix no vacío (evita borrado masivo accidental)")
+        deleted = 0
+        paginator = self._s3.get_paginator("list_objects_v2")
+        try:
+            for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix):
+                keys = [{"Key": o["Key"]} for o in page.get("Contents", [])]
+                if not keys:
+                    continue
+                self._s3.delete_objects(
+                    Bucket=self.bucket,
+                    Delete={"Objects": keys, "Quiet": True},
+                )
+                deleted += len(keys)
+        except Exception as e:  # noqa: BLE001
+            raise R2UploadError(f"delete_prefix({prefix!r}) falló: {e}") from e
+        return deleted
+
     # ---------- internals ----------
 
     @staticmethod

@@ -809,15 +809,16 @@ async def delete_project(
 
     Pasos:
     1. Audit log entry con datos preservados (trazabilidad post-delete).
-    2. CASCADE delete BD — todas las tablas relacionadas con FK
+    2. Limpieza R2: borra todos los objetos bajo `projects/{id}/` (assets
+       optimizados, screenshots visual_diff, checklists PDF/MD). Failsafe
+       no levanta — si R2 falla, el delete BD sigue adelante.
+    3. CASCADE delete BD — todas las tablas relacionadas con FK
        ON DELETE CASCADE se vacían (scraped_pages, content_blocks,
        bricks_pages, assets, woo_products, woo_orders, visual_diffs,
        qa_reports, residual_tasks, project_phases, seo_redirects).
 
-    NOTA: este MVP NO borra assets R2 ni file:// locales todavía (queda
-    para ADR-054 tarea #101 — service cascade completo). Tampoco ejecuta
-    rollback inline si status != ROLLED_BACK. El operador debería hacer
-    rollback primero si quiere limpiar también el WP destino.
+    NOTA: NO ejecuta rollback inline si status != ROLLED_BACK. El operador
+    debería hacer rollback primero si quiere limpiar también el WP destino.
     """
     project = await session.get(Project, project_id)
     if project is None:
@@ -849,6 +850,16 @@ async def delete_project(
             "target_domain": project.target_domain,
             "status_at_delete": project.status.value,
         },
+    )
+
+    # Limpieza R2 antes del CASCADE BD. Failsafe: si falla, log warning y
+    # seguimos — un huérfano R2 acumulable es preferible a un proyecto
+    # parcialmente borrado.
+    from wcm_api.services.project_cleanup import delete_project_r2_assets
+    r2_result = delete_project_r2_assets(project_id)
+    log.info(
+        "project_delete_r2_cleanup",
+        extra={"project_id": project_id, "r2_result": r2_result},
     )
 
     # CASCADE delete — todas las tablas con FK ondelete=CASCADE se vacían.
