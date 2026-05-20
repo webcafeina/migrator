@@ -241,3 +241,54 @@ def test_precheck_result_defaults() -> None:
     assert r.skip_reason is None
     assert r.detail == ""
     assert r.status_code is None
+
+
+# ---------- D.4 WP_VERIFY_SSL ----------
+
+
+@pytest.mark.parametrize(
+    "env_value,expected_verify",
+    [
+        (None, True),       # default: verify SSL
+        ("true", True),
+        ("True", True),
+        ("1", True),
+        ("yes", True),
+        ("false", False),   # dev con cert self-signed
+        ("False", False),
+        ("0", False),
+        ("no", False),
+    ],
+)
+def test_precheck_respeta_wp_verify_ssl(
+    monkeypatch, env_value: str | None, expected_verify: bool, fake_session
+) -> None:
+    """El pre-check `httpx.get` debe usar `verify=WP_VERIFY_SSL`. En dev
+    con cert auto-firmado (WP_VERIFY_SSL=false), sin esto el pre-check
+    cae con SSLError y reporta falso "Destino inaccesible".
+    """
+    if env_value is None:
+        monkeypatch.delenv("WP_VERIFY_SSL", raising=False)
+    else:
+        monkeypatch.setenv("WP_VERIFY_SSL", env_value)
+
+    fake_session.get.return_value = _project_mock()
+    res = MagicMock()
+    res.scalars = MagicMock(return_value=MagicMock(all=lambda: [_page_mock()]))
+    fake_session.execute.return_value = res
+
+    fake_response = MagicMock()
+    fake_response.status_code = 200
+
+    from wcm_worker.integrations.playwright_screenshot import PlaywrightNotAvailableError
+
+    with patch(
+        "wcm_worker.agents.visual_diff.httpx.get", return_value=fake_response
+    ) as mock_get, patch(
+        "wcm_worker.agents.visual_diff.screenshot_session"
+    ) as mock_session:
+        mock_session.side_effect = PlaywrightNotAvailableError("noop")
+        VisualDiffAgent().run(AgentContext(session=fake_session, project_id=15))
+
+    # Verificar que httpx.get fue llamado con verify=expected_verify
+    assert mock_get.call_args.kwargs["verify"] is expected_verify

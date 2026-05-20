@@ -371,11 +371,19 @@ class VisualDiffAgent(BaseAgent):
         """
         page_path = _extract_path(first_page.url)
         target_url = _build_target_url(target_domain, page_path)
+        # D.4 — respetar WP_VERIFY_SSL (misma env var que el WP REST
+        # client). En dev con cert auto-firmado, sin esto el pre-check
+        # cae por SSLError y reporta falso "Destino inaccesible" cuando
+        # realmente el destino está vivo, solo no tiene cert válido.
+        verify_ssl = os.environ.get("WP_VERIFY_SSL", "true").lower() not in (
+            "0", "false", "no"
+        )
         try:
             resp = httpx.get(
                 target_url,
                 timeout=DEFAULT_PRECHECK_TIMEOUT_S,
                 follow_redirects=True,
+                verify=verify_ssl,
                 headers={"User-Agent": "WebcafeinaMigrator/0.1 (visual-diff precheck)"},
             )
         except httpx.RequestError as e:
