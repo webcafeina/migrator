@@ -111,12 +111,21 @@ def test_bricks_import_content_via_wp_eval_y_fichero_temp(fake_config: WpClientC
     assert '"section1"' in captured[0]["stdin"]
     assert '"name": "text"' in captured[0]["stdin"]
 
-    # 2. wp eval con PHP que lee el fichero y actualiza el meta.
+    # 2. wp eval con PHP que escribe directo a $wpdb->postmeta (bypass de
+    # filtros WP — Bricks bloquea update_post_meta del meta protegido
+    # desde fuera de su UI). Pattern: delete + insert con serialize.
     cmd2 = captured[1]["cmd"]
     assert "eval" in cmd2
     assert "file_get_contents" in cmd2
-    assert "update_post_meta(42" in cmd2
+    assert "$wpdb->postmeta" in cmd2
+    assert "$wpdb->delete" in cmd2
+    assert "$wpdb->insert" in cmd2
     assert "_bricks_page_content_2" in cmd2
+    # post_id=42 aparece dos veces (delete + insert) — shlex.quote escapa
+    # las single quotes alrededor del array key, así que solo verificamos
+    # que el número 42 está presente al menos dos veces.
+    assert cmd2.count("42") >= 2
+    assert "serialize" in cmd2
 
     # 3. rm -f cleanup del fichero temp.
     cmd3 = captured[2]["cmd"]

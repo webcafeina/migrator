@@ -340,13 +340,25 @@ class WpCliSshClient:
         )
 
         # 2. wp eval — PHP que lee el fichero y persiste el meta.
-        # json_decode + update_post_meta es la API estándar de WP, idéntica
-        # a lo que haría `wp post meta update --format=json` internamente.
+        # **Bypass de filtros WP**: Bricks intercepta `update_post_meta` de
+        # `_bricks_page_content_2` desde fuera de su UI y lo descarta
+        # silenciosamente (verificado en test-migrator.webcafeina.com:
+        # update_post_meta retorna OK pero get_post_meta devuelve string
+        # vacío). La solución es escribir directo a `$wpdb->postmeta`
+        # saltando los hooks. delete+insert es idempotente. WordPress
+        # serializa internamente con `serialize()`, replicamos el formato.
         php = (
+            "global $wpdb;"
             "$json = file_get_contents("
             f"{json.dumps(remote_path)});"
-            f"update_post_meta({int(post_id)}, '_bricks_page_content_2', "
-            "json_decode($json, true));"
+            "$data = json_decode($json, true);"
+            "$wpdb->delete($wpdb->postmeta, "
+            f"['post_id' => {int(post_id)}, 'meta_key' => '_bricks_page_content_2']);"
+            "$wpdb->insert($wpdb->postmeta, ["
+            f"'post_id' => {int(post_id)},"
+            "'meta_key' => '_bricks_page_content_2',"
+            "'meta_value' => is_array($data) ? serialize($data) : ''"
+            "]);"
         )
         try:
             await self.run_or_raise(["eval", php], timeout_s=180.0)
