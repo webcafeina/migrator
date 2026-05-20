@@ -55,8 +55,21 @@ class WixExtractor:
                 if cls.startswith(("wixui-", "comp-")):
                     result.detected_classes.add(cls)
 
-        # Identificar secciones top-level: data-mesh-id en componentes con tag <section> o role
+        # Identificar secciones top-level. Wix tiene 2 layouts según editor:
+        # - Wix Studio/Mesh moderno → componentes con atributo `data-mesh-id`
+        # - Wix Editor clásico (sites pre-Studio) → <section> HTML con
+        #   `id="comp-XXX"`. NO usan data-mesh-id, así que ese selector
+        #   devuelve 0 elementos y necesitamos fallback.
         sections = soup.find_all(attrs={"data-mesh-id": True})
+        if not sections:
+            # Fallback Wix Editor clásico: <section> con id="comp-..." son
+            # los containers top-level. El _classify_section es agnóstico al
+            # atributo de origen (clasifica por h1/h2/button/img), así que
+            # funciona con cualquier sección semántica.
+            sections = [
+                s for s in soup.find_all("section")
+                if isinstance(s.get("id"), str) and s.get("id", "").startswith("comp-")
+            ]
         order_index = 0
         for section in sections:
             block = self._classify_section(section)

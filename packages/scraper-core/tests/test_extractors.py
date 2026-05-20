@@ -72,6 +72,73 @@ def test_wix_hydration_selector_exists() -> None:
     assert WixExtractor().hydration_wait_selector() is not None
 
 
+# Wix Editor clásico (sites pre-Studio): NO usan data-mesh-id, los containers
+# top-level son <section id="comp-XXX">. Detectado en mariya.design (2026-05-20)
+# que extrajo 0 bloques porque el selector solo cubría Wix moderno.
+
+_WIX_CLASSIC_HTML = """\
+<!doctype html>
+<html lang="en">
+<head><title>Mariya Design</title></head>
+<body>
+  <section id="comp-mmx53x4p">
+    <h1>Brand Identity Systems for Companies That Are Scaling</h1>
+    <p>If your brand feels inconsistent, let me help.</p>
+    <a class="wixui-button" href="/audit">Start the Audit</a>
+    <img src="https://static.wixstatic.com/media/hero.jpg" alt="hero" />
+  </section>
+  <section id="comp-mlxlvyqn">
+    <h2>Where to Start Your Brand System</h2>
+    <p class="wixui-rich-text">Two paths: existing brand or new.</p>
+  </section>
+  <section id="comp-mo1embpp">
+    <h2>Trusted by teams building for scale</h2>
+  </section>
+  <section id="comp-other">
+    <div class="wixui-pro-gallery">
+      <img src="https://static.wixstatic.com/media/g1.jpg" alt="g1" />
+      <img src="https://static.wixstatic.com/media/g2.jpg" alt="g2" />
+    </div>
+  </section>
+</body>
+</html>
+"""
+
+
+def test_wix_classic_editor_fallback_sin_data_mesh_id() -> None:
+    """Fix 2026-05-20: Wix Editor clásico no tiene data-mesh-id pero
+    sus <section id="comp-...">  deben clasificarse igual."""
+    result = WixExtractor().extract(_WIX_CLASSIC_HTML, "https://mariya.design/")
+
+    types = [b.block_type for b in result.blocks]
+    # Hero (h1+button), heading puro, gallery → al menos 3 bloques útiles.
+    assert BlockType.HERO in types
+    assert BlockType.GALLERY in types
+    # Y ninguna sección debería caer a UNKNOWN para esta estructura simple.
+    assert BlockType.UNKNOWN not in types
+
+    hero = next(b for b in result.blocks if b.block_type == BlockType.HERO)
+    assert "Brand Identity Systems" in (hero.content_json.get("headline") or "")
+    assert hero.content_json.get("cta_text") == "Start the Audit"
+
+
+def test_wix_classic_solo_secciones_con_comp_prefix() -> None:
+    """El fallback debe filtrar <section> sin id="comp-..." para no
+    arrastrar HTML genérico que podría existir en mocks o landings."""
+    html = """\
+    <html><body>
+      <section>generic section sin id</section>
+      <section id="other-prefix"><h1>not Wix</h1></section>
+      <section id="comp-x"><h1>Wix real</h1><a class="wixui-button">CTA</a></section>
+    </body></html>
+    """
+    result = WixExtractor().extract(html, "https://example.wix.com/")
+    # Solo el último <section> entra (id^=comp-). Genera HERO.
+    hero_blocks = [b for b in result.blocks if b.block_type == BlockType.HERO]
+    assert len(hero_blocks) == 1
+    assert "Wix real" in (hero_blocks[0].content_json.get("headline") or "")
+
+
 # ---------- hostinger ----------
 
 def test_hostinger_extracts_hero(hostinger_clinica_html: str) -> None:
