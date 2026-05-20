@@ -72,6 +72,26 @@ class AssetOptimizerAgent(BaseAgent):
             raise AssetOptimizerError("AssetOptimizerAgent requiere project_id")
 
         r2 = self._injected_r2 or R2Client.from_env()
+
+        # B.8 — dedup por content_hash entre runs. Si un asset ya está
+        # READY con un hash de contenido X, otro asset del mismo
+        # proyecto cuya URL devuelva el mismo binario debe REUSAR su
+        # r2_key sin re-subir Y conservar su propio `hash` (sha256(url))
+        # original para no chocar con el UNIQUE(project_id, hash).
+        # Sin esto, una UniqueViolation en mitad del batch rollbackeaba
+        # los 644 UPDATE previos → 0 assets READY (proyecto 18).
+        # Se carga ANTES de pending para que `_load_pending` no
+        # confunda el side_effect en tests con mocks.
+        existing_ready: dict[str, Asset] = {
+            a.hash: a
+            for a in ctx.session.execute(
+                select(Asset).where(
+                    Asset.project_id == ctx.project_id,
+                    Asset.status == AssetStatus.READY,
+                )
+            ).scalars()
+        }
+
         pending = self._load_pending(ctx, ctx.project_id)
 
         if not pending:
@@ -83,40 +103,60 @@ class AssetOptimizerAgent(BaseAgent):
         if r2 is None:
             log.warning("asset_optimizer_no_r2", extra={"project_id": ctx.project_id})
 
-        optimized = uploaded = failed = 0
+        optimized = uploaded = failed = deduplicated = 0
         warnings: list[str] = []
 
         for asset in pending:
             try:
                 payload = self._download(asset.original_url)
             except AssetOptimizerError as e:
-                asset.status = AssetStatus.PENDING
-                asset.error_message = str(e)
+                asset.status = AssetStatus.FAILED
+                asset.error_message = str(e)[:500]
                 failed += 1
                 continue
 
             mime, processed, width, height = self._optimize_if_image(payload)
+            content_hash = hashlib.sha256(processed).hexdigest()
+
+            # Reuso por contenido: existe ya un READY con este content_hash
+            # (de un run previo o del propio batch). Copiamos r2_key,
+            # optimized_path y metadata sin volver a subir. `asset.hash`
+            # se queda como sha256(url) inicial — distinto al content_hash
+            # del original, así NO chocan en el UNIQUE.
+            if (twin := existing_ready.get(content_hash)) is not None:
+                asset.mime = twin.mime
+                asset.size_bytes = twin.size_bytes
+                asset.width = twin.width
+                asset.height = twin.height
+                asset.r2_key = twin.r2_key
+                asset.optimized_path = twin.optimized_path
+                asset.status = AssetStatus.READY
+                deduplicated += 1
+                continue
+
             asset.mime = mime
             asset.size_bytes = len(processed)
             if width:
                 asset.width = width
             if height:
                 asset.height = height
-            asset.hash = hashlib.sha256(processed).hexdigest()
+            asset.hash = content_hash
             asset.status = AssetStatus.OPTIMIZED
             optimized += 1
 
             if r2 is None:
                 continue
 
-            key = self._r2_key(ctx.project_id, asset.hash, mime)
+            key = self._r2_key(ctx.project_id, content_hash, mime)
             try:
                 r2.put_bytes(
                     key, processed, content_type=mime,
                     metadata={"original_url": asset.original_url[:1024]},
                 )
             except R2UploadError as e:
+                asset.status = AssetStatus.FAILED
                 asset.error_message = f"r2_upload: {e}"
+                failed += 1
                 warnings.append(f"asset {asset.id}: r2 upload falló: {e}")
                 continue
 
@@ -124,17 +164,23 @@ class AssetOptimizerAgent(BaseAgent):
             asset.optimized_path = key
             asset.status = AssetStatus.READY
             uploaded += 1
+            # Registrar para que el resto del batch pueda deduplicar.
+            existing_ready[content_hash] = asset
 
         ctx.session.flush()
         if self._owns_http:
             self._http.close()
 
         return AgentResult(
-            summary=f"Project {ctx.project_id}: {optimized} optimized, "
-            f"{uploaded} uploaded a R2, {failed} failed",
+            summary=(
+                f"Project {ctx.project_id}: {optimized} optimized, "
+                f"{uploaded} uploaded a R2, {deduplicated} dedup por contenido, "
+                f"{failed} failed"
+            ),
             outputs={
                 "optimized": optimized,
                 "uploaded": uploaded,
+                "deduplicated": deduplicated,
                 "failed": failed,
                 "r2_configured": r2 is not None,
             },
