@@ -102,9 +102,25 @@ class BricksElement(BaseModel):
 
 
 class BricksColorEntry(BaseModel):
+    """Una entrada de la paleta global de Bricks Builder.
+
+    G.6 (2026-05-21) — Bricks 2.3.5 espera shape exacto `{id, name, raw}`
+    y genera `--bricks-color-<id>` como CSS custom property en `:root`.
+    Antes se emitía `{name, color}` que Bricks ignora silenciosamente
+    al generar las variables, dejando los `var(--primary)` de los
+    mappers sin resolver.
+    """
+
     model_config = ConfigDict(extra="forbid")
+
+    #: Slug usado en `--bricks-color-<id>` (a-z0-9-). Por convención el
+    #: mismo string que `name.lower().replace(' ', '-')`.
+    id: str
+    #: Label legible mostrado en el editor.
     name: str
-    color: str  # hex u otra notación CSS
+    #: Valor CSS del color (hex, rgb, rgba, var…). Bricks lo serializa
+    #: como `raw` en el JSON de la option.
+    raw: str
 
 
 class BricksThemeStylesEntry(BaseModel):

@@ -78,7 +78,9 @@ def test_cta_primary_styles() -> None:
     assert el.name == "button"
     assert el.settings["link"]["type"] == "external"
     # Acento lima debe ir como bg-color
-    assert el.settings["_background"]["color"]["raw"] == "var(--accent)"
+    # G.6 (2026-05-21) — mappers usan `var(--bricks-color-<id>)` porque
+    # ese es el patrón real que Bricks 2.3.5 genera desde colorPalette.
+    assert el.settings["_background"]["color"]["raw"] == "var(--bricks-color-accent)"
 
 
 def test_hero_full_emits_section_container_heading_text_button() -> None:

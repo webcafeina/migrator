@@ -133,13 +133,13 @@ def map_cta(
     }
     # Aplicar variantes de marca: primary usa accent (lima), secondary usa borde
     if style == "primary":
-        settings["_background"] = {"color": {"raw": "var(--accent)"}}
-        settings["_typography"] = {"color": {"raw": "var(--primary)"}, "font-weight": "600"}
+        settings["_background"] = {"color": {"raw": "var(--bricks-color-accent)"}}
+        settings["_typography"] = {"color": {"raw": "var(--bricks-color-primary)"}, "font-weight": "600"}
     else:
         settings["_border"] = {
             "width": {"top": "1px", "right": "1px", "bottom": "1px", "left": "1px"},
             "style": "solid",
-            "color": {"raw": "var(--text)"},
+            "color": {"raw": "var(--bricks-color-text)"},
         }
 
     el = BricksElement(

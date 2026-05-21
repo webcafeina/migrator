@@ -56,10 +56,10 @@ def test_transpile_result_theme_global_usa_paleta_origen() -> None:
         },
     )
     result = transpile_page([], ctx)
-    names = {c.name for c in result.theme_styles_global.colorPalette}
-    assert names == {"primary", "bg", "text", "accent"}
-    accent = next(c for c in result.theme_styles_global.colorPalette if c.name == "accent")
-    assert accent.color == "#b1f100"
+    ids = {c.id for c in result.theme_styles_global.colorPalette}
+    assert ids == {"primary", "bg", "text", "accent"}
+    accent = next(c for c in result.theme_styles_global.colorPalette if c.id == "accent")
+    assert accent.raw == "#b1f100"
 
 
 def test_single_hero_block_validates() -> None:

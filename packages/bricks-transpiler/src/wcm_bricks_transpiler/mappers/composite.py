@@ -83,13 +83,13 @@ def map_hero(
         parent_id,
         ctx,
         block_label="hero",
-        bg_color=block.get("bg_color") or "var(--primary)",
+        bg_color=block.get("bg_color") or "var(--bricks-color-primary)",
         bg_image_url=bg_image_url,
     )
 
     container.settings["_typography"] = {
         "text-align": block.get("text_align", "center"),
-        "color": {"raw": "var(--text)"},
+        "color": {"raw": "var(--bricks-color-text)"},
     }
 
     elements: list[BricksElement] = [section, container]
@@ -136,8 +136,8 @@ def map_hero(
                         "url": block.get("cta_url", "#"),
                     },
                     "style": "primary",
-                    "_background": {"color": {"raw": "var(--accent)"}},
-                    "_typography": {"color": {"raw": "var(--primary)"}, "font-weight": "600"},
+                    "_background": {"color": {"raw": "var(--bricks-color-accent)"}},
+                    "_typography": {"color": {"raw": "var(--bricks-color-primary)"}, "font-weight": "600"},
                     "_padding": {"top": "12px", "right": "32px", "bottom": "12px", "left": "32px"},
                     "_border": {"radius": {"top": "8px", "right": "8px", "bottom": "8px", "left": "8px"}},
                 },
@@ -377,7 +377,7 @@ def map_testimonial(
                 id=aid, name="text-basic", parent=block_id,
                 settings={
                     "text": author_text,
-                    "_typography": {"font-weight": "600", "color": {"raw": "var(--accent)"}},
+                    "_typography": {"font-weight": "600", "color": {"raw": "var(--bricks-color-accent)"}},
                     "_margin": {"top": "12px"},
                 },
             )
@@ -388,7 +388,7 @@ def map_testimonial(
         id=block_id, name="block", parent=parent_id, children=children_ids,
         settings={
             "_padding": {"top": "32px", "right": "32px", "bottom": "32px", "left": "32px"},
-            "_background": {"color": {"raw": "var(--secondary)"}},
+            "_background": {"color": {"raw": "var(--bricks-color-secondary)"}},
             "_border": {"radius": {"top": "12px", "right": "12px", "bottom": "12px", "left": "12px"}},
         },
     )
@@ -447,7 +447,7 @@ def map_pricing(
                     settings={
                         "text": price_text,
                         "_typography": {"font-size": "var(--text-3xl)", "font-weight": "700",
-                                        "color": {"raw": "var(--accent)"}},
+                                        "color": {"raw": "var(--bricks-color-accent)"}},
                     },
                 )
             )
@@ -582,9 +582,9 @@ def map_footer(
     section, container = _section_with_container(
         order_index, parent_id, ctx,
         block_label="footer",
-        bg_color="var(--secondary)",
+        bg_color="var(--bricks-color-secondary)",
     )
-    container.settings["_typography"] = {"color": {"raw": "var(--text)"}}
+    container.settings["_typography"] = {"color": {"raw": "var(--bricks-color-text)"}}
 
     elements: list[BricksElement] = [section, container]
     columns: list[dict[str, Any]] = block.get("columns") or []

@@ -6,11 +6,13 @@ from wcm_bricks_transpiler.theme import build_theme_styles
 
 
 def test_default_palette_is_webcafeina() -> None:
+    """G.6 (2026-05-21) — paleta default usa shape Bricks `{id, name, raw}`."""
     ts = build_theme_styles(None)
     assert len(ts.colorPalette) == 5
-    names = [c.name for c in ts.colorPalette]
-    assert names == ["primary", "secondary", "text", "accent", "detail-brown"]
-    assert ts.colorPalette[3].color == "#B1F100"  # accent lima
+    ids = [c.id for c in ts.colorPalette]
+    assert ids == ["primary", "secondary", "text", "accent", "detail-brown"]
+    accent = next(c for c in ts.colorPalette if c.id == "accent")
+    assert accent.raw == "#B1F100"  # accent lima
 
 
 def test_custom_palette_from_origin_truncates_to_six() -> None:
@@ -53,7 +55,11 @@ def test_typography_hints_propagate() -> None:
 
 
 def test_c3_format_colors_dict() -> None:
-    """colors como dict {name: hex} se convierte en N entries de la paleta."""
+    """colors como dict {name: hex} se convierte en N entries `{id, name, raw}`.
+
+    G.6 (2026-05-21) — el id es el slug del name (lowercase, espacios →
+    guiones) para que `var(--bricks-color-<id>)` resuelva en los mappers.
+    """
     origin = {
         "colors": {
             "primary": "#000000",
@@ -63,9 +69,12 @@ def test_c3_format_colors_dict() -> None:
         }
     }
     ts = build_theme_styles(origin)
-    names = {c.name for c in ts.colorPalette}
-    assert names == {"primary", "bg", "text", "accent"}
-    assert next(c for c in ts.colorPalette if c.name == "accent").color == "#b1f100"
+    ids = {c.id for c in ts.colorPalette}
+    assert ids == {"primary", "bg", "text", "accent"}
+    accent = next(c for c in ts.colorPalette if c.id == "accent")
+    assert accent.raw == "#b1f100"
+    # El name viene capitalizado (label legible en editor).
+    assert accent.name == "Accent"
 
 
 def test_c3_format_typography_dict_de_dicts() -> None:
