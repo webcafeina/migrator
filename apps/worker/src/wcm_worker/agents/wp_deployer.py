@@ -170,6 +170,55 @@ class WpDeployerAgent(BaseAgent):
                     extra={"project_id": project.id, "error": str(e)[:300]},
                 )
 
+            # v0.23.0 — Persistir `bricks_global_classes` en el option
+            # WP. Sin esto, los elementos del bricks_json que
+            # referencian `_cssGlobalClasses: ["wcm-h2-abc123"]` NO
+            # resuelven ningún CSS en el frontend (porque la clase no
+            # existe). Bricks expone esta option como array de
+            # `{id, name, settings}` y el frontend genera `<style>`
+            # automáticamente con las reglas declaradas.
+            try:
+                global_classes = project.bricks_global_classes or []
+                if global_classes:
+                    # Merge con existing (otros proyectos pueden compartir
+                    # destino y sobrescribir clases con mismo id es OK).
+                    existing_classes: list = []
+                    if await cli.option_exists("bricks_global_classes"):
+                        existing_raw = await cli.option_get(
+                            "bricks_global_classes", format="json"
+                        )
+                        if existing_raw:
+                            import json as _json
+                            try:
+                                parsed = _json.loads(existing_raw)
+                                if isinstance(parsed, list):
+                                    existing_classes = parsed
+                            except _json.JSONDecodeError:
+                                pass
+                    # Dedup por id: nuestras clases ganan a las existing.
+                    new_ids = {c["id"] for c in global_classes if isinstance(c, dict) and c.get("id")}
+                    merged_classes = [
+                        c for c in existing_classes
+                        if isinstance(c, dict) and c.get("id") not in new_ids
+                    ]
+                    merged_classes.extend(global_classes)
+                    await cli.option_update(
+                        "bricks_global_classes", merged_classes, format="json"
+                    )
+                    log.info(
+                        "wp_deployer_global_classes_applied",
+                        extra={
+                            "project_id": project.id,
+                            "n_classes": len(global_classes),
+                            "n_merged": len(merged_classes),
+                        },
+                    )
+            except Exception as e:  # noqa: BLE001
+                log.warning(
+                    "wp_deployer_global_classes_failed",
+                    extra={"project_id": project.id, "error": str(e)[:300]},
+                )
+
             # F — marcar la página `home` como página de inicio del WP
             # destino. WordPress por defecto muestra los posts; el
             # operador esperaría que la home migrada sea la portada.

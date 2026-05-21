@@ -61,6 +61,11 @@ class TranspileResult:
     residuals: list[ResidualHint] = field(default_factory=list)
     schema_version: str = BRICKS_SCHEMA_VERSION
     theme_styles_global: BricksThemeStyles | None = None
+    #: v0.23.0 — Clases globales emitidas por los mappers durante la
+    #: página. El agente `bricks_transpiler` las acumula a nivel proyecto
+    #: para persistirlas en la option `bricks_global_classes` (no en el
+    #: postmeta por página).
+    global_classes: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _wrap_in_section(
@@ -140,7 +145,19 @@ def transpile_page(
         order_index = raw_block["order_index"]
         raw_type = raw_block["block_type"]
         block_type = raw_type if isinstance(raw_type, BlockType) else BlockType(raw_type)
-        content = raw_block.get("content_json") or {}
+        content = dict(raw_block.get("content_json") or {})
+
+        # v0.23.0 — `_unresolved_reason` indica que ai_assist ya creó
+        # la ResidualTask correspondiente y NO queremos duplicarla.
+        # Saltamos el bloque por completo (sin emitir element ni residual).
+        if content.get("_unresolved_reason"):
+            continue
+
+        # v0.23.0 — inyectar element_styles del computed del origen en
+        # el dict que llega al mapper, para que `_apply_element_styles`
+        # los traduzca a Bricks settings.
+        if (es := raw_block.get("element_styles")):
+            content["element_styles"] = es
 
         mapper = get_mapper(block_type)
         result: MapperResult = mapper(
@@ -175,4 +192,5 @@ def transpile_page(
         content=content_json,
         residuals=residuals,
         theme_styles_global=theme_global,
+        global_classes=list(mapper_ctx.global_classes),
     )

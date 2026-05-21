@@ -39,6 +39,17 @@ class ExtractedBlock:
     #: sección fue capturada por el extractor. <0.6 marca el bloque
     #: candidato a AI vision en el AiAssistAgent.
     coverage_score: float | None = None
+    #: v0.23.0 — Computed styles del nodo principal del bloque (color,
+    #: font-size, padding, background, border, etc.) tomados de
+    #: `FetchResult.node_styles` por el ContentExtractorAgent. Los
+    #: mappers Bricks los traducen a settings via
+    #: `_styles_to_bricks_settings` + globalClasses con dedup.
+    element_styles: dict[str, str] | None = None
+    #: v0.23.0 — `node_path` determinista del nodo principal del bloque
+    #: (ej. `section[data-mesh-id=...] > div > h2:nth-of-type(1)`). El
+    #: extractor lo usa para alinear con `FetchResult.node_styles`. Para
+    #: el transpilador es metadato de diagnóstico, no lo necesita.
+    node_path: str | None = None
 
 
 @dataclass

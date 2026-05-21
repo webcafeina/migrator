@@ -1,0 +1,3 @@
+[submodule "docs/referencias/bricks-skills"]
+	path = docs/referencias/bricks-skills
+	url = https://github.com/wpgaurav/bricks-skills.git

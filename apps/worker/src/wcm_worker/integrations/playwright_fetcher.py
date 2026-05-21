@@ -39,25 +39,60 @@ DEFAULT_VIEWPORT_HEIGHT = 800
 DEFAULT_WAIT_UNTIL = "domcontentloaded"
 DEFAULT_TIMEOUT_MS = 30_000
 
-#: Selectores que capturamos vía getComputedStyle. Son los elementos
-#: tipográficos y de UI básicos que necesita `theme_styles` para
-#: sintetizar la paleta y la tipografía del proyecto destino.
+#: Selectores que capturamos vía getComputedStyle a nivel SELECTOR GLOBAL
+#: (uno por tipo). Necesarios para que `theme_styles` sintetice la paleta
+#: y la tipografía. Se mantienen por compat con v0.22.x; v0.23.0 añade
+#: captura por NODO individual (ver `DEFAULT_NODE_SELECTORS`).
 DEFAULT_STYLE_SELECTORS = (
     "body", "h1", "h2", "h3", "h4", "h5", "h6", "p", "a", "button",
     ".wixui-button", ".wixui-rich-text",
 )
 
-#: Props que extraemos de cada elemento. Limitado para no inflar el
-#: JSON (Wix tiene cientos de computed props por elemento).
-DEFAULT_STYLE_PROPS = (
-    "color", "background-color", "font-family", "font-size",
-    "font-weight", "line-height", "padding", "margin", "text-align",
+#: v0.23.0 — Selectores de nodos individuales a capturar con
+#: `_CAPTURE_NODE_STYLES_JS`. Cada match emite un registro
+#: `{node_path, tag, computed_styles}` con styles **del nodo concreto**.
+#: Es lo que alimenta `element_styles` en cada `ExtractedBlock` y los
+#: mappers Bricks aplican como `_typography`/`_padding`/`_background`.
+DEFAULT_NODE_SELECTORS = (
+    "h1", "h2", "h3", "h4", "h5", "h6",
+    "p", "ul", "ol", "li",
+    "a", "button",
+    "img", "picture", "svg",
+    "section",
+    "[data-mesh-id]",
+    '[id^="comp-"]',
 )
 
-#: Cuánto CSS guardamos como máximo. Wix puede meter MB de CSS via
-#: `<style>` inline; truncamos a 256 KB para mantener `scraped_pages`
-#: razonable. El theme styles solo necesita una muestra.
-MAX_CSS_BYTES = 256 * 1024
+#: Props que extraemos de cada elemento. v0.23.0 amplía de 9 a 30+ para
+#: cubrir: typography (font + alignment + spacing), box model (padding +
+#: margin + border + radius + shadow), background (color + image +
+#: gradient), layout (display + flex + grid + gap), sizing
+#: (width/height/max-width/min-height), position.
+DEFAULT_STYLE_PROPS = (
+    # color
+    "color", "background-color", "background-image",
+    # font
+    "font-family", "font-size", "font-weight", "font-style",
+    "line-height", "letter-spacing",
+    # text
+    "text-align", "text-transform", "text-decoration",
+    # box model
+    "padding", "margin", "gap",
+    # border
+    "border", "border-radius", "box-shadow",
+    # sizing
+    "width", "height", "max-width", "min-height",
+    # layout
+    "display", "flex-direction", "justify-content", "align-items",
+    # position
+    "position",
+)
+
+#: Cuánto CSS guardamos como máximo. v0.23.0 lo eleva de 256KB a 5MB —
+#: Wix mete ~500KB de CSS inline en cualquier sitio mediano y truncar
+#: rompía reglas críticas (hover, media queries, repeater states). Si
+#: una página excede 5MB, log warning + truncate sin abortar.
+MAX_CSS_BYTES = 5 * 1024 * 1024
 
 
 @dataclass
@@ -83,6 +118,17 @@ class FetchResult:
     computed_styles: dict[str, dict[str, str]] = field(default_factory=dict)
     full_page_png: bytes | None = None
     section_bboxes: list[dict[str, Any]] = field(default_factory=list)
+    #: v0.23.0 — Computed styles por NODO individual (no por selector
+    #: global). Cada item:
+    #:   {"node_path": "section[data-mesh-id=...] > div > h2:nth-of-type(1)",
+    #:    "tag": "h2",
+    #:    "styles": {"color": "rgb(0,0,0)", "font-size": "32px", ...}}
+    #: Los mappers Bricks asignan estos styles al elemento que generan.
+    node_styles: list[dict[str, Any]] = field(default_factory=list)
+    #: v0.23.0 — URLs de background-image detectadas en computed styles
+    #: que apuntan a static.wixstatic.com / CDN del origen. Las trata
+    #: `asset_optimizer` como assets normales para descargarlas a R2.
+    background_image_urls: list[str] = field(default_factory=list)
 
 
 #: AI.1 — Selectores de secciones top-level del origen. Coinciden con
@@ -159,6 +205,110 @@ _CAPTURE_STYLES_JS = """
 }
 """
 
+#: v0.23.0 — Captura computed styles POR NODO INDIVIDUAL (no por
+#: selector global). Para cada match de los selectores, devuelve
+#: `{node_path, tag, styles}` con un `node_path` determinista que
+#: permite re-encontrar el nodo en el HTML serializado del extractor.
+#:
+#: Además recolecta URLs de background-image que apunten al CDN del
+#: origen (`static.wixstatic.com`, `static.parastorage.com` o cualquier
+#: hostname diferente al de la página actual) → `assets[]` para que
+#: asset_optimizer las descargue a R2.
+_CAPTURE_NODE_STYLES_JS = """
+(args) => {
+    const { selectors, props, maxNodes } = args;
+    const seen = new Set();
+    const out = [];
+    const bgUrls = new Set();
+
+    function nodePath(el) {
+        // Ruta determinista hasta body. Usa data-mesh-id, id o
+        // nth-of-type. Limitada a 6 niveles para no inflar.
+        const parts = [];
+        let cur = el;
+        let depth = 0;
+        while (cur && cur !== document.body && depth < 6) {
+            const tag = cur.tagName.toLowerCase();
+            const mesh = cur.getAttribute && cur.getAttribute('data-mesh-id');
+            const id = cur.id;
+            if (mesh) parts.unshift(`${tag}[data-mesh-id="${mesh}"]`);
+            else if (id) parts.unshift(`${tag}#${id}`);
+            else {
+                const parent = cur.parentElement;
+                if (parent) {
+                    const sibs = Array.from(parent.children).filter(
+                        s => s.tagName === cur.tagName
+                    );
+                    const idx = sibs.indexOf(cur);
+                    parts.unshift(`${tag}:nth-of-type(${idx + 1})`);
+                } else {
+                    parts.unshift(tag);
+                }
+            }
+            cur = cur.parentElement;
+            depth++;
+        }
+        return parts.join(' > ');
+    }
+
+    function extractBgUrls(bgImage) {
+        // computed `background-image` viene como
+        // `url("https://...") , linear-gradient(...)` o similar.
+        if (!bgImage || bgImage === 'none') return [];
+        const matches = bgImage.match(/url\\(("|'?)([^"'\\)]+)\\1\\)/g) || [];
+        return matches.map(m => {
+            const inner = m.match(/url\\(("|'?)([^"'\\)]+)\\1\\)/);
+            return inner ? inner[2] : null;
+        }).filter(Boolean);
+    }
+
+    const pageHost = window.location.hostname;
+    let count = 0;
+    for (const sel of selectors) {
+        const els = Array.from(document.querySelectorAll(sel));
+        for (const el of els) {
+            if (count >= maxNodes) break;
+            // Dedup por elemento físico (un nodo puede matchear
+            // varios selectores, p.ej. h2 + [data-mesh-id]).
+            if (seen.has(el)) continue;
+            seen.add(el);
+
+            const style = window.getComputedStyle(el);
+            const styles = {};
+            for (const p of props) {
+                const v = style.getPropertyValue(p);
+                if (v && v !== 'none' && v !== 'normal' && v !== 'auto') {
+                    styles[p] = v;
+                }
+            }
+
+            // Recolectar URLs de background-image cross-origin.
+            const bgUrlList = extractBgUrls(styles['background-image']);
+            for (const u of bgUrlList) {
+                try {
+                    const parsed = new URL(u, window.location.href);
+                    if (parsed.hostname && parsed.hostname !== pageHost) {
+                        bgUrls.add(parsed.href);
+                    }
+                } catch (e) {
+                    // URL inválida — skip.
+                }
+            }
+
+            out.push({
+                node_path: nodePath(el),
+                tag: el.tagName.toLowerCase(),
+                styles: styles,
+            });
+            count++;
+        }
+        if (count >= maxNodes) break;
+    }
+
+    return { node_styles: out, bg_urls: Array.from(bgUrls) };
+}
+"""
+
 
 class FetchSession:
     """Sesión de scraping con browser+context reutilizables.
@@ -213,6 +363,9 @@ class FetchSession:
             full_page_png: bytes | None = None
             section_bboxes: list[dict[str, Any]] = []
 
+            node_styles: list[dict[str, Any]] = []
+            background_image_urls: list[str] = []
+
             if capture_styles:
                 try:
                     styles_data = page.evaluate(
@@ -228,6 +381,27 @@ class FetchSession:
                 except Exception as e:  # noqa: BLE001 — evaluate puede fallar
                     log.warning(
                         "playwright_capture_styles_failed",
+                        extra={"url": url, "error": str(e)[:200]},
+                    )
+
+                # v0.23.0 — Capturar computed styles POR NODO. Separado del
+                # capture global para que un fallo en uno no arrastre al
+                # otro. Cap a 2000 nodos para no inflar JSON sobre páginas
+                # gigantes (Wix puede tener cientos de divs internos).
+                try:
+                    nodes_data = page.evaluate(
+                        _CAPTURE_NODE_STYLES_JS,
+                        {
+                            "selectors": list(DEFAULT_NODE_SELECTORS),
+                            "props": list(DEFAULT_STYLE_PROPS),
+                            "maxNodes": 2000,
+                        },
+                    )
+                    node_styles = nodes_data.get("node_styles", []) or []
+                    background_image_urls = nodes_data.get("bg_urls", []) or []
+                except Exception as e:  # noqa: BLE001
+                    log.warning(
+                        "playwright_capture_node_styles_failed",
                         extra={"url": url, "error": str(e)[:200]},
                     )
 
@@ -260,6 +434,8 @@ class FetchSession:
                 computed_styles=computed,
                 full_page_png=full_page_png,
                 section_bboxes=section_bboxes,
+                node_styles=node_styles,
+                background_image_urls=background_image_urls,
             )
         finally:
             page.close()

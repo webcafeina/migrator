@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from wcm_bricks_transpiler.mappers._styling import styles_inline_or_class
 from wcm_bricks_transpiler.mappers._types import (
     MapperContext,
     MapperResult,
@@ -16,6 +17,32 @@ from wcm_types.enums import BlockType
 def _strip_none(d: dict[str, Any]) -> dict[str, Any]:
     """Quita keys con valor None — Bricks prefiere ausencia a null explícito."""
     return {k: v for k, v in d.items() if v is not None}
+
+
+def _apply_element_styles(
+    settings: dict[str, Any],
+    block: dict[str, Any],
+    ctx: MapperContext,
+    *,
+    prefix: str,
+) -> None:
+    """v0.23.0 — aplica `block["element_styles"]` (computed del origen)
+    a `settings` como inline o globalClass, según riqueza."""
+    element_styles = block.get("element_styles")
+    if not element_styles:
+        return
+    inline, global_classes = styles_inline_or_class(
+        element_styles, prefix=prefix, ctx=ctx
+    )
+    # Merge inline (no sobrescribe values explícitos del block).
+    for k, v in inline.items():
+        if k in ("_typography", "_padding", "_background", "_border", "_layout") and isinstance(v, dict):
+            settings.setdefault(k, {}).update(v)
+        else:
+            settings.setdefault(k, v)
+    if global_classes:
+        existing = settings.get("_cssGlobalClasses") or []
+        settings["_cssGlobalClasses"] = list({*existing, *global_classes})
 
 
 # ---------- heading ----------
@@ -33,6 +60,8 @@ def map_heading(
     }
     if (align := block.get("align")) is not None:
         settings.setdefault("_typography", {})["text-align"] = align
+
+    _apply_element_styles(settings, block, ctx, prefix=f"h-{block.get('level', 'h2')}")
 
     el = BricksElement(
         id=ctx.id_gen.fresh(order_index, "heading"),
@@ -57,6 +86,8 @@ def map_text(
     }
     if (align := block.get("align")) is not None:
         settings.setdefault("_typography", {})["text-align"] = align
+
+    _apply_element_styles(settings, block, ctx, prefix="text")
 
     el = BricksElement(
         id=ctx.id_gen.fresh(order_index, "text"),
@@ -101,6 +132,8 @@ def map_image(
     if (caption := block.get("caption")) is not None:
         settings["caption"] = caption
 
+    _apply_element_styles(settings, block, ctx, prefix="img")
+
     el = BricksElement(
         id=ctx.id_gen.fresh(order_index, "image"),
         name="image",
@@ -131,7 +164,9 @@ def map_cta(
         ),
         "style": style,
     }
-    # Aplicar variantes de marca: primary usa accent (lima), secondary usa borde
+    # Aplicar variantes de marca: primary usa accent (lima), secondary usa borde.
+    # Si el bloque trae `element_styles` del origen, lo apply override
+    # estos defaults para reproducir el botón original.
     if style == "primary":
         settings["_background"] = {"color": {"raw": "var(--bricks-color-accent)"}}
         settings["_typography"] = {"color": {"raw": "var(--bricks-color-primary)"}, "font-weight": "600"}
@@ -141,6 +176,8 @@ def map_cta(
             "style": "solid",
             "color": {"raw": "var(--bricks-color-text)"},
         }
+
+    _apply_element_styles(settings, block, ctx, prefix="cta")
 
     el = BricksElement(
         id=ctx.id_gen.fresh(order_index, "button"),

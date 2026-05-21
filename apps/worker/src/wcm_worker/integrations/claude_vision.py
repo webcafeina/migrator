@@ -48,8 +48,13 @@ log = logging.getLogger("wcm.worker.claude_vision")
 #: calidad/coste para análisis de layouts.
 DEFAULT_MODEL = "claude-sonnet-4-6"
 DEFAULT_MAX_TOKENS = 4096
-DEFAULT_TIMEOUT_S = 60.0
-DEFAULT_RETRIES = 3
+DEFAULT_TIMEOUT_S = 90.0
+DEFAULT_RETRIES = 5
+#: v0.23.0 — Pausa fija (segundos) tras detectar 429 explícito antes
+#: del siguiente retry. Backoff exponencial corto (2/4/8s) no respeta
+#: rate-limit del tier bajo (suele ser ~5 req/min). 60s respeta la
+#: ventana mínima documentada.
+DEFAULT_RATE_LIMIT_PAUSE_S = 60.0
 
 #: Pricing por millón de tokens (USD). Se usa para registrar `cost_usd`
 #: en la tabla `ai_section_cache`. Si rotamos modelo, actualizar aquí.
@@ -314,7 +319,15 @@ class ClaudeVisionClient:
                 last_error = e
                 if attempt == self.retries - 1:
                     raise
-                wait = (2 ** attempt) + random.uniform(0, 0.5)
+                # v0.23.0 — Detección 429 explícita para respetar la
+                # ventana de rate-limit del tier (~5 req/min en bajo).
+                # El SDK Anthropic anota el código en str(e) tipo
+                # "rate_limit_error" / "429".
+                msg = str(e).lower()
+                if "429" in msg or "rate_limit" in msg or "rate limit" in msg:
+                    wait = DEFAULT_RATE_LIMIT_PAUSE_S + random.uniform(0, 5)
+                else:
+                    wait = (2 ** attempt) + random.uniform(0, 0.5)
                 log.warning(
                     "claude_vision_retry",
                     extra={"attempt": attempt + 1, "wait_s": wait, "error": str(e)[:120]},

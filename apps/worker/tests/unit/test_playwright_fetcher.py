@@ -63,16 +63,22 @@ def test_fetch_result_defaults() -> None:
 
 
 def test_get_devuelve_html_y_styles_por_default() -> None:
-    """AI.1 — `get()` ahora hace 2 evaluates (styles + detect sections)
-    + page.screenshot(). El mock devuelve el mismo `evaluate_return`
-    para ambos; solo verificamos el primer call con CAPTURE_STYLES_JS.
+    """v0.23.0 — `get()` con capture_styles=True hace 2 evaluates:
+    CAPTURE_STYLES_JS (selector global) + CAPTURE_NODE_STYLES_JS (por
+    nodo). Con `capture_screenshots=False` no añade el tercer evaluate
+    de section bboxes ni el page.screenshot().
     """
     page = _fake_page(
         html="<html><body>hi</body></html>",
-        evaluate_return={
-            "stylesheets": "body{color:red}",
-            "computed": {"h1": {"color": "rgb(255, 0, 0)", "font-size": "48px"}},
-        },
+    )
+    page.evaluate = MagicMock(
+        side_effect=[
+            {
+                "stylesheets": "body{color:red}",
+                "computed": {"h1": {"color": "rgb(255, 0, 0)", "font-size": "48px"}},
+            },
+            {"node_styles": [{"node_path": "h1", "tag": "h1", "styles": {}}], "bg_urls": []},
+        ]
     )
     session = _session(page)
     result = session.get("https://foo.com/", capture_screenshots=False)
@@ -82,15 +88,18 @@ def test_get_devuelve_html_y_styles_por_default() -> None:
     assert result.stylesheets == "body{color:red}"
     assert result.computed_styles["h1"]["color"] == "rgb(255, 0, 0)"
     assert result.computed_styles["h1"]["font-size"] == "48px"
+    assert len(result.node_styles) == 1
+    assert result.node_styles[0]["node_path"] == "h1"
+    assert result.background_image_urls == []
 
-    # evaluate llamado al menos 1 vez con CAPTURE_STYLES_JS.
-    assert page.evaluate.call_count == 1
-    args = page.evaluate.call_args_list[0]
-    assert args.args[0] == _CAPTURE_STYLES_JS
-    payload = args.args[1]
-    assert payload["selectors"] == list(DEFAULT_STYLE_SELECTORS)
-    assert payload["props"] == list(DEFAULT_STYLE_PROPS)
-    assert payload["maxBytes"] == MAX_CSS_BYTES
+    # evaluate llamado 2 veces: styles + node_styles.
+    assert page.evaluate.call_count == 2
+    args0 = page.evaluate.call_args_list[0]
+    assert args0.args[0] == _CAPTURE_STYLES_JS
+    payload0 = args0.args[1]
+    assert payload0["selectors"] == list(DEFAULT_STYLE_SELECTORS)
+    assert payload0["props"] == list(DEFAULT_STYLE_PROPS)
+    assert payload0["maxBytes"] == MAX_CSS_BYTES
 
 
 def test_get_capture_styles_false_omite_styles_evaluate() -> None:
@@ -111,16 +120,19 @@ def test_get_capture_styles_false_omite_styles_evaluate() -> None:
 
 
 def test_get_captura_screenshot_y_bboxes_por_default() -> None:
-    """AI.1 — Default emite full_page_png + section_bboxes."""
+    """v0.23.0 — Default emite full_page_png + section_bboxes +
+    node_styles. Total: 3 evaluates (styles, node_styles, sections) + 1
+    screenshot."""
     fake_bboxes = [
         {"idx": 0, "selector": "#comp-1", "bbox": {"x": 0, "y": 0, "w": 100, "h": 50}},
         {"idx": 1, "selector": "#comp-2", "bbox": {"x": 0, "y": 50, "w": 100, "h": 80}},
     ]
     page = _fake_page(html="<html><body>x</body></html>")
-    # 1ª evaluate = styles, 2ª = detect sections.
+    # 1ª evaluate = styles, 2ª = node_styles, 3ª = detect sections.
     page.evaluate = MagicMock(
         side_effect=[
             {"stylesheets": "", "computed": {}},
+            {"node_styles": [], "bg_urls": []},
             fake_bboxes,
         ]
     )
@@ -167,15 +179,45 @@ def test_get_evaluate_falla_no_rompe_fetch() -> None:
 
 def test_get_evaluate_devuelve_null_no_crashea() -> None:
     """Si el JS devuelve {} sin las keys esperadas (page sin styles), no crashea."""
-    page = _fake_page(
-        html="<html></html>",
-        evaluate_return={"stylesheets": None, "computed": None},
+    page = _fake_page(html="<html></html>")
+    # Necesitamos 3 retornos (styles, node_styles, sections) ya que default
+    # es capture_styles=True + capture_screenshots=True.
+    page.evaluate = MagicMock(
+        side_effect=[
+            {"stylesheets": None, "computed": None},
+            {"node_styles": None, "bg_urls": None},
+            None,
+        ]
     )
+    page.screenshot = MagicMock(return_value=None)
     session = _session(page)
     result = session.get("https://foo.com/")
 
     assert result.stylesheets == ""
     assert result.computed_styles == {}
+    assert result.node_styles == []
+    assert result.background_image_urls == []
+
+
+def test_get_node_styles_capture_falla_no_rompe_fetch() -> None:
+    """v0.23.0 — Si el evaluate de node_styles falla, el resto del
+    fetch continúa con node_styles vacío (graceful degradation)."""
+    page = _fake_page(html="<html><body>x</body></html>")
+    page.evaluate = MagicMock(
+        side_effect=[
+            {"stylesheets": "body{}", "computed": {}},
+            RuntimeError("node evaluate failed"),
+            [],
+        ]
+    )
+    page.screenshot = MagicMock(return_value=b"PNG")
+    session = _session(page)
+    result = session.get("https://foo.com/")
+
+    assert result.stylesheets == "body{}"
+    assert result.node_styles == []
+    assert result.background_image_urls == []
+    assert result.full_page_png == b"PNG"
 
 
 def test_get_cierra_page_aunque_falle() -> None:

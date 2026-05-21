@@ -50,6 +50,10 @@ class Project(Base, TimestampMixin):
 
     hosting_target_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     theme_styles_origin: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    #: v0.23.0 — Lista deduplicada de globalClasses emitidas por el
+    #: transpiler (`{id, name, settings}`). El wp_deployer la serializa
+    #: al option `bricks_global_classes` del destino.
+    bricks_global_classes: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)
     deploy_credentials_encrypted: Mapped[str | None] = mapped_column(Text)

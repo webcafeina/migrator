@@ -65,7 +65,17 @@ class ContentExtractorAgent(BaseAgent):
         for page in pages:
             if not page.html_clean:
                 continue
-            result = extractor.extract(page.html_clean, page.url)
+            # v0.23.0 — pasar node_styles del Playwright fetcher al
+            # extractor para que enriquezca cada ExtractedBlock con
+            # element_styles via matching node_path.
+            page_node_styles = page.node_styles_json or None
+            if isinstance(page_node_styles, list):
+                result = extractor.extract(
+                    page.html_clean, page.url, node_styles=page_node_styles
+                )
+            else:
+                # Compat: extractores que no soportan el kwarg.
+                result = extractor.extract(page.html_clean, page.url)
             # AI.1 — preparar lookup section_idx → screenshot URL.
             # `scraped_pages.section_screenshots_json` viene como
             # `[{idx, selector, url}]` del scraper_origin.
@@ -93,6 +103,7 @@ class ContentExtractorAgent(BaseAgent):
                     source=ContentBlockSource.EXTRACTED,
                     section_screenshot_url=screenshot_url,
                     coverage_score=block.coverage_score,
+                    element_styles=block.element_styles,
                 )
                 ctx.session.add(cb)
                 total_blocks += 1

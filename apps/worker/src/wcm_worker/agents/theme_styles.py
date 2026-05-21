@@ -102,7 +102,11 @@ class ThemeStylesAgent(BaseAgent):
                 warnings=["dom_tree_json vacío — no se puede sintetizar theme"],
             )
 
-        theme = synthesize_theme(computed)
+        # v0.23.0 — `node_styles_json` (captura por nodo individual) da
+        # acceso a paleta dinámica top-N + gradientes + multi-fonts.
+        # Fallback al modo solo-global si no está disponible.
+        node_styles = home.node_styles_json if isinstance(home.node_styles_json, list) else None
+        theme = synthesize_theme(computed, node_styles=node_styles)
         project.theme_styles_origin = theme
 
         # Persistencia explicita (defensive: por si la session config no
@@ -126,7 +130,12 @@ class ThemeStylesAgent(BaseAgent):
 # ---------- Funciones puras (testeables sin BD) ----------
 
 
-def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
+def synthesize_theme(
+    computed: dict[str, dict[str, str]],
+    *,
+    node_styles: list[dict[str, Any]] | None = None,
+    palette_size: int = 12,
+) -> dict[str, Any]:
     """Convierte el dict `{selector: {prop: value}}` en un Theme Styles
     estructurado. Pura — no toca BD ni session.
 
@@ -134,6 +143,17 @@ def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
     identificadores Wix internos (`wfont_xxx`, `wf_xxx`) y mapea aliases
     `orig_xxx` a Google Fonts equivalentes. Recolecta la lista de Google
     Fonts a cargar en `google_fonts`.
+
+    v0.23.0 — Si `node_styles` (captura por nodo del PlaywrightFetcher)
+    está disponible, expande:
+    - `colors`: paleta dinámica top-N (`palette_size`) de los colores
+      más frecuentes en el origen, NO solo 4 slots fijos. Slots semánticos
+      derivados por contexto (h1.color → "heading", button.bg → "primary"
+      o "accent" según contraste).
+    - `gradients`: lista de gradients detectados en background-image de
+      cualquier nodo. Los mappers section los aplican via `_background`.
+    - `google_fonts`: recolectados de TODOS los nodos (no solo
+      body/h1/button), filtrando system fonts.
     """
     body = computed.get("body", {})
     button = computed.get("button") or computed.get(".wixui-button") or {}
@@ -154,15 +174,35 @@ def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
             if gf:
                 google_fonts.add(gf)
 
+    # Slots base (4 fijos). Si tenemos node_styles, los ampliamos.
+    colors: dict[str, str] = {
+        "bg": _color_or_default(body.get("background-color"), DEFAULT_BG),
+        "text": _color_or_default(body.get("color"), DEFAULT_TEXT),
+        "primary": _color_or_default(
+            button.get("background-color"), DEFAULT_PRIMARY
+        ),
+        "accent": _color_or_default(a_link.get("color"), DEFAULT_ACCENT),
+    }
+    gradients: list[str] = []
+
+    if node_styles:
+        # v0.23.0 — paleta top-N + gradientes + multi-fonts.
+        palette_extra, grads = _extract_dynamic_palette(
+            node_styles, palette_size=palette_size, base_colors=colors,
+        )
+        colors.update(palette_extra)
+        gradients = grads
+
+        # Recolectar fonts de TODOS los nodos.
+        for node in node_styles:
+            styles = node.get("styles") or {}
+            if (raw := styles.get("font-family")):
+                _clean, gf = _clean_font_family(raw)
+                if gf:
+                    google_fonts.add(gf)
+
     return {
-        "colors": {
-            "bg": _color_or_default(body.get("background-color"), DEFAULT_BG),
-            "text": _color_or_default(body.get("color"), DEFAULT_TEXT),
-            "primary": _color_or_default(
-                button.get("background-color"), DEFAULT_PRIMARY
-            ),
-            "accent": _color_or_default(a_link.get("color"), DEFAULT_ACCENT),
-        },
+        "colors": colors,
         "typography": {
             "h1": typo_h1,
             "h2": typo_h2,
@@ -174,7 +214,48 @@ def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
             "container_y": DEFAULT_CONTAINER_PADDING_Y,
         },
         "google_fonts": sorted(google_fonts),
+        "gradients": gradients,
     }
+
+
+def _extract_dynamic_palette(
+    node_styles: list[dict[str, Any]],
+    *,
+    palette_size: int,
+    base_colors: dict[str, str],
+) -> tuple[dict[str, str], list[str]]:
+    """v0.23.0 — Recolecta colores únicos del origen y devuelve:
+    - `palette_extra: dict[slot, hex]` con slots `c1`, `c2`, ... `cN`
+      (omitiendo los 4 base ya presentes en `base_colors`). Ordenados por
+      frecuencia descendente.
+    - `gradients: list[str]` con background-image gradients únicos.
+    """
+    from collections import Counter
+
+    color_counter: Counter[str] = Counter()
+    gradients_seen: set[str] = set()
+    base_values = {v.lower() for v in base_colors.values()}
+
+    for node in node_styles:
+        styles = node.get("styles") or {}
+        for prop in ("color", "background-color"):
+            v = styles.get(prop)
+            if not v:
+                continue
+            hex_val = _color_or_default(v, "")
+            if hex_val and hex_val.lower() not in base_values:
+                color_counter[hex_val.lower()] += 1
+        bg = styles.get("background-image", "")
+        if "gradient" in bg.lower():
+            gradients_seen.add(bg.strip())
+
+    palette_extra: dict[str, str] = {}
+    # Reservar 4 slots para los base; los nuevos slots empiezan en c1.
+    remaining = max(0, palette_size - len(base_colors))
+    for idx, (hex_val, _count) in enumerate(color_counter.most_common(remaining), start=1):
+        palette_extra[f"c{idx}"] = hex_val
+
+    return palette_extra, sorted(gradients_seen)
 
 
 # ---------- G.7 — Font cleaning ----------

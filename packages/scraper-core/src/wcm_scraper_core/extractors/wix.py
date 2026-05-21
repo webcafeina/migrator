@@ -41,6 +41,13 @@ _SANITIZE_ATTRS = ("data-wix-bi", "data-wix-perf", "data-mesh-id-debug")
 class WixExtractor:
     builder_name = "wix"
 
+    def __init__(self) -> None:
+        #: v0.23.0 — Índice `node_path → styles` poblado al inicio de
+        #: `extract()` cuando el caller pasa `node_styles`. Lo consulta
+        #: `_enrich_with_styles` tras crear cada ExtractedBlock para
+        #: asignar `element_styles` + `node_path`.
+        self._node_styles_index: dict[str, dict[str, str]] | None = None
+
     def hydration_wait_selector(self) -> str | None:
         # Espera a que el SITE_CONTAINER tenga mesh-id (proxy de hidratación Velo)
         return "#SITE_CONTAINER [data-mesh-id]"
@@ -48,9 +55,27 @@ class WixExtractor:
     def hydration_extra_wait_ms(self) -> int:
         return 2000
 
-    def extract(self, html: str, url: str) -> ExtractionResult:
+    def extract(
+        self,
+        html: str,
+        url: str,
+        *,
+        node_styles: list[dict] | None = None,
+    ) -> ExtractionResult:
+        """Extrae bloques semánticos.
+
+        v0.23.0 — `node_styles` (de `FetchResult.node_styles`) permite
+        enriquecer cada bloque con sus computed styles del origen via
+        matching por `node_path`. Si es None, los bloques salen sin
+        `element_styles` (compat backward).
+        """
         soup = BeautifulSoup(html, "lxml")
         result = ExtractionResult()
+        self._node_styles_index = (
+            {entry["node_path"]: entry.get("styles", {}) for entry in node_styles}
+            if node_styles
+            else None
+        )
 
         # Meta básica
         if (html_tag := soup.find("html")) and html_tag.get("lang"):
@@ -218,18 +243,24 @@ class WixExtractor:
 
         # Hero: h1 + button (típico)
         if has_h1 and has_button:
-            return [ExtractedBlock(
-                block_type=BlockType.HERO,
-                order_index=0,
-                content_json=self._extract_hero(section),
+            return [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.HERO,
+                    order_index=0,
+                    content_json=self._extract_hero(section),
+                ),
+                section,
             )]
 
         # Sección con galería
         if section.find(class_=re.compile(r"wixui-pro-gallery|wixui-slideshow")):
-            return [ExtractedBlock(
-                block_type=BlockType.GALLERY,
-                order_index=0,
-                content_json=self._extract_gallery(section),
+            return [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.GALLERY,
+                    order_index=0,
+                    content_json=self._extract_gallery(section),
+                ),
+                section,
             )]
 
         # B.4 — Sección con `wixui-repeater`: lista/grid de items
@@ -237,18 +268,24 @@ class WixExtractor:
         # a UNKNOWN porque no había mapping. Caso real: "Selected work"
         # en mariya.design con 3 case-studies.
         if section.find(class_=re.compile(r"wixui-repeater")):
-            return [ExtractedBlock(
-                block_type=BlockType.GRID,
-                order_index=0,
-                content_json=self._extract_grid(section),
+            return [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.GRID,
+                    order_index=0,
+                    content_json=self._extract_grid(section),
+                ),
+                section,
             )]
 
         # Faq (collapsible-text)
         if section.find(class_=re.compile(r"wixui-collapsible-text")):
-            return [ExtractedBlock(
-                block_type=BlockType.FAQ,
-                order_index=0,
-                content_json=self._extract_faq(section),
+            return [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.FAQ,
+                    order_index=0,
+                    content_json=self._extract_faq(section),
+                ),
+                section,
             )]
 
         # G.1 — Secciones con uno o varios rich-text: extraer TODO el
@@ -265,26 +302,32 @@ class WixExtractor:
         # Heading puro fuera de rich-text (edge case raro).
         if has_h2_or_h3 and not has_image and not has_button and not rich_text:
             heading = section.find(["h2", "h3"])
-            return [ExtractedBlock(
-                block_type=BlockType.HEADING,
-                order_index=0,
-                content_json={
-                    "level": heading.name,
-                    "text": heading.get_text(strip=True),
-                },
+            return [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.HEADING,
+                    order_index=0,
+                    content_json={
+                        "level": heading.name,
+                        "text": heading.get_text(strip=True),
+                    },
+                ),
+                heading,
             )]
 
         # Imagen + texto → bloque image (simplificado).
         # Si además hay rich-text, también extraemos los textos.
         if has_image and not has_button:
             img = section.find("img")
-            blocks: list[ExtractedBlock] = [ExtractedBlock(
-                block_type=BlockType.IMAGE,
-                order_index=0,
-                content_json={
-                    "src": img.get("src") if img else None,
-                    "alt": img.get("alt") if img else None,
-                },
+            blocks: list[ExtractedBlock] = [self._enrich_with_styles(
+                ExtractedBlock(
+                    block_type=BlockType.IMAGE,
+                    order_index=0,
+                    content_json={
+                        "src": img.get("src") if img else None,
+                        "alt": img.get("alt") if img else None,
+                    },
+                ),
+                img if img is not None else section,
             )]
             if rich_text:
                 blocks.extend(self._extract_text_blocks(section))
@@ -346,19 +389,25 @@ class WixExtractor:
                 text = el.get_text(strip=True)
                 if not text:
                     continue
-                out.append(ExtractedBlock(
-                    block_type=BlockType.HEADING,
-                    order_index=0,
-                    content_json={"level": tag, "text": text},
+                out.append(self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.HEADING,
+                        order_index=0,
+                        content_json={"level": tag, "text": text},
+                    ),
+                    el,
                 ))
             elif tag == "p":
                 text = el.get_text(strip=True)
                 if not text:
                     continue
-                out.append(ExtractedBlock(
-                    block_type=BlockType.TEXT,
-                    order_index=0,
-                    content_json={"html": str(el)[:5000]},
+                out.append(self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.TEXT,
+                        order_index=0,
+                        content_json={"html": str(el)[:5000]},
+                    ),
+                    el,
                 ))
             elif tag in ("ul", "ol"):
                 items_text = " ".join(
@@ -366,12 +415,60 @@ class WixExtractor:
                 )
                 if not items_text:
                     continue
-                out.append(ExtractedBlock(
-                    block_type=BlockType.TEXT,
-                    order_index=0,
-                    content_json={"html": str(el)[:5000]},
+                out.append(self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.TEXT,
+                        order_index=0,
+                        content_json={"html": str(el)[:5000]},
+                    ),
+                    el,
                 ))
         return out
+
+    # ----- v0.23.0: node_path + element_styles -----
+
+    def _node_path(self, el: Tag, max_depth: int = 6) -> str:
+        """Calcula ruta DOM determinista del nodo, equivalente al JS
+        `nodePath` de `playwright_fetcher._CAPTURE_NODE_STYLES_JS`. Sin
+        esto el matching contra `node_styles_index` no funciona.
+        """
+        parts: list[str] = []
+        cur: Tag | None = el
+        depth = 0
+        while cur is not None and getattr(cur, "name", None) and cur.name != "body" and depth < max_depth:
+            tag = cur.name
+            mesh = cur.get("data-mesh-id") if hasattr(cur, "get") else None
+            cur_id = cur.get("id") if hasattr(cur, "get") else None
+            if mesh:
+                parts.insert(0, f'{tag}[data-mesh-id="{mesh}"]')
+            elif cur_id:
+                parts.insert(0, f"{tag}#{cur_id}")
+            else:
+                parent = cur.parent
+                if parent is not None and hasattr(parent, "children"):
+                    sibs = [s for s in parent.children if getattr(s, "name", None) == tag]
+                    try:
+                        idx = sibs.index(cur)
+                        parts.insert(0, f"{tag}:nth-of-type({idx + 1})")
+                    except ValueError:
+                        parts.insert(0, tag)
+                else:
+                    parts.insert(0, tag)
+            cur = cur.parent
+            depth += 1
+        return " > ".join(parts)
+
+    def _enrich_with_styles(self, block: ExtractedBlock, tag: Tag) -> ExtractedBlock:
+        """Asigna `node_path` + `element_styles` al bloque si tenemos
+        el índice. Mutate-and-return idiom para encadenar en append."""
+        if self._node_styles_index is None:
+            return block
+        path = self._node_path(tag)
+        block.node_path = path
+        styles = self._node_styles_index.get(path)
+        if styles:
+            block.element_styles = dict(styles)
+        return block
 
     def _first_textual_ancestor(
         self, el: Tag, stop_at: Tag

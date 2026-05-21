@@ -48,6 +48,15 @@ class ScrapedPage(Base, TimestampMixin):
     #: Consumido por content_extractor para denormalizar en content_blocks y
     #: por ai_assist para alimentar Claude Vision.
     section_screenshots_json: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
+    #: v0.23.0 — Lista de `{node_path, tag, styles}` capturada por el JS
+    #: `_CAPTURE_NODE_STYLES_JS` en browser. content_extractor la usa
+    #: para asignar `element_styles` a cada ContentBlock via matching
+    #: `node_path`.
+    node_styles_json: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
+    #: v0.23.0 — URLs de background-image cross-origin (CDN Wix, etc.)
+    #: detectadas en computed styles. asset_optimizer las trata como
+    #: assets normales para descargar a R2.
+    background_image_urls_json: Mapped[list[str] | None] = mapped_column(JSONB)
 
     status: Mapped[ScrapeStatus] = mapped_column(
         Enum(ScrapeStatus, name="scrape_status", native_enum=False, length=16),

@@ -62,7 +62,11 @@ DEFAULT_COVERAGE_THRESHOLD = 0.6
 #: Concurrency: cuántas secciones procesamos en paralelo. Anthropic
 #: rate-limit es generoso pero no infinito; 5 balancea velocidad con
 #: respeto al rate-limit del free/standard tier.
-DEFAULT_CONCURRENCY = 5
+#: v0.23.0 — Reducido de 5 → 2 para respetar rate-limit Anthropic en
+#: tiers bajos (~5 req/min). El bloque F del sprint v0.23.0 demostró
+#: que concurrency=5 con tier bajo saturaba el cliente y caía masivo a
+#: RAW. Con 2 + retries=5 + pausa 60s en 429 el ratio AI:RAW mejora.
+DEFAULT_CONCURRENCY = 2
 
 #: Presupuesto USD por proyecto. Si el coste acumulado lo supera,
 #: aborta resto + emite ResidualTask. Override por env
@@ -263,17 +267,38 @@ class AiAssistAgent(BaseAgent):
         *,
         reason: str = "ai_failed",
     ) -> None:
-        """Marca un bloque como RAW_HTML con el HTML+CSS de origen.
+        """v0.23.0 — alias de compatibilidad. NO emite nuevos RAW_HTML.
 
-        - `html`: viene de `content_json.raw_html` (extractor cuando UNKNOWN)
-          o `content_json.html` (otros block_types con coverage bajo).
-        - `css`: cargamos `scraped_pages.css_extracted` de la página
-          padre. El mapper `map_raw_html` lo namespacea con tinycss2
-          para aislarlo dentro de `[data-wcm-block="<hash>"]`.
+        Delega en `_apply_unresolved` que marca el bloque UNKNOWN +
+        crea ResidualTask con captura para que el operador lo rehaga
+        manualmente. Mantenemos la firma para tests/callers existentes.
+        """
+        self._apply_unresolved(ctx, block, reason=reason)
 
-        Sin el CSS, el `code` element renderiza con defaults del browser
-        y la fidelidad visual se pierde (bug detectado en proyecto 25:
-        94% RAW + 0 reglas CSS = destino plano sans-serif).
+    def _apply_unresolved(
+        self,
+        ctx: AgentContext,
+        block: ContentBlock,
+        *,
+        reason: str = "ai_failed",
+    ) -> None:
+        """v0.23.0 — Marca un bloque como UNKNOWN y crea una ResidualTask
+        con captura para que el operador lo rehaga manualmente desde el
+        editor Bricks.
+
+        Reemplaza al antiguo `_apply_raw_html` que inyectaba HTML+CSS
+        del origen como elemento `code` Bricks. Ese approach tumbaba el
+        servidor cPanel cuando un proyecto tenía 100+ RAW (cada uno con
+        ~262KB de CSS namespaceado en postmeta = >25MB por página).
+
+        Pipeline:
+        - `block.block_type = UNKNOWN` + `ai_processed = True` para que
+          `bricks_transpiler` lo salte (no emite element).
+        - `content_json` conserva `raw_html` y añade `_unresolved_reason`,
+          `_source_selector`, `_screenshot_url` para diagnóstico.
+        - Crea `ResidualTask(category=VISUAL_CONTENT, ...)` con el
+          screenshot adjunto. Detalle en `checklist_generator` que
+          agrupa estos residuales bajo "Bloques pendientes manual".
         """
         existing_json = block.content_json or {}
         raw_html = (
@@ -281,21 +306,43 @@ class AiAssistAgent(BaseAgent):
             or existing_json.get("html")
             or ""
         )
-        page_css = self._load_page_css(ctx, block.page_id)
+        screenshot_url = block.section_screenshot_url
         block.content_json = {
-            "html": raw_html,
-            "css": page_css,
-            "_raw_reason": reason,
+            "raw_html": raw_html[:5000],  # cap para no inflar BD
+            "_unresolved_reason": reason,
+            "_screenshot_url": screenshot_url,
         }
-        block.block_type = BlockType.RAW_HTML
+        block.block_type = BlockType.UNKNOWN
         block.ai_processed = True
         ctx.session.add(block)
+
+        # Crear residual con captura. Asignamos category=VISUAL_CONTENT
+        # porque es lo que mejor encaja en el enum existente: bloque
+        # visual sin auto-resolución.
+        task = ResidualTask(
+            project_id=block.project_id,
+            title=f"Bloque visual pendiente de rehacer manualmente — {block.id}",
+            description=(
+                f"El bloque #{block.id} (page {block.page_id}) no pudo "
+                "resolverse automáticamente (ni por heurística enriquecida "
+                f"ni por Claude Vision). Razón: {reason}. "
+                "Abrir el editor Bricks y reconstruir la sección "
+                "siguiendo la captura del origen adjunta."
+            ),
+            category=ResidualCategory.VISUAL_CONTENT,
+            estimated_minutes=10,
+            screenshot_paths=[],
+            section_screenshot_url=screenshot_url,
+            status=ResidualStatus.OPEN,
+            generated_by="ai_assist",
+        )
+        ctx.session.add(task)
 
     def _load_page_css(self, ctx: AgentContext, page_id: int | None) -> str:
         """Devuelve `scraped_pages.css_extracted` o "" si no disponible.
 
-        Identity-map de SQLAlchemy hace gratis las llamadas repetidas
-        para el mismo `page_id` dentro de la misma sesión.
+        v0.23.0: mantenido por compat. Los nuevos `_apply_unresolved`
+        ya no inyectan CSS (RAW eliminado).
         """
         if page_id is None:
             return ""

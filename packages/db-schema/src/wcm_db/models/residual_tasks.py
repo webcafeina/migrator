@@ -49,3 +49,7 @@ class ResidualTask(Base, TimestampMixin):
         index=True,
     )
     closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    #: v0.23.0 — URL R2 del screenshot de la sección no resuelta. El
+    #: operador la consulta en el checklist para rehacer manualmente.
+    section_screenshot_url: Mapped[str | None] = mapped_column(String(2048))

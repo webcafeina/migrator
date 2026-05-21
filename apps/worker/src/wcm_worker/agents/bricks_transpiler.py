@@ -53,6 +53,10 @@ class BricksTranspilerAgent(BaseAgent):
         transpiled_count = 0
         validation_errors_total = 0
         residual_hints_total = 0
+        # v0.23.0 — acumulador project-level de globalClasses. Cada
+        # página puede emitir nuevas; al final se persisten en la option
+        # `bricks_global_classes` (con dedup por id).
+        all_global_classes: dict[str, dict] = {}
 
         for page in pages:
             stmt_blocks = (
@@ -64,13 +68,16 @@ class BricksTranspilerAgent(BaseAgent):
             if not blocks:
                 continue
 
-            # transpile_page espera dicts simples (no SQLAlchemy ORM objs)
+            # transpile_page espera dicts simples (no SQLAlchemy ORM objs).
+            # v0.23.0 — añadimos `element_styles` para que los mappers
+            # apliquen styles del origen como Bricks settings/globalClasses.
             block_dicts = [
                 {
                     "order_index": b.order_index,
                     "block_type": b.block_type,
                     "content_json": b.content_json or {},
                     "lang": b.lang,
+                    "element_styles": b.element_styles,
                 }
                 for b in blocks
             ]
@@ -127,6 +134,17 @@ class BricksTranspilerAgent(BaseAgent):
                 ctx.session.add(bricks_page)
 
             residual_hints_total += len(result.residuals)
+            # v0.23.0 — acumular globalClasses (dedup por id).
+            for gc in result.global_classes:
+                gc_id = gc.get("id")
+                if gc_id and gc_id not in all_global_classes:
+                    all_global_classes[gc_id] = gc
+
+        # Persistir globalClasses agregadas en el proyecto (campo nuevo
+        # de Project si existe, o pasarlo al wp_deployer via output).
+        global_classes_list = list(all_global_classes.values())
+        if global_classes_list and hasattr(project, "bricks_global_classes"):
+            project.bricks_global_classes = global_classes_list
 
         ctx.session.flush()
 
@@ -134,12 +152,14 @@ class BricksTranspilerAgent(BaseAgent):
             summary=(
                 f"{transpiled_count}/{len(pages)} páginas transpiladas, "
                 f"{validation_errors_total} errores validación, "
-                f"{residual_hints_total} hints residuales"
+                f"{residual_hints_total} hints residuales, "
+                f"{len(global_classes_list)} globalClasses"
             ),
             outputs={
                 "transpiled": transpiled_count,
                 "validation_errors": validation_errors_total,
                 "residual_hints": residual_hints_total,
+                "global_classes_count": len(global_classes_list),
             },
             residual_tasks_created=residual_hints_total,
         )

@@ -27,6 +27,12 @@ class MapperContext:
     #: `{"colors": {"primary","bg","text","accent"}, "typography":
     #: {"h1","h2","body","button"}, "spacing": {"section_y","container_y"}}`.
     theme_styles: dict[str, Any] | None = None
+    #: v0.23.0 — Lista global de globalClasses emitidas durante esta
+    #: página. Cada entrada `{id, name, settings}` se persiste en el
+    #: page content para que Bricks las exponga como clases editables
+    #: desde el panel. `_get_or_create_global_class` dedupea por settings
+    #: hash. Mutable; los mappers la van rellenando.
+    global_classes: list[dict[str, Any]] = field(default_factory=list)
 
 
 @dataclass

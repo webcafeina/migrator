@@ -150,6 +150,8 @@ class ScraperOriginAgent(BaseAgent):
                         css_extracted=fetched.stylesheets,
                         computed_styles=fetched.computed_styles,
                         section_screenshots=section_urls,
+                        node_styles=fetched.node_styles,
+                        background_image_urls=fetched.background_image_urls,
                     )
         else:
             with httpx.Client(timeout=20.0, follow_redirects=True, headers={
@@ -233,6 +235,8 @@ class ScraperOriginAgent(BaseAgent):
         css_extracted: str = "",
         computed_styles: dict[str, dict[str, str]] | None = None,
         section_screenshots: list[dict[str, Any]] | None = None,
+        node_styles: list[dict[str, Any]] | None = None,
+        background_image_urls: list[str] | None = None,
     ) -> None:
         """Parse HTML + persist + extraer links internos. Compartido entre
         las ramas httpx y Playwright para que el shape de ScrapedPage sea
@@ -242,6 +246,10 @@ class ScraperOriginAgent(BaseAgent):
         `capture_styles=True`), se persiste en la columna homónima de
         `scraped_pages`. `computed_styles` se guarda en `dom_tree_json`
         para que `theme_styles_agent` lo sintetice.
+
+        v0.23.0: `node_styles` y `background_image_urls` capturados por
+        `_CAPTURE_NODE_STYLES_JS` se persisten en columnas dedicadas
+        para que `content_extractor` los enriquezca por bloque.
         """
         soup = BeautifulSoup(html, "lxml")
         title_tag = soup.find("title")
@@ -258,6 +266,8 @@ class ScraperOriginAgent(BaseAgent):
             css_extracted=css_extracted or None,
             dom_tree_json=computed_styles or None,
             section_screenshots_json=section_screenshots or None,
+            node_styles_json=node_styles or None,
+            background_image_urls_json=background_image_urls or None,
             status=ScrapeStatus.SUCCESS,
             scraped_at=datetime.now(UTC),
         )

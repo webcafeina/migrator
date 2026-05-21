@@ -131,7 +131,8 @@ def test_sin_api_key_marca_todos_raw(fake_session, monkeypatch) -> None:
     assert result.outputs["ai_generated"] == 0
     assert result.outputs["skipped_api"] is True
     for b in candidates:
-        assert b.block_type == BlockType.RAW_HTML
+        # v0.23.0 — fallback ya no es RAW_HTML; es UNKNOWN + ResidualTask.
+        assert b.block_type == BlockType.UNKNOWN
         assert b.ai_processed is True
 
 
@@ -206,8 +207,11 @@ def test_resolve_concurrency_env_override(monkeypatch) -> None:
 
 def test_resolve_concurrency_env_fuera_rango_cae_a_default(monkeypatch) -> None:
     monkeypatch.setenv("WCM_AI_CONCURRENCY", "100")
-    # 100 fuera de [1,20] → default 5.
-    assert AiAssistAgent()._resolve_concurrency() == 5
+    # 100 fuera de [1,20] → DEFAULT_CONCURRENCY (v0.23.0: bajado a 2).
+    from wcm_worker.agents.ai_assist import DEFAULT_CONCURRENCY
+
+    assert AiAssistAgent()._resolve_concurrency() == DEFAULT_CONCURRENCY
+    assert DEFAULT_CONCURRENCY == 2
 
 
 def test_resolve_max_blocks_default() -> None:
@@ -260,61 +264,52 @@ def test_e2e_cap_max_blocks_difiere_resto_a_raw(fake_session, monkeypatch) -> No
     # debe ser True en TODOS.
     for b in candidates:
         assert b.ai_processed is True
-    # Los últimos 3 son RAW_HTML por cap.
+    # v0.23.0 — los excedentes ya no son RAW_HTML, sino UNKNOWN
+    # (ResidualTask con captura). El cap sigue funcionando.
     for b in candidates[2:]:
-        assert b.block_type == BlockType.RAW_HTML
+        assert b.block_type == BlockType.UNKNOWN
 
 
 # ---------- apply helpers ----------
 
 
-def test_apply_raw_html_marca_block(fake_session) -> None:
-    """Bloque RAW_HTML carga css_extracted de la página padre."""
+def test_apply_raw_html_alias_a_unresolved(fake_session) -> None:
+    """v0.23.0 — `_apply_raw_html` ahora es alias de `_apply_unresolved`.
+    NO emite RAW_HTML; marca UNKNOWN + crea ResidualTask con captura."""
     block = _block(content_json={"raw_html": "<section>hello</section>"})
-    page = _page(page_id=block.page_id, css_extracted="body{color:red}")
-
-    def get_side_effect(model, pk):
-        name = getattr(model, "__name__", type(model).__name__)
-        if name == "ScrapedPage" and pk == block.page_id:
-            return page
-        return None
-
-    fake_session.get.side_effect = get_side_effect
+    block.section_screenshot_url = "https://r2/section-42.png"
 
     agent = AiAssistAgent()
     agent._apply_raw_html(
         AgentContext(session=fake_session, project_id=42), block, reason="x"
     )
-    assert block.block_type == BlockType.RAW_HTML
+    assert block.block_type == BlockType.UNKNOWN
     assert block.ai_processed is True
-    assert block.content_json["html"] == "<section>hello</section>"
-    assert block.content_json["css"] == "body{color:red}"
-    assert block.content_json["_raw_reason"] == "x"
+    assert block.content_json["raw_html"] == "<section>hello</section>"
+    assert block.content_json["_unresolved_reason"] == "x"
+    assert block.content_json["_screenshot_url"] == "https://r2/section-42.png"
+    # Debe haber añadido el block + 1 ResidualTask a la session.
+    added_tasks = [
+        c.args[0] for c in fake_session.add.call_args_list
+        if type(c.args[0]).__name__ == "ResidualTask"
+    ]
+    assert len(added_tasks) == 1
+    task = added_tasks[0]
+    assert task.project_id == block.project_id
+    assert task.section_screenshot_url == "https://r2/section-42.png"
 
 
-def test_apply_raw_html_sin_pagina_css_vacio(fake_session) -> None:
-    """Si page=None o css_extracted=None, css cae a "" sin fallar."""
+def test_apply_unresolved_sin_screenshot_url(fake_session) -> None:
+    """Bloque sin screenshot crea residual igualmente (sin captura)."""
     block = _block(content_json={"raw_html": "<section>x</section>"})
-    fake_session.get.return_value = None
+    block.section_screenshot_url = None
 
     agent = AiAssistAgent()
-    agent._apply_raw_html(
-        AgentContext(session=fake_session, project_id=42), block, reason="x"
+    agent._apply_unresolved(
+        AgentContext(session=fake_session, project_id=42), block, reason="ai_failed"
     )
-    assert block.content_json["css"] == ""
-
-
-def test_apply_raw_html_page_sin_page_id(fake_session) -> None:
-    """Bloque sin page_id devuelve css="" sin tocar la sesión."""
-    block = _block(content_json={"raw_html": "<section>x</section>"})
-    block.page_id = None
-
-    agent = AiAssistAgent()
-    agent._apply_raw_html(
-        AgentContext(session=fake_session, project_id=42), block, reason="x"
-    )
-    assert block.content_json["css"] == ""
-    fake_session.get.assert_not_called()
+    assert block.block_type == BlockType.UNKNOWN
+    assert block.content_json["_screenshot_url"] is None
 
 
 def test_apply_ai_generated_marca_block(fake_session) -> None:
@@ -380,7 +375,8 @@ def test_e2e_claude_falla_fallback_raw(fake_session, monkeypatch) -> None:
 
     assert result.outputs["ai_generated"] == 0
     assert result.outputs["raw_html"] == 1
-    assert block.block_type == BlockType.RAW_HTML
+    # v0.23.0 — block_type=UNKNOWN (RAW_HTML deprecado, no se emite).
+    assert block.block_type == BlockType.UNKNOWN
 
 
 def test_e2e_auth_error_aborta_y_marca_resto_raw(fake_session, monkeypatch) -> None:
@@ -397,9 +393,9 @@ def test_e2e_auth_error_aborta_y_marca_resto_raw(fake_session, monkeypatch) -> N
     result = agent.run(ctx)
 
     assert result.outputs.get("aborted_auth") is True
-    # Todos los blocks marcados como RAW_HTML.
+    # v0.23.0 — Todos los blocks marcados como UNKNOWN + ResidualTask.
     for b in blocks:
-        assert b.block_type == BlockType.RAW_HTML
+        assert b.block_type == BlockType.UNKNOWN
         assert b.ai_processed is True
 
 

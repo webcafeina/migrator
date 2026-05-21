@@ -56,5 +56,10 @@ class ContentBlock(Base, TimestampMixin):
     ai_processed: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false"
     )
+    #: v0.23.0 — Computed styles del nodo principal del bloque (color,
+    #: font-size, padding, background, border, etc.) capturados por
+    #: PlaywrightFetcher. Los mappers Bricks los traducen a settings via
+    #: `_styles_to_bricks_settings` + globalClasses con dedup.
+    element_styles: Mapped[dict | None] = mapped_column(JSONB)
 
     page: Mapped[ScrapedPage] = relationship(back_populates="content_blocks")  # noqa: F821

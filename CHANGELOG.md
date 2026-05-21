@@ -11,6 +11,116 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.23.0] — 2026-05-21
+
+Sprint **Element-level styling — Bricks editable nativo con fidelidad real**.
+Tras el run v0.22.0 sobre mariya.design el destino seguía sin parecerse al
+origen porque los mappers atómicos emitían heading/text/image sin ningún
+computed style — solo el tag y el contenido. El usuario validó que el
+approach editable Bricks (no mirror) sigue siendo el objetivo. Este sprint
+ataca la raíz: captura los computed styles por nodo del origen, los traduce
+a Bricks settings con shape correcta (`color: {"raw": ...}`, sufijo
+responsive, etc.) y los emite como **globalClasses dedup** (patrón canónico
+del repo `wpgaurav/bricks-skills`) — 1 definición vs N inline. Mucho menos
+postmeta, además clases editables globalmente desde el panel.
+
+### Added
+
+- **A.1** — `MAX_CSS_BYTES = 256K → 5MB`. Wix mete ~500KB de CSS; truncar
+  perdía reglas hover, media queries y repeater states.
+- **A.2** — `DEFAULT_STYLE_PROPS` ampliado de 9 a 30+ propiedades:
+  typography completa (letter-spacing, text-transform, text-decoration),
+  box-model (gap, border, shadow, radius), background (color + image +
+  gradient), layout (display + flex + grid + gap), sizing
+  (width/height/max-width/min-height), position.
+- **A.3** — `_CAPTURE_NODE_STYLES_JS`: captura computed styles **por
+  nodo individual** (no por selector global). 12 selectores (h1-h6, p,
+  ul/ol/li, a, button, img, picture, svg, section, `[data-mesh-id]`,
+  `[id^="comp-"]`). Cap 2000 nodos/página. Cada item:
+  `{node_path, tag, styles}`.
+- **A.4** — Recolecta URLs `background-image` cross-origin
+  (`static.wixstatic.com`, etc.) para que `asset_optimizer` las descargue
+  a R2. Wix usa background-image masivamente en hero composiciones.
+- **B** — `ExtractedBlock.element_styles` + `node_path`. `WixExtractor`
+  enriquece cada bloque vía `_enrich_with_styles(tag)` que calcula
+  `node_path` con la misma lógica del JS y mira en
+  `node_styles_index`. `content_extractor` persiste en columna nueva
+  `content_blocks.element_styles JSONB`.
+- **C — Mappers con globalClasses (patrón `wpgaurav/bricks-skills`)**:
+  - `_styling.py` nuevo helper: `_styles_to_bricks_settings()` traduce
+    computed → Bricks settings con shape correcta (color como
+    `{"raw": ...}` siempre, font-size como string, padding como
+    object `{top,right,bottom,left}`, gradients via `_background._gradient`).
+  - `styles_inline_or_class()`: decide automáticamente si inyectar
+    inline (<3 props) o crear globalClass `wcm-<prefix>-<digest6>` con
+    dedup. Threshold `GLOBAL_CLASS_MIN_PROPS=3`.
+  - Color matching contra `theme_styles.colors` palette → sustituye
+    por `var(--bricks-color-<slot>)`.
+  - Atomic mappers (`map_heading`, `map_text`, `map_image`, `map_cta`)
+    aplican `_apply_element_styles` tras los defaults base.
+  - `MapperContext.global_classes: list[dict]` acumulador deduplicado.
+  - `TranspileResult.global_classes` propaga al agente, que las
+    persiste en `projects.bricks_global_classes` (migración 0017).
+- **D — Theme rico**:
+  - Paleta dinámica top-N (default 12 colores, no 4 fijos) por
+    frecuencia en `node_styles`. Slots base `{bg, text, primary, accent}`
+    + extras `{c1, c2, ..., cN}`.
+  - Gradientes detectados en `background-image` se registran en
+    `theme_styles_origin.gradients`. Mappers section los aplican via
+    `_background._gradient` (Bricks acepta gradient como CSS literal).
+  - Google Fonts recolectados de **todos los nodos** (no solo
+    body/h1/button/a globales).
+- **E — Eliminar `code` RAW + ResidualTask con captura**:
+  - `AiAssistAgent._apply_unresolved` reemplaza a `_apply_raw_html`.
+    Bloques no resolubles → `block_type=UNKNOWN` +
+    `content_json={raw_html, _unresolved_reason, _screenshot_url}` +
+    crea `ResidualTask(category=VISUAL_CONTENT, section_screenshot_url=...)`.
+  - `_apply_raw_html` mantenido como alias de compat (callers/tests).
+  - Transpile saltea bloques con `_unresolved_reason` (no duplica residual).
+  - `residual_tasks.section_screenshot_url VARCHAR(2048)` (migración 0015).
+- **F — Claude Vision como fallback verdadero**:
+  - `DEFAULT_CONCURRENCY 5 → 2` (respeta rate-limit tier bajo).
+  - `DEFAULT_TIMEOUT_S 60 → 90`.
+  - `DEFAULT_RETRIES 3 → 5`.
+  - Detección 429 explícita → pausa `60s + jitter` en lugar de
+    backoff exp corto (2/4/8s no respetaba la ventana de rate-limit).
+- **G/H — Migraciones Alembic + bricks-skills**:
+  - Migración 0015: `content_blocks.element_styles JSONB` +
+    `residual_tasks.section_screenshot_url`.
+  - Migración 0016: `scraped_pages.node_styles_json` +
+    `scraped_pages.background_image_urls_json`.
+  - Migración 0017: `projects.bricks_global_classes JSONB`.
+  - `docs/referencias/bricks-skills/` submódulo (`wpgaurav/bricks-skills`)
+    — corpus dorado de Bricks JSON shapes + tokens Core Framework +
+    breakpoints. Referencia consultable in-repo.
+
+### Changed
+
+- `PlaywrightFetcher` ahora hace 3 evaluates por page con
+  `capture_styles=True` + `capture_screenshots=True`: styles globales,
+  styles por nodo, section bboxes. Cada uno tolerante a fallos
+  (graceful degradation).
+- `WixExtractor.extract(html, url, *, node_styles=None)` — kwarg
+  opcional para enriquecer bloques con styles del origen via matching
+  `node_path`.
+
+### Fixed
+
+- N/A — sprint principalmente feature; los fixes urgentes
+  (`_apply_raw_html` CSS vacío + UPSERT transpiler) ya iban en v0.22.0.
+
+### Bumps
+
+- 3 migraciones Alembic encadenadas (0015 → 0017).
+- 20 tests nuevos en `test_styling_helpers.py` (color shape, padding
+  shorthand, font cleaning, globalClass dedup).
+- 1 columna `Project.bricks_global_classes` que `wp_deployer` puede
+  serializar al option `bricks_global_classes` del destino para
+  exponer las clases como editables en el panel Bricks (UI Bloque P
+  diferido a v0.24.0).
+
+---
+
 ## [0.22.0] — 2026-05-21
 
 Sprint **Fidelidad visual al origen** — arquitectura híbrida heurística + Claude Vision + RAW_HTML para empezar a aproximar la migración a la web origen. Tras el run sobre mariya.design (50 páginas) el destino aún no se parece visualmente al origen, pero la base está montada para v0.23.0 (element-level styling).
