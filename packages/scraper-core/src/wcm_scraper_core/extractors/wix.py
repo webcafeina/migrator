@@ -119,13 +119,17 @@ class WixExtractor:
                     footer_detected = True
                     order_index += 1
                 continue
-            block = self._classify_section(section)
-            if block is None:
-                continue
-            block.order_index = order_index
-            block.lang = result.page_lang
-            result.blocks.append(block)
-            order_index += 1
+            # G.1 (2026-05-21) — `_classify_section` puede devolver
+            # múltiples bloques cuando la sección lleva varios elementos
+            # textuales (caso real: "What this solves" con h2 + p + ul).
+            # Antes solo emitíamos UN bloque (el primer rich-text) y se
+            # perdía ~50% del contenido en secciones de texto.
+            section_blocks = self._classify_section(section)
+            for block in section_blocks:
+                block.order_index = order_index
+                block.lang = result.page_lang
+                result.blocks.append(block)
+                order_index += 1
 
         # Wix Studio: header/footer por `id="SITE_HEADER"`/`SITE_FOOTER`
         # (formato moderno). Solo se aplica si no detectamos ya el
@@ -167,9 +171,15 @@ class WixExtractor:
 
     # ---------- helpers ----------
 
-    def _classify_section(self, section: Tag) -> ExtractedBlock | None:
-        """Clasifica un nodo `[data-mesh-id]` como un block_type."""
-        # Heurística: si contiene heading + texto + CTA → hero
+    def _classify_section(self, section: Tag) -> list[ExtractedBlock]:
+        """Clasifica una sección y devuelve la lista de bloques que produce.
+
+        G.1 (2026-05-21) — devuelve `list[ExtractedBlock]` (antes era
+        `ExtractedBlock | None`). Las secciones de texto ricas (h2 + p +
+        ul) ahora emiten varios bloques en lugar de uno solo truncado.
+        Devuelve lista vacía si la sección no produce ningún bloque
+        útil (caso edge: section vacío sin contenido).
+        """
         has_h1 = section.find(["h1"]) is not None
         has_h2_or_h3 = section.find(["h2", "h3"]) is not None
         has_button = bool(section.find(class_=re.compile(r"wixui-button")))
@@ -182,83 +192,169 @@ class WixExtractor:
 
         # Forms
         if has_form:
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.FORM,
                 order_index=0,
                 content_json={"fields": [], "notes": "Wix Forms — recrear en Gravity Forms"},
-            )
+            )]
 
         # Hero: h1 + button (típico)
         if has_h1 and has_button:
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.HERO,
                 order_index=0,
                 content_json=self._extract_hero(section),
-            )
+            )]
 
         # Sección con galería
         if section.find(class_=re.compile(r"wixui-pro-gallery|wixui-slideshow")):
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.GALLERY,
                 order_index=0,
                 content_json=self._extract_gallery(section),
-            )
+            )]
 
         # B.4 — Sección con `wixui-repeater`: lista/grid de items
         # repetidos (case-studies, servicios, testimonios). Antes caía
         # a UNKNOWN porque no había mapping. Caso real: "Selected work"
         # en mariya.design con 3 case-studies.
         if section.find(class_=re.compile(r"wixui-repeater")):
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.GRID,
                 order_index=0,
                 content_json=self._extract_grid(section),
-            )
+            )]
 
         # Faq (collapsible-text)
         if section.find(class_=re.compile(r"wixui-collapsible-text")):
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.FAQ,
                 order_index=0,
                 content_json=self._extract_faq(section),
-            )
+            )]
 
-        # Heading puro
+        # G.1 — Secciones con uno o varios rich-text: extraer TODO el
+        # contenido textual como bloques separados (heading + text + ul).
+        # Antes solo cogíamos el primer rich-text como un bloque TEXT con
+        # HTML opaco → "What this solves" salía solo como h2 sin la lista
+        # de bullets. Ahora cada h1-h6, p, ul, ol del rich-text se emite
+        # como un bloque atómico que los mappers ya conocen.
+        if rich_text and not has_image:
+            blocks = self._extract_text_blocks(section)
+            if blocks:
+                return blocks
+
+        # Heading puro fuera de rich-text (edge case raro).
         if has_h2_or_h3 and not has_image and not has_button and not rich_text:
             heading = section.find(["h2", "h3"])
-            return ExtractedBlock(
+            return [ExtractedBlock(
                 block_type=BlockType.HEADING,
                 order_index=0,
-                content_json={"level": heading.name, "text": heading.get_text(strip=True)},
-            )
+                content_json={
+                    "level": heading.name,
+                    "text": heading.get_text(strip=True),
+                },
+            )]
 
-        # Texto puro (rich-text)
-        if rich_text and not has_image:
-            return ExtractedBlock(
-                block_type=BlockType.TEXT,
-                order_index=0,
-                content_json={"html": str(rich_text)[:10000]},
-            )
-
-        # Imagen + texto → bloque image (simplificado)
+        # Imagen + texto → bloque image (simplificado).
+        # Si además hay rich-text, también extraemos los textos.
         if has_image and not has_button:
             img = section.find("img")
-            return ExtractedBlock(
+            blocks: list[ExtractedBlock] = [ExtractedBlock(
                 block_type=BlockType.IMAGE,
                 order_index=0,
                 content_json={
                     "src": img.get("src") if img else None,
                     "alt": img.get("alt") if img else None,
                 },
-            )
+            )]
+            if rich_text:
+                blocks.extend(self._extract_text_blocks(section))
+            return blocks
 
         # No clasificado → unknown con sample de HTML para residual
-        return ExtractedBlock(
+        return [ExtractedBlock(
             block_type=BlockType.UNKNOWN,
             order_index=0,
             content_json={"raw_html": str(section)[:3000]},
             notes="Wix section no clasificada en MVP",
-        )
+        )]
+
+    _TEXTUAL_TAGS: frozenset[str] = frozenset({
+        "h1", "h2", "h3", "h4", "h5", "h6", "p", "ul", "ol",
+    })
+
+    def _extract_text_blocks(self, section: Tag) -> list[ExtractedBlock]:
+        """G.1 — Extrae bloques atómicos (heading, text, list) del
+        contenido textual de la sección.
+
+        Recorre toda la sección buscando elementos textuales `<h1>-<h6>`,
+        `<p>`, `<ul>`, `<ol>` (DENTRO o FUERA de `wixui-rich-text`,
+        porque Wix a veces envuelve cada elemento textual en su propio
+        rich-text individual). Cada uno emite un bloque atómico:
+        - heading → `BlockType.HEADING` con level + text
+        - p / ul / ol → `BlockType.TEXT` con html preservado
+
+        Dedupe por elemento exacto: si un `<h2>` ESTÁ dentro de un
+        `<p.wixui-rich-text>`, NO lo procesamos dos veces (la cadena de
+        find_all sobre section ya los iteraría ambos).
+        """
+        out: list[ExtractedBlock] = []
+        # Recorrer la sección completa en orden DOM. find_all sin
+        # recursive=False itera profundidad.
+        for el in section.find_all(list(self._TEXTUAL_TAGS), recursive=True):
+            tag = el.name
+            # Skip si está anidado dentro de OTRO elemento textual ya
+            # iterado (caso real: <h2> dentro de <p.wixui-rich-text>).
+            # Bs4 no tiene un "already-seen" set fiable, así que
+            # comprobamos ancestros: si el primer ancestor textual NO
+            # es el propio nodo, lo omitimos (su padre ya lo cubrirá).
+            ancestor_textual = self._first_textual_ancestor(el, section)
+            if ancestor_textual is not None and ancestor_textual is not el:
+                continue
+            if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+                text = el.get_text(strip=True)
+                if not text:
+                    continue
+                out.append(ExtractedBlock(
+                    block_type=BlockType.HEADING,
+                    order_index=0,
+                    content_json={"level": tag, "text": text},
+                ))
+            elif tag == "p":
+                text = el.get_text(strip=True)
+                if not text:
+                    continue
+                out.append(ExtractedBlock(
+                    block_type=BlockType.TEXT,
+                    order_index=0,
+                    content_json={"html": str(el)[:5000]},
+                ))
+            elif tag in ("ul", "ol"):
+                items_text = " ".join(
+                    li.get_text(strip=True) for li in el.find_all("li")
+                )
+                if not items_text:
+                    continue
+                out.append(ExtractedBlock(
+                    block_type=BlockType.TEXT,
+                    order_index=0,
+                    content_json={"html": str(el)[:5000]},
+                ))
+        return out
+
+    def _first_textual_ancestor(
+        self, el: Tag, stop_at: Tag
+    ) -> Tag | None:
+        """Devuelve el ancestor más cercano que es un elemento textual,
+        o el propio `el` si lo es. None si no hay ninguno hasta `stop_at`.
+        """
+        cur: Tag | None = el
+        while cur is not None and cur is not stop_at:
+            if cur.name in self._TEXTUAL_TAGS:
+                return cur
+            cur = cur.parent
+        return None
 
     def _extract_hero(self, section: Tag) -> dict:
         h1 = section.find("h1")
