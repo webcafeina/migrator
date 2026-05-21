@@ -62,7 +62,7 @@ MAX_CSS_BYTES = 256 * 1024
 
 @dataclass
 class FetchResult:
-    """Resultado de `FetchSession.get`. C.1.
+    """Resultado de `FetchSession.get`. C.1 + AI.1.
 
     - `html`: el `page.content()` tras la hidratación.
     - `stylesheets`: concatenación del CSS inline + stylesheets
@@ -70,12 +70,53 @@ class FetchResult:
     - `computed_styles`: dict `selector → {prop → value}` con los
       DEFAULT_STYLE_PROPS evaluados por `getComputedStyle()` en el
       browser. Vacío para selectores no presentes en el DOM.
+    - `full_page_png` (AI.1): bytes PNG del screenshot full-page. None
+      si `capture_screenshots=False` o si la captura falla.
+    - `section_bboxes` (AI.1): lista `[{idx, selector, bbox}]` con la
+      posición/tamaño de cada sección top-level del origen. Usado por
+      scraper_origin para recortar el full_page_png en sub-PNGs y
+      subirlos a R2 con clave `wcm/projects/{pid}/sections/{page_id}/{idx}.png`.
     """
 
     html: str
     stylesheets: str = ""
     computed_styles: dict[str, dict[str, str]] = field(default_factory=dict)
+    full_page_png: bytes | None = None
+    section_bboxes: list[dict[str, Any]] = field(default_factory=list)
 
+
+#: AI.1 — Selectores de secciones top-level del origen. Coinciden con
+#: los que `wcm_scraper_core.extractors.wix.WixExtractor` usa para
+#: iterar (data-mesh-id para Wix Studio, section id^="comp-" para
+#: Editor clásico). Mantener sincronizado.
+_SECTION_SELECTOR = 'section[data-mesh-id], section[id^="comp-"]'
+
+#: AI.1 — JS que detecta secciones y devuelve sus bounding boxes en
+#: coordenadas DEL DOCUMENTO (incluyendo scroll). Eso permite recortar
+#: el screenshot full-page de Playwright sin recalcular posiciones.
+_DETECT_SECTIONS_JS = f"""
+() => {{
+    const sections = Array.from(document.querySelectorAll('{_SECTION_SELECTOR}'));
+    return sections.map((s, idx) => {{
+        const r = s.getBoundingClientRect();
+        let selector;
+        if (s.id) selector = '#' + s.id;
+        else if (s.getAttribute('data-mesh-id')) {{
+            selector = `[data-mesh-id="${{s.getAttribute('data-mesh-id')}}"]`;
+        }} else selector = `section:nth-of-type(${{idx + 1}})`;
+        return {{
+            idx: idx,
+            selector: selector,
+            bbox: {{
+                x: r.x + window.scrollX,
+                y: r.y + window.scrollY,
+                w: r.width,
+                h: r.height,
+            }},
+        }};
+    }}).filter(s => s.bbox.w > 0 && s.bbox.h > 0);
+}}
+"""
 
 #: JavaScript que se ejecuta en el browser (vía page.evaluate). Devuelve
 #: `{stylesheets: str, computed: {selector: {prop: value}}}`. El bloque
@@ -140,13 +181,24 @@ class FetchSession:
         self._wait_until = wait_until
         self._timeout_ms = timeout_ms
 
-    def get(self, url: str, *, capture_styles: bool = True) -> FetchResult:
+    def get(
+        self,
+        url: str,
+        *,
+        capture_styles: bool = True,
+        capture_screenshots: bool = True,
+    ) -> FetchResult:
         """Carga `url` con Playwright y devuelve FetchResult con HTML
-        y opcionalmente CSS + computed styles. C.1.
+        y opcionalmente CSS + computed styles + full-page PNG + bboxes
+        de secciones. C.1 + AI.1.
 
-        Si `capture_styles=False`, omite el page.evaluate (más rápido
-        pero pierde info para theme_styles). Default `True` porque el
-        único caller productivo (scraper_origin) los quiere.
+        - `capture_styles=False`: omite el evaluate de CSS (más rápido,
+          pierde info para theme_styles).
+        - `capture_screenshots=False`: omite el screenshot full-page +
+          bboxes (más rápido, sin material para ai_assist).
+
+        Default ambos `True` porque el único caller productivo
+        (scraper_origin) los quiere.
 
         Levanta `PlaywrightFetchError` (descendiente de RuntimeError) si
         el navegador falla en goto — el caller decide si reintentar o
@@ -158,6 +210,9 @@ class FetchSession:
             html = page.content()
             stylesheets = ""
             computed: dict[str, dict[str, str]] = {}
+            full_page_png: bytes | None = None
+            section_bboxes: list[dict[str, Any]] = []
+
             if capture_styles:
                 try:
                     styles_data = page.evaluate(
@@ -175,8 +230,36 @@ class FetchSession:
                         "playwright_capture_styles_failed",
                         extra={"url": url, "error": str(e)[:200]},
                     )
+
+            # AI.1 — Capturar full-page screenshot + bboxes de secciones.
+            # Separados del CSS capture para que un fallo en uno no
+            # arrastre al otro.
+            if capture_screenshots:
+                try:
+                    section_bboxes = page.evaluate(_DETECT_SECTIONS_JS) or []
+                except Exception as e:  # noqa: BLE001
+                    log.warning(
+                        "playwright_detect_sections_failed",
+                        extra={"url": url, "error": str(e)[:200]},
+                    )
+                    section_bboxes = []
+                try:
+                    full_page_png = page.screenshot(
+                        full_page=True, type="png", timeout=self._timeout_ms
+                    )
+                except Exception as e:  # noqa: BLE001
+                    log.warning(
+                        "playwright_screenshot_failed",
+                        extra={"url": url, "error": str(e)[:200]},
+                    )
+                    full_page_png = None
+
             return FetchResult(
-                html=html, stylesheets=stylesheets, computed_styles=computed
+                html=html,
+                stylesheets=stylesheets,
+                computed_styles=computed,
+                full_page_png=full_page_png,
+                section_bboxes=section_bboxes,
             )
         finally:
             page.close()

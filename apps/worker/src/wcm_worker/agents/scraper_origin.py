@@ -116,6 +116,8 @@ class ScraperOriginAgent(BaseAgent):
                 use_pw = False
 
         if use_pw:
+            # AI.1 — R2 lazy: solo se inicializa si hay screenshots que subir.
+            r2_client = None
             with fetcher_cm as fetch:
                 while to_visit and len(results) < max_pages:
                     url = to_visit.pop(0)
@@ -127,11 +129,27 @@ class ScraperOriginAgent(BaseAgent):
                     except Exception as e:  # noqa: BLE001 — Playwright timeout/DNS
                         results.append(self._failed_page(ctx.project_id, url, str(e)))
                         continue
+                    # AI.1 — recortar full-page + subir secciones a R2.
+                    section_urls: list[dict[str, Any]] = []
+                    if (
+                        fetched.full_page_png
+                        and fetched.section_bboxes
+                    ):
+                        if r2_client is None:
+                            r2_client = self._init_r2_client()
+                        section_urls = self._upload_section_screenshots(
+                            r2_client,
+                            ctx.project_id,
+                            len(results),  # idx temporal — se reescribe en _process_page
+                            fetched.full_page_png,
+                            fetched.section_bboxes,
+                        )
                     self._process_page(
                         fetched.html, url, ctx.project_id, source_url, base_host,
                         results, to_visit, visited,
                         css_extracted=fetched.stylesheets,
                         computed_styles=fetched.computed_styles,
+                        section_screenshots=section_urls,
                     )
         else:
             with httpx.Client(timeout=20.0, follow_redirects=True, headers={
@@ -159,6 +177,7 @@ class ScraperOriginAgent(BaseAgent):
                         results, to_visit, visited,
                         css_extracted="",
                         computed_styles={},
+                        section_screenshots=[],
                     )
 
         # Persistir
@@ -213,6 +232,7 @@ class ScraperOriginAgent(BaseAgent):
         *,
         css_extracted: str = "",
         computed_styles: dict[str, dict[str, str]] | None = None,
+        section_screenshots: list[dict[str, Any]] | None = None,
     ) -> None:
         """Parse HTML + persist + extraer links internos. Compartido entre
         las ramas httpx y Playwright para que el shape de ScrapedPage sea
@@ -237,6 +257,7 @@ class ScraperOriginAgent(BaseAgent):
             html_clean=_sanitize_html(soup),
             css_extracted=css_extracted or None,
             dom_tree_json=computed_styles or None,
+            section_screenshots_json=section_screenshots or None,
             status=ScrapeStatus.SUCCESS,
             scraped_at=datetime.now(UTC),
         )
@@ -334,6 +355,101 @@ class ScraperOriginAgent(BaseAgent):
                 },
             )
             return []
+
+    @staticmethod
+    def _init_r2_client():
+        """AI.1 — Inicializa R2Client desde env. None si R2 no configurado.
+
+        Importado dentro de la función para evitar dep circular en tests.
+        """
+        from wcm_worker.integrations.r2 import R2Client
+
+        return R2Client.from_env()
+
+    def _upload_section_screenshots(
+        self,
+        r2_client: Any,
+        project_id: int,
+        page_idx: int,
+        full_page_png: bytes,
+        section_bboxes: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """AI.1 — Recorta el full-page PNG por cada bbox de sección y sube
+        cada recorte a R2. Devuelve `[{idx, selector, url}]`.
+
+        Si R2 no está configurado (`r2_client is None`) o Pillow no
+        instalado, devuelve lista vacía (graceful degradation — ai_assist
+        seguirá funcionando con HTML solo, sin vision).
+        """
+        if r2_client is None or not full_page_png or not section_bboxes:
+            return []
+        try:
+            import io
+
+            from PIL import Image
+        except ImportError:
+            log.warning("scraper_origin_pillow_missing")
+            return []
+
+        try:
+            img = Image.open(io.BytesIO(full_page_png))
+        except Exception as e:  # noqa: BLE001
+            log.warning(
+                "scraper_origin_full_page_image_open_failed",
+                extra={"project_id": project_id, "error": str(e)[:200]},
+            )
+            return []
+
+        results: list[dict[str, Any]] = []
+        for entry in section_bboxes:
+            try:
+                bbox = entry.get("bbox") or {}
+                x = int(bbox.get("x", 0))
+                y = int(bbox.get("y", 0))
+                w = int(bbox.get("w", 0))
+                h = int(bbox.get("h", 0))
+                if w <= 0 or h <= 0:
+                    continue
+                # Clamp al tamaño del PNG (los bboxes pueden exceder por
+                # ~1px en algunos casos por floats).
+                x2 = min(x + w, img.width)
+                y2 = min(y + h, img.height)
+                if x >= img.width or y >= img.height or x2 <= x or y2 <= y:
+                    continue
+                crop = img.crop((x, y, x2, y2))
+                buf = io.BytesIO()
+                crop.save(buf, format="PNG", optimize=True)
+                idx = int(entry.get("idx", len(results)))
+                key = (
+                    f"wcm/projects/{project_id}/sections/"
+                    f"{page_idx}/{idx}.png"
+                )
+                url = r2_client.put_bytes(
+                    key,
+                    buf.getvalue(),
+                    content_type="image/png",
+                    metadata={
+                        "project_id": str(project_id),
+                        "page_idx": str(page_idx),
+                        "section_idx": str(idx),
+                    },
+                )
+                results.append({
+                    "idx": idx,
+                    "selector": entry.get("selector"),
+                    "url": url,
+                })
+            except Exception as e:  # noqa: BLE001 — un recorte fallido no rompe la página
+                log.warning(
+                    "scraper_origin_section_crop_failed",
+                    extra={
+                        "project_id": project_id,
+                        "section_idx": entry.get("idx"),
+                        "error": str(e)[:200],
+                    },
+                )
+                continue
+        return results
 
     @staticmethod
     async def _fetch_api_urls(builder: str, creds: dict) -> list[str]:
