@@ -265,27 +265,44 @@ class AiAssistAgent(BaseAgent):
     ) -> None:
         """Marca un bloque como RAW_HTML con el HTML+CSS de origen.
 
-        Por simplicidad MVP: usamos el `raw_html` ya guardado en
-        `content_json` por el extractor cuando clasificó UNKNOWN. Para
-        otros block_types con coverage_score bajo, hacemos best-effort
-        guardando lo que haya. El mapper RAW_HTML resolverá la
-        renderización.
+        - `html`: viene de `content_json.raw_html` (extractor cuando UNKNOWN)
+          o `content_json.html` (otros block_types con coverage bajo).
+        - `css`: cargamos `scraped_pages.css_extracted` de la página
+          padre. El mapper `map_raw_html` lo namespacea con tinycss2
+          para aislarlo dentro de `[data-wcm-block="<hash>"]`.
+
+        Sin el CSS, el `code` element renderiza con defaults del browser
+        y la fidelidad visual se pierde (bug detectado en proyecto 25:
+        94% RAW + 0 reglas CSS = destino plano sans-serif).
         """
         existing_json = block.content_json or {}
-        # Preservar campos útiles del extractor.
         raw_html = (
             existing_json.get("raw_html")
             or existing_json.get("html")
             or ""
         )
+        page_css = self._load_page_css(ctx, block.page_id)
         block.content_json = {
             "html": raw_html,
-            "css": "",  # MVP: sin CSS de la sección. C posterior puede capturarlo.
+            "css": page_css,
             "_raw_reason": reason,
         }
         block.block_type = BlockType.RAW_HTML
         block.ai_processed = True
         ctx.session.add(block)
+
+    def _load_page_css(self, ctx: AgentContext, page_id: int | None) -> str:
+        """Devuelve `scraped_pages.css_extracted` o "" si no disponible.
+
+        Identity-map de SQLAlchemy hace gratis las llamadas repetidas
+        para el mismo `page_id` dentro de la misma sesión.
+        """
+        if page_id is None:
+            return ""
+        page = ctx.session.get(ScrapedPage, page_id)
+        if page is None:
+            return ""
+        return page.css_extracted or ""
 
     def _apply_ai_generated(
         self,

@@ -40,12 +40,12 @@ describe("PipelineStepper", () => {
     expect(screen.getByText(/Start/)).toBeTruthy();
   });
 
-  it("renderiza un step por cada fase canónica del pipeline (15 total)", () => {
+  it("renderiza un step por cada fase canónica del pipeline (17 total)", () => {
     const phases = [_phase("scrape_origin", "completed")];
     render(<PipelineStepper phases={phases} />);
     // Cada step lleva un `aria-label` con "N. Label".
     const items = screen.getAllByRole("listitem");
-    expect(items.length).toBe(15);
+    expect(items.length).toBe(17);
   });
 
   it("primera fase completada usa color accent (lima)", () => {
@@ -60,7 +60,8 @@ describe("PipelineStepper", () => {
     const phases = [_phase("transpile_bricks", "running")];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    const target = items[5]!;
+    // ai_assist se inserta en índice 6 (v0.22.0), por lo que transpile_bricks pasa a índice 7.
+    const target = items[7]!;
     expect(target.innerHTML).toContain("animate-spin");
   });
 
@@ -68,7 +69,8 @@ describe("PipelineStepper", () => {
     const phases = [_phase("deploy_wp", "failed", { error_log: "SSH timeout" })];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    const target = items[6]!;
+    // deploy_wp pasa a índice 8 tras inserción de ai_assist en v0.22.0.
+    const target = items[8]!;
     expect(target.querySelector("div")?.className).toContain("border-wcm-danger");
   });
 

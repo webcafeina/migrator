@@ -53,16 +53,37 @@ def _project() -> MagicMock:
     return p
 
 
-def _page(page_id: int = 100, html: str = "<html>x</html>") -> MagicMock:
+def _page(
+    page_id: int = 100,
+    html: str = "<html>x</html>",
+    css_extracted: str | None = "body{color:red}",
+) -> MagicMock:
     p = MagicMock()
     p.id = page_id
     p.html_clean = html
+    p.css_extracted = css_extracted
     return p
 
 
 def _setup_ctx(fake_session: MagicMock, *, candidates: list, pages: list = None) -> AgentContext:
+    """Configura `fake_session` para distinguir entre Project y ScrapedPage.
+
+    `_apply_raw_html` llama `session.get(ScrapedPage, page_id)` para
+    leer `css_extracted`. Mockeamos por tipo de modelo solicitado.
+    """
     pages = pages or []
-    fake_session.get.return_value = _project()
+    pages_by_id = {p.id: p for p in pages}
+    project = _project()
+
+    def get_side_effect(model, pk):
+        name = getattr(model, "__name__", type(model).__name__)
+        if name == "Project":
+            return project
+        if name == "ScrapedPage":
+            return pages_by_id.get(pk)
+        return None
+
+    fake_session.get.side_effect = get_side_effect
 
     res_cb = MagicMock()
     res_cb.scalars.return_value = iter(candidates)
@@ -248,7 +269,18 @@ def test_e2e_cap_max_blocks_difiere_resto_a_raw(fake_session, monkeypatch) -> No
 
 
 def test_apply_raw_html_marca_block(fake_session) -> None:
+    """Bloque RAW_HTML carga css_extracted de la página padre."""
     block = _block(content_json={"raw_html": "<section>hello</section>"})
+    page = _page(page_id=block.page_id, css_extracted="body{color:red}")
+
+    def get_side_effect(model, pk):
+        name = getattr(model, "__name__", type(model).__name__)
+        if name == "ScrapedPage" and pk == block.page_id:
+            return page
+        return None
+
+    fake_session.get.side_effect = get_side_effect
+
     agent = AiAssistAgent()
     agent._apply_raw_html(
         AgentContext(session=fake_session, project_id=42), block, reason="x"
@@ -256,7 +288,33 @@ def test_apply_raw_html_marca_block(fake_session) -> None:
     assert block.block_type == BlockType.RAW_HTML
     assert block.ai_processed is True
     assert block.content_json["html"] == "<section>hello</section>"
+    assert block.content_json["css"] == "body{color:red}"
     assert block.content_json["_raw_reason"] == "x"
+
+
+def test_apply_raw_html_sin_pagina_css_vacio(fake_session) -> None:
+    """Si page=None o css_extracted=None, css cae a "" sin fallar."""
+    block = _block(content_json={"raw_html": "<section>x</section>"})
+    fake_session.get.return_value = None
+
+    agent = AiAssistAgent()
+    agent._apply_raw_html(
+        AgentContext(session=fake_session, project_id=42), block, reason="x"
+    )
+    assert block.content_json["css"] == ""
+
+
+def test_apply_raw_html_page_sin_page_id(fake_session) -> None:
+    """Bloque sin page_id devuelve css="" sin tocar la sesión."""
+    block = _block(content_json={"raw_html": "<section>x</section>"})
+    block.page_id = None
+
+    agent = AiAssistAgent()
+    agent._apply_raw_html(
+        AgentContext(session=fake_session, project_id=42), block, reason="x"
+    )
+    assert block.content_json["css"] == ""
+    fake_session.get.assert_not_called()
 
 
 def test_apply_ai_generated_marca_block(fake_session) -> None:

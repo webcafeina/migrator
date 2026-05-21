@@ -29,6 +29,17 @@
 
 ## Última versión publicada
 
+**v0.22.0** (2026-05-21) — sprint **Fidelidad visual al origen** —
+arquitectura híbrida heurística + Claude Vision + RAW_HTML. Tras run
+E2E sobre mariya.design (50 páginas, 1745 bloques, 8 AI_GENERATED, 137
+RAW_HTML, $0.31 coste AI) la conclusión visual del operador es que el
+destino aún no se parece al origen. Diagnóstico técnico (heurística no
+captura computed styles + CSS truncado + AI rate-limited + RAW infla
+postmeta) motiva el sprint **v0.23.0** ya planificado en
+`/Users/alvaro/.claude/plans/glistening-booping-gizmo.md` —
+element-level styling con globalClasses (patrón canónico Bricks), RAW
+eliminado a favor de ResidualTask con captura. ~2 semanas.
+
 **v0.20.0** (2026-05-19) — sprint **18 ADRs + 34 tareas en 8 bloques**
 de cierre técnico previo al primer test E2E con cliente real. Tras
 revisar las "decisiones" pendientes en `docs/flujo-migracion.md`, se

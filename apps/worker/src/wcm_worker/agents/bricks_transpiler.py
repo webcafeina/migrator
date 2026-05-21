@@ -45,6 +45,9 @@ class BricksTranspilerAgent(BaseAgent):
             page_id=0,  # se sobreescribe por página
             page_lang=project.primary_lang,
             asset_resolver=_default_asset_resolver,
+            # C.4 — theme sintetizado en fase anterior (puede ser None
+            # si scraper httpx o ThemeStylesAgent SKIPPED).
+            theme_styles=project.theme_styles_origin,
         )
 
         transpiled_count = 0
@@ -75,38 +78,54 @@ class BricksTranspilerAgent(BaseAgent):
             transpile_ctx.page_id = page.id
             result = transpile_page(block_dicts, transpile_ctx)
 
-            # Validar
+            slug = page.slug or f"page-{page.id}"
+            lang = page.lang or project.primary_lang
+            # UPSERT por (project_id, slug, lang) — restart conserva
+            # filas previas (ADR-041) y la unique constraint
+            # `uq_bricks_pages_project_slug_lang` rompe si hacemos INSERT.
+            existing = ctx.session.execute(
+                select(BricksPage).where(
+                    BricksPage.project_id == ctx.project_id,
+                    BricksPage.slug == slug,
+                    BricksPage.lang == lang,
+                )
+            ).scalar_one_or_none()
+
             validation = validate_bricks_page(result.content)
             if not validation.is_valid:
                 validation_errors_total += len(validation.errors)
-                # Anotar pero no aborta; la página queda con last_import_error
-                bricks_page = BricksPage(
-                    project_id=ctx.project_id,
-                    page_id=page.id,
-                    slug=page.slug or f"page-{page.id}",
-                    title=page.title or "Sin título",
-                    lang=page.lang or project.primary_lang,
-                    bricks_json=result.content,
-                    bricks_schema_version=result.schema_version,
-                    status=ScrapeStatus.FAILED,
-                    last_import_error="; ".join(
-                        f"{i.code}: {i.message}" for i in validation.errors[:5]
-                    ),
+                new_status = ScrapeStatus.FAILED
+                new_error = "; ".join(
+                    f"{i.code}: {i.message}" for i in validation.errors[:5]
                 )
+            else:
+                new_status = ScrapeStatus.SUCCESS
+                new_error = None
+                transpiled_count += 1
+
+            if existing is not None:
+                existing.page_id = page.id
+                existing.title = page.title or "Sin título"
+                existing.bricks_json = result.content
+                existing.bricks_schema_version = result.schema_version
+                existing.status = new_status
+                existing.last_import_error = new_error
+                # NO tocar wp_post_id — el rollback lo nulló y el deploy
+                # de este run lo repoblará tras importar al WP.
             else:
                 bricks_page = BricksPage(
                     project_id=ctx.project_id,
                     page_id=page.id,
-                    slug=page.slug or f"page-{page.id}",
+                    slug=slug,
                     title=page.title or "Sin título",
-                    lang=page.lang or project.primary_lang,
+                    lang=lang,
                     bricks_json=result.content,
                     bricks_schema_version=result.schema_version,
-                    status=ScrapeStatus.SUCCESS,
+                    status=new_status,
+                    last_import_error=new_error,
                 )
-                transpiled_count += 1
+                ctx.session.add(bricks_page)
 
-            ctx.session.add(bricks_page)
             residual_hints_total += len(result.residuals)
 
         ctx.session.flush()

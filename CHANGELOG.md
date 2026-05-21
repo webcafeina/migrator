@@ -11,6 +11,53 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.22.0] — 2026-05-21
+
+Sprint **Fidelidad visual al origen** — arquitectura híbrida heurística + Claude Vision + RAW_HTML para empezar a aproximar la migración a la web origen. Tras el run sobre mariya.design (50 páginas) el destino aún no se parece visualmente al origen, pero la base está montada para v0.23.0 (element-level styling).
+
+### Added
+
+- **W — R2 prefix unificado**: todos los agentes convergen en `wcm/projects/{id}/`. Limpia objetos huérfanos de proyectos 13-22 con prefix antiguo `projects/{id}/`.
+- **G.1 — Texto completo por sección**: `_classify_section` devuelve `list[ExtractedBlock]` y `_extract_text_blocks` recorre todos los h1-h6/p/ul/ol (1745 vs 424 bloques en mariya.design, +311%).
+- **G.6 — Paleta Bricks con shape `{id, name, raw}`** + DEFAULT_PALETTE actualizada + mappers referencian `var(--bricks-color-X)` consistentemente.
+- **G.7 — Google Fonts loader** vía `custom_code.headerScripts` con `<link rel=preconnect>` + CSS2 URL con ital + 400-700. `_WIX_TO_GOOGLE_FONT` mapea aliases internos Wix (`orig_albra_sans_*`) a fonts disponibles.
+- **AI.1 — Captura full-page screenshot + section bboxes**. `_DETECT_SECTIONS_JS` devuelve [{idx, selector, bbox}] en coordenadas documento. Pillow recorta y sube a R2 con clave `wcm/projects/{pid}/sections/{page_idx}/{idx}.png`. Persistido en `scraped_pages.section_screenshots_json` (JSONB).
+- **AI.2 — `ClaudeVisionClient`** async wrapper Anthropic SDK con `tool_use` forzado (`emit_bricks_elements`), retry interno con backoff exponencial + jitter, cache BD por hash(screenshot+html+selector). Pricing tracker (claude-sonnet-4-6: $3/$15 per Mtok). **`max_retries=0` del SDK** para evitar bucle de reintento sobre 429.
+- **AI.3 — Migración Alembic 0014**: `scraped_pages.section_screenshots_json`, `content_blocks.{section_screenshot_url, coverage_score, ai_processed}`, tabla `ai_section_cache(input_hash, project_id ondelete=SET NULL, response_json, tokens_in/out, cost_usd)`.
+- **AI.4 — `AiAssistAgent`** nueva fase entre `theme_styles` y `transpile_bricks`. Procesa bloques `UNKNOWN` o `coverage_score<0.6`. Concurrency=5, budget cap `WCM_AI_BUDGET_USD_PER_PROJECT` (default $10), cap absoluto bloques por proyecto `WCM_AI_MAX_BLOCKS_PER_PROJECT` (default 30, 0=sin cap). Errores tipados: `ClaudeVisionApiError`, `ClaudeVisionAuthError`, `ClaudeVisionInvalidOutputError`. Auth error → abort + resto a RAW.
+- **RAW mappers — `map_ai_generated` + `map_raw_html`** con CSS namespace tinycss2. RAW envuelve HTML en `<div data-wcm-block="<hash6>">` + `<style>` namespaceado. Sanitización agresiva del HTML (sin `<script>`, `<?php`, handlers `on*=`). Fallback regex si tinycss2 falla.
+- **`BlockType.AI_GENERATED` + `BlockType.RAW_HTML`** nuevos enums.
+- **Pipeline `ai_assist`** insertado como `required=False` entre theme y transpile.
+- **Stepper UI** con fase `ai_assist`.
+- **`ANTHROPIC_API_KEY` + `WCM_AI_*` env vars** documentadas en `.env.example`.
+
+### Changed
+
+- **Extractor Wix** clasifica secciones devolviendo múltiples sub-bloques (h2 + p + ul) en vez de uno único genérico.
+- **`BricksThemeStyles`** gana `post_types` (default `["page","post"]`) y `custom_code` (Google Fonts headerScripts). MERGE estrategia al persistir `bricks_global_settings` para no perder `postTypes` (bug "Edit with Bricks" en v0.21.x).
+- **`BricksElement.parent` validator** regex `^[a-z0-9]{6}$` en vez de `.islower()` (que devolvía False sobre IDs todo-dígitos).
+- **`bricks_transpiler` UPSERT** por `(project_id, slug, lang)`: restart conserva filas previas; INSERT puro chocaba con la unique constraint.
+
+### Fixed
+
+- **`_apply_raw_html`** ahora carga `scraped_pages.css_extracted` del page padre y lo guarda en `content_json.css`. Antes hardcodeaba `""` → 136 bloques RAW renderizaban sin estilos (defaults browser sans-serif). El mapper `map_raw_html` ya tenía la lógica tinycss2 de namespace; solo le faltaba CSS de entrada.
+- **`visual_diff` loop infinito en draft pages**: pre-check `wp_post_status='publish'`, timeout per-call, cap consecutivo de fallos, respeto `WP_VERIFY_SSL`.
+- **`optimize_assets` UniqueViolation** en hashes duplicados via `existing_ready` dedup.
+- **Anthropic SDK bucle infinito 24 → 40 min**: combinación SDK retry default + nuestro `_call_with_retry` + concurrency=5 saturaba. Resuelto con `AsyncAnthropic(max_retries=0)` + cap absoluto bloques.
+- **Canonical URL dedup** en BFS scraper (proyecto 14, `(project_id, slug, lang)=(14, home, en)` duplicado).
+- **`pipeline-stepper.test.tsx`** actualizado a 17 fases canónicas (era 15 antes de añadir `ai_assist`).
+
+### Limitaciones conocidas
+
+- Heurística captura contenido pero NO computed styles → mappers atómicos emiten elementos sin color/font-size/padding del origen → look genérico Bricks default.
+- `MAX_CSS_BYTES = 256*1024` en `playwright_fetcher.py` trunca CSS de Wix (~500KB real).
+- AI Vision casi nunca corre por rate-limit del tier Anthropic del operador (8/145 procesados en mariya.design).
+- RAW_HTML inflaba postmeta WP (137 × 262KB) → tumbó el servidor cPanel del destino.
+
+Estas limitaciones son el motor del sprint v0.23.0 (element-level styling + globalClasses + RAW eliminado).
+
+---
+
 ## [0.20.0] — 2026-05-19
 
 Sprint v0.20.0+ — **18 ADRs (ADR-037 a ADR-054) + 34 tareas de
