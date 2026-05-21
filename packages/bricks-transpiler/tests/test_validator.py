@@ -97,6 +97,27 @@ def test_invalid_id_format_rejected() -> None:
     assert "invalid_id_format" in codes
 
 
+def test_parent_all_digits_aceptado() -> None:
+    """Bug 2026-05-21 (proyecto 20): `make_element_id` puede devolver
+    un hash de 6 chars que sea TODO dígitos (p.ej. "815892"). El
+    validador anterior usaba `.islower()` que devuelve False para
+    strings sin letras → rechazaba ~6% de los IDs generados.
+    """
+    from wcm_bricks_transpiler.schema import BricksElement
+
+    # `parent` todo dígitos debe aceptarse (es un ID hex válido).
+    el = BricksElement(
+        id="abc001", name="container", parent="815892", children=[], settings={}
+    )
+    assert el.parent == "815892"
+
+    # `id` todo dígitos también — el Field(pattern=...) usa regex propio.
+    el2 = BricksElement(
+        id="123456", name="block", parent="0", children=[], settings={}
+    )
+    assert el2.id == "123456"
+
+
 def test_unsupported_name_rejected() -> None:
     page = [
         {"id": "abc001", "name": "carousel-xyz", "parent": "0", "children": [], "settings": {}},

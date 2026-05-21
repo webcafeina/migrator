@@ -6,11 +6,18 @@ La estructura final se calibrará cuando llegue el export real (WCM-001).
 
 from __future__ import annotations
 
+import re
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 BRICKS_SCHEMA_VERSION = "observational-v1"
+
+#: ID válido para `BricksElement.id` / `.parent`. 6 chars hex (dígitos +
+#: letras a-f). El validador anterior usaba `.islower()` que devuelve
+#: False para strings sin letras (p.ej. "815892") — rechazaba ~6% de
+#: los IDs generados por `make_element_id`. Visto en proyecto 20.
+_BRICKS_ID_RE = re.compile(r"^[a-z0-9]{6}$")
 
 #: Catálogo de element names soportados en el MVP. Cualquier otro valor
 #: se rechaza por el validador.
@@ -83,8 +90,11 @@ class BricksElement(BaseModel):
     @field_validator("parent")
     @classmethod
     def _parent_format(cls, v: str) -> str:
-        # parent siempre es string. "0" o [a-z0-9]{6}.
-        if v != "0" and not (len(v) == 6 and v.isalnum() and v.islower()):
+        # parent siempre es string. "0" o [a-z0-9]{6}. Validador con
+        # regex en lugar de `.islower()` porque éste devuelve False
+        # cuando el string es todo dígitos (caso real "815892" en
+        # proyecto 20: hex válido que rompía el transpile).
+        if v != "0" and not _BRICKS_ID_RE.match(v):
             raise ValueError(
                 f"parent debe ser '0' o un ID válido [a-z0-9]{{6}}; recibido: {v!r}"
             )
