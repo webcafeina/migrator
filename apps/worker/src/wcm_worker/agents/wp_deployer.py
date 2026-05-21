@@ -61,7 +61,7 @@ class WpDeployerAgent(BaseAgent):
             return AgentResult(summary="No hay bricks_pages listas para desplegar")
 
         # Ejecutar el async loop dentro de la task sync Celery.
-        deployed, failed, theme_applied = asyncio.run(
+        deployed, failed, theme_applied, homepage_set = asyncio.run(
             self._deploy_all(wp_config, bricks_pages, ctx, project)
         )
 
@@ -69,11 +69,13 @@ class WpDeployerAgent(BaseAgent):
             summary=(
                 f"{deployed} páginas desplegadas, {failed} fallidas"
                 + (", theme global aplicado" if theme_applied else "")
+                + (", home marcada como portada" if homepage_set else "")
             ),
             outputs={
                 "deployed": deployed,
                 "failed": failed,
                 "theme_applied": theme_applied,
+                "homepage_set": homepage_set,
                 "target": wp_config.site_url,
             },
         )
@@ -84,10 +86,11 @@ class WpDeployerAgent(BaseAgent):
         bricks_pages: list[BricksPage],
         ctx: AgentContext,
         project: Project,
-    ) -> tuple[int, int, bool]:
+    ) -> tuple[int, int, bool, bool]:
         deployed = 0
         failed = 0
         theme_applied = False
+        homepage_set = False
 
         async with WpRestClient(wp_config) as rest, WpCliSshClient(wp_config) as cli:
             for bp in bricks_pages:
@@ -136,5 +139,34 @@ class WpDeployerAgent(BaseAgent):
                     extra={"project_id": project.id, "error": str(e)[:300]},
                 )
 
+            # F — marcar la página `home` como página de inicio del WP
+            # destino. WordPress por defecto muestra los posts; el
+            # operador esperaría que la home migrada sea la portada.
+            # Si no hay BricksPage con slug='home' (o no se importó OK)
+            # se salta silenciosamente — no toda migración tendrá home.
+            home_bp = next(
+                (
+                    bp for bp in bricks_pages
+                    if bp.slug == "home" and bp.wp_post_id is not None
+                ),
+                None,
+            )
+            if home_bp is not None:
+                try:
+                    await cli.option_update("show_on_front", "page")
+                    await cli.option_update(
+                        "page_on_front", str(home_bp.wp_post_id)
+                    )
+                    homepage_set = True
+                except Exception as e:  # noqa: BLE001
+                    log.warning(
+                        "wp_deployer_homepage_set_failed",
+                        extra={
+                            "project_id": project.id,
+                            "wp_post_id": home_bp.wp_post_id,
+                            "error": str(e)[:300],
+                        },
+                    )
+
         ctx.session.flush()
-        return deployed, failed, theme_applied
+        return deployed, failed, theme_applied, homepage_set

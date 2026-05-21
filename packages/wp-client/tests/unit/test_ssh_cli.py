@@ -121,10 +121,14 @@ def test_bricks_import_content_via_wp_eval_y_fichero_temp(fake_config: WpClientC
     assert "$wpdb->delete" in cmd2
     assert "$wpdb->insert" in cmd2
     assert "_bricks_page_content_2" in cmd2
-    # post_id=42 aparece dos veces (delete + insert) — shlex.quote escapa
-    # las single quotes alrededor del array key, así que solo verificamos
-    # que el número 42 está presente al menos dos veces.
-    assert cmd2.count("42") >= 2
+    # Bug E (2026-05-21) — además del content, debe escribir el meta
+    # `_bricks_editor_mode='bricks'`. Sin esto, wp-admin no muestra
+    # el botón "Edit with Bricks" y la página parece vacía.
+    assert "_bricks_editor_mode" in cmd2
+    assert "'bricks'" in cmd2
+    # post_id=42 aparece 4 veces (delete+insert × 2 metas) — shlex.quote
+    # escapa las single quotes alrededor del array key.
+    assert cmd2.count("42") >= 4
     assert "serialize" in cmd2
 
     # 3. rm -f cleanup del fichero temp.

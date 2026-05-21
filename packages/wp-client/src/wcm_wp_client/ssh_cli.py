@@ -388,6 +388,12 @@ class WpCliSshClient:
         # vacío). La solución es escribir directo a `$wpdb->postmeta`
         # saltando los hooks. delete+insert es idempotente. WordPress
         # serializa internamente con `serialize()`, replicamos el formato.
+        #
+        # Bug E (2026-05-21): además del content meta, escribir
+        # `_bricks_editor_mode='bricks'`. Sin él, wp-admin renderiza la
+        # página con el editor clásico/Gutenberg y NO muestra el botón
+        # "Edit with Bricks" → la página parece vacía aunque el JSON
+        # esté correctamente persistido.
         php = (
             "global $wpdb;"
             "$json = file_get_contents("
@@ -399,6 +405,15 @@ class WpCliSshClient:
             f"'post_id' => {int(post_id)},"
             "'meta_key' => '_bricks_page_content_2',"
             "'meta_value' => is_array($data) ? serialize($data) : ''"
+            "]);"
+            # E — editor mode = bricks. Bricks Builder lo lee en cada
+            # render del wp-admin para decidir si mostrar su switch UI.
+            "$wpdb->delete($wpdb->postmeta, "
+            f"['post_id' => {int(post_id)}, 'meta_key' => '_bricks_editor_mode']);"
+            "$wpdb->insert($wpdb->postmeta, ["
+            f"'post_id' => {int(post_id)},"
+            "'meta_key' => '_bricks_editor_mode',"
+            "'meta_value' => 'bricks'"
             "]);"
         )
         try:
