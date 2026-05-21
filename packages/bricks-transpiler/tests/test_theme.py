@@ -46,3 +46,44 @@ def test_typography_hints_propagate() -> None:
     ts = build_theme_styles({"typography": {"body_font_family": "Poppins, sans-serif"}})
     entry = ts.theme_styles[0]
     assert entry.settings["text"]["_typography"]["font-family"] == "Poppins, sans-serif"
+
+
+# C.3+C.6 (2026-05-21) — formato nuevo de ThemeStylesAgent:
+# colors es dict {primary,bg,text,accent} y typography es dict de dicts.
+
+
+def test_c3_format_colors_dict() -> None:
+    """colors como dict {name: hex} se convierte en N entries de la paleta."""
+    origin = {
+        "colors": {
+            "primary": "#000000",
+            "bg": "#ffffff",
+            "text": "#141414",
+            "accent": "#b1f100",
+        }
+    }
+    ts = build_theme_styles(origin)
+    names = {c.name for c in ts.colorPalette}
+    assert names == {"primary", "bg", "text", "accent"}
+    assert next(c for c in ts.colorPalette if c.name == "accent").color == "#b1f100"
+
+
+def test_c3_format_typography_dict_de_dicts() -> None:
+    """typography.body.font-family / typography.h1.font-family se mapean
+    a body_font / heading_font del Theme Styles entry."""
+    origin = {
+        "typography": {
+            "body": {"font-family": "Inter, sans-serif", "font-size": "16px"},
+            "h1": {"font-family": "Playfair Display", "font-size": "64px"},
+        }
+    }
+    ts = build_theme_styles(origin)
+    entry = ts.theme_styles[0]
+    assert entry.settings["text"]["_typography"]["font-family"] == "Inter, sans-serif"
+    assert entry.settings["heading"]["_typography"]["font-family"] == "Playfair Display"
+
+
+def test_c3_format_completo_no_pierde_palette_si_no_colors() -> None:
+    """Si origin no aporta colors, la paleta default sigue activa."""
+    ts = build_theme_styles({"typography": {"body": {"font-family": "Roboto"}}})
+    assert len(ts.colorPalette) == 5  # default Webcafeína

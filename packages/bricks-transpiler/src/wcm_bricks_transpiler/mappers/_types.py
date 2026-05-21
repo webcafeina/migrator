@@ -22,6 +22,11 @@ class MapperContext:
     #: Mapping asset_id (BD) → URL pública o WP attachment_id, según
     #: la estrategia de storage del proyecto. Inyectado por transpile_page.
     asset_resolver: Callable[[int], dict[str, Any]]
+    #: C.4 (2026-05-21) — Theme styles sintetizados por `ThemeStylesAgent`.
+    #: Cuando es None, los mappers usan defaults Bricks. Shape:
+    #: `{"colors": {"primary","bg","text","accent"}, "typography":
+    #: {"h1","h2","body","button"}, "spacing": {"section_y","container_y"}}`.
+    theme_styles: dict[str, Any] | None = None
 
 
 @dataclass

@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import logging
 import shlex
+import time
 from dataclasses import dataclass
 from typing import Any
 
@@ -241,14 +242,54 @@ class WpCliSshClient:
         return r.stdout.strip()
 
     async def option_update(self, key: str, value: Any, *, format: str = "plaintext") -> None:
-        """Actualiza una option. Para JSON, pasar dict/list y `format="json"`."""
+        """Actualiza una option. Para JSON, pasar dict/list y `format="json"`.
+
+        JSON grande (Bricks global_settings, theme styles) puede exceder
+        MAX_ARG_STRLEN si se pasa por argv. Si el payload >32KB, subimos
+        a /tmp y leemos vía stdin con WP-CLI.
+        """
         if format == "json":
             payload = json.dumps(value, ensure_ascii=False)
+            if len(payload) > 32_000:
+                await self._option_update_via_stdin(key, payload)
+                return
             await self.run_or_raise(
                 ["option", "update", key, payload, "--format=json"]
             )
         else:
             await self.run_or_raise(["option", "update", key, str(value)])
+
+    async def _option_update_via_stdin(self, key: str, payload: str) -> None:
+        """Sube `payload` a /tmp y ejecuta `wp option update KEY --format=json < file`.
+
+        Patrón gemelo a `bricks_import_content`: argv puede exceder
+        MAX_ARG_STRLEN para JSONs grandes; el fichero temp + stdin
+        evita el límite.
+        """
+        ts = int(time.time() * 1000)
+        remote_path = f"/tmp/wcm-option-{shlex.quote(key)}-{ts}.json"
+        # 1. Subir el JSON
+        await self.run_shell_or_raise(
+            f"cat > {shlex.quote(remote_path)}",
+            timeout_s=60.0,
+            stdin_input=payload,
+        )
+        # 2. wp option update KEY --format=json < file
+        wpcli_cmd = self._build_wpcli_cmd(
+            ["option", "update", key, "--format=json"]
+        )
+        try:
+            await self.run_shell_or_raise(
+                f"{wpcli_cmd} < {shlex.quote(remote_path)}",
+                timeout_s=120.0,
+            )
+        finally:
+            try:
+                await self.run_shell(
+                    f"rm -f {shlex.quote(remote_path)}", timeout_s=10.0
+                )
+            except Exception:
+                log.warning("option_update_cleanup_failed", extra={"path": remote_path})
 
     async def plugin_install(
         self, slug_or_path: str, *, activate: bool = True, version: str | None = None

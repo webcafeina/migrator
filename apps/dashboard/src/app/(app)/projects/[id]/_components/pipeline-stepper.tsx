@@ -23,6 +23,7 @@ const _PHASE_ORDER: Array<{ name: string; label: string; short: string }> = [
   { name: "preserve_seo", label: "Preservación SEO + redirects", short: "SEO" },
   { name: "optimize_assets", label: "Optimización de assets (WebP, fonts)", short: "Assets" },
   { name: "detect_multilang", label: "Detección de idiomas", short: "Idiomas" },
+  { name: "theme_styles", label: "Síntesis de Theme Styles (colores + tipografía)", short: "Theme" },
   { name: "transpile_bricks", label: "Transpilación a Bricks JSON", short: "Bricks" },
   { name: "deploy_wp", label: "Despliegue en WordPress destino", short: "Deploy WP" },
   { name: "migrate_woo", label: "Migración WooCommerce", short: "Woo" },

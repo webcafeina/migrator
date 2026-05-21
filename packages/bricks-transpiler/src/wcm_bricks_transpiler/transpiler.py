@@ -22,7 +22,9 @@ from wcm_bricks_transpiler.mappers._types import ResidualHint
 from wcm_bricks_transpiler.schema import (
     BRICKS_SCHEMA_VERSION,
     BricksElement,
+    BricksThemeStyles,
 )
+from wcm_bricks_transpiler.theme import build_theme_styles
 from wcm_types.enums import BlockType
 
 
@@ -38,6 +40,9 @@ class TranspileContext:
     asset_resolver: Callable[[int], dict[str, Any]] = field(
         default=lambda asset_id: {"url": f"/wp-content/uploads/asset-{asset_id}.webp"}
     )
+    #: C.4 (2026-05-21) — Theme Styles sintetizados por el agente
+    #: `theme_styles`. Si es None, los mappers usan defaults Bricks.
+    theme_styles: dict[str, Any] | None = None
 
 
 @dataclass
@@ -47,11 +52,15 @@ class TranspileResult:
     `content` es el array que entra en `bricks_pages.bricks_json`.
     `residuals` se transforma en filas de `residual_tasks` por el
     bricks-transpiler agente (no por este paquete).
+    `theme_styles_global` (C.6) — Bricks Theme Styles globales que
+    deben aplicarse al sitio (opción WP `bricks_global_settings`). El
+    agente bricks-transpiler los persiste una sola vez por proyecto.
     """
 
     content: list[dict[str, Any]] = field(default_factory=list)
     residuals: list[ResidualHint] = field(default_factory=list)
     schema_version: str = BRICKS_SCHEMA_VERSION
+    theme_styles_global: BricksThemeStyles | None = None
 
 
 def _wrap_in_section(
@@ -121,6 +130,7 @@ def transpile_page(
         page_lang=ctx.page_lang,
         id_gen=id_gen,
         asset_resolver=ctx.asset_resolver,
+        theme_styles=ctx.theme_styles,
     )
 
     final_elements: list[BricksElement] = []
@@ -156,4 +166,13 @@ def transpile_page(
             final_elements.extend(wrapped)
 
     content_json = [el.model_dump(exclude_none=True) for el in final_elements]
-    return TranspileResult(content=content_json, residuals=residuals)
+    # C.6 — generar Theme Styles globales para el sitio destino. Si no
+    # hay theme sintetizado, build_theme_styles() devuelve la paleta
+    # Webcafeína corporativa por defecto, lo cual sigue siendo mejor
+    # que los defaults Bricks "vainilla".
+    theme_global = build_theme_styles(ctx.theme_styles)
+    return TranspileResult(
+        content=content_json,
+        residuals=residuals,
+        theme_styles_global=theme_global,
+    )

@@ -51,6 +51,7 @@ from wcm_worker.agents import (
     WpmlConfiguratorAgent,
 )
 from wcm_worker.agents.base import AgentContext
+from wcm_worker.agents.theme_styles import ThemeStylesAgent
 from wcm_worker.errors import (
     AgentError,
     AgentNotImplementedError,
@@ -81,6 +82,11 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     _PhaseSpec("preserve_seo", SeoPreserverAgent),
     _PhaseSpec("optimize_assets", AssetOptimizerAgent, required=False),
     _PhaseSpec("detect_multilang", MultilangHandlerAgent),
+    # C.8 — síntesis de Theme Styles desde computed styles del origen.
+    # required=False (ThemeStylesError.blocks_pipeline=False también) →
+    # si el scraper no capturó dom_tree_json (httpx fallback) o algo
+    # falla, el pipeline sigue y transpile_bricks usa defaults Bricks.
+    _PhaseSpec("theme_styles", ThemeStylesAgent, required=False),
     _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
     # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
     # poder rollback restaurando vía `wp db import`. required=True: sin

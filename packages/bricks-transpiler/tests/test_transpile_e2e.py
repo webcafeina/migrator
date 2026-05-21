@@ -32,6 +32,36 @@ def test_empty_page_produces_empty_content() -> None:
     assert result.residuals == []
 
 
+def test_transpile_result_incluye_theme_styles_global() -> None:
+    """C.6 — TranspileResult.theme_styles_global se rellena siempre
+    (incluso sin theme_styles del origen → paleta Webcafeína default)."""
+    result = transpile_page([], _ctx())
+    assert result.theme_styles_global is not None
+    assert len(result.theme_styles_global.colorPalette) >= 4
+
+
+def test_transpile_result_theme_global_usa_paleta_origen() -> None:
+    """C.6 — Si TranspileContext.theme_styles trae el formato C.3,
+    la paleta global usa esos colores en vez del default."""
+    ctx = TranspileContext(
+        project_id=1, page_id=1, page_lang="es", asset_resolver=_resolver,
+        theme_styles={
+            "colors": {
+                "primary": "#0e1218",
+                "bg": "#1a222d",
+                "text": "#e2e8f0",
+                "accent": "#b1f100",
+            },
+            "typography": {"body": {"font-family": "Inter"}, "h1": {"font-family": "Inter"}},
+        },
+    )
+    result = transpile_page([], ctx)
+    names = {c.name for c in result.theme_styles_global.colorPalette}
+    assert names == {"primary", "bg", "text", "accent"}
+    accent = next(c for c in result.theme_styles_global.colorPalette if c.name == "accent")
+    assert accent.color == "#b1f100"
+
+
 def test_single_hero_block_validates() -> None:
     blocks = [
         {

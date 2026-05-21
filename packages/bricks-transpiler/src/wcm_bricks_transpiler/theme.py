@@ -39,29 +39,46 @@ def build_theme_styles(
 ) -> BricksThemeStyles:
     """Construye Theme Styles a partir de los hints del origen.
 
-    `theme_styles_origin` (de `projects.theme_styles_origin`) puede contener:
-    - `colors: list[{name, color}]` — paleta detectada por content-extractor
-    - `typography: {body_font_family, heading_font_family, ...}`
-    - `radius_base, spacing_base` — sugerencias
+    Soporta dos formatos en `theme_styles_origin` (`projects.theme_styles_origin`):
 
-    Si está vacío o None, se aplica la paleta Webcafeína corporativa.
+    - **C.3 (2026-05-21, actual)** — `ThemeStylesAgent` desde computed styles:
+        ``{"colors": {"primary","bg","text","accent"}, "typography":
+        {"h1","h2","body","button"}, "spacing": {...}}``
+    - **Legacy (v0.19.0)** — clusters de color por content-extractor:
+        ``{"colors": [{"name","color"}, ...], "typography":
+        {"body_font_family","heading_font_family"}}``
+
+    Si está vacío o None → paleta Webcafeína corporativa por defecto.
     """
-    palette: list[BricksColorEntry]
+    palette: list[BricksColorEntry] = list(DEFAULT_PALETTE)
     typography_hints: dict[str, Any] = {}
 
-    if theme_styles_origin and (origin_colors := theme_styles_origin.get("colors")):
-        palette = [
-            BricksColorEntry(name=c["name"], color=c["color"])
-            for c in origin_colors[:6]  # top-6
-        ]
-    else:
-        palette = list(DEFAULT_PALETTE)
-
     if theme_styles_origin:
+        origin_colors = theme_styles_origin.get("colors")
+        if isinstance(origin_colors, dict):
+            # C.3 — colors es {name: hex}.
+            palette = [
+                BricksColorEntry(name=name, color=hex_)
+                for name, hex_ in origin_colors.items()
+                if isinstance(hex_, str)
+            ]
+        elif isinstance(origin_colors, list):
+            # Legacy — lista de {name, color}.
+            palette = [
+                BricksColorEntry(name=c["name"], color=c["color"])
+                for c in origin_colors[:6]
+            ]
         typography_hints = theme_styles_origin.get("typography") or {}
 
-    body_font = typography_hints.get("body_font_family", "Inter, sans-serif")
-    heading_font = typography_hints.get("heading_font_family", body_font)
+    # Resolver fuente body/heading entre los dos formatos.
+    if isinstance(typography_hints.get("body"), dict):
+        body_font = typography_hints["body"].get("font-family", "Inter, sans-serif")
+    else:
+        body_font = typography_hints.get("body_font_family", "Inter, sans-serif")
+    if isinstance(typography_hints.get("h1"), dict):
+        heading_font = typography_hints["h1"].get("font-family", body_font)
+    else:
+        heading_font = typography_hints.get("heading_font_family", body_font)
 
     entry = BricksThemeStylesEntry(
         id=style_id,

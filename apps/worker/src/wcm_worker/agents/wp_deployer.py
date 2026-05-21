@@ -12,6 +12,7 @@ para JSONs grandes).
 from __future__ import annotations
 
 import asyncio
+import logging
 
 from sqlalchemy import select
 
@@ -25,6 +26,8 @@ from wcm_wp_client import (
     WpCliSshClient,
     WpRestClient,
 )
+
+log = logging.getLogger("wcm.worker.wp_deployer")
 
 
 class WpDeployerAgent(BaseAgent):
@@ -58,15 +61,19 @@ class WpDeployerAgent(BaseAgent):
             return AgentResult(summary="No hay bricks_pages listas para desplegar")
 
         # Ejecutar el async loop dentro de la task sync Celery.
-        deployed, failed = asyncio.run(
-            self._deploy_all(wp_config, bricks_pages, ctx)
+        deployed, failed, theme_applied = asyncio.run(
+            self._deploy_all(wp_config, bricks_pages, ctx, project)
         )
 
         return AgentResult(
-            summary=f"{deployed} páginas desplegadas, {failed} fallidas",
+            summary=(
+                f"{deployed} páginas desplegadas, {failed} fallidas"
+                + (", theme global aplicado" if theme_applied else "")
+            ),
             outputs={
                 "deployed": deployed,
                 "failed": failed,
+                "theme_applied": theme_applied,
                 "target": wp_config.site_url,
             },
         )
@@ -76,9 +83,11 @@ class WpDeployerAgent(BaseAgent):
         wp_config: WpClientConfig,
         bricks_pages: list[BricksPage],
         ctx: AgentContext,
-    ) -> tuple[int, int]:
+        project: Project,
+    ) -> tuple[int, int, bool]:
         deployed = 0
         failed = 0
+        theme_applied = False
 
         async with WpRestClient(wp_config) as rest, WpCliSshClient(wp_config) as cli:
             for bp in bricks_pages:
@@ -104,5 +113,28 @@ class WpDeployerAgent(BaseAgent):
                     bp.last_import_error = f"{type(e).__name__}: {e}"[:1000]
                     failed += 1
 
+            # C.9 — aplicar el Bricks global theme una sola vez por
+            # proyecto, tras importar las páginas. Reconstruimos el
+            # theme desde `project.theme_styles_origin` con el mismo
+            # builder que usa el transpiler, así no hay drift de schema.
+            # Si falla por cualquier motivo (SSH timeout, WP-CLI no
+            # encuentra Bricks aún) lo dejamos como warning y seguimos
+            # — el theme se puede aplicar manualmente.
+            try:
+                from wcm_bricks_transpiler.theme import build_theme_styles
+
+                theme = build_theme_styles(project.theme_styles_origin)
+                await cli.option_update(
+                    "bricks_global_settings",
+                    theme.model_dump(by_alias=True),
+                    format="json",
+                )
+                theme_applied = True
+            except Exception as e:  # noqa: BLE001
+                log.warning(
+                    "wp_deployer_theme_apply_failed",
+                    extra={"project_id": project.id, "error": str(e)[:300]},
+                )
+
         ctx.session.flush()
-        return deployed, failed
+        return deployed, failed, theme_applied
