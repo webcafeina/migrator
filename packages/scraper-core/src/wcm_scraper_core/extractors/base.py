@@ -30,6 +30,15 @@ class ExtractedBlock:
     content_json: dict[str, Any] = field(default_factory=dict)
     lang: str | None = None
     notes: str | None = None  # para bloques unknown o parcialmente extraídos
+    #: AI.1 — Índice de la sección DOM top-level a la que pertenece el
+    #: bloque (0 = primera section, 1 = segunda, etc.). Usado por
+    #: ContentExtractorAgent para asociar `section_screenshot_url`
+    #: desde `scraped_pages.section_screenshots_json`.
+    section_idx: int | None = None
+    #: AI.1 — Heurística 0-1 que mide qué fracción del texto de la
+    #: sección fue capturada por el extractor. <0.6 marca el bloque
+    #: candidato a AI vision en el AiAssistAgent.
+    coverage_score: float | None = None
 
 
 @dataclass

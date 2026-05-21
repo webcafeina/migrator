@@ -207,6 +207,7 @@ _PHASE_BUCKETS: dict[str, str] = {
     "optimize_assets": "scrape",
     "detect_multilang": "scrape",
     "theme_styles": "transpile",
+    "ai_assist": "transpile",
     "transpile_bricks": "transpile",
     "deploy_wp": "deploy",
     "migrate_woo": "deploy",

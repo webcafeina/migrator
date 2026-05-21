@@ -66,7 +66,23 @@ class ContentExtractorAgent(BaseAgent):
             if not page.html_clean:
                 continue
             result = extractor.extract(page.html_clean, page.url)
+            # AI.1 — preparar lookup section_idx → screenshot URL.
+            # `scraped_pages.section_screenshots_json` viene como
+            # `[{idx, selector, url}]` del scraper_origin.
+            screenshots_by_idx: dict[int, str] = {}
+            sections_json = page.section_screenshots_json or []
+            if isinstance(sections_json, list):
+                for entry in sections_json:
+                    if (
+                        isinstance(entry, dict)
+                        and (idx := entry.get("idx")) is not None
+                        and (url := entry.get("url"))
+                    ):
+                        screenshots_by_idx[int(idx)] = url
             for block in result.blocks:
+                screenshot_url: str | None = None
+                if block.section_idx is not None:
+                    screenshot_url = screenshots_by_idx.get(block.section_idx)
                 cb = ContentBlock(
                     project_id=ctx.project_id,
                     page_id=page.id,
@@ -75,6 +91,8 @@ class ContentExtractorAgent(BaseAgent):
                     lang=block.lang or page.lang,
                     content_json=block.content_json,
                     source=ContentBlockSource.EXTRACTED,
+                    section_screenshot_url=screenshot_url,
+                    coverage_score=block.coverage_score,
                 )
                 ctx.session.add(cb)
                 total_blocks += 1

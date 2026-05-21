@@ -80,6 +80,7 @@ class WixExtractor:
                 if isinstance(s.get("id"), str) and s.get("id", "").startswith("comp-")
             ]
         order_index = 0
+        section_idx = 0  # AI.1 — índice DOM de sección top-level
         nav_detected = False
         footer_detected = False
         for section in sections:
@@ -125,11 +126,28 @@ class WixExtractor:
             # Antes solo emitíamos UN bloque (el primer rich-text) y se
             # perdía ~50% del contenido en secciones de texto.
             section_blocks = self._classify_section(section)
+            # AI.1 — calcular coverage_score por sección: chars de texto
+            # extraído / chars de texto total en la sección. <0.6 marca
+            # candidatos a AI vision en AiAssistAgent.
+            section_text_total = len(section.get_text(strip=True))
+            section_text_captured = sum(
+                len(self._extracted_text_for_block(b))
+                for b in section_blocks
+            )
+            coverage = (
+                section_text_captured / max(section_text_total, 1)
+                if section_text_total
+                else 1.0
+            )
             for block in section_blocks:
                 block.order_index = order_index
                 block.lang = result.page_lang
+                block.section_idx = section_idx
+                # cap a 1.0 (puede pasar de 1 por whitespace ajustes)
+                block.coverage_score = min(1.0, coverage)
                 result.blocks.append(block)
                 order_index += 1
+            section_idx += 1
 
         # Wix Studio: header/footer por `id="SITE_HEADER"`/`SITE_FOOTER`
         # (formato moderno). Solo se aplica si no detectamos ya el
@@ -283,6 +301,18 @@ class WixExtractor:
     _TEXTUAL_TAGS: frozenset[str] = frozenset({
         "h1", "h2", "h3", "h4", "h5", "h6", "p", "ul", "ol",
     })
+
+    @staticmethod
+    def _extracted_text_for_block(block: ExtractedBlock) -> str:
+        """AI.1 — estima la cantidad de texto que el bloque "ocupa" del
+        origen. Usado para `coverage_score`. No exacto pero suficiente
+        para distinguir secciones bien extraídas (~100%) de pobres (<60%)."""
+        cj = block.content_json or {}
+        for key in ("text", "headline", "html"):
+            v = cj.get(key)
+            if isinstance(v, str):
+                return v
+        return ""
 
     def _extract_text_blocks(self, section: Tag) -> list[ExtractedBlock]:
         """G.1 — Extrae bloques atómicos (heading, text, list) del

@@ -131,6 +131,16 @@ class BlockType(StrEnum):
     #: Grid/lista de items (cards repetidas con img+heading+link). Caso
     #: típico: `wixui-repeater` con N case-studies o servicios. B.4 (2026-05-20).
     GRID = "grid"
+    #: Sprint v0.22.0 — bloque cuyos elementos Bricks fueron generados
+    #: por Claude Vision (AiAssistAgent). El content_json contiene
+    #: `bricks_elements: list[BricksElement-shaped dict]` que el mapper
+    #: emite tal cual.
+    AI_GENERATED = "ai_generated"
+    #: Sprint v0.22.0 — fallback cuando ni heurística ni AI pueden
+    #: reproducir la sección con elementos nativos. content_json contiene
+    #: `html: str` y `css: str` del origen. El mapper emite un único
+    #: elemento Bricks `code` con namespace CSS.
+    RAW_HTML = "raw_html"
     UNKNOWN = "unknown"
 
 

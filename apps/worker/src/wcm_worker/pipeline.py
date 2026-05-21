@@ -50,6 +50,7 @@ from wcm_worker.agents import (
     WpDeployerAgent,
     WpmlConfiguratorAgent,
 )
+from wcm_worker.agents.ai_assist import AiAssistAgent
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.theme_styles import ThemeStylesAgent
 from wcm_worker.errors import (
@@ -87,6 +88,12 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # si el scraper no capturó dom_tree_json (httpx fallback) o algo
     # falla, el pipeline sigue y transpile_bricks usa defaults Bricks.
     _PhaseSpec("theme_styles", ThemeStylesAgent, required=False),
+    # AI.4 (sprint v0.22.0) — re-procesa bloques pobres (UNKNOWN o
+    # coverage_score < 0.6) con Claude Vision. Output: elementos
+    # Bricks nativos editables. Si AI falla → fallback RAW_HTML.
+    # required=False — sin ANTHROPIC_API_KEY o errores múltiples, el
+    # pipeline sigue y los bloques quedan como RAW.
+    _PhaseSpec("ai_assist", AiAssistAgent, required=False),
     _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
     # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
     # poder rollback restaurando vía `wp db import`. required=True: sin
