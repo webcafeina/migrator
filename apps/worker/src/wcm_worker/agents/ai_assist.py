@@ -69,6 +69,13 @@ DEFAULT_CONCURRENCY = 5
 #: `WCM_AI_BUDGET_USD_PER_PROJECT`.
 DEFAULT_BUDGET_USD = 10.0
 
+#: Cap absoluto de bloques procesados por proyecto. Importante con tiers
+#: gratuitos/básicos de Anthropic (5-50 req/min) que asfixian retries
+#: exponenciales. Por defecto 30 — cubre las secciones clave (hero, nav,
+#: footer, grids principales) y deja el resto como RAW_HTML. Override
+#: por env `WCM_AI_MAX_BLOCKS_PER_PROJECT`. Set a 0 para sin límite.
+DEFAULT_MAX_BLOCKS = 30
+
 
 class AiAssistAgent(BaseAgent):
     name = "ai-assist"
@@ -91,6 +98,27 @@ class AiAssistAgent(BaseAgent):
             raise AiAssistError(f"Project {ctx.project_id} no encontrado")
 
         candidates = self._load_candidates(ctx, ctx.project_id)
+
+        # Cap absoluto — protege del rate-limit Anthropic en tiers bajos.
+        max_blocks = self._resolve_max_blocks()
+        deferred_count = 0
+        if max_blocks > 0 and len(candidates) > max_blocks:
+            deferred_blocks = candidates[max_blocks:]
+            candidates = candidates[:max_blocks]
+            deferred_count = len(deferred_blocks)
+            # Los diferidos se marcan como RAW_HTML directamente
+            # (`ai_processed=True` para no reintentarlos en Resume).
+            for b in deferred_blocks:
+                self._apply_raw_html(ctx, b, reason="deferred_by_cap")
+            log.info(
+                "ai_assist_max_blocks_cap",
+                extra={
+                    "project_id": ctx.project_id,
+                    "max_blocks": max_blocks,
+                    "deferred": deferred_count,
+                },
+            )
+
         if not candidates:
             return AgentResult(
                 summary=f"Project {project.id}: 0 bloques candidatos a AI assist",
@@ -206,6 +234,17 @@ class AiAssistAgent(BaseAgent):
             except ValueError:
                 pass
         return DEFAULT_CONCURRENCY
+
+    def _resolve_max_blocks(self) -> int:
+        env = os.environ.get("WCM_AI_MAX_BLOCKS_PER_PROJECT")
+        if env:
+            try:
+                v = int(env)
+                if v >= 0:
+                    return v
+            except ValueError:
+                log.warning("ai_assist_invalid_max_blocks", extra={"value": env})
+        return DEFAULT_MAX_BLOCKS
 
     def _mark_all_as_raw(
         self, ctx: AgentContext, candidates: list[ContentBlock]

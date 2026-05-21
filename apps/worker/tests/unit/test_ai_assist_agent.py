@@ -189,6 +189,61 @@ def test_resolve_concurrency_env_fuera_rango_cae_a_default(monkeypatch) -> None:
     assert AiAssistAgent()._resolve_concurrency() == 5
 
 
+def test_resolve_max_blocks_default() -> None:
+    """Default cap 30 — protege del rate-limit Anthropic en tiers bajos."""
+    from wcm_worker.agents.ai_assist import DEFAULT_MAX_BLOCKS
+
+    assert AiAssistAgent()._resolve_max_blocks() == DEFAULT_MAX_BLOCKS
+    assert DEFAULT_MAX_BLOCKS == 30
+
+
+def test_resolve_max_blocks_env_override(monkeypatch) -> None:
+    monkeypatch.setenv("WCM_AI_MAX_BLOCKS_PER_PROJECT", "10")
+    assert AiAssistAgent()._resolve_max_blocks() == 10
+
+
+def test_resolve_max_blocks_env_zero_significa_sin_limite(monkeypatch) -> None:
+    """0 desactiva el cap (sin límite)."""
+    monkeypatch.setenv("WCM_AI_MAX_BLOCKS_PER_PROJECT", "0")
+    assert AiAssistAgent()._resolve_max_blocks() == 0
+
+
+def test_e2e_cap_max_blocks_difiere_resto_a_raw(fake_session, monkeypatch) -> None:
+    """Si len(candidates) > max_blocks → primeros max_blocks van a AI,
+    el resto se marca RAW_HTML directamente con reason='deferred_by_cap'."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "fake")
+    monkeypatch.setenv("WCM_AI_MAX_BLOCKS_PER_PROJECT", "2")
+
+    client = MagicMock()
+    client.transpile_section = AsyncMock(
+        return_value=ClaudeVisionResult(
+            elements=[
+                {"id": "abc001", "name": "section", "parent": "0", "children": [], "settings": {}}
+            ],
+            tokens_in=100,
+            tokens_out=50,
+            cost_usd=0.001,
+            model="claude-sonnet-4-6",
+        )
+    )
+    # 5 candidatos UNKNOWN → cap=2 procesa 2, difiere 3 a RAW.
+    candidates = [_block(id=i) for i in range(1, 6)]
+    ctx = _setup_ctx(fake_session, candidates=candidates, pages=[_page()])
+    agent = AiAssistAgent(client=client, http_client=_fake_http())
+
+    result = agent.run(ctx)
+
+    assert result.outputs["ai_generated"] == 2
+    # 3 diferidos por cap quedan RAW_HTML. raw_html cuenta solo los del
+    # batch principal (los diferidos se marcan antes), pero ai_processed
+    # debe ser True en TODOS.
+    for b in candidates:
+        assert b.ai_processed is True
+    # Los últimos 3 son RAW_HTML por cap.
+    for b in candidates[2:]:
+        assert b.block_type == BlockType.RAW_HTML
+
+
 # ---------- apply helpers ----------
 
 

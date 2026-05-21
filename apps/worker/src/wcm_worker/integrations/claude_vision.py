@@ -232,7 +232,17 @@ class ClaudeVisionClient:
         else:
             from anthropic import AsyncAnthropic
 
-            self._client = AsyncAnthropic(api_key=api_key, timeout=timeout_s)
+            # `max_retries=0` desactiva el retry interno del SDK
+            # Anthropic (que reintenta indefinidamente con backoff
+            # exponencial en 429/5xx). Nosotros gestionamos el retry
+            # con `_call_with_retry` que tiene cap fijo `retries=3`.
+            # Sin esto, un rate-limit del tier bajo bloquea el agente
+            # durante horas (SDK retry × nuestro retry).
+            self._client = AsyncAnthropic(
+                api_key=api_key,
+                timeout=timeout_s,
+                max_retries=0,
+            )
 
     async def transpile_section(
         self,
