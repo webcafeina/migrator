@@ -524,7 +524,10 @@ class VisualDiffAgent(BaseAgent):
         file:// — solo útil dev).
         """
         slug = _slugify(page_path)
-        base_key = f"projects/{project_id}/visual-diff/{slug}"
+        # W (2026-05-21) — prefijo unificado `wcm/projects/{id}/` (antes
+        # era `projects/{id}/` aquí pero `wcm/projects/` en asset_optimizer,
+        # lo que dejaba huérfanos al hacer delete_project_r2_assets).
+        base_key = f"wcm/projects/{project_id}/visual-diff/{slug}"
         if r2 is None:
             log.warning(
                 "visual_diff_r2_not_configured",

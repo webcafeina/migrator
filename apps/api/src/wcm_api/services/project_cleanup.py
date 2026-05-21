@@ -4,8 +4,12 @@ El borrado de un proyecto en BD elimina las filas por CASCADE pero las URLs
 R2 referenciadas en `assets`, `visual_diffs`, `bricks_pages`, etc. quedaban
 huérfanas consumiendo storage. Este helper centraliza la limpieza:
 
-- Prefijo único `projects/{id}/` (convención del worker — todos los agents
-  suben bajo este prefix). delete_prefix iterando paginado.
+- Prefijo unificado `wcm/projects/{id}/` (W — bug 2026-05-21). Antes había
+  inconsistencia: `asset_optimizer` subía a `wcm/projects/N/` mientras
+  `visual_diff` y este cleanup usaban `projects/N/`. Resultado: cada
+  proyecto borrado dejaba ~600 objetos huérfanos bajo `wcm/projects/N/`.
+  Tras este fix, todos los agents y el cleanup convergen en el mismo
+  prefix y la limpieza alcanza el 100% de objetos del proyecto.
 - Si R2 no está configurado → no-op (warning en log).
 - Si delete_prefix falla → log warning pero NO levanta: prioridad es borrar
   el proyecto en BD; un huérfano R2 acumulable es preferible a un proyecto
@@ -18,9 +22,15 @@ import logging
 
 log = logging.getLogger("wcm.api.project_cleanup")
 
+#: Prefijo R2 canónico para todos los assets de un proyecto.
+#: TODOS los agents que suben a R2 deben usar este patrón
+#: (`asset_optimizer`, `visual_diff`, futuros `ai_section_screenshots`,
+#: `raw_section_html`, etc.). Mantener sincronizado.
+PROJECT_R2_PREFIX_TEMPLATE = "wcm/projects/{project_id}/"
+
 
 def delete_project_r2_assets(project_id: int) -> dict[str, int | str]:
-    """Borra todos los objetos R2 bajo `projects/{project_id}/`.
+    """Borra todos los objetos R2 bajo `wcm/projects/{project_id}/`.
 
     Devuelve un dict con métricas para audit/log. Nunca levanta.
     """
@@ -41,7 +51,7 @@ def delete_project_r2_assets(project_id: int) -> dict[str, int | str]:
         )
         return {"status": "skipped", "reason": "r2_not_configured", "deleted": 0}
 
-    prefix = f"projects/{project_id}/"
+    prefix = PROJECT_R2_PREFIX_TEMPLATE.format(project_id=project_id)
     try:
         deleted = client.delete_prefix(prefix)
     except R2UploadError as e:
