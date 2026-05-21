@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import Enum, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Enum, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -43,6 +43,18 @@ class ContentBlock(Base, TimestampMixin):
         ),
         nullable=False,
         default=ContentBlockSource.EXTRACTED,
+    )
+    #: AI.1 — URL R2 del screenshot de la sección a la que pertenece el bloque.
+    #: Denormalizado desde `scraped_pages.section_screenshots_json` para que
+    #: ai_assist no haga join por cada block.
+    section_screenshot_url: Mapped[str | None] = mapped_column(String(2048))
+    #: AI.1 — Heurística 0-1 que mide qué fracción del texto de la sección
+    #: capturó el extractor. <0.6 marca el bloque candidato a AI vision.
+    coverage_score: Mapped[float | None] = mapped_column(Float)
+    #: AI.4 — true tras ai_assist procesar el bloque (sea como AI_GENERATED
+    #: o como RAW_HTML). Idempotencia entre runs.
+    ai_processed: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
     )
 
     page: Mapped[ScrapedPage] = relationship(back_populates="content_blocks")  # noqa: F821

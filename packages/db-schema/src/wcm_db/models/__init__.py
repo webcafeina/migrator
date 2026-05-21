@@ -2,6 +2,7 @@
 al cargar `wcm_db.models`.
 """
 
+from wcm_db.models.ai_section_cache import AiSectionCache
 from wcm_db.models.assets import Asset
 from wcm_db.models.audit import AuditLog, ErrorLog
 from wcm_db.models.bricks_pages import BricksPage
@@ -25,6 +26,7 @@ from wcm_db.models.woo_orders import WooOrder
 from wcm_db.models.woo_products import WooProduct
 
 __all__ = [
+    "AiSectionCache",
     "Asset",
     "AuditLog",
     "BricksPage",

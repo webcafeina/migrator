@@ -31,6 +31,7 @@ EXPECTED_TABLES = {
     "visual_diffs",
     "qa_reports",
     "woo_orders",
+    "ai_section_cache",
 }
 
 
@@ -45,6 +46,7 @@ def test_metadata_contains_expected_tables() -> None:
 def test_models_module_exports_all_entities() -> None:
     """Asegura que wcm_db.models re-exporta cada modelo (alembic los necesita)."""
     expected_models = {
+        "AiSectionCache",
         "Asset",
         "AuditLog",
         "BricksPage",

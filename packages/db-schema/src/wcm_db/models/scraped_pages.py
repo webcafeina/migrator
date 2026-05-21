@@ -43,6 +43,11 @@ class ScrapedPage(Base, TimestampMixin):
     screenshot_mobile_path: Mapped[str | None] = mapped_column(String(1024))
     dom_tree_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     css_extracted: Mapped[str | None] = mapped_column(Text)
+    #: AI.1 — URLs R2 de cada sección top-level recortada por scraper_origin.
+    #: Forma: `[{idx: 0, selector: "section[data-mesh-id='...']", url: "..."}]`.
+    #: Consumido por content_extractor para denormalizar en content_blocks y
+    #: por ai_assist para alimentar Claude Vision.
+    section_screenshots_json: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
 
     status: Mapped[ScrapeStatus] = mapped_column(
         Enum(ScrapeStatus, name="scrape_status", native_enum=False, length=16),
