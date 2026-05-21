@@ -9,6 +9,7 @@ añade una tarea residual al output.
 from __future__ import annotations
 
 from wcm_bricks_transpiler.mappers._types import BlockMapper, MapperContext, MapperResult
+from wcm_bricks_transpiler.mappers.ai import map_ai_generated
 from wcm_bricks_transpiler.mappers.atomic import (
     map_cta,
     map_divider,
@@ -30,6 +31,7 @@ from wcm_bricks_transpiler.mappers.composite import (
     map_product_card,
     map_testimonial,
 )
+from wcm_bricks_transpiler.mappers.raw import map_raw_html
 from wcm_bricks_transpiler.mappers.unknown import map_unknown
 from wcm_types.enums import BlockType
 
@@ -51,6 +53,8 @@ REGISTRY: dict[BlockType, BlockMapper] = {
     BlockType.NAV: map_nav,
     BlockType.FOOTER: map_footer,
     BlockType.GRID: map_grid,
+    BlockType.AI_GENERATED: map_ai_generated,
+    BlockType.RAW_HTML: map_raw_html,
     BlockType.UNKNOWN: map_unknown,
 }
 

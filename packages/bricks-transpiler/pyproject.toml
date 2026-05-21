@@ -13,6 +13,10 @@ authors = [{ name = "Webcafeína S.L.", email = "info@webcafeina.com" }]
 dependencies = [
     "pydantic>=2.7,<3.0",
     "wcm-shared-types",
+    # v0.22.0 — namespace CSS para el mapper RAW_HTML (Bloque RAW del
+    # sprint v0.22.0). Parser robusto necesario para prefijar reglas
+    # con `[data-wcm-block]` sin contaminar el resto de la página.
+    "tinycss2>=1.3",
 ]
 
 [project.optional-dependencies]
