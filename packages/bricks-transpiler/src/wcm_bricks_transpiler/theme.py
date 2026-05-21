@@ -45,6 +45,35 @@ DEFAULT_PALETTE: list[BricksColorEntry] = [
 ]
 
 
+def _google_fonts_link(fonts: list[str]) -> str:
+    """Construye el `<link>` `<head>` que carga las Google Fonts.
+
+    G.7 — Bricks 2.3.5 inyecta `customCode.headerScripts` literal en
+    cada página, así que aquí emitimos el tag HTML directamente.
+    Cada family se pide con pesos 400 + 700 + italic 400/700 para cubrir
+    los usos típicos (body/heading/strong/em) sin pasarse.
+    """
+    if not fonts:
+        return ""
+    # Build family params. Spaces in names become `+`.
+    family_qs: list[str] = []
+    for name in fonts:
+        name_qs = name.replace(" ", "+")
+        family_qs.append(
+            f"family={name_qs}:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700"
+        )
+    url = (
+        "https://fonts.googleapis.com/css2?"
+        + "&".join(family_qs)
+        + "&display=swap"
+    )
+    return (
+        f'<link rel="preconnect" href="https://fonts.googleapis.com">'
+        f'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+        f'<link href="{url}" rel="stylesheet">'
+    )
+
+
 def build_theme_styles(
     theme_styles_origin: dict[str, Any] | None = None,
     *,
@@ -150,8 +179,21 @@ def build_theme_styles(
         conditions=[],
     )
 
+    # G.7 — extraer Google Fonts a cargar. theme_styles_origin (C.3)
+    # las recolecta en `google_fonts` ya filtradas (sin Wix internals).
+    google_fonts: list[str] = []
+    if isinstance(theme_styles_origin, dict):
+        gf = theme_styles_origin.get("google_fonts")
+        if isinstance(gf, list):
+            google_fonts = [f for f in gf if isinstance(f, str) and f]
+
+    custom_code: dict[str, str] = {}
+    if google_fonts:
+        custom_code["headerScripts"] = _google_fonts_link(google_fonts)
+
     return BricksThemeStyles(
         theme_styles=[entry],
         colorPalette=palette,
         breakpoints=dict(DEFAULT_BREAKPOINTS),
+        customCode=custom_code,
     )

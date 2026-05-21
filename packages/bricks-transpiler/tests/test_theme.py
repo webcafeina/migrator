@@ -96,3 +96,38 @@ def test_c3_format_completo_no_pierde_palette_si_no_colors() -> None:
     """Si origin no aporta colors, la paleta default sigue activa."""
     ts = build_theme_styles({"typography": {"body": {"font-family": "Roboto"}}})
     assert len(ts.colorPalette) == 5  # default Webcafeína
+
+
+# G.7 — Google Fonts loader vía customCode.headerScripts.
+
+
+def test_g7_sin_google_fonts_no_emite_custom_code() -> None:
+    """Sin google_fonts en origen → customCode queda vacío."""
+    ts = build_theme_styles({"colors": {"primary": "#000"}})
+    d = ts.model_dump(by_alias=True)
+    # customCode debe estar pero vacío (no emite link).
+    assert d.get("customCode") == {}
+
+
+def test_g7_emite_link_google_fonts_en_header_scripts() -> None:
+    """google_fonts=['Inter','Playfair Display'] → customCode.headerScripts
+    contiene <link href='fonts.googleapis.com/css2?family=Inter:...&family=Playfair+Display:...'>"""
+    ts = build_theme_styles({"google_fonts": ["Inter", "Playfair Display"]})
+    d = ts.model_dump(by_alias=True)
+    link = d["customCode"]["headerScripts"]
+    assert "fonts.googleapis.com/css2" in link
+    assert "family=Inter:" in link
+    assert "family=Playfair+Display:" in link
+    assert "display=swap" in link
+    assert "preconnect" in link  # preconnect tags incluidos
+
+
+def test_g7_ignora_entries_no_string() -> None:
+    """Defensive: si llega `google_fonts` con None o ints, se ignoran."""
+    ts = build_theme_styles({"google_fonts": ["Inter", None, 42, "", "Roboto"]})
+    d = ts.model_dump(by_alias=True)
+    link = d["customCode"]["headerScripts"]
+    assert "family=Inter:" in link
+    assert "family=Roboto:" in link
+    assert "family=None" not in link
+    assert "family=42" not in link

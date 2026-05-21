@@ -151,6 +151,79 @@ def test_synthesize_theme_computed_vacio_no_crashea() -> None:
     assert theme["colors"]["accent"] == DEFAULT_ACCENT
     assert theme["typography"]["h1"] == {}
     assert theme["typography"]["body"] == {}
+    assert theme["google_fonts"] == []
+
+
+# G.7 — Font cleaning + Google Fonts recolección.
+
+
+def test_g7_clean_wix_internals_y_mapea_a_google_font() -> None:
+    """font-family con triple wfont/wf/orig se limpia y mapea a Google."""
+    from wcm_worker.agents.theme_styles import _clean_font_family
+
+    raw = "wfont_d0a698_8cd9dd45c0f842eda41828dfe2df7d36, wf_8cd9dd45c0f842eda41828dfe, orig_albra_sans_light"
+    clean, google = _clean_font_family(raw)
+    assert clean == "Inter"
+    assert google == "Inter"
+
+
+def test_g7_clean_orig_playfair_mapea_a_playfair_display() -> None:
+    from wcm_worker.agents.theme_styles import _clean_font_family
+
+    raw = "wfont_x, wf_y, orig_playfair_display_regular"
+    clean, google = _clean_font_family(raw)
+    assert clean == "Playfair Display"
+    assert google == "Playfair Display"
+
+
+def test_g7_system_fonts_no_se_marcan_como_google() -> None:
+    """Arial/Helvetica/Times/sans-serif/serif → no son Google Fonts."""
+    from wcm_worker.agents.theme_styles import _clean_font_family
+
+    clean, google = _clean_font_family("Arial, Helvetica, sans-serif")
+    assert clean == "Arial, Helvetica, sans-serif"
+    assert google is None
+
+
+def test_g7_unknown_font_se_marca_como_google_candidate() -> None:
+    """Una font desconocida (no en _SYSTEM_FONTS, no orig_*) se asume Google.
+
+    Caso típico: la web ya usaba `Inter, sans-serif` directamente sin
+    pasarse por el extractor de Wix. Mejor cargarla como Google Font
+    (falso positivo aceptable).
+    """
+    from wcm_worker.agents.theme_styles import _clean_font_family
+
+    clean, google = _clean_font_family("Inter, sans-serif")
+    assert clean == "Inter, sans-serif"
+    assert google == "Inter"
+
+
+def test_g7_orig_desconocido_se_omite() -> None:
+    """orig_xxxx sin mapping conocido → se descarta de la cadena."""
+    from wcm_worker.agents.theme_styles import _clean_font_family
+
+    clean, google = _clean_font_family("wfont_z, orig_some_unknown_font, Arial")
+    assert "orig_some_unknown_font" not in clean
+    assert clean == "Arial"
+    # Arial es system, no Google.
+    assert google is None
+
+
+def test_g7_synthesize_recolecta_google_fonts_de_todos_los_selectores() -> None:
+    """h1 + h2 + body + button → set de Google Fonts único + ordenado."""
+    computed = {
+        "body": {"font-family": "Arial, sans-serif", "background-color": "rgb(255,255,255)", "color": "rgb(0,0,0)"},
+        "h1": {"font-family": "wfont_x, orig_playfair_display_regular"},
+        "h2": {"font-family": "wfont_y, orig_inter_regular"},
+        "button": {"font-family": "wfont_z, orig_inter_regular"},  # dup
+    }
+    theme = synthesize_theme(computed)
+    assert theme["google_fonts"] == ["Inter", "Playfair Display"]
+    # Los font-family limpios deben ser legibles
+    assert theme["typography"]["h1"]["font-family"] == "Playfair Display"
+    assert theme["typography"]["h2"]["font-family"] == "Inter"
+    assert theme["typography"]["body"]["font-family"] == "Arial, sans-serif"
 
 
 # ---------- ThemeStylesAgent.run ----------

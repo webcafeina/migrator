@@ -148,6 +148,14 @@ class BricksThemeStyles(BaseModel):
         default_factory=lambda: ["page", "post"],
         alias="postTypes",
     )
+    #: G.7 (2026-05-21) — Custom code inyectado por Bricks en `<head>`
+    #: del frontend. Lo usamos para meter el `<link>` de Google Fonts:
+    #: ``{"headerScripts": "<link href='https://fonts.googleapis.com/...' rel='stylesheet'>"}``
+    #: Bricks lo carga en cada página independientemente del theme styles.
+    custom_code: dict[str, str] = Field(
+        default_factory=dict,
+        alias="customCode",
+    )
 
 
 # Helpers de tipo para construir settings comunes.

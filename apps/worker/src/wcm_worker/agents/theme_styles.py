@@ -128,12 +128,31 @@ class ThemeStylesAgent(BaseAgent):
 
 def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
     """Convierte el dict `{selector: {prop: value}}` en un Theme Styles
-    estructurado. Pura — no toca BD ni session."""
+    estructurado. Pura — no toca BD ni session.
+
+    G.7 (2026-05-21) — limpia los font-family de cada selector eliminando
+    identificadores Wix internos (`wfont_xxx`, `wf_xxx`) y mapea aliases
+    `orig_xxx` a Google Fonts equivalentes. Recolecta la lista de Google
+    Fonts a cargar en `google_fonts`.
+    """
     body = computed.get("body", {})
     button = computed.get("button") or computed.get(".wixui-button") or {}
     h1 = computed.get("h1", {})
     h2 = computed.get("h2", {})
     a_link = computed.get("a", {})
+
+    typo_h1 = _typography_dict(h1)
+    typo_h2 = _typography_dict(h2)
+    typo_body = _typography_dict(body)
+    typo_button = _typography_dict(button)
+
+    google_fonts: set[str] = set()
+    for typo in (typo_h1, typo_h2, typo_body, typo_button):
+        if (raw := typo.get("font-family")):
+            clean, gf = _clean_font_family(raw)
+            typo["font-family"] = clean
+            if gf:
+                google_fonts.add(gf)
 
     return {
         "colors": {
@@ -145,16 +164,109 @@ def synthesize_theme(computed: dict[str, dict[str, str]]) -> dict[str, Any]:
             "accent": _color_or_default(a_link.get("color"), DEFAULT_ACCENT),
         },
         "typography": {
-            "h1": _typography_dict(h1),
-            "h2": _typography_dict(h2),
-            "body": _typography_dict(body),
-            "button": _typography_dict(button),
+            "h1": typo_h1,
+            "h2": typo_h2,
+            "body": typo_body,
+            "button": typo_button,
         },
         "spacing": {
             "section_y": DEFAULT_SECTION_PADDING_Y,
             "container_y": DEFAULT_CONTAINER_PADDING_Y,
         },
+        "google_fonts": sorted(google_fonts),
     }
+
+
+# ---------- G.7 — Font cleaning ----------
+
+#: Mapping de aliases Wix conocidos a Google Fonts equivalentes. Las
+#: fonts Wix internas tienen 3 capas (wfont_hash, wf_hash, orig_name).
+#: Nos quedamos con el alias humano (`orig_xxx`) y mapeamos a una
+#: Google Font cercana visualmente. La lista no es exhaustiva — fallback
+#: a `Inter` para sans desconocidas y `Playfair Display` para serif.
+_WIX_TO_GOOGLE_FONT: dict[str, str] = {
+    "orig_albra_sans_light": "Inter",
+    "orig_albra_sans_regular": "Inter",
+    "orig_neue_montreal_regular": "Inter",
+    "orig_neue_montreal_light": "Inter",
+    "orig_playfair_display_regular": "Playfair Display",
+    "orig_playfair_display_italic": "Playfair Display",
+    "orig_inter_regular": "Inter",
+    "orig_inter_bold": "Inter",
+    "orig_montserrat_regular": "Montserrat",
+    "orig_montserrat_bold": "Montserrat",
+    "orig_poppins_regular": "Poppins",
+    "orig_poppins_bold": "Poppins",
+    "orig_roboto_regular": "Roboto",
+    "orig_open_sans_regular": "Open Sans",
+    "orig_lato_regular": "Lato",
+    "orig_merriweather_regular": "Merriweather",
+    "orig_georgia_regular": "Georgia",  # fallback to system
+    "orig_helvetica_neue_regular": "Inter",
+}
+
+#: Fuentes "del sistema" — NO se cargan vía Google Fonts (ya están en el OS).
+_SYSTEM_FONTS: frozenset[str] = frozenset({
+    "arial", "helvetica", "helvetica neue", "times", "times new roman",
+    "georgia", "courier", "courier new", "verdana", "tahoma",
+    "trebuchet ms", "system-ui", "-apple-system", "blinkmacsystemfont",
+    "sans-serif", "serif", "monospace", "cursive", "fantasy",
+    "ui-sans-serif", "ui-serif", "ui-monospace",
+})
+
+
+def _clean_font_family(raw: str) -> tuple[str, str | None]:
+    """Limpia un valor `font-family` capturado del computed style.
+
+    Devuelve `(clean_value, google_font_name | None)`:
+    - `clean_value`: string para inyectar en Bricks (sin Wix internals).
+    - `google_font_name`: family a cargar vía Google Fonts (None si es
+      del sistema o no mappable).
+
+    Ejemplos:
+    - `"wfont_d0a698_8cd9dd45..., wf_8cd9dd45..., orig_albra_sans_light"`
+      → `("Inter, sans-serif", "Inter")`
+    - `"Arial, Helvetica, sans-serif"` → `("Arial, Helvetica, sans-serif", None)`
+    - `"Inter, sans-serif"` → `("Inter, sans-serif", "Inter")`
+    """
+    if not raw:
+        return raw, None
+
+    # Split por coma + trim de comillas y espacios.
+    parts = [p.strip().strip("'\"") for p in raw.split(",")]
+    # Filtrar Wix internals `wfont_xxx` y `wf_xxx`.
+    parts = [p for p in parts if not p.startswith(("wfont_", "wf_"))]
+
+    google: str | None = None
+
+    # Resolver el primer alias `orig_xxx` a Google Font si lo tenemos.
+    new_parts: list[str] = []
+    for p in parts:
+        if p.startswith("orig_"):
+            mapped = _WIX_TO_GOOGLE_FONT.get(p)
+            if mapped:
+                new_parts.append(mapped)
+                if google is None:
+                    google = mapped
+            # Si no está en el mapping, ignoramos el alias `orig_` y
+            # caemos al siguiente fallback de la cadena.
+            continue
+        new_parts.append(p)
+
+    if not new_parts:
+        new_parts = ["sans-serif"]
+
+    # Si la primera no-system family no se ha marcado como Google ya, ver
+    # si es alguna conocida (caso: la web ya usa Inter directamente).
+    if google is None:
+        first = new_parts[0].lower()
+        if first not in _SYSTEM_FONTS:
+            # Asumimos que es una Google Font (mejor falso positivo que
+            # falsos negativos — Bricks se queja silenciosamente si no
+            # carga, pero el operador verá su font).
+            google = new_parts[0]
+
+    return ", ".join(new_parts), google
 
 
 def _color_or_default(value: str | None, default: str) -> str:
