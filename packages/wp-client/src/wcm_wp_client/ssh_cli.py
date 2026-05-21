@@ -237,9 +237,25 @@ class WpCliSshClient:
         r = await self.run(["core", "is-installed"])
         return r.ok
 
-    async def option_get(self, key: str) -> str:
-        r = await self.run_or_raise(["option", "get", key])
+    async def option_get(self, key: str, *, format: str = "plaintext") -> str:
+        """Lee una option. `format='json'` devuelve JSON serializado para
+        que el caller pueda hacer `json.loads`. Sin format, WP-CLI
+        devuelve PHP-serializado para arrays/objects.
+        """
+        args = ["option", "get", key]
+        if format == "json":
+            args.append("--format=json")
+        r = await self.run_or_raise(args)
         return r.stdout.strip()
+
+    async def option_exists(self, key: str) -> bool:
+        """True si la option existe en wp_options. False si no.
+
+        Bug I (2026-05-21) — usado por wp_deployer para decidir si
+        leer y mergear `bricks_global_settings` antes de actualizar.
+        """
+        r = await self.run(["option", "get", key])
+        return r.ok
 
     async def option_update(self, key: str, value: Any, *, format: str = "plaintext") -> None:
         """Actualiza una option. Para JSON, pasar dict/list y `format="json"`.

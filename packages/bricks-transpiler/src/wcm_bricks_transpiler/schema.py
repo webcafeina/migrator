@@ -124,6 +124,14 @@ class BricksThemeStyles(BaseModel):
     # Nombre exacto requerido por el JSON schema de Bricks Builder.
     colorPalette: list[BricksColorEntry] = Field(default_factory=list)  # noqa: N815
     breakpoints: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_BREAKPOINTS))
+    #: Bug I (2026-05-21) — Bricks lee esta key para decidir qué post types
+    #: muestran el botón "Edit with Bricks". Sin ella → no aparece el botón.
+    #: Por defecto `page` y `post` (Bricks core). El operador puede añadir
+    #: CPTs después desde wp-admin > Bricks > Settings.
+    post_types: list[str] = Field(
+        default_factory=lambda: ["page", "post"],
+        alias="postTypes",
+    )
 
 
 # Helpers de tipo para construir settings comunes.

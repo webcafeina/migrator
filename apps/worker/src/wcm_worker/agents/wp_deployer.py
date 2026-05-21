@@ -120,6 +120,17 @@ class WpDeployerAgent(BaseAgent):
             # proyecto, tras importar las páginas. Reconstruimos el
             # theme desde `project.theme_styles_origin` con el mismo
             # builder que usa el transpiler, así no hay drift de schema.
+            #
+            # Bug I (2026-05-21) — MERGE en lugar de OVERWRITE.
+            # `wp option update` con --format=json reemplaza la option
+            # completa. Bricks tiene otras keys propias en
+            # `bricks_global_settings` (postTypes, defaultBreakpoints,
+            # customCode, etc.) que se perderían si las sobrescribimos.
+            # Sin `postTypes` el botón "Edit with Bricks" NO aparece.
+            # Estrategia: leer el option actual, fusionarlo con nuestro
+            # theme (nuestros valores ganan en keys colisionadas), y
+            # update con el resultado merged.
+            #
             # Si falla por cualquier motivo (SSH timeout, WP-CLI no
             # encuentra Bricks aún) lo dejamos como warning y seguimos
             # — el theme se puede aplicar manualmente.
@@ -127,10 +138,30 @@ class WpDeployerAgent(BaseAgent):
                 from wcm_bricks_transpiler.theme import build_theme_styles
 
                 theme = build_theme_styles(project.theme_styles_origin)
+                theme_payload = theme.model_dump(by_alias=True)
+
+                # Leer existing y hacer merge superficial. Si la option
+                # no existe (instalación fresca de Bricks), partimos de
+                # dict vacío.
+                merged: dict = {}
+                if await cli.option_exists("bricks_global_settings"):
+                    existing_raw = await cli.option_get(
+                        "bricks_global_settings", format="json"
+                    )
+                    if existing_raw:
+                        import json as _json
+                        try:
+                            parsed = _json.loads(existing_raw)
+                            if isinstance(parsed, dict):
+                                merged = parsed
+                        except _json.JSONDecodeError:
+                            log.warning(
+                                "wp_deployer_existing_option_non_json",
+                                extra={"project_id": project.id},
+                            )
+                merged.update(theme_payload)
                 await cli.option_update(
-                    "bricks_global_settings",
-                    theme.model_dump(by_alias=True),
-                    format="json",
+                    "bricks_global_settings", merged, format="json"
                 )
                 theme_applied = True
             except Exception as e:  # noqa: BLE001
