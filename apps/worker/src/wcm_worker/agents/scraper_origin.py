@@ -123,13 +123,15 @@ class ScraperOriginAgent(BaseAgent):
                         continue
                     visited.add(url)
                     try:
-                        html = fetch.get(url)
+                        fetched = fetch.get(url)
                     except Exception as e:  # noqa: BLE001 — Playwright timeout/DNS
                         results.append(self._failed_page(ctx.project_id, url, str(e)))
                         continue
                     self._process_page(
-                        html, url, ctx.project_id, source_url, base_host,
+                        fetched.html, url, ctx.project_id, source_url, base_host,
                         results, to_visit, visited,
+                        css_extracted=fetched.stylesheets,
+                        computed_styles=fetched.computed_styles,
                     )
         else:
             with httpx.Client(timeout=20.0, follow_redirects=True, headers={
@@ -155,6 +157,8 @@ class ScraperOriginAgent(BaseAgent):
                     self._process_page(
                         response.text, url, ctx.project_id, source_url, base_host,
                         results, to_visit, visited,
+                        css_extracted="",
+                        computed_styles={},
                     )
 
         # Persistir
@@ -206,10 +210,19 @@ class ScraperOriginAgent(BaseAgent):
         results: list[ScrapedPage],
         to_visit: list[str],
         visited: set[str],
+        *,
+        css_extracted: str = "",
+        computed_styles: dict[str, dict[str, str]] | None = None,
     ) -> None:
         """Parse HTML + persist + extraer links internos. Compartido entre
         las ramas httpx y Playwright para que el shape de ScrapedPage sea
-        idéntico independientemente del fetcher."""
+        idéntico independientemente del fetcher.
+
+        C.2: si llega `css_extracted` (rama Playwright con
+        `capture_styles=True`), se persiste en la columna homónima de
+        `scraped_pages`. `computed_styles` se guarda en `dom_tree_json`
+        para que `theme_styles_agent` lo sintetice.
+        """
         soup = BeautifulSoup(html, "lxml")
         title_tag = soup.find("title")
         lang_tag = soup.find("html")
@@ -222,6 +235,8 @@ class ScraperOriginAgent(BaseAgent):
             depth=0,
             html_raw=html,
             html_clean=_sanitize_html(soup),
+            css_extracted=css_extracted or None,
+            dom_tree_json=computed_styles or None,
             status=ScrapeStatus.SUCCESS,
             scraped_at=datetime.now(UTC),
         )
