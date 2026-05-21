@@ -56,6 +56,33 @@ class ThemeStylesError(AgentError):
     blocks_pipeline = False
 
 
+class AiAssistError(AgentError):
+    """No bloqueante: si la AI vision falla, los bloques se mapean
+    como RAW_HTML o quedan como UNKNOWN. El pipeline sigue.
+
+    Sub-errores: AiAssistApiError (5xx persistente), AiAssistBudgetError
+    (presupuesto alcanzado), AiAssistInvalidOutputError (Claude devuelve
+    JSON que no pasa validator)."""
+
+    blocks_pipeline = False
+
+
+class ClaudeVisionError(Exception):
+    """Errores del cliente Claude Vision (transitorios o definitivos)."""
+
+
+class ClaudeVisionApiError(ClaudeVisionError):
+    """5xx persistente o problema de red tras N retries."""
+
+
+class ClaudeVisionAuthError(ClaudeVisionError):
+    """401/403 — API key inválida o sin permisos."""
+
+
+class ClaudeVisionInvalidOutputError(ClaudeVisionError):
+    """Claude respondió pero el JSON Bricks no pasa el schema validator."""
+
+
 # ---------- Orchestrator ----------
 
 class OrchestrationError(Exception):
