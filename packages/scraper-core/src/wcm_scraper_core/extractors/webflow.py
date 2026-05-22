@@ -145,7 +145,17 @@ class WebflowExtractor:
                 content_json=self._extract_hero(section),
             )
 
+        # v0.24.0 MB — Webflow slider → BlockType.SLIDER via state_driver.
         if has_slider:
+            from wcm_scraper_core.state_driver import extract_slideshow_states
+            slides = extract_slideshow_states(section)
+            if slides:
+                return ExtractedBlock(
+                    block_type=BlockType.SLIDER,
+                    order_index=0,
+                    content_json={"slides": slides},
+                )
+            # Fallback legacy gallery si state_driver no detectó slides.
             return ExtractedBlock(
                 block_type=BlockType.GALLERY,
                 order_index=0,
@@ -158,12 +168,30 @@ class WebflowExtractor:
                 },
             )
 
-        if has_tabs or has_dropdown:
+        # v0.24.0 MB — Webflow tabs → BlockType.TABS, dropdown → ACCORDION.
+        if has_tabs:
+            from wcm_scraper_core.state_driver import extract_tabs_states
+            tabs = extract_tabs_states(section)
+            if tabs:
+                return ExtractedBlock(
+                    block_type=BlockType.TABS,
+                    order_index=0,
+                    content_json={"tabs": tabs},
+                )
+        if has_dropdown:
+            from wcm_scraper_core.state_driver import extract_accordion_states
+            panels = extract_accordion_states(section)
+            if panels:
+                return ExtractedBlock(
+                    block_type=BlockType.ACCORDION,
+                    order_index=0,
+                    content_json={"panels": panels},
+                )
             return ExtractedBlock(
                 block_type=BlockType.UNKNOWN,
                 order_index=0,
                 content_json={"raw_html": str(section)[:3000]},
-                notes="Webflow tabs/dropdown — reconstruir con accordion o custom",
+                notes="Webflow dropdown — sin paneles extraídos",
             )
 
         if section.find(["h2", "h3"]) and not has_image:

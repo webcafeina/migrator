@@ -790,3 +790,163 @@ def map_product_card(
         },
     )
     return MapperResult(elements=[el])
+
+
+# ---------- slider (v0.24.0 DS) ----------
+
+def map_slider(
+    block: dict[str, Any],
+    order_index: int,
+    block_type: BlockType,
+    parent_id: str,
+    ctx: MapperContext,
+) -> MapperResult:
+    """v0.24.0 Bloque DS — slider-nested Bricks con N slides editables.
+
+    Cada slide del extractor (`{idx, html}`) se mapea a un `slide-item`
+    Bricks. El operador puede editar contenido + reordenar en el editor.
+
+    Shape Bricks (h2b.skill BRICKS-ELEMENTS.md):
+    - slider-nested: contenedor con `settings.autoplay`, `loop`, etc.
+    - Hijos: cada slide es un `block` con HTML embebido.
+    """
+    slides = block.get("slides") or []
+    if not slides:
+        return MapperResult(
+            residual=ResidualHint(
+                title=f"Slider vacío (orden {order_index})",
+                description="Slider detectado pero state_driver no extrajo estados.",
+                estimated_minutes=15,
+            )
+        )
+
+    slider_id = ctx.id_gen.fresh(order_index, "slider")
+    children_ids: list[str] = []
+    elements: list[BricksElement] = []
+    sub = 1
+
+    for slide in slides:
+        slide_id = ctx.id_gen.fresh(order_index, "slide", sub_index=sub); sub += 1
+        children_ids.append(slide_id)
+        # Wrap HTML del slide en un block con `code` element (única vía
+        # MVP de inyectar HTML arbitrario). En v0.25.0 se sustituye por
+        # parsing recursivo a elementos nativos.
+        elements.append(
+            BricksElement(
+                id=slide_id, name="block", parent=slider_id, children=[],
+                settings={
+                    "code": slide.get("html", ""),
+                    "executeCode": True,
+                },
+            )
+        )
+
+    slider_el = BricksElement(
+        id=slider_id, name="slider-nested", parent=parent_id, children=children_ids,
+        settings={
+            "autoplay": False,
+            "loop": True,
+            "pagination": True,
+            "navigation": True,
+        },
+    )
+    _apply_section_styles(slider_el, block, ctx, prefix="slider")
+    return MapperResult(elements=[slider_el, *elements])
+
+
+# ---------- tabs (v0.24.0 DS) ----------
+
+def map_tabs(
+    block: dict[str, Any],
+    order_index: int,
+    block_type: BlockType,
+    parent_id: str,
+    ctx: MapperContext,
+) -> MapperResult:
+    """v0.24.0 Bloque DS — tabs-nested Bricks con label + content por tab.
+
+    Shape Bricks (h2b.skill):
+    - tabs-nested: contiene tab-button + tab-content por tab.
+    """
+    tabs = block.get("tabs") or []
+    if not tabs:
+        return MapperResult(
+            residual=ResidualHint(
+                title=f"Tabs vacíos (orden {order_index})",
+                description="Tablist detectado pero state_driver no extrajo paneles.",
+                estimated_minutes=10,
+            )
+        )
+
+    tabs_id = ctx.id_gen.fresh(order_index, "tabs")
+    children_ids: list[str] = []
+    elements: list[BricksElement] = []
+    sub = 1
+
+    for tab in tabs:
+        label = tab.get("label", "") or f"Tab {tab.get('idx', 0) + 1}"
+        content_html = tab.get("content_html", "")
+        tab_block_id = ctx.id_gen.fresh(order_index, "tab", sub_index=sub); sub += 1
+        children_ids.append(tab_block_id)
+        elements.append(
+            BricksElement(
+                id=tab_block_id, name="block", parent=tabs_id, children=[],
+                settings={
+                    "label": label,
+                    "code": content_html,
+                    "executeCode": True,
+                },
+            )
+        )
+
+    tabs_el = BricksElement(
+        id=tabs_id, name="tabs-nested", parent=parent_id, children=children_ids,
+        settings={
+            "activeTab": 0,
+            "layout": "horizontal",
+        },
+    )
+    _apply_section_styles(tabs_el, block, ctx, prefix="tabs")
+    return MapperResult(elements=[tabs_el, *elements])
+
+
+# ---------- accordion (v0.24.0 DS) ----------
+
+def map_accordion(
+    block: dict[str, Any],
+    order_index: int,
+    block_type: BlockType,
+    parent_id: str,
+    ctx: MapperContext,
+) -> MapperResult:
+    """v0.24.0 Bloque DS — accordion-nested Bricks con title + content por panel.
+
+    Shape Bricks (h2b.skill): accordion-nested con items.
+    """
+    panels = block.get("panels") or []
+    if not panels:
+        return MapperResult(
+            residual=ResidualHint(
+                title=f"Accordion vacío (orden {order_index})",
+                description="Accordion detectado pero sin paneles extraídos.",
+                estimated_minutes=10,
+            )
+        )
+
+    accordion_id = ctx.id_gen.fresh(order_index, "accordion")
+    items_settings = [
+        {
+            "title": p.get("title", "") or f"Panel {p.get('idx', 0) + 1}",
+            "content": p.get("content_html", ""),
+            "open": idx == 0,
+        }
+        for idx, p in enumerate(panels)
+    ]
+    el = BricksElement(
+        id=accordion_id, name="accordion", parent=parent_id,
+        settings={
+            "items": items_settings,
+        },
+    )
+    _apply_section_styles(el, block, ctx, prefix="accordion")
+    return MapperResult(elements=[el])

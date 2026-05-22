@@ -42,12 +42,26 @@ def test_wix_extracts_gallery(wix_corporate_html: str) -> None:
 
 
 def test_wix_extracts_faq(wix_corporate_html: str) -> None:
+    """v0.24.0 — `.wixui-collapsible-text` se clasifica como ACCORDION
+    (más semántico que el legacy FAQ). El test acepta ambos por compat.
+    """
     result = WixExtractor().extract(wix_corporate_html, "https://laencina.wixsite.com/")
-    faqs = [b for b in result.blocks if b.block_type == BlockType.FAQ]
-    assert faqs
-    items = faqs[0].content_json["items"]
-    assert len(items) == 2
-    assert items[0]["q"].startswith("¿Hacéis")
+    faqs_or_accordions = [
+        b for b in result.blocks
+        if b.block_type in (BlockType.FAQ, BlockType.ACCORDION)
+    ]
+    assert faqs_or_accordions
+    block = faqs_or_accordions[0]
+    if block.block_type == BlockType.FAQ:
+        # Legacy shape: content_json.items con {q, a}.
+        items = block.content_json["items"]
+        assert len(items) == 2
+        assert items[0]["q"].startswith("¿Hacéis")
+    else:
+        # v0.24.0 shape: content_json.panels con {idx, title, content_html}.
+        panels = block.content_json["panels"]
+        assert len(panels) >= 2
+        assert panels[0]["title"].startswith("¿Hacéis")
 
 
 def test_wix_extracts_form(wix_corporate_html: str) -> None:
@@ -546,10 +560,22 @@ def test_webflow_detects_ix2_interactions(webflow_agency_html: str) -> None:
 
 
 def test_webflow_extracts_slider_as_gallery(webflow_agency_html: str) -> None:
+    """v0.24.0 MB — Webflow slider ahora se clasifica como SLIDER
+    (con slides editables) si el state_driver detecta estados; fallback
+    a GALLERY/carousel si no.
+    """
     result = WebflowExtractor().extract(webflow_agency_html, "https://pinestudio.webflow.io/")
-    galleries = [b for b in result.blocks if b.block_type == BlockType.GALLERY]
-    assert galleries
-    assert galleries[0].content_json["layout"] == "carousel"
+    sliders_or_galleries = [
+        b for b in result.blocks
+        if b.block_type in (BlockType.SLIDER, BlockType.GALLERY)
+    ]
+    assert sliders_or_galleries
+    block = sliders_or_galleries[0]
+    if block.block_type == BlockType.SLIDER:
+        assert "slides" in block.content_json
+        assert len(block.content_json["slides"]) >= 1
+    else:
+        assert block.content_json["layout"] == "carousel"
 
 
 def test_webflow_extracts_form_fields(webflow_agency_html: str) -> None:

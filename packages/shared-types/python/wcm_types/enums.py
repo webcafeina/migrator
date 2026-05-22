@@ -141,6 +141,19 @@ class BlockType(StrEnum):
     #: `html: str` y `css: str` del origen. El mapper emite un único
     #: elemento Bricks `code` con namespace CSS.
     RAW_HTML = "raw_html"
+    #: Sprint v0.24.0 Bloque DS — slideshow Wix (`.wixui-slideshow` +
+    #: `[data-testid="slidesWrapper"]`) drived por state_driver. El
+    #: content_json contiene `slides: [{html, asset_id?}]` con cada
+    #: estado captured. Mapper emite slider-nested con N hijos
+    #: editables.
+    SLIDER = "slider"
+    #: Sprint v0.24.0 — tabs Wix (`[role="tablist"]`/`[role="tab"]`).
+    #: content_json contiene `tabs: [{label, content_html}]`.
+    TABS = "tabs"
+    #: Sprint v0.24.0 — accordion Wix Studio (`.wixui-collapsible-text`
+    #: o `[aria-expanded]`). content_json contiene `panels: [{title, content_html}]`.
+    #: Mapper emite accordion-nested o accordion-faq Bricks.
+    ACCORDION = "accordion"
     UNKNOWN = "unknown"
 
 

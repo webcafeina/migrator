@@ -29,6 +29,19 @@
 
 ## Última versión publicada
 
+**v0.24.0** (2026-05-22) — sprint **Fidelidad visual alta**. Cierra los
+3 gaps reales descubiertos en v0.23.0 (asset_uploader R2→WP nunca
+implementado, NAV/FOOTER vacíos, composite mappers sin element_styles)
++ items planeados originalmente (HERO composition, slideshow/tabs/
+accordion via state_driver MVP estático, repeater responsive,
+multibuilder Webflow + Hostinger). Vendora `iamfilipp/html2bricks`
+v3.2.0 como corpus dorado (ADR-040). 3 migraciones Alembic
+encadenadas (0018-0019, las 2 últimas usadas; 0017 estaba ya en
+v0.23.0). 1115 tests verdes. Pipeline canónico ahora 17 fases (con
+`asset_uploader` insertada entre `transpile_bricks` y
+`pre_deploy_snapshot`). Validación visual operador sobre 3 proyectos
+queda como post-tag.
+
 **v0.23.1** (2026-05-22) — hotfix: `ai_assist` desactivado del pipeline
 canónico (tier free Anthropic no rinde, 6-7% éxito a costa de 25 min
 extra/proyecto). Código del agente y cliente Claude Vision intactos

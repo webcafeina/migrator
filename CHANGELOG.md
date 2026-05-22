@@ -11,6 +11,64 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.24.0] — 2026-05-22
+
+Sprint **Fidelidad visual alta** — los 3 gaps reales detectados en
+v0.23.0 + el plan original v0.24.0 + multibuilder, en un solo release.
+
+### Added
+
+- **H0** — `docs/referencias/h2b-skill/` vendoring `iamfilipp/html2bricks` v3.2.0 (MIT, target Bricks 2.1.4). 31 elementos documentados verbatim + `BRICKS-NATIVE-PROPERTIES.md` con 99.5%+ cobertura. ADR-040 documenta convenciones.
+- **A — `AssetUploaderAgent` R2→WP media library** (fase nueva entre transpile_bricks y pre_deploy_snapshot):
+  - `R2Client.get_bytes(key)` para descarga.
+  - Subida vía `WpRestClient.upload_media()` existente con concurrency=3 + rate-limit 2s en 429 + abort consecutive_failures=5.
+  - Persiste `wp_attachment_id`, `wp_source_url`, `wp_media_uploaded_at` (migración 0018).
+  - Reescritura recursiva de URLs `/wp-content/uploads/placeholder-asset-N.webp` en `bricks_pages.bricks_json` + setting `image.id`.
+  - **`_default_asset_resolver` → `make_db_asset_resolver`**: consulta BD, devuelve URL R2 si available, URL WP si ya subido, placeholder fallback.
+- **S** — Composite mappers (hero, gallery, grid, testimonial, pricing, faq, nav, footer) aplican `_apply_element_styles` al section/container root. Helper `_apply_section_styles` reusa el patrón v0.23.0.
+- **H** — Hero composition Wix completa:
+  - `_extract_hero` detecta `bg_image_url` (primer wow-image directo), `composition_items` (resto wow-images con orden DOM), `has_overlay` (clase overlay/gradient).
+  - `map_hero` emite `_background.image.url` + `_background._overlay` color semi-transparente + N `image` children con position absolute para `composition_items`.
+- **N** — NAV/FOOTER con items reales:
+  - `_extract_nav_items` jerárquico recursivo max_depth=3 via `<li><a>` o anchors directos. Filtra `#`/`javascript:`.
+  - `_extract_footer_columns`: cada `<ul>` con ≥2 anchors = columna, heading asociado por hermano anterior h2-h4.
+  - `map_nav` emite `nav-nested` con `text-link` children editables cuando hay `menu_items` extraídos.
+  - `content_extractor` persiste primer NAV detectado en `projects.nav_items_json` (migración 0019).
+  - `wp_deployer._create_wp_menu`: `wp menu create` + `wp menu item add-custom` ANTES del `bricks_import_content`. Persiste `projects.wp_menu_id` idempotente.
+- **R** — Repeater responsive: `_width` con sufijos `:tablet_portrait` (50%) + `:mobile_portrait` (100%) en lugar de hardcoded 3-col. Element_styles per-item aplican a cada card.
+- **DS — Drive estados ocultos**:
+  - `packages/scraper-core/src/wcm_scraper_core/state_driver.py` NUEVO módulo. `extract_slideshow_states`, `extract_tabs_states`, `extract_accordion_states` — MVP estático (extrae estados ya en DOM hidratado).
+  - Selectores combinados Wix + Webflow + Hostinger (`.wixui-slideshow`, `.w-slider`, `.hi-slider`; `[role='tab']`, `.w-tab-link`; `.wixui-collapsible-text`, `.w-dropdown`).
+  - `WixExtractor._classify_section` detecta slideshow/tabs/collapsible y delega a state_driver. Emite `BlockType.SLIDER`/`TABS`/`ACCORDION`.
+  - `map_slider`, `map_tabs`, `map_accordion` en composite.py emiten `slider-nested`/`tabs-nested`/`accordion` Bricks con N hijos editables (consulta h2b para shapes 2.1.4).
+- **MB — Multibuilder Webflow + Hostinger AI**:
+  - `WebflowExtractor` detecta `.w-slider` → `BlockType.SLIDER` (vs legacy GALLERY), `.w-tabs` → `BlockType.TABS`, `.w-dropdown` → `BlockType.ACCORDION`. Fallback `GALLERY/carousel` si state_driver no extrae estados.
+  - `HostingerAIExtractor` añade `slider`/`carousel`/`tabs`/`accordion`/`collapsible` al `HOSTINGER_BLOCK_MAP` y handlers en `_extract_content`.
+
+### Changed
+
+- `BlockType` enum: 3 valores nuevos (`SLIDER`, `TABS`, `ACCORDION`). `RAW_HTML` se mantiene como legacy (no se emite, sí se lee).
+- Pipeline: 17 fases canónicas (was 16). `asset_uploader` insertada entre `transpile_bricks` y `pre_deploy_snapshot`.
+- Dashboard stepper: 17 fases (re-añadido entre Bricks y Deploy WP).
+- `WixExtractor._extract_hero`: shape rico con bg/overlay/composition items.
+- Migración Alembic 0018 (asset upload tracking) + 0019 (project WP menu).
+
+### Tests
+
+- `apps/worker/tests/unit/test_asset_uploader_agent.py` — 16 tests nuevos (helpers + preconditions + upload happy path + URL rewriting recursivo).
+- `test_extractors.py::test_wix_extracts_faq` — actualizado para aceptar `ACCORDION` o legacy `FAQ`.
+- `test_extractors.py::test_webflow_extracts_slider_as_gallery` — acepta `SLIDER` o fallback `GALLERY`.
+- Total: 1115 tests verdes (api 316 + packages 345 + worker 454).
+
+### Limitaciones conocidas
+
+- **state_driver MVP estático**: extrae solo estados ya en DOM hidratado. Para sitios que renderizan estados client-side bajo demanda, queda como tarea futura `playwright_fetcher.drive_states()` (clic + wait).
+- **wp_menu creation no idempotente a nivel de items**: re-runs duplican entries del menu. Operador limpia manualmente si re-corre con nav cambiado.
+- **hero composition_items con position absolute simplificada**: offset por orden de aparición. El operador ajusta en editor Bricks tras deploy.
+- **Tests E2E manual con 3 proyectos** (mariya Wix + Webflow demo + Hostinger demo): post-tag.
+
+---
+
 ## [0.23.1] — 2026-05-22
 
 Hotfix puntual — desactivar `ai_assist` del pipeline canónico.

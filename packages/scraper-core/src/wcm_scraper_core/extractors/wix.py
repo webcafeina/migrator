@@ -14,6 +14,11 @@ from typing import Any
 from bs4 import BeautifulSoup, Tag
 
 from wcm_scraper_core.extractors.base import ExtractedBlock, ExtractionResult
+from wcm_scraper_core.state_driver import (
+    extract_accordion_states,
+    extract_slideshow_states,
+    extract_tabs_states,
+)
 from wcm_types.enums import BlockType
 
 log = logging.getLogger("wcm.scraper_core.extractors.wix")
@@ -257,6 +262,49 @@ class WixExtractor:
                 order_index=0,
                 content_json={"fields": [], "notes": "Wix Forms — recrear en Gravity Forms"},
             )]
+
+        # v0.24.0 DS — Slideshow/Tabs/Accordion. Detectados ANTES de
+        # gallery porque el orden es: slider primero (es más específico
+        # que gallery), luego tabs/accordion, después gallery normal.
+        if section.find(class_=re.compile(r"wixui-slideshow")) or section.select_one(
+            "[data-testid='slidesWrapper']"
+        ):
+            slides = extract_slideshow_states(section)
+            if slides:
+                return [self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.SLIDER,
+                        order_index=0,
+                        content_json={"slides": slides},
+                    ),
+                    section,
+                )]
+
+        if section.find(attrs={"role": "tablist"}) or section.find(
+            class_=re.compile(r"wixui-tabs")
+        ):
+            tabs = extract_tabs_states(section)
+            if tabs:
+                return [self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.TABS,
+                        order_index=0,
+                        content_json={"tabs": tabs},
+                    ),
+                    section,
+                )]
+
+        if section.find(class_=re.compile(r"wixui-collapsible-text")):
+            panels = extract_accordion_states(section)
+            if panels:
+                return [self._enrich_with_styles(
+                    ExtractedBlock(
+                        block_type=BlockType.ACCORDION,
+                        order_index=0,
+                        content_json={"panels": panels},
+                    ),
+                    section,
+                )]
 
         # Hero: h1 + button (típico)
         if has_h1 and has_button:

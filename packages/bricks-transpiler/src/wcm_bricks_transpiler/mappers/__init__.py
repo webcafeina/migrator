@@ -20,6 +20,7 @@ from wcm_bricks_transpiler.mappers.atomic import (
     map_video,
 )
 from wcm_bricks_transpiler.mappers.composite import (
+    map_accordion,
     map_faq,
     map_footer,
     map_form,
@@ -29,6 +30,8 @@ from wcm_bricks_transpiler.mappers.composite import (
     map_nav,
     map_pricing,
     map_product_card,
+    map_slider,
+    map_tabs,
     map_testimonial,
 )
 from wcm_bricks_transpiler.mappers.raw import map_raw_html
@@ -53,6 +56,9 @@ REGISTRY: dict[BlockType, BlockMapper] = {
     BlockType.NAV: map_nav,
     BlockType.FOOTER: map_footer,
     BlockType.GRID: map_grid,
+    BlockType.SLIDER: map_slider,
+    BlockType.TABS: map_tabs,
+    BlockType.ACCORDION: map_accordion,
     BlockType.AI_GENERATED: map_ai_generated,
     BlockType.RAW_HTML: map_raw_html,
     BlockType.UNKNOWN: map_unknown,

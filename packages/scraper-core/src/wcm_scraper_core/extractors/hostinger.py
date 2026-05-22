@@ -32,6 +32,12 @@ HOSTINGER_BLOCK_MAP: dict[str, BlockType] = {
     "divider": BlockType.DIVIDER,
     "footer": BlockType.FOOTER,
     "nav": BlockType.NAV,
+    # v0.24.0 MB — soporte slider/tabs/accordion en Hostinger AI.
+    "slider": BlockType.SLIDER,
+    "carousel": BlockType.SLIDER,
+    "tabs": BlockType.TABS,
+    "accordion": BlockType.ACCORDION,
+    "collapsible": BlockType.ACCORDION,
 }
 
 
@@ -108,6 +114,16 @@ class HostingerExtractor:
                 "url": link.get("href") if link else "#",
                 "style": "primary",
             }
+        # v0.24.0 MB — slider/tabs/accordion via state_driver.
+        if block_type is BlockType.SLIDER:
+            from wcm_scraper_core.state_driver import extract_slideshow_states
+            return {"slides": extract_slideshow_states(section)}
+        if block_type is BlockType.TABS:
+            from wcm_scraper_core.state_driver import extract_tabs_states
+            return {"tabs": extract_tabs_states(section)}
+        if block_type is BlockType.ACCORDION:
+            from wcm_scraper_core.state_driver import extract_accordion_states
+            return {"panels": extract_accordion_states(section)}
         if block_type is BlockType.FAQ:
             items = []
             for item in section.find_all(attrs={"data-role": "faq-item"}):
