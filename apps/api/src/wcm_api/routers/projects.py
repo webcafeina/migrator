@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 from datetime import UTC, datetime
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import RedirectResponse, Response, StreamingResponse
@@ -1126,6 +1126,17 @@ async def project_events(
 # ===========================================================================
 
 
+class PreviewSectionInfo(BaseModel):
+    """v0.26.0 — info por sección dentro de una página del preview."""
+
+    type: str
+    design_method: str | None = None
+    has_ai_image: bool = False
+    is_placeholder: bool = False
+    asset_id: int | None = None
+    headline: str | None = None
+
+
 class PreviewPageInfo(BaseModel):
     """Página vista para el dashboard de preview."""
 
@@ -1137,6 +1148,12 @@ class PreviewPageInfo(BaseModel):
     wp_post_id: int | None = None
     wp_post_status: str | None = None
     last_regenerated_at: datetime | None = None
+    #: v0.26.0 B6 — URL R2/local del thumbnail Playwright sobre WP draft.
+    preview_thumbnail_url: str | None = None
+    preview_captured_at: datetime | None = None
+    #: v0.26.0 B7 — secciones (type + design_method) para edición
+    #: granular en /preview.
+    sections: list[PreviewSectionInfo] = Field(default_factory=list)
 
 
 class PreviewResponse(BaseModel):
@@ -1147,6 +1164,9 @@ class PreviewResponse(BaseModel):
     design_method: str | None
     brief: dict[str, Any] | None
     pages: list[PreviewPageInfo]
+    #: v0.26.0 B5 — coste agregado de imágenes IA generadas para budget UI.
+    image_generation_cost_usd: float = 0.0
+    image_generation_budget_usd: float = 1.0
 
 
 class BriefUpdatePayload(BaseModel):
@@ -1166,6 +1186,30 @@ class BriefUpdatePayload(BaseModel):
 
 class RegeneratePagePayload(BaseModel):
     slug: str = Field(min_length=1, max_length=255)
+
+
+class RegenerateSectionPayload(BaseModel):
+    """v0.26.0 B7 — payload para regenerar UNA sección concreta.
+
+    `design_method` permite cambiar el método solo de esta sección
+    (override del marcado en el Brief). Si None, mantiene el existente.
+    """
+
+    slug: str = Field(min_length=1, max_length=255)
+    section_index: int = Field(ge=0)
+    design_method: Literal["templates", "ai"] | None = None
+
+
+class RegenerateImagePayload(BaseModel):
+    """v0.26.0 B7 — payload para regenerar UNA imagen IA en una sección.
+
+    `prompt_override` permite forzar prompt custom; si None, usa el
+    prompt heurístico de RedesignImagesAgent.
+    """
+
+    slug: str = Field(min_length=1, max_length=255)
+    section_index: int = Field(ge=0)
+    prompt_override: str | None = Field(default=None, max_length=2000)
 
 
 @router.get("/{project_id}/preview", response_model=PreviewResponse)
@@ -1190,6 +1234,7 @@ async def get_project_preview(
     bricks_pages = list(bp_result.scalars())
 
     pages_info: list[PreviewPageInfo] = []
+    image_cost_total = 0.0
     # Si tenemos brief, usar como guía de páginas esperadas.
     brief = project.brief_json
     if brief and brief.get("pages"):
@@ -1198,16 +1243,25 @@ async def get_project_preview(
         for brief_page in brief["pages"]:
             slug = brief_page.get("slug") or "/"
             bp = bp_by_slug.get(slug)
+            sections_data = brief_page.get("sections") or []
+            sections_info = [_section_to_preview_info(s) for s in sections_data]
+            for s in sections_data:
+                meta = s.get("ai_image_metadata") or {}
+                if isinstance(meta, dict):
+                    image_cost_total += float(meta.get("cost_usd") or 0)
             pages_info.append(
                 PreviewPageInfo(
                     slug=slug,
                     title=brief_page.get("title") or slug,
                     intent=brief_page.get("intent"),
-                    n_sections=len(brief_page.get("sections") or []),
+                    n_sections=len(sections_data),
                     bricks_page_id=bp.id if bp else None,
                     wp_post_id=bp.wp_post_id if bp else None,
-                    wp_post_status=None,  # MVP — sin REST GET al WP destino
+                    wp_post_status=None,
                     last_regenerated_at=bp.updated_at if bp else None,
+                    preview_thumbnail_url=bp.preview_thumbnail_url if bp else None,
+                    preview_captured_at=bp.preview_captured_at if bp else None,
+                    sections=sections_info,
                 )
             )
     else:
@@ -1223,15 +1277,33 @@ async def get_project_preview(
                     wp_post_id=bp.wp_post_id,
                     wp_post_status=None,
                     last_regenerated_at=bp.updated_at,
+                    preview_thumbnail_url=bp.preview_thumbnail_url,
+                    preview_captured_at=bp.preview_captured_at,
+                    sections=[],
                 )
             )
 
+    budget = float(project.image_generation_budget_usd or 1.0)
     return PreviewResponse(
         project_id=project.id,
         project_status=project.status,
         design_method=project.design_method,
         brief=brief,
         pages=pages_info,
+        image_generation_cost_usd=round(image_cost_total, 4),
+        image_generation_budget_usd=budget,
+    )
+
+
+def _section_to_preview_info(section: dict[str, Any]) -> PreviewSectionInfo:
+    """Mapea section del Brief a PreviewSectionInfo plana."""
+    return PreviewSectionInfo(
+        type=section.get("type", "unknown"),
+        design_method=section.get("design_method"),
+        has_ai_image=bool(section.get("ai_image_metadata")),
+        is_placeholder=False,  # placeholders viven en bricks_json, no en brief
+        asset_id=section.get("asset_id"),
+        headline=section.get("headline"),
     )
 
 
@@ -1299,11 +1371,8 @@ async def regenerate_preview_page(
     project = await session.get(Project, project_id)
     if project is None:
         raise NotFoundError(f"Project {project_id} no encontrado")
-    if project.design_method not in ("templates", "ai"):
-        raise ConflictError(
-            f"design_method={project.design_method!r} no soporta "
-            "regenerate-page. Solo proyectos v0.25.0+ con templates/ai."
-        )
+    # v0.26.0 — acepta también Hybrid (design_method=None) además de
+    # templates/ai puros.
     if not project.brief_json or not project.brief_json.get("pages"):
         raise ConflictError(
             "Project sin brief_json. BriefGenerator no corrió o "
@@ -1316,6 +1385,120 @@ async def regenerate_preview_page(
         "project_id": project_id,
         "slug": payload.slug,
         "design_method": project.design_method,
+    }
+
+
+@router.post(
+    "/{project_id}/preview/regenerate-section",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def regenerate_preview_section(
+    project_id: int,
+    payload: RegenerateSectionPayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.26.0 B7 — Regenerar UNA sección concreta de una página.
+
+    Si `payload.design_method` está presente, actualiza el campo del
+    Brief para que el siguiente run use ese método. Luego encola la
+    misma task que regenerate-page (que filtra por slug y aplica
+    Templates/AI según el design_method actualizado).
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    brief = project.brief_json
+    if not brief or not brief.get("pages"):
+        raise ConflictError("Project sin brief_json.")
+
+    page = next(
+        (p for p in brief["pages"] if p.get("slug") == payload.slug), None
+    )
+    if page is None:
+        raise NotFoundError(f"Página '{payload.slug}' no encontrada en el brief.")
+    sections = page.get("sections") or []
+    if payload.section_index >= len(sections):
+        raise NotFoundError(
+            f"section_index={payload.section_index} fuera de rango "
+            f"(página tiene {len(sections)} secciones)."
+        )
+
+    # Override del design_method de la sección si payload lo trae.
+    if payload.design_method is not None:
+        sections[payload.section_index]["design_method"] = payload.design_method
+        # Marca brief_json modificado para que SQLAlchemy persista el cambio.
+        project.brief_json = dict(brief)  # shallow copy to trigger update
+
+    await session.commit()
+
+    task_id = enqueue_preview_regenerate_page(project_id, payload.slug)
+    return {
+        "task_id": task_id,
+        "project_id": project_id,
+        "slug": payload.slug,
+        "section_index": payload.section_index,
+        "design_method_applied": (
+            payload.design_method
+            or sections[payload.section_index].get("design_method")
+        ),
+    }
+
+
+@router.post(
+    "/{project_id}/preview/regenerate-image",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def regenerate_preview_image(
+    project_id: int,
+    payload: RegenerateImagePayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.26.0 B7 — Regenerar imagen IA de UNA sección concreta.
+
+    Vacía el `asset_id` y `ai_image_metadata` de la sección en el Brief
+    para que RedesignImagesAgent la trate como slot vacío de nuevo, y
+    encola la task del preview que invoca al agente para esa página.
+    Si `prompt_override` está presente, se persiste en `ai_image_prompt_override`
+    de la sección y el agente lo respetará en su próximo run.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    brief = project.brief_json
+    if not brief or not brief.get("pages"):
+        raise ConflictError("Project sin brief_json.")
+
+    page = next(
+        (p for p in brief["pages"] if p.get("slug") == payload.slug), None
+    )
+    if page is None:
+        raise NotFoundError(f"Página '{payload.slug}' no encontrada en el brief.")
+    sections = page.get("sections") or []
+    if payload.section_index >= len(sections):
+        raise NotFoundError(
+            f"section_index={payload.section_index} fuera de rango."
+        )
+
+    section = sections[payload.section_index]
+    section.pop("asset_id", None)
+    section.pop("image_url", None)
+    section.pop("ai_image_metadata", None)
+    if payload.prompt_override is not None:
+        section["ai_image_prompt_override"] = payload.prompt_override
+    else:
+        section.pop("ai_image_prompt_override", None)
+    project.brief_json = dict(brief)  # trigger SQLAlchemy update
+
+    await session.commit()
+
+    task_id = enqueue_preview_regenerate_page(project_id, payload.slug)
+    return {
+        "task_id": task_id,
+        "project_id": project_id,
+        "slug": payload.slug,
+        "section_index": payload.section_index,
     }
 
 

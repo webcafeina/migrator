@@ -44,8 +44,10 @@ from wcm_worker.agents import (
     FormsRebuilderAgent,
     MultilangHandlerAgent,
     PreDeploySnapshotAgent,
+    PreviewThumbnailsAgent,
     QaRunnerAgent,
     RedesignAIAgent,
+    RedesignImagesAgent,
     RedesignTemplatesAgent,
     ResendNotifierAgent,
     ScraperOriginAgent,
@@ -119,29 +121,46 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # ResidualTasks vía `map_unknown` → `bricks_transpiler` agente.
     # _PhaseSpec("ai_assist", AiAssistAgent, required=False),
     #
-    # v0.25.0 PIVOTE — dos pipelines mutuamente exclusivos según
-    # `design_method`. Si `templates` → RedesignTemplatesAgent corre.
-    # Si `ai` → RedesignAIAgent corre. Si NULL (proyectos legacy
-    # v0.24.0) → `transpile_bricks` legacy corre (compat backwards).
+    # v0.26.0 — Hybrid + dispatcher por sección. Tres modos:
+    #   - design_method == "templates": solo RedesignTemplatesAgent.
+    #   - design_method == "ai": solo RedesignAIAgent (page-level path).
+    #   - design_method is None: AMBOS corren (modo Hybrid). Templates
+    #     procesa secciones design_method=templates + emite placeholders
+    #     para las AI; RedesignAIAgent rellena los placeholders.
+    # Para proyectos legacy creados antes del pivote v0.25.0 sin Brief,
+    # `transpile_bricks` sigue cubriéndolos vía has_brief_json.
     _PhaseSpec(
         "redesign_templates",
         RedesignTemplatesAgent,
         required=False,
-        condition_callable=lambda p: getattr(p, "design_method", None) == "templates",
+        condition_callable=lambda p: getattr(p, "design_method", None)
+        in ("templates", None) and bool(getattr(p, "brief_json", None)),
     ),
     _PhaseSpec(
         "redesign_ai",
         RedesignAIAgent,
         required=False,
-        condition_callable=lambda p: getattr(p, "design_method", None) == "ai",
+        condition_callable=lambda p: getattr(p, "design_method", None)
+        in ("ai", None) and bool(getattr(p, "brief_json", None)),
     ),
-    # Legacy v0.24.0 — solo corre si design_method=NULL (proyectos
-    # creados antes del pivote v0.25.0).
+    # Legacy v0.24.0 — solo corre si design_method=NULL Y brief_json
+    # también NULL (proyectos creados antes del pivote v0.25.0).
     _PhaseSpec(
         "transpile_bricks",
         BricksTranspilerAgent,
         required=False,
-        condition_callable=lambda p: getattr(p, "design_method", None) is None,
+        condition_callable=lambda p: getattr(p, "design_method", None) is None
+        and not getattr(p, "brief_json", None),
+    ),
+    # v0.26.0 B5 — gpt-image-2 rellena slots de imagen vacíos en el Brief
+    # (hero/image/gallery/testimonial con asset_id NULL). Sin budget
+    # configurado usa $1.00 default. required=False porque sin OPENAI_API_KEY
+    # o sin slots vacíos hace SKIPPED sin bloquear el pipeline.
+    _PhaseSpec(
+        "redesign_images",
+        RedesignImagesAgent,
+        required=False,
+        condition_callable=lambda p: bool(getattr(p, "brief_json", None)),
     ),
     # v0.24.0 — Bloque A. Sube assets de R2 al WP media library destino
     # y reescribe URLs placeholder en bricks_pages.bricks_json. Sin esta
@@ -158,6 +177,11 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     _PhaseSpec("migrate_woo", WooMigratorAgent, required=False, condition_attr="has_ecommerce"),
     _PhaseSpec("configure_wpml", WpmlConfiguratorAgent, required=False, condition_attr="is_multilang"),
     _PhaseSpec("rebuild_forms", FormsRebuilderAgent, required=False),
+    # v0.26.0 B6 — thumbnails Playwright sobre WP draft. Corre después
+    # de que wp_deployer haya creado las páginas (draft) y antes del
+    # notify. Si Playwright no está instalado o WP destino no configurado,
+    # SKIPPED sin bloquear. La UI /preview consume preview_thumbnail_url.
+    _PhaseSpec("preview_thumbnails", PreviewThumbnailsAgent, required=False),
     _PhaseSpec("visual_diff", VisualDiffAgent, required=False),
     _PhaseSpec("qa", QaRunnerAgent, required=False),
     _PhaseSpec("generate_checklist", ChecklistGeneratorAgent, required=False),

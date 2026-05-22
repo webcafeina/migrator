@@ -20,10 +20,12 @@ from wcm_worker.agents.multilang_handler import MultilangHandlerAgent
 from wcm_worker.agents.outreach_composer import OutreachComposerAgent
 from wcm_worker.agents.outreach_sender import OutreachSenderAgent
 from wcm_worker.agents.pre_deploy_snapshot import PreDeploySnapshotAgent
+from wcm_worker.agents.preview_thumbnails import PreviewThumbnailsAgent
 from wcm_worker.agents.prospector import ProspectorAgent
 from wcm_worker.agents.publish import PublishAgent
 from wcm_worker.agents.qa_runner import QaRunnerAgent
 from wcm_worker.agents.redesign_ai import RedesignAIAgent
+from wcm_worker.agents.redesign_images import RedesignImagesAgent
 from wcm_worker.agents.redesign_templates import RedesignTemplatesAgent
 from wcm_worker.agents.resend_notifier import ResendNotifierAgent
 from wcm_worker.agents.rollback import RollbackAgent
@@ -52,10 +54,12 @@ __all__ = [
     "OutreachComposerAgent",
     "OutreachSenderAgent",
     "PreDeploySnapshotAgent",
+    "PreviewThumbnailsAgent",
     "ProspectorAgent",
     "PublishAgent",
     "QaRunnerAgent",
     "RedesignAIAgent",
+    "RedesignImagesAgent",
     "RedesignTemplatesAgent",
     "ResendNotifierAgent",
     "RollbackAgent",

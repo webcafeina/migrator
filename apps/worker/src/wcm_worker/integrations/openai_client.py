@@ -27,6 +27,8 @@ Diseño:
 Pricing (a 2026-05-22, datos públicos OpenAI):
 - `gpt-4o-mini`: $0.15/MTok input, $0.60/MTok output
 - `gpt-4o`: $2.50/MTok input, $10/MTok output
+- `gpt-5.5`: $5.00/MTok input, $30/MTok output (v0.26.0 default)
+- `gpt-5.5-pro`: $30/MTok input, $180/MTok output
 """
 
 from __future__ import annotations
@@ -51,16 +53,35 @@ log = logging.getLogger("wcm.worker.openai_client")
 #: Modelos por defecto.
 DEFAULT_MODEL_METADATA = "gpt-4o-mini"
 DEFAULT_MODEL_REDESIGN = "gpt-4o"
+#: v0.26.0 — modelo de generación de imágenes (gpt-image-2 abril 2026).
+DEFAULT_MODEL_IMAGE = "gpt-image-2"
 
 DEFAULT_TIMEOUT_S = 90.0
 DEFAULT_RETRIES = 5
 #: Pausa tras 429 — tier free OpenAI suele exigir 60s mínimo.
 DEFAULT_RATE_LIMIT_PAUSE_S = 60.0
 
+#: v0.26.0 — pricing fijo por imagen gpt-image-2 según quality + size.
+#: Fuente: OpenAI API docs (abril 2026).
+IMAGE_PRICING_USD: dict[tuple[str, str], float] = {
+    ("low", "1024x1024"): 0.006,
+    ("medium", "1024x1024"): 0.053,
+    ("high", "1024x1024"): 0.211,
+    ("low", "1024x1536"): 0.005,
+    ("medium", "1024x1536"): 0.041,
+    ("high", "1024x1536"): 0.165,
+    ("low", "1536x1024"): 0.005,
+    ("medium", "1536x1024"): 0.041,
+    ("high", "1536x1024"): 0.165,
+}
+
 #: Pricing por millón de tokens (USD). Si OpenAI cambia precios, actualizar.
 PRICING_USD_PER_MTOK: dict[str, tuple[float, float]] = {
     "gpt-4o-mini": (0.15, 0.60),
     "gpt-4o": (2.50, 10.0),
+    # v0.26.0 — gpt-5.5 lanzado abril 2026, default redesign.
+    "gpt-5.5": (5.0, 30.0),
+    "gpt-5.5-pro": (30.0, 180.0),
     # backups en caso de rotación a otros modelos:
     "gpt-4-turbo": (10.0, 30.0),
     "gpt-3.5-turbo": (0.50, 1.50),
@@ -80,6 +101,25 @@ class OpenAIResult:
     tokens_out: int
     cost_usd: float
     model: str
+
+
+@dataclass
+class OpenAIImageResult:
+    """v0.26.0 — resultado de generate_image (gpt-image-2).
+
+    `image_bytes` es el PNG/WEBP crudo que subimos a R2.
+    `cost_usd` se calcula desde IMAGE_PRICING_USD (no token-based).
+    """
+
+    image_bytes: bytes
+    mime: str
+    width: int
+    height: int
+    cost_usd: float
+    model: str
+    quality: str
+    size: str
+    prompt: str
 
 
 # ---------- prompts ----------
@@ -206,6 +246,92 @@ _ALLOWED_ELEMENT_NAMES = [
     "divider", "spacer", "code",
 ]
 
+#: RedesignAI v0.26.0 — generación SECCIÓN por sección (modo Hybrid).
+#: Solo emite UNA section subtree (la sección + sus descendientes).
+#: La página se compone agregando subtrees.
+SYSTEM_PROMPT_SECTION_REDESIGN = """Eres un experto diseñador web especializado en \
+WordPress + Bricks Builder. Tu objetivo: dado un Brief de negocio y la spec de \
+UNA SECCIÓN concreta dentro de una página, generar un subárbol Bricks NATIVO \
+(flat tree con parent/children por ID) que represente esa sección sola, lista \
+para encajar en una página más grande.
+
+Reglas estrictas (idénticas a generación de página, pero scope sección):
+1. **Elementos permitidos**: section, container, block, div, heading, text, \
+text-basic, text-link, image, image-gallery, button, icon, icon-box, divider, \
+spacer, slider-nested, tabs-nested, accordion, accordion-nested, nav-menu, \
+nav-nested, form, shortcode, code.
+2. **El primer elemento DEBE ser una `section` con `parent: "0"`**. Los demás \
+referencian un parent existente del propio subtree.
+3. **IDs únicos** de 6 caracteres alfanuméricos minúsculas (`[a-z0-9]{6}`). \
+DEBEN ser únicos en el ámbito del subtree (no colisionar con otras secciones — \
+usa IDs aleatorios que no parezcan secuenciales).
+4. **Color SIEMPRE como `{"raw": "..."}`**. Tokens del brand: \
+`var(--bricks-color-primary|secondary|accent|text|bg)`.
+5. **Padding/border como object**: `_padding: {top, right, bottom, left}` con \
+unidades CSS.
+6. **Responsive opcional**: sufijo `:tablet_portrait` / `:mobile_portrait`.
+7. **Contenido del Brief**: úsalo literal cuando esté presente.
+8. **Una sola section root**: no múltiples top-level. Si la sección original \
+es compleja (hero con CTA), todo va dentro de la misma section root.
+
+Devuelve SIEMPRE la tool `emit_bricks_section` con el array `content`.
+"""
+
+#: Schema de la tool `emit_bricks_section`. Comparte allowed_names con la
+#: tool de página entera para que el resto del pipeline (validador, mappers)
+#: trate ambos outputs igual.
+TOOL_SECTION_REDESIGN: dict[str, Any] = {
+    "type": "function",
+    "function": {
+        "name": "emit_bricks_section",
+        "description": (
+            "Emite el array `content` del subárbol Bricks de UNA sección. "
+            "El primer elemento DEBE ser una `section` con parent='0'. "
+            "Los demás son sus descendientes (parent ID dentro del subtree)."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "pattern": "^[a-z0-9]{6}$",
+                            },
+                            "name": {
+                                "type": "string",
+                                "enum": _ALLOWED_ELEMENT_NAMES,
+                            },
+                            "parent": {"type": "string"},
+                            "children": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                            },
+                            "settings": {
+                                "type": "object",
+                                "additionalProperties": True,
+                            },
+                        },
+                        "required": ["id", "name", "parent", "settings"],
+                        "additionalProperties": False,
+                    },
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Comentarios libres del modelo.",
+                },
+            },
+            "required": ["content"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 TOOL_PAGE_REDESIGN: dict[str, Any] = {
     "type": "function",
     "function": {
@@ -272,9 +398,11 @@ class OpenAIClient:
         api_key: str,
         model_metadata: str = DEFAULT_MODEL_METADATA,
         model_redesign: str = DEFAULT_MODEL_REDESIGN,
+        model_image: str = DEFAULT_MODEL_IMAGE,
         timeout_s: float = DEFAULT_TIMEOUT_S,
         retries: int = DEFAULT_RETRIES,
     ) -> None:
+        self.model_image = model_image
         if not api_key:
             raise OpenAIAuthError("OPENAI_API_KEY vacío")
         self.api_key = api_key
@@ -300,6 +428,7 @@ class OpenAIClient:
             api_key=key,
             model_metadata=os.environ.get("OPENAI_MODEL_METADATA", DEFAULT_MODEL_METADATA),
             model_redesign=os.environ.get("OPENAI_MODEL_REDESIGN", DEFAULT_MODEL_REDESIGN),
+            model_image=os.environ.get("OPENAI_MODEL_IMAGE", DEFAULT_MODEL_IMAGE),
         )
 
     # ---------- public ----------
@@ -337,8 +466,8 @@ class OpenAIClient:
     ) -> OpenAIResult:
         """Genera el array Bricks de UNA página a partir del Brief + spec.
 
-        Modelo: `model_redesign` (default gpt-4o). Más caro pero mejor
-        calidad estructural.
+        Modelo: `model_redesign` (default gpt-4o, v0.26.0 default gpt-5.5).
+        Más caro pero mejor calidad estructural.
         """
         user_msg = self._build_page_redesign_user_message(brief, page_spec)
         return await self._call_with_retry(
@@ -347,6 +476,97 @@ class OpenAIClient:
             user_msg=user_msg,
             tool=TOOL_PAGE_REDESIGN,
             tool_name="emit_bricks_page",
+        )
+
+    async def generate_section_redesign(
+        self,
+        *,
+        brief: dict[str, Any],
+        page_spec: dict[str, Any],
+        section_spec: dict[str, Any],
+    ) -> OpenAIResult:
+        """v0.26.0 — genera subárbol Bricks de UNA sección concreta.
+
+        Usado por `RedesignAIAgent` en modo Hybrid (cuando
+        `Project.design_method is None`) para procesar solo las secciones
+        marcadas como `design_method == "ai"`. La página se compone
+        ensamblando subtrees + las secciones generadas por templates.
+
+        Coste estimado por sección con gpt-5.5: $0.05-0.30 (vs
+        $0.30-1.50 por página entera con gpt-4o).
+        """
+        user_msg = self._build_section_redesign_user_message(
+            brief, page_spec, section_spec
+        )
+        return await self._call_with_retry(
+            model=self.model_redesign,
+            system=SYSTEM_PROMPT_SECTION_REDESIGN,
+            user_msg=user_msg,
+            tool=TOOL_SECTION_REDESIGN,
+            tool_name="emit_bricks_section",
+        )
+
+    async def generate_image(
+        self,
+        *,
+        prompt: str,
+        quality: str = "medium",
+        size: str = "1024x1024",
+        n: int = 1,
+    ) -> OpenAIImageResult:
+        """v0.26.0 — genera imagen con gpt-image-2.
+
+        Coste fijo por imagen según (quality, size) en IMAGE_PRICING_USD.
+        Devuelve los bytes PNG/WEBP listos para subir a R2.
+
+        - `quality`: low / medium / high. Default medium (~$0.05/imagen
+          a 1024x1024). High calidad cuesta ~4x más.
+        - `size`: "1024x1024" (cuadrado, decorativo) /
+          "1024x1536" (vertical) / "1536x1024" (horizontal, hero).
+        - `n`: número de imágenes a generar (cada una factura aparte).
+        """
+        if (quality, size) not in IMAGE_PRICING_USD:
+            raise OpenAIClientError(
+                f"Combinación inválida quality={quality!r} size={size!r}. "
+                f"Disponibles: {list(IMAGE_PRICING_USD.keys())[:3]}..."
+            )
+        try:
+            response = await self._client.images.generate(
+                model=self.model_image,
+                prompt=prompt,
+                size=size,
+                quality=quality,
+                n=n,
+            )
+        except Exception as e:  # noqa: BLE001
+            msg = str(e).lower()
+            if "rate" in msg or "429" in msg:
+                raise OpenAIRateLimitError(str(e)) from e
+            if "auth" in msg or "401" in msg or "invalid api" in msg:
+                raise OpenAIAuthError(str(e)) from e
+            raise OpenAIClientError(f"image generation failed: {e}") from e
+
+        # OpenAI SDK images.generate devuelve data: [{b64_json | url}]. En el
+        # último release b64_json viene por defecto cuando no se pide URL.
+        if not response.data:
+            raise OpenAIInvalidOutputError("image generation: response.data vacío")
+        first = response.data[0]
+        b64 = getattr(first, "b64_json", None)
+        if not b64:
+            raise OpenAIInvalidOutputError("image generation: sin b64_json en respuesta")
+        import base64  # noqa: PLC0415 — lazy
+        image_bytes = base64.b64decode(b64)
+        w, h = (int(p) for p in size.split("x"))
+        return OpenAIImageResult(
+            image_bytes=image_bytes,
+            mime="image/png",
+            width=w,
+            height=h,
+            cost_usd=IMAGE_PRICING_USD[(quality, size)] * n,
+            model=self.model_image,
+            quality=quality,
+            size=size,
+            prompt=prompt,
         )
 
     # ---------- internals ----------
@@ -513,6 +733,43 @@ class OpenAIClient:
         ]
         return "\n".join(parts)
 
+    @staticmethod
+    def _build_section_redesign_user_message(
+        brief: dict[str, Any],
+        page_spec: dict[str, Any],
+        section_spec: dict[str, Any],
+    ) -> str:
+        """v0.26.0 — user message para RedesignAI por sección.
+
+        Contexto reducido: solo business + brand + intent de la página +
+        spec de la sección. El modelo no necesita ver el resto de
+        secciones porque no las genera.
+        """
+        page_meta = {
+            "slug": page_spec.get("slug"),
+            "title": page_spec.get("title"),
+            "intent": page_spec.get("intent"),
+        }
+        parts = [
+            "## Brief del negocio",
+            json.dumps(brief.get("business", {}), ensure_ascii=False, indent=2),
+            "",
+            "## Branding (paleta, fuentes, voz)",
+            json.dumps(brief.get("brand", {}), ensure_ascii=False, indent=2),
+            "",
+            "## Página contenedora (para tono/intent)",
+            json.dumps(page_meta, ensure_ascii=False, indent=2),
+            "",
+            "## Spec de la sección a generar",
+            json.dumps(section_spec, ensure_ascii=False, indent=2),
+            "",
+            "Genera el array `content` con UN subárbol Bricks NATIVO para esta sección.",
+            "El primer elemento DEBE ser una `section` con `parent: \"0\"`.",
+            "Usa colores del brand como `var(--bricks-color-*)` y fonts del brand.",
+            "Diseño limpio, jerarquía clara, espaciado generoso, mobile-first.",
+        ]
+        return "\n".join(parts)
+
 
 def _estimate_cost(model: str, tokens_in: int, tokens_out: int) -> float:
     """Devuelve coste USD estimado. 0.0 si modelo desconocido."""
@@ -531,9 +788,12 @@ def make_client_from_env() -> OpenAIClient | None:
 __all__ = [
     "OpenAIClient",
     "OpenAIResult",
+    "OpenAIImageResult",
     "PRICING_USD_PER_MTOK",
+    "IMAGE_PRICING_USD",
     "DEFAULT_MODEL_METADATA",
     "DEFAULT_MODEL_REDESIGN",
+    "DEFAULT_MODEL_IMAGE",
     "make_client_from_env",
     "_estimate_cost",
 ]

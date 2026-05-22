@@ -264,3 +264,78 @@ def test_find_logo_asset_id_devuelve_none_si_no_match() -> None:
     a1 = MagicMock(); a1.id = 1; a1.alt_text = "Foto"; a1.original_url = "/img.jpg"
     assets = {1: a1}
     assert agent._find_logo_asset_id(assets) is None
+
+
+# ---------- v0.26.0 — design_method por sección ----------
+
+
+def test_section_design_method_hybrid_hero_es_ai() -> None:
+    assert BriefGeneratorAgent._section_design_method("hero", None) == "ai"
+
+
+def test_section_design_method_hybrid_cta_es_ai() -> None:
+    assert BriefGeneratorAgent._section_design_method("cta", None) == "ai"
+
+
+def test_section_design_method_hybrid_features_es_templates() -> None:
+    assert BriefGeneratorAgent._section_design_method("text", None) == "templates"
+    assert BriefGeneratorAgent._section_design_method("pricing", None) == "templates"
+    assert BriefGeneratorAgent._section_design_method("testimonial", None) == "templates"
+    assert BriefGeneratorAgent._section_design_method("gallery", None) == "templates"
+    assert BriefGeneratorAgent._section_design_method("form", None) == "templates"
+
+
+def test_section_design_method_force_templates() -> None:
+    """Si project.design_method = templates, fuerza TODOS los tipos a templates."""
+    assert BriefGeneratorAgent._section_design_method("hero", "templates") == "templates"
+    assert BriefGeneratorAgent._section_design_method("cta", "templates") == "templates"
+
+
+def test_section_design_method_force_ai() -> None:
+    """Si project.design_method = ai, fuerza TODOS los tipos a ai."""
+    assert BriefGeneratorAgent._section_design_method("text", "ai") == "ai"
+    assert BriefGeneratorAgent._section_design_method("pricing", "ai") == "ai"
+
+
+def test_brief_pages_sections_incluyen_design_method_en_hybrid(fake_session) -> None:
+    """En Hybrid (project.design_method=None), cada sección tiene design_method
+    según heurística — hero→ai, text→templates."""
+    project = _project(
+        business_description="Estudio creativo",
+        business_sector="agency",
+        tone_of_voice="friendly",
+        target_audience="PYMEs",
+        usps_json=["Único"],
+    )
+    project.design_method = None  # Hybrid
+    pages = [_page()]
+    blocks = [
+        _block(id=1, block_type=BlockType.HERO, content_json={"headline": "Hola"}),
+        _block(id=2, block_type=BlockType.TEXT, content_json={"html": "<p>x</p>"}),
+        _block(id=3, block_type=BlockType.CTA, content_json={"cta_text": "Contacta"}),
+    ]
+    ctx = _setup_ctx(fake_session, project=project, pages=pages, blocks=blocks)
+    BriefGeneratorAgent().run(ctx)
+    sections = project.brief_json["pages"][0]["sections"]
+    by_type = {s["type"]: s["design_method"] for s in sections}
+    assert by_type["hero"] == "ai"
+    assert by_type["text"] == "templates"
+    assert by_type["cta"] == "ai"
+
+
+def test_brief_pages_sections_force_templates_si_project_design_method_templates(fake_session) -> None:
+    project = _project(
+        business_description="x", business_sector="agency",
+        tone_of_voice="friendly", target_audience="x", usps_json=["x"],
+    )
+    project.design_method = "templates"
+    pages = [_page()]
+    blocks = [
+        _block(id=1, block_type=BlockType.HERO, content_json={"headline": "Hola"}),
+        _block(id=2, block_type=BlockType.CTA, content_json={"cta_text": "x"}),
+    ]
+    ctx = _setup_ctx(fake_session, project=project, pages=pages, blocks=blocks)
+    BriefGeneratorAgent().run(ctx)
+    sections = project.brief_json["pages"][0]["sections"]
+    for s in sections:
+        assert s["design_method"] == "templates"

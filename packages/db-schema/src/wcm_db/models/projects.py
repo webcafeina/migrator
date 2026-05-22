@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import (
@@ -12,6 +13,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -90,6 +92,12 @@ class Project(Base, TimestampMixin):
     #: iterativa (template seleccionado por sección, prompt usado en AI,
     #: thumbnails preview, etc.).
     design_proposals_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    #: v0.26.0 — límite duro de gasto en gpt-image-2 por proyecto.
+    #: Si se supera, RedesignImagesAgent para + ResidualTask con slots
+    #: no rellenos. Default 1.00 USD.
+    image_generation_budget_usd: Mapped[Decimal | None] = mapped_column(
+        Numeric(precision=6, scale=2), default=Decimal("1.00")
+    )
 
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)

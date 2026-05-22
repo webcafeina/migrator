@@ -2240,6 +2240,88 @@ Tras 3 sprints invertidos en replicar fielmente el origen:
 
 ---
 
+## ADR-056 — Sprint v0.26.0: Híbrido por sección + Image generation + Thumbnails preview (Figma OUT)
+
+**Fecha**: 2026-05-22 (sesión vespertina, post v0.25.1)
+**Estado**: Aceptada
+
+### Contexto
+
+v0.25.0 instaló el Brief JSON canónico y los pipelines Templates/AI
+mutuamente exclusivos a nivel proyecto. v0.25.1 cerró la edición
+iterativa básica desde el dashboard. Quedaban 3 limitaciones para
+cerrar el MVP del pivote:
+
+1. **Granularidad gruesa**: `design_method` único por proyecto obliga
+   a elegir "todo templates o todo AI". Lo natural es mezclar
+   (hero/cta = AI generativo + features/services = templates curados).
+2. **Sin preview visual real**: la pantalla `/preview` solo muestra
+   metadata. Figma se valoró como capa de preview pero la investigación
+   técnica concluye que la REST API es read-only y el MCP de Figma no
+   permite generación persistente (solo `create_new_file` vacío +
+   `upload_assets` imágenes + `use_figma` JS ephemeral).
+3. **Imágenes faltantes/feas del origen** lastran el rediseño. OpenAI
+   publicó **gpt-image-2** en abril 2026 con reasoning + 16 reference
+   images + multilingual text accurate → rellena slots brand-consistent
+   por ~$0.05/imagen.
+
+### Decisión
+
+1. **Figma OUT**. Sustituido por **thumbnails Playwright sobre WP draft**.
+   Las páginas quedan como `draft` tras `wp_deployer`; un sidecar
+   Playwright sobre esos drafts da fidelidad 100% sin Figma.
+2. **Hybrid por sección**: cada sección del Brief gana `design_method`.
+   Heurística: hero/cta → ai, resto → templates. Operador puede
+   sobreescribir por sección desde `/preview` o por proyecto via wizard.
+3. **OpenAI sube a gpt-5.5** para redesign (abril 2026, $5/$30 per MTok).
+   Cambio vía env var.
+4. **gpt-image-2** rellena slots de imagen vacíos en el Brief. Quality
+   medium default. Budget por proyecto en `Project.image_generation_budget_usd`
+   (default $1.00).
+5. **Wizard default = Híbrido**. El operador sigue pudiendo elegir
+   Templates puro o AI puro si lo necesita.
+
+### Implementación
+
+- Migración Alembic 0021 (Project.image_generation_budget_usd +
+  BricksPage.preview_thumbnail_url + preview_captured_at).
+- `RedesignTemplatesAgent` ahora corre en `templates` Y en Hybrid
+  (None). Skip secciones AI + emite placeholders `_pending_ai=True`
+  con marker `_brief_section_index`.
+- `RedesignAIAgent` añade path Hybrid sección a sección. Llama
+  `OpenAIClient.generate_section_redesign` por cada sección AI y
+  mergea con bricks_pages existente reemplazando placeholders.
+- `RedesignImagesAgent` (NUEVO) genera imágenes con gpt-image-2 para
+  slots vacíos, persiste Asset, actualiza Brief.asset_id + metadata.
+  Budget tracking duro con ResidualTask si se supera.
+- `PreviewThumbnailsAgent` (NUEVO) captura Playwright sobre WP draft
+  tras `wp_deployer`. Sube a R2 o local. ResidualTask si falla.
+- API: nuevos endpoints `POST /preview/regenerate-section` y
+  `POST /preview/regenerate-image`.
+- Dashboard `/preview` muestra thumbnails + sections con dropdown
+  design_method + botones regenerar sección/imagen + budget tracking.
+
+### Consecuencias
+
+- **Pros**: granularidad fina, preview visual fiel, imágenes IA
+  brand-consistent, wizard simplificado (Híbrido default cubre 80%
+  de casos).
+- **Contras**: coste agregado (gpt-5.5 ~2× gpt-4o + image gen
+  $0.20-0.40 típico → $1-5/proyecto en Hybrid; hasta $15 en AI puro).
+- **Riesgos**: gpt-5.5 puede cambiar shape tool_use (fallback gpt-4o
+  si retries fallan); image runaway (mitigación: budget duro +
+  warning UI 80%); Figma queda fuera del producto (revisable con
+  plugin custom en futuro sprint).
+
+### Tarea de seguimiento
+
+- **v0.26.0 B9**: E2E manual con cliente real (Templates + AI +
+  Hybrid + Image gen). Output `docs/e2e-v026.md`.
+- **v0.26.1+**: thumbnails real-time post-regenerate-section.
+- **v0.27.0**: modernizar imágenes existentes feas, no solo slots vacíos.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

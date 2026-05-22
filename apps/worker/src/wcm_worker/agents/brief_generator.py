@@ -324,7 +324,9 @@ class BriefGeneratorAgent(BaseAgent):
                 "slug": page.slug or "/",
                 "title": page.title or page.slug or "Página",
                 "intent": self._infer_page_intent(page, blocks),
-                "sections": self._blocks_to_sections(blocks),
+                "sections": self._blocks_to_sections(
+                    blocks, project_design_method=project.design_method
+                ),
             }
             brief_pages.append(brief_page)
 
@@ -366,25 +368,34 @@ class BriefGeneratorAgent(BaseAgent):
         return "other"
 
     def _blocks_to_sections(
-        self, blocks: list[ContentBlock]
+        self,
+        blocks: list[ContentBlock],
+        *,
+        project_design_method: str | None = None,
     ) -> list[dict[str, Any]]:
         """Convierte ContentBlocks → Brief.sections agrupados.
 
+        v0.26.0 — cada sección incluye `design_method` (`templates` |
+        `ai`) asignado por heurística (ver `_section_design_method`).
+        Override por proyecto: si `project_design_method` está en
+        ("templates", "ai"), fuerza todas a ese valor. Si es None
+        (Hybrid), respeta la heurística por tipo de sección.
+
         Brief.section shape (depende del type):
-        - hero: {type, headline, subheadline, cta, image_asset_id}
-        - heading: {type, text, level}
-        - text: {type, html}
-        - image: {type, asset_id, alt}
-        - cta: {type, text, url}
-        - gallery: {type, image_urls, layout}
-        - grid: {type, items}
-        - testimonial: {type, items}
-        - pricing: {type, tiers}
-        - faq: {type, items}
-        - form: {type, fields}
-        - slider: {type, slides}
-        - tabs: {type, tabs}
-        - accordion: {type, panels}
+        - hero: {type, headline, subheadline, cta, image_asset_id, design_method}
+        - heading: {type, text, level, design_method}
+        - text: {type, html, design_method}
+        - image: {type, asset_id, alt, design_method}
+        - cta: {type, text, url, design_method}
+        - gallery: {type, image_urls, layout, design_method}
+        - grid: {type, items, design_method}
+        - testimonial: {type, items, design_method}
+        - pricing: {type, tiers, design_method}
+        - faq: {type, items, design_method}
+        - form: {type, fields, design_method}
+        - slider: {type, slides, design_method}
+        - tabs: {type, tabs, design_method}
+        - accordion: {type, panels, design_method}
         - nav: skip (va en navigation top-level)
         - footer: skip (va en footer top-level)
         """
@@ -394,7 +405,12 @@ class BriefGeneratorAgent(BaseAgent):
             cj = b.content_json or {}
             if bt in ("nav", "footer", "unknown"):
                 continue
-            section: dict[str, Any] = {"type": bt}
+            section: dict[str, Any] = {
+                "type": bt,
+                "design_method": self._section_design_method(
+                    bt, project_design_method
+                ),
+            }
             # Copia keys útiles del content_json al section.
             for key in (
                 "headline", "subheadline", "text", "html", "level",
@@ -407,3 +423,24 @@ class BriefGeneratorAgent(BaseAgent):
                     section[key] = cj[key]
             sections.append(section)
         return sections
+
+    #: v0.26.0 — tipos que se generan con AI por defecto en modo Hybrid.
+    #: Heros + CTAs piden creatividad copy + visual; el resto rinde
+    #: mejor con templates curados por categoría.
+    _AI_BY_DEFAULT_TYPES = frozenset({"hero", "cta", "ai_generated"})
+
+    @classmethod
+    def _section_design_method(
+        cls,
+        section_type: str,
+        project_design_method: str | None,
+    ) -> str:
+        """Decide el `design_method` por sección.
+
+        - Si el proyecto fuerza `templates` o `ai` → todas iguales.
+        - Si el proyecto es Hybrid (None) → heurística por tipo:
+          hero/cta → `ai`, el resto → `templates`.
+        """
+        if project_design_method in ("templates", "ai"):
+            return project_design_method
+        return "ai" if section_type in cls._AI_BY_DEFAULT_TYPES else "templates"

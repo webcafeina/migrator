@@ -110,7 +110,11 @@ class RedesignTemplatesAgent(BaseAgent):
         if project is None:
             raise RedesignAgentError(f"Project {ctx.project_id} no existe")
 
-        if project.design_method != "templates":
+        # v0.26.0 — corre en modo `templates` puro Y en modo Hybrid (None).
+        # En Hybrid, cubre solo las secciones con design_method=templates
+        # y emite placeholders para las secciones AI (que RedesignAIAgent
+        # rellenará después).
+        if project.design_method not in (None, "templates"):
             return AgentResult(
                 summary=(
                     f"Project {project.id}: design_method={project.design_method!r} "
@@ -168,10 +172,22 @@ class RedesignTemplatesAgent(BaseAgent):
                 continue
 
             page_content: list[dict[str, Any]] = []
-            for section in sections:
+            for section_index, section in enumerate(sections):
                 total_sections += 1
                 section_type = section.get("type")
                 if not section_type:
+                    continue
+                # v0.26.0 — Hybrid: skip secciones AI; emite placeholder
+                # vacío que RedesignAIAgent rellenará después. Mantener
+                # el marker `_brief_section_index` permite identificar
+                # qué chunk pertenece a qué sección del Brief.
+                section_method = section.get("design_method")
+                if section_method == "ai":
+                    placeholder = self._build_ai_placeholder(
+                        section_index=section_index,
+                        section_type=section_type,
+                    )
+                    page_content.extend(placeholder)
                     continue
                 picked = picker.pick(
                     section_type=section_type,
@@ -191,8 +207,12 @@ class RedesignTemplatesAgent(BaseAgent):
                     slot_map=picked.slot_map,
                 )
                 # `applied` shape: {"content": [...]}. Concatenamos los
-                # elementos al page content.
-                page_content.extend(applied.get("content") or [])
+                # elementos al page content. v0.26.0 — añadimos marker
+                # `_brief_section_index` al root para que el merge en
+                # /preview/regenerate-section funcione.
+                applied_content = applied.get("content") or []
+                self._tag_root_section(applied_content, section_index)
+                page_content.extend(applied_content)
                 templates_used += 1
 
             if not page_content:
@@ -284,6 +304,52 @@ class RedesignTemplatesAgent(BaseAgent):
                 status=ScrapeStatus.SUCCESS,
             )
             ctx.session.add(bp)
+
+    @staticmethod
+    def _tag_root_section(
+        content: list[dict[str, Any]], section_index: int
+    ) -> None:
+        """v0.26.0 — marca el primer elemento `section` (parent='0') del
+        subtree con `settings._brief_section_index = j` para que el merge
+        de regenerate-section sepa identificarlo.
+        """
+        for el in content:
+            if el.get("parent") == "0" and el.get("name") == "section":
+                settings = el.setdefault("settings", {})
+                settings["_brief_section_index"] = section_index
+                break
+
+    @staticmethod
+    def _build_ai_placeholder(
+        *, section_index: int, section_type: str
+    ) -> list[dict[str, Any]]:
+        """v0.26.0 — placeholder vacío para secciones con `design_method=ai`.
+
+        Una única `section` root sin hijos, marcada con `_pending_ai: True`.
+        Si RedesignAIAgent falla o no corre, el operador ve un hueco en
+        el draft WP y puede regenerar manualmente desde dashboard.
+        """
+        # ID determinista (mismo en re-runs sin perder identidad).
+        section_id = f"pai{section_index:03d}"[:6]
+        return [
+            {
+                "id": section_id,
+                "name": "section",
+                "parent": "0",
+                "children": [],
+                "settings": {
+                    "_brief_section_index": section_index,
+                    "_brief_section_type": section_type,
+                    "_pending_ai": True,
+                    "_padding": {
+                        "top": "80px",
+                        "right": "20px",
+                        "bottom": "80px",
+                        "left": "20px",
+                    },
+                },
+            }
+        ]
 
     def _emit_residual_for_unpicked(
         self,

@@ -183,3 +183,88 @@ def test_env_override_catalog_dir(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setenv("WCM_TEMPLATES_CATALOG_DIR", str(tmp_path))
     agent = RedesignTemplatesAgent()
     assert agent.catalog_dir == tmp_path
+
+
+# ---------- v0.26.0 — Hybrid mode (placeholders + marker) ----------
+
+
+def test_corre_en_hybrid_design_method_none(fake_session) -> None:
+    """v0.26.0 — Hybrid: design_method=None → corre (no skipped)."""
+    brief = {
+        "business": {"name": "X", "sector": "agency", "tone_of_voice": "formal"},
+        "brand": {"colors": {}, "fonts": {}},
+        "pages": [{
+            "slug": "home", "title": "H", "intent": "landing",
+            "sections": [{"type": "hero", "design_method": "templates",
+                          "headline": "Hi"}],
+        }],
+    }
+    project = _project(design_method=None, brief_json=brief)
+    ctx = _ctx(fake_session, project)
+    result = RedesignTemplatesAgent(catalog_dir=MOCK_CATALOG).run(ctx)
+    assert result.outputs.get("skipped") is not True
+
+
+def test_emite_placeholder_para_secciones_ai_en_hybrid(fake_session) -> None:
+    """Hybrid: secciones con design_method=ai generan placeholder vacío
+    con marker `_pending_ai=True`, no llaman al SectionPicker."""
+    brief = {
+        "business": {"name": "X", "sector": "agency", "tone_of_voice": "formal"},
+        "brand": {"colors": {}, "fonts": {}},
+        "pages": [{
+            "slug": "home", "title": "H", "intent": "landing",
+            "sections": [
+                {"type": "hero", "design_method": "ai", "headline": "Hi"},
+                {"type": "features", "design_method": "templates",
+                 "items": [{"title": "F1", "description": "d1"}]},
+            ],
+        }],
+    }
+    project = _project(design_method=None, brief_json=brief)
+    fake_session.get.return_value = project
+    # Captura del add para inspeccionar lo upserted.
+    added_pages: list[MagicMock] = []
+    fake_session.add.side_effect = lambda obj: added_pages.append(obj)
+    fake_session.execute.return_value.scalar_one_or_none.return_value = None
+    ctx = AgentContext(session=fake_session, project_id=project.id)
+
+    RedesignTemplatesAgent(catalog_dir=MOCK_CATALOG).run(ctx)
+
+    # BricksPage debe haberse creado.
+    bp = next(p for p in added_pages if hasattr(p, "bricks_json"))
+    content = bp.bricks_json
+    # El primer elemento es el placeholder de la sección AI.
+    roots = [el for el in content if el.get("parent") == "0"]
+    ai_root = roots[0]
+    assert ai_root["settings"]["_pending_ai"] is True
+    assert ai_root["settings"]["_brief_section_index"] == 0
+    assert ai_root["settings"]["_brief_section_type"] == "hero"
+    # El segundo root tiene el marker section_index=1.
+    template_root = roots[1]
+    assert template_root["settings"]["_brief_section_index"] == 1
+    assert "_pending_ai" not in template_root["settings"]
+
+
+def test_tag_root_section_helper() -> None:
+    """Helper estático: añade _brief_section_index al primer root section."""
+    content = [
+        {"id": "sec000", "name": "section", "parent": "0", "settings": {}},
+        {"id": "child0", "name": "text", "parent": "sec000", "settings": {}},
+    ]
+    RedesignTemplatesAgent._tag_root_section(content, section_index=5)
+    assert content[0]["settings"]["_brief_section_index"] == 5
+    # No toca a los descendientes.
+    assert "_brief_section_index" not in content[1]["settings"]
+
+
+def test_build_ai_placeholder_estructura() -> None:
+    """Helper estático: placeholder es 1 section vacía con markers."""
+    ph = RedesignTemplatesAgent._build_ai_placeholder(
+        section_index=3, section_type="hero",
+    )
+    assert len(ph) == 1
+    assert ph[0]["name"] == "section"
+    assert ph[0]["parent"] == "0"
+    assert ph[0]["settings"]["_pending_ai"] is True
+    assert ph[0]["settings"]["_brief_section_index"] == 3
+    assert ph[0]["settings"]["_brief_section_type"] == "hero"

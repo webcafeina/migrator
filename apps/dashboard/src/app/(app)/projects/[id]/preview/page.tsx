@@ -12,6 +12,15 @@ import { ProjectPoller } from "../_components/project-poller";
 
 import { PreviewPanel } from "./_components/preview-panel";
 
+interface PreviewSectionInfo {
+  type: string;
+  design_method: string | null;
+  has_ai_image: boolean;
+  is_placeholder: boolean;
+  asset_id: number | null;
+  headline: string | null;
+}
+
 interface PreviewPageInfo {
   slug: string;
   title: string;
@@ -21,6 +30,9 @@ interface PreviewPageInfo {
   wp_post_id: number | null;
   wp_post_status: string | null;
   last_regenerated_at: string | null;
+  preview_thumbnail_url?: string | null;
+  preview_captured_at?: string | null;
+  sections?: PreviewSectionInfo[];
 }
 
 interface PreviewResponse {
@@ -29,6 +41,8 @@ interface PreviewResponse {
   design_method: string | null;
   brief: Record<string, unknown> | null;
   pages: PreviewPageInfo[];
+  image_generation_cost_usd?: number;
+  image_generation_budget_usd?: number;
 }
 
 /**
@@ -81,6 +95,8 @@ export default async function PreviewPage({
         brief={preview.brief}
         pages={preview.pages}
         projectStatus={preview.project_status}
+        imageGenerationCostUsd={preview.image_generation_cost_usd ?? 0}
+        imageGenerationBudgetUsd={preview.image_generation_budget_usd ?? 1.0}
       />
     </div>
   );

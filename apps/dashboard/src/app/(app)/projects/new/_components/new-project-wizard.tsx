@@ -425,11 +425,43 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
         {step === "design" && (
           <div className="mt-4 space-y-3">
             <p className="text-xs text-muted-foreground">
-              Cómo se construirá visualmente la web rediseñada. Elegir según
-              el proyecto. Default: <strong>Templates</strong> (recomendado para
-              MVP rápido).
+              Cómo se construirá visualmente la web rediseñada. v0.26.0
+              recomienda <strong>Híbrido</strong>: la heurística decide
+              por sección (hero/cta = AI generativo, features/services =
+              templates curados). Puedes sobreescribir por sección desde{" "}
+              <code className="text-wcm-text/80">/preview</code>.
             </p>
             <div className="space-y-2">
+              {/* v0.26.0 — Híbrido (default, design_method=null). */}
+              <label
+                className={cn(
+                  "flex cursor-pointer items-start gap-3 rounded-sm border-2 p-3",
+                  designMethod === ""
+                    ? "border-wcm-accent bg-wcm-accent/10"
+                    : "border-wcm-detail/40 bg-wcm-primary/40 hover:border-wcm-detail",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="w-design"
+                  value=""
+                  checked={designMethod === ""}
+                  onChange={() => setDesignMethod("")}
+                  className="mt-1 h-3.5 w-3.5 cursor-pointer accent-wcm-accent"
+                />
+                <div className="flex-1 text-xs">
+                  <div className="font-semibold text-wcm-text">
+                    ⚖️ Híbrido (recomendado, v0.26.0)
+                  </div>
+                  <div className="text-muted-foreground">
+                    Hero + CTAs con <strong>AI generativo</strong> (OpenAI
+                    gpt-5.5, ~$0.05-0.30 por sección). Features, services,
+                    testimonios, etc. con <strong>templates curados</strong>{" "}
+                    de brickstemplate.com (gratis). Override por sección en
+                    el preview. Coste típico: $1-5/proyecto.
+                  </div>
+                </div>
+              </label>
               <label
                 className={cn(
                   "flex cursor-pointer items-start gap-3 rounded-sm border-2 p-3",
@@ -448,13 +480,13 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
                 />
                 <div className="flex-1 text-xs">
                   <div className="font-semibold text-wcm-text">
-                    🎨 Templates Bricks (determinista, gratis)
+                    🎨 Templates puro (sin AI, gratis)
                   </div>
                   <div className="text-muted-foreground">
-                    Catálogo curado de brickstemplate.com. SectionPicker
-                    elige por sector + tono. SlotMapper rellena placeholders
-                    con el Brief. <strong>Sin coste API</strong>. Calidad
-                    consistente.
+                    Todas las secciones con templates de brickstemplate.com.
+                    Sin llamadas API. Calidad consistente pero menos
+                    diferenciado. Sin imágenes IA en hero (slots vacíos
+                    quedan como ResidualTask).
                   </div>
                 </div>
               </label>
@@ -476,24 +508,17 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
                 />
                 <div className="flex-1 text-xs">
                   <div className="font-semibold text-wcm-text">
-                    🤖 AI generativo (OpenAI gpt-4o)
+                    🤖 AI puro (OpenAI gpt-5.5)
                   </div>
                   <div className="text-muted-foreground">
-                    Genera el JSON Bricks de cada página con prompt+brief.
-                    Más flexible, variabilidad alta. <strong>Coste estimado: $0.30-1.50 por página</strong> ($3-15 por proyecto). Requiere{" "}
-                    <code className="text-wcm-text/80">OPENAI_API_KEY</code>{" "}
-                    en .env.
+                    Todas las páginas generadas con gpt-5.5 (call por
+                    página entera). Más caro y con más variabilidad que
+                    híbrido. Coste estimado: <strong>$3-15 por proyecto</strong>.
+                    Requiere <code className="text-wcm-text/80">OPENAI_API_KEY</code>.
                   </div>
                 </div>
               </label>
             </div>
-            {!designMethod && (
-              <p className="text-[11px] text-muted-foreground italic">
-                Si dejas sin elegir, el pipeline usará el legacy{" "}
-                <code>transpile_bricks</code> v0.24.0 (replicación HTML del
-                origen).
-              </p>
-            )}
           </div>
         )}
 

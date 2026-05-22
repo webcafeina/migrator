@@ -29,6 +29,29 @@
 
 ## Última versión publicada
 
+**v0.26.0** (2026-05-22) — **Híbrido por sección + Image generation + Thumbnails
+preview (Figma OUT)**. Cierra las 3 limitaciones del MVP del pivote v0.25.x:
+- **Hybrid por sección**: cada `pages[i].sections[j]` del Brief gana
+  `design_method` (`templates` | `ai`). Heurística determinista: hero/cta → ai,
+  resto → templates. Override por proyecto via wizard o por sección desde
+  `/preview`. `RedesignAIAgent` refactorizado para llamar
+  `OpenAIClient.generate_section_redesign` sección a sección + merge bricks_json
+  con marker `_brief_section_index`. `RedesignTemplatesAgent` emite placeholders
+  `_pending_ai=True` para secciones AI.
+- **Image generation**: nuevo `RedesignImagesAgent` con gpt-image-2 (~$0.05/img
+  medium). Rellena slots vacíos `asset_id=None` en hero/image/gallery/testimonial.
+  Budget tracking duro vía `Project.image_generation_budget_usd` (default $1.00).
+- **Thumbnails Playwright**: nuevo `PreviewThumbnailsAgent` captura WP draft
+  tras `wp_deployer`, sube a R2 + actualiza `BricksPage.preview_thumbnail_url`.
+  Sustituye Figma (no viable: REST API read-only + MCP limitado).
+- **gpt-5.5** default redesign (lanzado abril 2026, $5/$30 per MTok). Override via env.
+- **Wizard 3 opciones** método de diseño: Híbrido (default) / Templates puro / AI puro.
+- **2 endpoints nuevos**: `POST /preview/regenerate-section` (con design_method override)
+  y `POST /preview/regenerate-image` (con prompt_override). Dashboard `/preview` muestra
+  thumbnail + sections con dropdown + botones regenerar + budget tracking.
+- Migración Alembic 0021 (3 columnas). ADR-056 documenta. 1219 tests backend + 284
+  dashboard verdes. B9 (E2E manual) pendiente.
+
 **v0.25.1** (2026-05-22) — **B7 cerrado**: edición iterativa Dashboard.
 4 endpoints API (`GET /preview`, `PATCH /brief`, `POST /preview/regenerate-page`,
 `POST /preview/approve`) + estado `READY_FOR_PREVIEW` + task Celery

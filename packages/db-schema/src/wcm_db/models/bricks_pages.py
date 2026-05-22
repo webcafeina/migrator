@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import (
+    DateTime,
     Enum,
     ForeignKey,
     Integer,
@@ -52,3 +54,10 @@ class BricksPage(Base, TimestampMixin):
         index=True,
     )
     last_import_error: Mapped[str | None] = mapped_column(Text)
+
+    #: v0.26.0 — URL R2 del thumbnail Playwright sobre el draft WP.
+    #: Lo persiste `PreviewThumbnailsAgent` tras `wp_deployer`.
+    preview_thumbnail_url: Mapped[str | None] = mapped_column(String(500))
+    #: v0.26.0 — timestamp de la última captura. Si `updated_at >
+    #: preview_captured_at`, el thumbnail está stale.
+    preview_captured_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

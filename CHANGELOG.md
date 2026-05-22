@@ -11,6 +11,99 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.26.0] — 2026-05-22
+
+**Híbrido por sección + Image generation + Thumbnails preview** (Figma OUT).
+Cierra las 3 limitaciones del MVP del pivote v0.25.x: granularidad
+gruesa del design_method, ausencia de preview visual real, e imágenes
+faltantes/feas del origen. ADR-056 documenta la decisión completa.
+
+### Added
+
+- **B0** — Migración Alembic 0021:
+  - `Project.image_generation_budget_usd: Numeric(6,2)` (default $1.00)
+    — budget duro de gpt-image-2 por proyecto.
+  - `BricksPage.preview_thumbnail_url: VARCHAR(500)` + `preview_captured_at`
+    para los thumbnails Playwright.
+- **B1** — Brief schema: cada `pages[i].sections[j]` gana `design_method`
+  (`templates` | `ai`). Heurística determinista en `BriefGenerator`:
+  hero/cta → `ai`, resto → `templates`. Override por proyecto vía
+  `Project.design_method` (fuerza todas iguales) o por sección desde
+  `/preview` (B7).
+- **B2** — Refactor `RedesignAIAgent` para modo Hybrid sección-a-sección.
+  Nuevo método `OpenAIClient.generate_section_redesign(brief, page, section)`
+  + system prompt + tool `emit_bricks_section`. Coste estimado por
+  sección: $0.05-0.30 con gpt-5.5 (vs $0.30-1.50 por página entera con
+  gpt-4o).
+- **B3** — Refactor `RedesignTemplatesAgent`: en Hybrid, emite placeholders
+  `_pending_ai=True` para secciones AI con marker `_brief_section_index`
+  + tag root section con index. Helper `_merge_subtree_by_index` mergea
+  los subtrees AI en lugar de los placeholders.
+- **B4** — Pipeline dispatcher Hybrid: `redesign_templates` corre en
+  (`templates`, `None`); `redesign_ai` corre en (`ai`, `None`).
+  Ambas pueden correr en el mismo proyecto.
+- **B5** — `RedesignImagesAgent` (NUEVO): genera imágenes con gpt-image-2
+  para slots vacíos en el Brief (hero/image/gallery/testimonial sin
+  `asset_id`). Quality medium default. Budget tracking duro: si supera
+  `Project.image_generation_budget_usd`, para + ResidualTask. Errores
+  por imagen → ResidualTask sin abortar pipeline. Coste típico:
+  $0.20-0.40/proyecto. Nuevo `OpenAIClient.generate_image(prompt,
+  quality, size)` + `OpenAIImageResult` dataclass + `IMAGE_PRICING_USD`
+  table.
+- **B6** — `PreviewThumbnailsAgent` (NUEVO): captura Playwright sobre
+  WP draft tras `wp_deployer`. Viewport 1280×800, full-page PNG. Sube
+  a R2 si uploader inyectado o guarda local en `WCM_PREVIEW_THUMBS_DIR`.
+  Auth vía Basic con app_password. ResidualTask por página si falla.
+  Sustituye a Figma como capa de preview (no viable técnicamente —
+  ver ADR-056).
+- **B7** — UI Dashboard `/preview` extendida:
+  - Nuevo `GET /projects/{id}/preview` devuelve `pages[].sections[]`
+    + `preview_thumbnail_url` + `image_generation_cost_usd` /
+    `image_generation_budget_usd`.
+  - `POST /projects/{id}/preview/regenerate-section` con
+    `{slug, section_index, design_method?}` — override method de
+    sección + regenerate.
+  - `POST /projects/{id}/preview/regenerate-image` con
+    `{slug, section_index, prompt_override?}` — vacía asset + regenerate.
+  - `PreviewPanel` refactorizado: thumbnail Playwright a la izquierda
+    de cada card de página + lista de secciones con dropdown
+    `design_method` + botones "regenerar sección" / "regenerar imagen"
+    (si tiene imagen IA) + barra de progreso de budget IA.
+  - 5 tests vitest nuevos.
+- **B8** — Wizard "Método de diseño" con 3 opciones:
+  - **Híbrido** (recomendado, default) → `design_method=null`. Hero/CTA
+    con AI generativo, resto con templates.
+  - **Templates puro** → todo templates.
+  - **AI puro** → todo gpt-5.5 a nivel página.
+- **B10** — ADR-056 documenta el sprint completo.
+
+### Changed
+
+- **OpenAI default model_redesign** sube de `gpt-4o` a `gpt-5.5`
+  (lanzado abril 2026, $5/$30 per MTok). Override via env
+  `OPENAI_MODEL_REDESIGN=gpt-4o`. Nuevos pricing entries `gpt-5.5` y
+  `gpt-5.5-pro` en `PRICING_USD_PER_MTOK`.
+- **`.env.example`** añade `OPENAI_MODEL_IMAGE`, `OPENAI_IMAGE_QUALITY`,
+  `OPENAI_IMAGE_DEFAULT_BUDGET_USD`. Cambia el default de
+  `OPENAI_MODEL_REDESIGN` a `gpt-5.5`.
+
+### Removed
+
+- **Figma como capa de preview**. La investigación técnica concluyó
+  que la REST API de Figma es read-only y el MCP solo expone
+  `create_new_file` vacío + `upload_assets` imágenes + `use_figma`
+  JS ephemeral, sin persistencia útil para preview-before-approve.
+  Sustituido por Playwright thumbnails sobre WP draft (B6). Plugin
+  Figma custom queda como tarea no comprometida para sprint futuro.
+
+### Pendiente (no bloquea release)
+
+- **B9** — E2E manual con cliente real (Templates + AI + Hybrid +
+  Image gen). Output `docs/e2e-v026.md` con screenshots + tiempos +
+  costes reales.
+
+---
+
 ## [0.25.1] — 2026-05-22
 
 **B7 — Edición iterativa Dashboard preview + regenerate** (diferido del
