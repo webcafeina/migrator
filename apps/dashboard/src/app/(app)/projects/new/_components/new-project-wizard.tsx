@@ -15,13 +15,15 @@ interface NewProjectWizardProps {
   initialLead: LeadRead | null;
 }
 
-type StepKey = "origen" | "destino" | "features" | "preflight";
+type StepKey = "origen" | "business" | "design" | "destino" | "features" | "preflight";
 
 const STEPS: Array<{ key: StepKey; label: string; short: string }> = [
   { key: "origen", label: "Origen + credenciales (opcional)", short: "1 · Origen" },
-  { key: "destino", label: "Destino y dominio", short: "2 · Destino" },
-  { key: "features", label: "Features del proyecto", short: "3 · Features" },
-  { key: "preflight", label: "Comprobación y arranque", short: "4 · Arranque" },
+  { key: "business", label: "Sobre el negocio (v0.25.0)", short: "2 · Negocio" },
+  { key: "design", label: "Método de diseño (v0.25.0)", short: "3 · Diseño" },
+  { key: "destino", label: "Destino y dominio", short: "4 · Destino" },
+  { key: "features", label: "Features del proyecto", short: "5 · Features" },
+  { key: "preflight", label: "Comprobación y arranque", short: "6 · Arranque" },
 ];
 
 /**
@@ -55,7 +57,17 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
   const [webflowApiToken, setWebflowApiToken] = useState("");
   const [webflowSiteId, setWebflowSiteId] = useState("");
 
-  // --- Paso 2: Destino ---
+  // --- Paso 2 v0.25.0: Sobre el negocio ---
+  const [businessDescription, setBusinessDescription] = useState("");
+  const [businessSector, setBusinessSector] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [toneOfVoice, setToneOfVoice] = useState("");
+  const [uspsInput, setUspsInput] = useState(""); // CSV editable
+
+  // --- Paso 3 v0.25.0: Método de diseño ---
+  const [designMethod, setDesignMethod] = useState<"templates" | "ai" | "">("");
+
+  // --- Paso 4: Destino ---
   const [targetDomain, setTargetDomain] = useState("");
 
   // --- Paso 3: Features ---
@@ -76,6 +88,11 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
     sourceUrl.trim() !== "" &&
     clientName.trim() !== "" &&
     /^https?:\/\//.test(sourceUrl.trim());
+  // v0.25.0 — `business` puede avanzar SIEMPRE (campos vacíos los infiere
+  // BriefGenerator vía OpenAI; operador puede saltarlos). `design` puede
+  // avanzar SIEMPRE (default templates si vacío).
+  const canAdvanceBusiness = true;
+  const canAdvanceDesign = true;
   const canAdvanceDestino = targetDomain.trim() !== "";
   const canAdvanceFeatures = true;
   const canStart = preflight?.can_start === true && !pending;
@@ -100,6 +117,20 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
       };
       if (builder && builder !== "unknown") body.builder_source = builder;
       if (initialLead) body.lead_id = initialLead.id;
+
+      // v0.25.0 — Brief fields + design_method.
+      if (businessDescription.trim())
+        body.business_description = businessDescription.trim();
+      if (businessSector) body.business_sector = businessSector;
+      if (targetAudience.trim())
+        body.target_audience = targetAudience.trim();
+      if (toneOfVoice) body.tone_of_voice = toneOfVoice;
+      const uspsList = uspsInput
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (uspsList.length > 0) body.usps_json = uspsList;
+      if (designMethod) body.design_method = designMethod;
 
       const proj = await api.post<ProjectRead>("/api/v1/projects", body);
       setProjectId(proj.id);
@@ -310,6 +341,162 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
           </div>
         )}
 
+        {step === "business" && (
+          <div className="mt-4 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Los campos vacíos los inferirá la IA (gpt-4o-mini ~$0.01) cuando
+              corra `BriefGenerator`. Edítalos manualmente si prefieres
+              control directo o si la IA no acierta.
+            </p>
+            <Field htmlFor="w-bdesc" label="Descripción del negocio (2-4 frases)">
+              <textarea
+                id="w-bdesc"
+                rows={3}
+                value={businessDescription}
+                onChange={(e) => setBusinessDescription(e.target.value)}
+                placeholder="Estudio de diseño de joyería artesanal en Madrid…"
+                className={inputClass}
+              />
+            </Field>
+            <Field htmlFor="w-bsector" label="Sector">
+              <select
+                id="w-bsector"
+                value={businessSector}
+                onChange={(e) => setBusinessSector(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">— auto-detectar con IA —</option>
+                <option value="restaurant">Restaurante / Hostelería</option>
+                <option value="agency">Agencia creativa / diseño</option>
+                <option value="consulting">Consultoría</option>
+                <option value="services">Servicios profesionales</option>
+                <option value="ecommerce">E-commerce</option>
+                <option value="portfolio">Portfolio / artista</option>
+                <option value="fitness">Fitness / deporte</option>
+                <option value="hotel">Hotel / alojamiento</option>
+                <option value="healthcare">Salud / clínica</option>
+                <option value="legal">Legal / abogados</option>
+                <option value="education">Educación / formación</option>
+                <option value="realestate">Inmobiliaria</option>
+                <option value="beauty">Belleza / estética</option>
+                <option value="automotive">Automoción</option>
+                <option value="other">Otro</option>
+              </select>
+            </Field>
+            <Field htmlFor="w-audience" label="Audiencia objetivo (1-2 frases)">
+              <textarea
+                id="w-audience"
+                rows={2}
+                value={targetAudience}
+                onChange={(e) => setTargetAudience(e.target.value)}
+                placeholder="Mujeres 35-55 con poder adquisitivo alto…"
+                className={inputClass}
+              />
+            </Field>
+            <Field htmlFor="w-tone" label="Tono de voz">
+              <select
+                id="w-tone"
+                value={toneOfVoice}
+                onChange={(e) => setToneOfVoice(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">— auto-detectar con IA —</option>
+                <option value="formal">Formal</option>
+                <option value="casual">Casual</option>
+                <option value="friendly">Cercano / amigable</option>
+                <option value="premium">Premium / lujo</option>
+                <option value="playful">Lúdico / divertido</option>
+                <option value="serious">Serio / profesional</option>
+              </select>
+            </Field>
+            <Field htmlFor="w-usps" label="USPs (separados por coma, 3-5)">
+              <input
+                id="w-usps"
+                type="text"
+                value={uspsInput}
+                onChange={(e) => setUspsInput(e.target.value)}
+                placeholder="Joyería artesanal, Piezas únicas, Diseños exclusivos"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        )}
+
+        {step === "design" && (
+          <div className="mt-4 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Cómo se construirá visualmente la web rediseñada. Elegir según
+              el proyecto. Default: <strong>Templates</strong> (recomendado para
+              MVP rápido).
+            </p>
+            <div className="space-y-2">
+              <label
+                className={cn(
+                  "flex cursor-pointer items-start gap-3 rounded-sm border-2 p-3",
+                  designMethod === "templates"
+                    ? "border-wcm-accent bg-wcm-accent/10"
+                    : "border-wcm-detail/40 bg-wcm-primary/40 hover:border-wcm-detail",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="w-design"
+                  value="templates"
+                  checked={designMethod === "templates"}
+                  onChange={() => setDesignMethod("templates")}
+                  className="mt-1 h-3.5 w-3.5 cursor-pointer accent-wcm-accent"
+                />
+                <div className="flex-1 text-xs">
+                  <div className="font-semibold text-wcm-text">
+                    🎨 Templates Bricks (determinista, gratis)
+                  </div>
+                  <div className="text-muted-foreground">
+                    Catálogo curado de brickstemplate.com. SectionPicker
+                    elige por sector + tono. SlotMapper rellena placeholders
+                    con el Brief. <strong>Sin coste API</strong>. Calidad
+                    consistente.
+                  </div>
+                </div>
+              </label>
+              <label
+                className={cn(
+                  "flex cursor-pointer items-start gap-3 rounded-sm border-2 p-3",
+                  designMethod === "ai"
+                    ? "border-wcm-accent bg-wcm-accent/10"
+                    : "border-wcm-detail/40 bg-wcm-primary/40 hover:border-wcm-detail",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="w-design"
+                  value="ai"
+                  checked={designMethod === "ai"}
+                  onChange={() => setDesignMethod("ai")}
+                  className="mt-1 h-3.5 w-3.5 cursor-pointer accent-wcm-accent"
+                />
+                <div className="flex-1 text-xs">
+                  <div className="font-semibold text-wcm-text">
+                    🤖 AI generativo (OpenAI gpt-4o)
+                  </div>
+                  <div className="text-muted-foreground">
+                    Genera el JSON Bricks de cada página con prompt+brief.
+                    Más flexible, variabilidad alta. <strong>Coste estimado: $0.30-1.50 por página</strong> ($3-15 por proyecto). Requiere{" "}
+                    <code className="text-wcm-text/80">OPENAI_API_KEY</code>{" "}
+                    en .env.
+                  </div>
+                </div>
+              </label>
+            </div>
+            {!designMethod && (
+              <p className="text-[11px] text-muted-foreground italic">
+                Si dejas sin elegir, el pipeline usará el legacy{" "}
+                <code>transpile_bricks</code> v0.24.0 (replicación HTML del
+                origen).
+              </p>
+            )}
+          </div>
+        )}
+
         {step === "destino" && (
           <div className="mt-4 space-y-3">
             <Field htmlFor="w-target" label="Dominio destino (WordPress) *">
@@ -450,6 +637,8 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
             type="button"
             onClick={() => {
               if (step === "origen" && !canAdvanceOrigen) return;
+              if (step === "business" && !canAdvanceBusiness) return;
+              if (step === "design" && !canAdvanceDesign) return;
               if (step === "destino" && !canAdvanceDestino) return;
               if (step === "features" && !canAdvanceFeatures) return;
               goTo(STEPS[stepIdx + 1]!.key);

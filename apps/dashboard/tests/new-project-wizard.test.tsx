@@ -44,12 +44,14 @@ function _lead(over: Partial<LeadRead> = {}): LeadRead {
 }
 
 describe("NewProjectWizard", () => {
-  it("renderiza los 4 steps en el stepper superior", () => {
+  it("renderiza los 6 steps en el stepper superior (v0.25.0)", () => {
     render(<NewProjectWizard initialLead={null} />);
     expect(screen.getByText(/1 · Origen/)).toBeTruthy();
-    expect(screen.getByText(/2 · Destino/)).toBeTruthy();
-    expect(screen.getByText(/3 · Features/)).toBeTruthy();
-    expect(screen.getByText(/4 · Arranque/)).toBeTruthy();
+    expect(screen.getByText(/2 · Negocio/)).toBeTruthy(); // v0.25.0
+    expect(screen.getByText(/3 · Diseño/)).toBeTruthy(); // v0.25.0
+    expect(screen.getByText(/4 · Destino/)).toBeTruthy();
+    expect(screen.getByText(/5 · Features/)).toBeTruthy();
+    expect(screen.getByText(/6 · Arranque/)).toBeTruthy();
   });
 
   it("pre-rellena URL + cliente + builder desde initialLead", () => {
@@ -73,10 +75,13 @@ describe("NewProjectWizard", () => {
     expect(nextBtn.hasAttribute("disabled")).toBe(true);
   });
 
-  it("paso 1 → paso 2: navega si campos válidos", () => {
+  it("paso 1 → paso 2 (negocio): navega si campos válidos", () => {
     render(<NewProjectWizard initialLead={_lead()} />);
     fireEvent.click(screen.getByRole("button", { name: /Siguiente/ }));
-    expect(screen.getByLabelText("Dominio destino (WordPress) *")).toBeTruthy();
+    // v0.25.0 — paso 2 ahora es "negocio", no "destino".
+    expect(
+      screen.getByLabelText("Descripción del negocio (2-4 frases)"),
+    ).toBeTruthy();
   });
 
   it("ofrece sección credenciales si builder es wix o webflow", () => {

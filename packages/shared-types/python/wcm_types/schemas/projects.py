@@ -26,6 +26,17 @@ class ProjectBase(WcmModel):
 class ProjectCreate(ProjectBase):
     lead_id: int | None = None
     hosting_target_json: dict[str, Any] | None = None
+    # v0.25.0 — Brief fields opcionales. Si vacíos, BriefGenerator
+    # auto-detecta via OpenAI gpt-4o-mini.
+    business_description: str | None = None
+    business_sector: str | None = Field(default=None, max_length=80)
+    target_audience: str | None = None
+    tone_of_voice: Literal[
+        "formal", "casual", "friendly", "premium", "playful", "serious"
+    ] | None = None
+    usps_json: list[str] | None = None
+    # v0.25.0 — método de generación del diseño. NULL = legacy v0.24.0.
+    design_method: Literal["templates", "ai"] | None = None
 
 
 class ProjectUpdate(WcmModel):
