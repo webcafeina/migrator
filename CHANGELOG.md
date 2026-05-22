@@ -11,6 +11,44 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.23.1] — 2026-05-22
+
+Hotfix puntual — desactivar `ai_assist` del pipeline canónico.
+
+### Changed
+
+- **`apps/worker/.../pipeline.py`** — `ai_assist` fuera de `_DEFAULT_PHASES`. Import comentado pero NO borrado.
+- **`apps/dashboard/.../pipeline-stepper.tsx`** — `ai_assist` fuera del `_PHASE_ORDER` (16 steps canónicos, era 17). Evita pintar un step "pending" eterno en proyectos nuevos.
+
+### Why
+
+Tier free Anthropic limita ~5 req/min. Con concurrency=2 + retries=5 + pausa 60s en 429, solo el **6-7% de candidatos AI se procesaba con éxito** (~10 bloques/proyecto sobre 145 candidatos). A cambio: +25 min de pipeline por proyecto + coste API. El operador decidió que no aporta valor neto. Los bloques que antes resolvía AI ahora caen directos a `ResidualTask` con captura (mismo final state que cuando AI agotaba retries).
+
+### Cómo reactivar
+
+Si en algún momento se sube a tier de pago Anthropic (más de 50 req/min):
+
+```python
+# apps/worker/src/wcm_worker/pipeline.py
+from wcm_worker.agents.ai_assist import AiAssistAgent  # descomentar
+# y restaurar la línea en _DEFAULT_PHASES:
+_PhaseSpec("ai_assist", AiAssistAgent, required=False),
+```
+
+```tsx
+// apps/dashboard/src/app/(app)/projects/[id]/_components/pipeline-stepper.tsx
+{ name: "ai_assist", label: "Revisión visual con Claude (secciones complejas)", short: "AI" },
+```
+
+### Preserved
+
+- `apps/worker/src/wcm_worker/agents/ai_assist.py` — agente completo intacto.
+- `apps/worker/src/wcm_worker/integrations/claude_vision.py` — cliente Anthropic intacto.
+- `packages/db-schema/.../models/ai_section_cache.py` — tabla de cache se mantiene (datos históricos).
+- Tests unitarios de ambos siguen verdes.
+
+---
+
 ## [0.23.0] — 2026-05-21
 
 Sprint **Element-level styling — Bricks editable nativo con fidelidad real**.

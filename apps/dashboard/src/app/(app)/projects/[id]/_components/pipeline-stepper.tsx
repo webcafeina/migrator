@@ -24,7 +24,10 @@ const _PHASE_ORDER: Array<{ name: string; label: string; short: string }> = [
   { name: "optimize_assets", label: "Optimización de assets (WebP, fonts)", short: "Assets" },
   { name: "detect_multilang", label: "Detección de idiomas", short: "Idiomas" },
   { name: "theme_styles", label: "Síntesis de Theme Styles (colores + tipografía)", short: "Theme" },
-  { name: "ai_assist", label: "Revisión visual con Claude (secciones complejas)", short: "AI" },
+  // v0.23.1 — `ai_assist` retirado del stepper canónico (mismo cambio
+  // que en `apps/worker/.../pipeline.py:_DEFAULT_PHASES`). Si se reactiva,
+  // descomentar también esta línea para que el step vuelva a aparecer.
+  // { name: "ai_assist", label: "Revisión visual con Claude (secciones complejas)", short: "AI" },
   { name: "transpile_bricks", label: "Transpilación a Bricks JSON", short: "Bricks" },
   { name: "deploy_wp", label: "Despliegue en WordPress destino", short: "Deploy WP" },
   { name: "migrate_woo", label: "Migración WooCommerce", short: "Woo" },

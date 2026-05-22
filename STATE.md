@@ -29,6 +29,12 @@
 
 ## Última versión publicada
 
+**v0.23.1** (2026-05-22) — hotfix: `ai_assist` desactivado del pipeline
+canónico (tier free Anthropic no rinde, 6-7% éxito a costa de 25 min
+extra/proyecto). Código del agente y cliente Claude Vision intactos
+para reactivar cuando se suba a tier de pago. Bloques candidatos
+ahora caen directos a `ResidualTask` con captura vía `map_unknown`.
+
 **v0.23.0** (2026-05-21) — sprint **Element-level styling: Bricks
 editable nativo con fidelidad real**. La raíz del problema visual no
 era "poca AI" sino que los mappers atómicos no aplicaban NINGÚN

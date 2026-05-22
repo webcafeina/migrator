@@ -40,12 +40,14 @@ describe("PipelineStepper", () => {
     expect(screen.getByText(/Start/)).toBeTruthy();
   });
 
-  it("renderiza un step por cada fase canónica del pipeline (17 total)", () => {
+  it("renderiza un step por cada fase canónica del pipeline (16 total)", () => {
     const phases = [_phase("scrape_origin", "completed")];
     render(<PipelineStepper phases={phases} />);
     // Cada step lleva un `aria-label` con "N. Label".
+    // v0.23.1 — ai_assist retirado del stepper (decisión operador
+    // 2026-05-22: tier free Anthropic no rinde, ver pipeline.py).
     const items = screen.getAllByRole("listitem");
-    expect(items.length).toBe(17);
+    expect(items.length).toBe(16);
   });
 
   it("primera fase completada usa color accent (lima)", () => {
@@ -60,8 +62,8 @@ describe("PipelineStepper", () => {
     const phases = [_phase("transpile_bricks", "running")];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    // ai_assist se inserta en índice 6 (v0.22.0), por lo que transpile_bricks pasa a índice 7.
-    const target = items[7]!;
+    // v0.23.1 — transpile_bricks vuelve al índice 6 tras quitar ai_assist.
+    const target = items[6]!;
     expect(target.innerHTML).toContain("animate-spin");
   });
 
@@ -69,8 +71,8 @@ describe("PipelineStepper", () => {
     const phases = [_phase("deploy_wp", "failed", { error_log: "SSH timeout" })];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    // deploy_wp pasa a índice 8 tras inserción de ai_assist en v0.22.0.
-    const target = items[8]!;
+    // v0.23.1 — deploy_wp vuelve al índice 7 tras quitar ai_assist.
+    const target = items[7]!;
     expect(target.querySelector("div")?.className).toContain("border-wcm-danger");
   });
 

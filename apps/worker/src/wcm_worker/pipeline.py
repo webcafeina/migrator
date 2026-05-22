@@ -50,7 +50,10 @@ from wcm_worker.agents import (
     WpDeployerAgent,
     WpmlConfiguratorAgent,
 )
-from wcm_worker.agents.ai_assist import AiAssistAgent
+
+# v0.23.1 — `AiAssistAgent` import desactivado junto con su fase del
+# pipeline (ver `_DEFAULT_PHASES`). Descomentar al reactivar la fase.
+# from wcm_worker.agents.ai_assist import AiAssistAgent
 from wcm_worker.agents.base import AgentContext
 from wcm_worker.agents.theme_styles import ThemeStylesAgent
 from wcm_worker.errors import (
@@ -88,12 +91,16 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # si el scraper no capturó dom_tree_json (httpx fallback) o algo
     # falla, el pipeline sigue y transpile_bricks usa defaults Bricks.
     _PhaseSpec("theme_styles", ThemeStylesAgent, required=False),
-    # AI.4 (sprint v0.22.0) — re-procesa bloques pobres (UNKNOWN o
-    # coverage_score < 0.6) con Claude Vision. Output: elementos
-    # Bricks nativos editables. Si AI falla → fallback RAW_HTML.
-    # required=False — sin ANTHROPIC_API_KEY o errores múltiples, el
-    # pipeline sigue y los bloques quedan como RAW.
-    _PhaseSpec("ai_assist", AiAssistAgent, required=False),
+    # v0.23.1 — `ai_assist` desactivado del pipeline canónico.
+    # En tier free Anthropic el rate-limit hace que solo el 6-7% de
+    # candidatos AI se procesen con éxito (~10 bloques/proyecto a
+    # cambio de 25 min extra de pipeline + coste API). El operador
+    # decidió 2026-05-22 que no aporta valor neto.
+    # El código del agente sigue en `apps/worker/.../ai_assist.py`
+    # listo para reactivar en cuanto se suba a tier de pago (descomentar
+    # la línea siguiente). Los bloques UNKNOWN siguen generando
+    # ResidualTasks vía `map_unknown` → `bricks_transpiler` agente.
+    # _PhaseSpec("ai_assist", AiAssistAgent, required=False),
     _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
     # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
     # poder rollback restaurando vía `wp db import`. required=True: sin
