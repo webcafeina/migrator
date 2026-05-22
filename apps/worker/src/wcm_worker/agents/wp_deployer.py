@@ -93,6 +93,29 @@ class WpDeployerAgent(BaseAgent):
         homepage_set = False
 
         async with WpRestClient(wp_config) as rest, WpCliSshClient(wp_config) as cli:
+            # v0.24.0 — Bloque N. Crear WP menu antes del import si el
+            # extractor capturó items reales. Bricks `nav-nested` con
+            # `menu` apuntando a ID numérico de WP menu necesita que
+            # el menu exista. Idempotente: si ya tenemos `wp_menu_id`,
+            # skip.
+            if project.nav_items_json and project.wp_menu_id is None:
+                try:
+                    menu_id = await self._create_wp_menu(
+                        cli, project.nav_items_json
+                    )
+                    if menu_id:
+                        project.wp_menu_id = menu_id
+                        ctx.session.add(project)
+                        log.info(
+                            "wp_deployer_menu_created",
+                            extra={"project_id": project.id, "menu_id": menu_id, "items": len(project.nav_items_json)},
+                        )
+                except Exception as e:  # noqa: BLE001
+                    log.warning(
+                        "wp_deployer_menu_create_failed",
+                        extra={"project_id": project.id, "error": str(e)[:300]},
+                    )
+
             for bp in bricks_pages:
                 try:
                     # 1. Upsert de la página WP (idempotente por slug)
@@ -250,3 +273,43 @@ class WpDeployerAgent(BaseAgent):
 
         ctx.session.flush()
         return deployed, failed, theme_applied, homepage_set
+
+    async def _create_wp_menu(
+        self,
+        cli: WpCliSshClient,
+        nav_items: list[dict],
+        *,
+        menu_name: str = "main-menu",
+    ) -> int | None:
+        """v0.24.0 — Crea un WP menu vía wp-cli + añade items. Devuelve
+        el ID numérico del menu (o None si falla).
+
+        Idempotente al nivel de menu: si el menu ya existe, reusa su ID.
+        NO es idempotente a nivel de items — re-runs duplicarían entries.
+        El operador debe limpiar el menu manualmente si re-corre con
+        nav cambiado.
+        """
+        # Crear menu (idempotente: wp menu create devuelve error si
+        # existe, así que tratamos el caso).
+        result = await cli.run_shell(
+            f'wp menu create "{menu_name}" --porcelain || wp menu list --fields=term_id,name --format=csv | grep ",{menu_name}$" | head -n1 | cut -d, -f1'
+        )
+        if not result.ok or not result.stdout.strip():
+            return None
+        try:
+            menu_id = int(result.stdout.strip().splitlines()[0])
+        except (ValueError, IndexError):
+            return None
+
+        # Añadir items (top-level solo en MVP — children recursivos
+        # diferidos a v0.25.0).
+        for item in nav_items:
+            label = item.get("label", "").replace('"', '\\"')
+            url = item.get("url", "#")
+            if not label or not url:
+                continue
+            await cli.run_shell(
+                f'wp menu item add-custom {menu_id} "{label}" "{url}" --porcelain'
+            )
+
+        return menu_id

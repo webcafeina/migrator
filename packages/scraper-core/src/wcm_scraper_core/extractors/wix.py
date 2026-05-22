@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from typing import Any
 
 from bs4 import BeautifulSoup, Tag
 
@@ -115,16 +116,20 @@ class WixExtractor:
             # Detectarlo aquí evita que el classify lo marque UNKNOWN.
             if "wixui-header" in classes:
                 if not nav_detected:
+                    nav_items = self._extract_nav_items(section)
                     result.blocks.insert(
                         0,
                         ExtractedBlock(
                             block_type=BlockType.NAV,
                             order_index=-1,
-                            content_json={"raw_html": str(section)[:5000]},
+                            content_json={
+                                "raw_html": str(section)[:5000],
+                                "menu_items": nav_items,
+                            },
                             lang=result.page_lang,
                             notes=(
                                 "Wix Editor clásico wixui-header — "
-                                "reconstruir nav-menu en destino"
+                                f"{len(nav_items)} items extraídos"
                             ),
                         ),
                     )
@@ -133,13 +138,17 @@ class WixExtractor:
             # B.3 — Footer equivalente: `<section class="wixui-footer">`.
             if "wixui-footer" in classes:
                 if not footer_detected:
+                    columns = self._extract_footer_columns(section)
                     result.blocks.append(
                         ExtractedBlock(
                             block_type=BlockType.FOOTER,
                             order_index=order_index,
-                            content_json={"raw_html": str(section)[:5000]},
+                            content_json={
+                                "raw_html": str(section)[:5000],
+                                "columns": columns,
+                            },
                             lang=result.page_lang,
-                            notes="Wix Editor clásico wixui-footer",
+                            notes=f"Wix Editor clásico wixui-footer — {len(columns)} columnas",
                         )
                     )
                     footer_detected = True
@@ -178,24 +187,32 @@ class WixExtractor:
         # (formato moderno). Solo se aplica si no detectamos ya el
         # equivalente de Editor clásico, para no duplicar.
         if not nav_detected and (site_header := soup.find(id="SITE_HEADER")):
+            nav_items = self._extract_nav_items(site_header)
             result.blocks.insert(
                 0,
                 ExtractedBlock(
                     block_type=BlockType.NAV,
                     order_index=-1,
-                    content_json={"raw_html": str(site_header)[:5000]},
+                    content_json={
+                        "raw_html": str(site_header)[:5000],
+                        "menu_items": nav_items,
+                    },
                     lang=result.page_lang,
-                    notes="Wix SITE_HEADER — reconstruir nav-menu en destino",
+                    notes=f"Wix SITE_HEADER — {len(nav_items)} items extraídos",
                 ),
             )
         if not footer_detected and (site_footer := soup.find(id="SITE_FOOTER")):
+            columns = self._extract_footer_columns(site_footer)
             result.blocks.append(
                 ExtractedBlock(
                     block_type=BlockType.FOOTER,
                     order_index=order_index,
-                    content_json={"raw_html": str(site_footer)[:5000]},
+                    content_json={
+                        "raw_html": str(site_footer)[:5000],
+                        "columns": columns,
+                    },
                     lang=result.page_lang,
-                    notes="Wix SITE_FOOTER",
+                    notes=f"Wix SITE_FOOTER — {len(columns)} columnas",
                 )
             )
             order_index += 1
@@ -427,6 +444,115 @@ class WixExtractor:
 
     # ----- v0.23.0: node_path + element_styles -----
 
+    # ----- v0.24.0 N: NAV/FOOTER items reales -----
+
+    def _extract_nav_items(
+        self, container: Tag, max_depth: int = 3
+    ) -> list[dict[str, Any]]:
+        """v0.24.0 — Extrae estructura jerárquica de items del nav.
+
+        Para cada `<a href="...">` directo o anidado en `<li><a>`:
+        - label: text content
+        - url: href
+        - target: target attr si existe
+        - children: recursivo si el `<li>` tiene `<ul>` interno
+
+        Filtra anchors vacíos, `href="#"` o `javascript:`.
+        Cap depth=3 para evitar listas patológicas.
+        Devuelve `[]` si el contenedor no tiene anchors.
+        """
+        if container is None:
+            return []
+        items: list[dict[str, Any]] = []
+        # Estrategia 1: `<ul>` o `<nav>` con `<li><a>` (HTML semántico).
+        ul = container.find(["ul", "ol"])
+        if ul is not None:
+            for li in ul.find_all("li", recursive=False):
+                item = self._nav_item_from_li(li, depth=0, max_depth=max_depth)
+                if item:
+                    items.append(item)
+            if items:
+                return items
+        # Estrategia 2: anchors directos (Wix Studio sin ul real).
+        for a in container.find_all("a", recursive=True):
+            href = (a.get("href") or "").strip()
+            label = a.get_text(strip=True)
+            if not label or not href or href.startswith(("#", "javascript:")):
+                continue
+            items.append({
+                "label": label,
+                "url": href,
+                "target": a.get("target") or "_self",
+                "children": [],
+            })
+        return items
+
+    def _nav_item_from_li(
+        self, li: Tag, *, depth: int, max_depth: int
+    ) -> dict[str, Any] | None:
+        """Convierte `<li><a>...</a><ul>...</ul></li>` en
+        `{label, url, target, children}`. Recursivo hasta `max_depth`.
+        """
+        a = li.find("a", recursive=False) or li.find("a")
+        if a is None:
+            return None
+        href = (a.get("href") or "").strip()
+        label = a.get_text(strip=True)
+        if not label or not href or href.startswith(("#", "javascript:")):
+            return None
+        children: list[dict[str, Any]] = []
+        if depth < max_depth - 1:
+            sub_ul = li.find(["ul", "ol"])
+            if sub_ul is not None:
+                for sub_li in sub_ul.find_all("li", recursive=False):
+                    sub = self._nav_item_from_li(sub_li, depth=depth + 1, max_depth=max_depth)
+                    if sub:
+                        children.append(sub)
+        return {
+            "label": label,
+            "url": href,
+            "target": a.get("target") or "_self",
+            "children": children,
+        }
+
+    def _extract_footer_columns(
+        self, container: Tag
+    ) -> list[dict[str, Any]]:
+        """v0.24.0 — Extrae estructura por columnas del footer.
+
+        Heurística: cada `<ul>` o `<div>` con múltiples `<a>` se
+        considera una columna. Si hay heading h2-h4 cerca, lo asocia
+        como título de columna.
+
+        Devuelve: `[{heading: str|None, items: [str|dict]}]`
+        donde items es `[{label, url}]` o strings.
+        """
+        if container is None:
+            return []
+        columns: list[dict[str, Any]] = []
+        # Cada `<ul>` con ≥2 anchors es una columna potencial.
+        for ul in container.find_all(["ul", "ol"]):
+            anchors = ul.find_all("a")
+            if len(anchors) < 2:
+                continue
+            # Heading asociado: hermano anterior h2-h4 o título cercano.
+            heading: str | None = None
+            for sibling in ul.find_all_previous(["h2", "h3", "h4", "h5"], limit=1):
+                heading = sibling.get_text(strip=True)
+                break
+            items: list[dict[str, Any]] = []
+            for a in anchors:
+                href = (a.get("href") or "").strip()
+                label = a.get_text(strip=True)
+                if not label or not href:
+                    continue
+                items.append({"label": label, "url": href})
+            if items:
+                columns.append({"heading": heading, "items": items})
+        return columns
+
+    # ----- v0.23.0 B: node_path + element_styles -----
+
     def _node_path(self, el: Tag, max_depth: int = 6) -> str:
         """Calcula ruta DOM determinista del nodo, equivalente al JS
         `nodePath` de `playwright_fetcher._CAPTURE_NODE_STYLES_JS`. Sin
@@ -484,15 +610,54 @@ class WixExtractor:
         return None
 
     def _extract_hero(self, section: Tag) -> dict:
+        """v0.24.0 — extrae composición de hero Wix: headline + subheadline
+        + CTA + bg-image + bg-overlay + items posicionados (productos).
+
+        Para imágenes:
+        - Background: primer `wow-image[data-image-info]` directo en la
+          section (no en sub-containers anidados) → bg_image_url.
+        - Items composition: si hay >1 wow-image directo, los siguientes
+          se emiten como `composition_items` con orden DOM.
+        """
         h1 = section.find("h1")
         sub = section.find(["h2", "h3", "p"])
         button = section.find(class_=re.compile(r"wixui-button"))
+
+        # Buscar wow-images directos para detectar background + composition.
+        bg_image_url: str | None = None
+        composition_items: list[dict] = []
+        wow_images = section.find_all("wow-image", recursive=True)
+        for idx, wow in enumerate(wow_images):
+            info_raw = wow.get("data-image-info") if hasattr(wow, "get") else None
+            if not info_raw:
+                continue
+            try:
+                url = _wix_uri_from_data_info(info_raw)
+            except Exception:  # noqa: BLE001 — JSON inválido
+                continue
+            if not url:
+                continue
+            if idx == 0:
+                bg_image_url = url
+            else:
+                composition_items.append({
+                    "image_url": url,
+                    "order": idx,
+                })
+
+        # Detectar overlay color: buscar elementos con background semi-transparente
+        # vía clases conocidas o data-attrs Wix.
+        overlay_el = section.find(class_=re.compile(r"overlay|gradient"))
+
         return {
             "headline": h1.get_text(strip=True) if h1 else None,
             "subheadline": sub.get_text(strip=True) if sub and sub != h1 else None,
             "cta_text": button.get_text(strip=True) if button else None,
             "cta_url": (button.find("a") or {}).get("href") if button else None,
-            "bg_color": None,  # se inferiría de CSS computado en runtime real
+            "bg_color": None,  # element_styles del extractor v0.23.0 ya lo lleva
+            "bg_image_url": bg_image_url,
+            "has_overlay": overlay_el is not None,
+            "composition_items": composition_items,
         }
 
     def _extract_gallery(self, section: Tag) -> dict:

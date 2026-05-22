@@ -9,9 +9,23 @@ from wcm_bricks_transpiler.mappers._types import (
     MapperResult,
     ResidualHint,
 )
-from wcm_bricks_transpiler.mappers.atomic import _strip_none
+from wcm_bricks_transpiler.mappers.atomic import _apply_element_styles, _strip_none
 from wcm_bricks_transpiler.schema import BricksElement, settings_with_breakpoint
 from wcm_types.enums import BlockType
+
+
+def _apply_section_styles(
+    root: BricksElement,
+    block: dict[str, Any],
+    ctx: MapperContext,
+    *,
+    prefix: str,
+) -> None:
+    """v0.24.0 Bloque S — aplica element_styles del origen al elemento
+    section/container root del mapper compuesto. Reusa el helper de
+    atomic mappers que ya implementa lookup palette + globalClass dedup.
+    """
+    _apply_element_styles(root.settings, block, ctx, prefix=prefix)
 
 
 def _section_with_container(
@@ -75,7 +89,12 @@ def map_hero(
     ctx: MapperContext,
 ) -> MapperResult:
     bg_image_url: str | None = None
-    if (bg_asset_id := block.get("bg_image_asset_id")) is not None:
+    # v0.24.0 — el extractor enriquecido devuelve `bg_image_url` directo
+    # (cuando matcheó el primer wow-image del section). Fallback: bg_asset_id
+    # legacy o nada.
+    if (direct_url := block.get("bg_image_url")):
+        bg_image_url = direct_url
+    elif (bg_asset_id := block.get("bg_image_asset_id")) is not None:
         bg_image_url = ctx.asset_resolver(bg_asset_id).get("url")
 
     section, container = _section_with_container(
@@ -86,6 +105,13 @@ def map_hero(
         bg_color=block.get("bg_color") or "var(--bricks-color-primary)",
         bg_image_url=bg_image_url,
     )
+
+    # v0.24.0 — overlay color semi-transparente sobre el bg-image cuando
+    # el extractor lo detectó. Aplica a la section como background overlay.
+    if block.get("has_overlay") and bg_image_url:
+        section.settings.setdefault("_background", {})["_overlay"] = {
+            "color": {"raw": "rgba(0, 0, 0, 0.4)"},
+        }
 
     container.settings["_typography"] = {
         "text-align": block.get("text_align", "center"),
@@ -145,6 +171,33 @@ def map_hero(
         )
         container.children.append(btn_id)
 
+    # v0.24.0 — composition_items: imágenes adicionales del hero
+    # posicionadas absolute (composiciones tipo productos Wix). Cada
+    # item se emite como `image` hijo del container con position absolute.
+    for ci_idx, item in enumerate(block.get("composition_items") or []):
+        img_url = item.get("image_url")
+        if not img_url:
+            continue
+        ci_id = ctx.id_gen.fresh(order_index, "hero", sub_index=sub_index); sub_index += 1
+        elements.append(
+            BricksElement(
+                id=ci_id, name="image", parent=container.id,
+                settings={
+                    "image": {"url": img_url, "alt": ""},
+                    "_position": "absolute",
+                    # Posición simplificada: offset por orden de aparición.
+                    # El operador ajusta en editor Bricks tras deploy.
+                    "_top": f"{20 + ci_idx * 60}px",
+                    "_left": f"{20 + ci_idx * 80}px",
+                    "_width": "120px",
+                },
+            )
+        )
+        container.children.append(ci_id)
+
+    # v0.24.0 — propaga element_styles del origen al section root.
+    _apply_section_styles(elements[0], block, ctx, prefix="hero-section")
+
     return MapperResult(elements=elements)
 
 
@@ -200,6 +253,8 @@ def map_gallery(
                 }
             ),
         )
+    # v0.24.0 — element_styles del origen al gallery root.
+    _apply_section_styles(el, block, ctx, prefix="gallery")
     return MapperResult(elements=[el])
 
 
@@ -249,13 +304,28 @@ def map_grid(
         card_id = ctx.id_gen.fresh(order_index, "grid", sub_index=sub_index)
         sub_index += 1
         container.children.append(card_id)
+        # v0.24.0 — width responsive con sufijos de breakpoint Bricks
+        # documentados en h2b.skill (NO hardcoded 3 cols). Desktop 3,
+        # tablet 2, mobile 1.
+        card_settings: dict[str, Any] = {
+            "_width": "calc((100% - 64px) / 3)",
+            "_width:tablet_portrait": "calc((100% - 32px) / 2)",
+            "_width:mobile_portrait": "100%",
+        }
         card = BricksElement(
             id=card_id,
             name="block",
             parent=container.id,
             children=[],
-            settings={"_width": "calc((100% - 64px) / 3)"},
+            settings=card_settings,
         )
+        # Si el item trae element_styles propios (extractor v0.23.0 los
+        # asigna por nodo), aplicarlos al card individual para que cada
+        # card herede color/border/padding del origen.
+        if item.get("element_styles"):
+            _apply_element_styles(
+                card.settings, item, ctx, prefix=f"grid-card-{sub_index}"
+            )
         elements.append(card)
 
         if image_url := item.get("image_url"):
@@ -301,6 +371,10 @@ def map_grid(
                     },
                 )
             )
+
+    # v0.24.0 — element_styles del origen al section root del grid.
+    if elements:
+        _apply_section_styles(elements[0], block, ctx, prefix="grid-section")
 
     return MapperResult(elements=elements)
 
@@ -392,6 +466,8 @@ def map_testimonial(
             "_border": {"radius": {"top": "12px", "right": "12px", "bottom": "12px", "left": "12px"}},
         },
     )
+    # v0.24.0 — element_styles del origen al testimonial root.
+    _apply_section_styles(block_el, block, ctx, prefix="testimonial")
     return MapperResult(elements=[block_el, *elements])
 
 
@@ -503,6 +579,8 @@ def map_pricing(
             "_typography": {"text-align": "center"},
         },
     )
+    # v0.24.0 — element_styles del origen al pricing container root.
+    _apply_section_styles(container_el, block, ctx, prefix="pricing")
     return MapperResult(elements=[container_el, *elements])
 
 
@@ -536,6 +614,8 @@ def map_faq(
             ],
         },
     )
+    # v0.24.0 — element_styles del origen al accordion.
+    _apply_section_styles(el, block, ctx, prefix="faq")
     return MapperResult(elements=[el])
 
 
@@ -553,8 +633,54 @@ def map_nav(
     En MVP devolvemos un nav-nested con menu por defecto del WP destino;
     los items concretos (mapeados a páginas Bricks) los conecta wp-deployer.
     """
+    # v0.24.0 — Si el extractor devolvió `menu_items` con estructura
+    # real, emitimos nav-nested con hijos editables. Si no, mantenemos
+    # el comportamiento legacy (referencia a wp_menu_slug pre-existente).
+    menu_items = block.get("menu_items") or []
+    nav_id = ctx.id_gen.fresh(order_index, "nav")
+
+    if menu_items:
+        # Estructura plana con hijos referenciados por ID (patrón nav-nested
+        # documentado en h2b.skill references/BRICKS-ELEMENTS.md).
+        elements: list[BricksElement] = []
+        child_ids: list[str] = []
+        sub = 1
+        for item in menu_items:
+            label = item.get("label", "")
+            url = item.get("url", "#")
+            target = item.get("target", "_self")
+            if not label:
+                continue
+            link_id = ctx.id_gen.fresh(order_index, "nav-link", sub_index=sub); sub += 1
+            elements.append(
+                BricksElement(
+                    id=link_id, name="text-link", parent=nav_id,
+                    settings={
+                        "text": label,
+                        "link": {
+                            "type": "external" if url.startswith("http") else "internal",
+                            "url": url,
+                            "newTab": target == "_blank",
+                        },
+                    },
+                )
+            )
+            child_ids.append(link_id)
+
+        nav_el = BricksElement(
+            id=nav_id, name="nav-nested", parent=parent_id, children=child_ids,
+            settings={
+                "layout": block.get("layout", "horizontal"),
+                "mobile-breakpoint": "tablet_portrait",
+            },
+        )
+        _apply_section_styles(nav_el, block, ctx, prefix="nav")
+        return MapperResult(elements=[nav_el, *elements])
+
+    # Legacy fallback (sin menu_items): nav-nested apuntando a un WP menu
+    # pre-creado por wp_deployer.
     el = BricksElement(
-        id=ctx.id_gen.fresh(order_index, "nav"),
+        id=nav_id,
         name="nav-nested",
         parent=parent_id,
         settings={
@@ -563,6 +689,7 @@ def map_nav(
             "mobile-breakpoint": "tablet_portrait",
         },
     )
+    _apply_section_styles(el, block, ctx, prefix="nav")
     return MapperResult(elements=[el])
 
 
@@ -619,6 +746,10 @@ def map_footer(
             )
         )
         container.children.append(col_id)
+
+    # v0.24.0 — element_styles del origen al footer section root.
+    if elements:
+        _apply_section_styles(elements[0], block, ctx, prefix="footer-section")
 
     return MapperResult(elements=elements)
 

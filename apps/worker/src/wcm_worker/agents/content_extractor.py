@@ -110,6 +110,20 @@ class ContentExtractorAgent(BaseAgent):
                 if block.block_type.value == "unknown":
                     unknown_count += 1
 
+                # v0.24.0 — Bloque N. Si el bloque es NAV y trae
+                # `menu_items` reales, persistirlos a nivel proyecto
+                # para que wp_deployer cree el WP menu antes del
+                # bricks_import_content. Solo guardamos el PRIMER NAV
+                # detectado (la home suele tener el canonical).
+                if (
+                    block.block_type.value == "nav"
+                    and isinstance(block.content_json, dict)
+                    and (mi := block.content_json.get("menu_items"))
+                    and project.nav_items_json is None
+                ):
+                    project.nav_items_json = mi
+                    ctx.session.add(project)
+
             # B.1 — persistir URLs de assets descubiertas. Combinamos
             # imágenes + fonts + videos en un solo flujo (mismo modelo
             # `Asset`, lo distingue luego `asset_optimizer` por `mime`).
