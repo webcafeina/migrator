@@ -26,11 +26,12 @@ BRICKS_ELEMENT_NAMES: frozenset[str] = frozenset(
         # layout
         "section", "container", "block", "div",
         # texto
-        "heading", "text", "text-basic",
+        "heading", "text", "text-basic", "text-link",
         # media
         "image", "image-gallery", "video", "icon", "icon-box",
-        # interactivos
-        "button", "accordion", "slider-nested",
+        # interactivos (v0.24.0 — slider/tabs/accordion nested)
+        "button", "accordion", "accordion-nested",
+        "slider-nested", "tabs-nested",
         "nav-menu", "nav-nested", "form", "shortcode",
         # utilidad
         "divider", "spacer", "code",

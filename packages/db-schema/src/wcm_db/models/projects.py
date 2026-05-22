@@ -63,6 +63,34 @@ class Project(Base, TimestampMixin):
     #: `wp menu create`. Cache para que el nav-menu element del
     #: bricks_json lo referencie sin REST query extra.
     wp_menu_id: Mapped[int | None] = mapped_column(Integer)
+
+    # ----- v0.25.0 Brief fields (pivote rediseño) -----
+    #: v0.25.0 — descripción libre 2-5 líneas del negocio. Auto-detectada
+    #: por OpenAI gpt-4o-mini + editable por operador en wizard.
+    business_description: Mapped[str | None] = mapped_column(Text)
+    #: v0.25.0 — sector inferido (restaurant/agency/services/...).
+    business_sector: Mapped[str | None] = mapped_column(String(80))
+    #: v0.25.0 — audiencia objetivo descrita en texto libre.
+    target_audience: Mapped[str | None] = mapped_column(Text)
+    #: v0.25.0 — enum sugerido en form:
+    #: formal/casual/friendly/premium/playful/serious.
+    tone_of_voice: Mapped[str | None] = mapped_column(String(20))
+    #: v0.25.0 — 3-5 unique selling points como lista de strings.
+    usps_json: Mapped[list[str] | None] = mapped_column(JSONB)
+    #: v0.25.0 — método de generación del diseño final:
+    #: `templates` (Brickstemplate.com curado) | `ai` (OpenAI gpt-4o).
+    #: NULL = legacy (proyectos creados antes de v0.25.0).
+    design_method: Mapped[str | None] = mapped_column(String(20))
+    #: v0.25.0 — Brief JSON canónico generado por BriefGenerator.
+    #: Contrato único intermedio: alimenta tanto el pipeline Templates
+    #: como AI. Shape documentada en plan v0.25.0 (business + brand +
+    #: navigation + footer + pages[]).
+    brief_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    #: v0.25.0 — propuestas generadas tras pipeline para edición
+    #: iterativa (template seleccionado por sección, prompt usado en AI,
+    #: thumbnails preview, etc.).
+    design_proposals_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)
     deploy_credentials_encrypted: Mapped[str | None] = mapped_column(Text)
