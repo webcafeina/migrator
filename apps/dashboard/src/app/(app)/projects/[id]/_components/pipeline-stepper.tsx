@@ -23,12 +23,22 @@ const _PHASE_ORDER: Array<{ name: string; label: string; short: string }> = [
   { name: "preserve_seo", label: "Preservación SEO + redirects", short: "SEO" },
   { name: "optimize_assets", label: "Optimización de assets (WebP, fonts)", short: "Assets" },
   { name: "detect_multilang", label: "Detección de idiomas", short: "Idiomas" },
+  // v0.25.0 — BriefGenerator produce el contrato canónico (input para
+  // RedesignTemplates/RedesignAI). Se ejecuta entre detect_multilang y
+  // theme_styles.
+  { name: "brief_generator", label: "Brief canónico (auto-detect AI)", short: "Brief" },
   { name: "theme_styles", label: "Síntesis de Theme Styles (colores + tipografía)", short: "Theme" },
   // v0.23.1 — `ai_assist` retirado del stepper canónico (mismo cambio
   // que en `apps/worker/.../pipeline.py:_DEFAULT_PHASES`). Si se reactiva,
   // descomentar también esta línea para que el step vuelva a aparecer.
   // { name: "ai_assist", label: "Revisión visual con Claude (secciones complejas)", short: "AI" },
-  { name: "transpile_bricks", label: "Transpilación a Bricks JSON", short: "Bricks" },
+  // v0.25.0 — pipelines mutuamente exclusivos según design_method del
+  // proyecto. Solo uno corre por proyecto; los demás aparecen skipped.
+  { name: "redesign_templates", label: "Rediseño con Templates Bricks", short: "Templates" },
+  { name: "redesign_ai", label: "Rediseño con AI generativo (OpenAI)", short: "AI Redesign" },
+  // Legacy v0.24.0 — solo corre cuando design_method=NULL (proyectos
+  // creados antes del pivote v0.25.0).
+  { name: "transpile_bricks", label: "Transpilación legacy (proyectos v0.24.0)", short: "Bricks legacy" },
   // v0.24.0 — Bloque A. Sube assets de R2 al WP media library destino
   // y reescribe URLs placeholder en bricks_pages.bricks_json.
   { name: "asset_uploader", label: "Subida de assets al WP destino", short: "Assets→WP" },

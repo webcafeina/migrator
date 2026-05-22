@@ -23,6 +23,8 @@ from wcm_worker.agents.pre_deploy_snapshot import PreDeploySnapshotAgent
 from wcm_worker.agents.prospector import ProspectorAgent
 from wcm_worker.agents.publish import PublishAgent
 from wcm_worker.agents.qa_runner import QaRunnerAgent
+from wcm_worker.agents.redesign_ai import RedesignAIAgent
+from wcm_worker.agents.redesign_templates import RedesignTemplatesAgent
 from wcm_worker.agents.resend_notifier import ResendNotifierAgent
 from wcm_worker.agents.rollback import RollbackAgent
 from wcm_worker.agents.scraper_origin import ScraperOriginAgent
@@ -53,6 +55,8 @@ __all__ = [
     "ProspectorAgent",
     "PublishAgent",
     "QaRunnerAgent",
+    "RedesignAIAgent",
+    "RedesignTemplatesAgent",
     "ResendNotifierAgent",
     "RollbackAgent",
     "ScraperOriginAgent",

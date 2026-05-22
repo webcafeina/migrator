@@ -23,6 +23,7 @@ dentro del subagente.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
@@ -36,6 +37,7 @@ from wcm_worker.agents import (
     AssetUploaderAgent,
     BaseAgent,
     BricksTranspilerAgent,
+    BriefGeneratorAgent,
     ChecklistGeneratorAgent,
     ClickupSyncerAgent,
     ContentExtractorAgent,
@@ -43,6 +45,8 @@ from wcm_worker.agents import (
     MultilangHandlerAgent,
     PreDeploySnapshotAgent,
     QaRunnerAgent,
+    RedesignAIAgent,
+    RedesignTemplatesAgent,
     ResendNotifierAgent,
     ScraperOriginAgent,
     SeoPreserverAgent,
@@ -76,6 +80,11 @@ class _PhaseSpec:
     #: fase. None = se ejecuta siempre. Ejemplos: "has_ecommerce",
     #: "is_multilang".
     condition_attr: str | None = None
+    #: v0.25.0 — Callable más flexible que `condition_attr`. Si está
+    #: presente, se llama con el `Project` y se ejecuta la fase si
+    #: devuelve True. Permite checks no-boolean (ej. `design_method ==
+    #: 'templates'`). Si ambos están None, la fase corre siempre.
+    condition_callable: Callable[[Project], bool] | None = None
 
 
 #: Orden canónico de las fases de migración. Para campañas de prospección
@@ -87,10 +96,17 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     _PhaseSpec("preserve_seo", SeoPreserverAgent),
     _PhaseSpec("optimize_assets", AssetOptimizerAgent, required=False),
     _PhaseSpec("detect_multilang", MultilangHandlerAgent),
+    # v0.25.0 B2 — BriefGenerator (contrato canónico intermedio).
+    # Produce Project.brief_json a partir del scraping + auto-detect
+    # OpenAI si faltan campos business_*. Alimenta los nuevos pipelines
+    # RedesignTemplates / RedesignAI. required=False (BriefGeneratorError
+    # blocks_pipeline=False): si OpenAI falla pero los campos están,
+    # sigue. Si no, marca BLOCKED para que operador rellene en wizard.
+    _PhaseSpec("brief_generator", BriefGeneratorAgent, required=False),
     # C.8 — síntesis de Theme Styles desde computed styles del origen.
-    # required=False (ThemeStylesError.blocks_pipeline=False también) →
-    # si el scraper no capturó dom_tree_json (httpx fallback) o algo
-    # falla, el pipeline sigue y transpile_bricks usa defaults Bricks.
+    # v0.25.0 — degradado a informativo (ya no es input crítico del
+    # pipeline de output; el Brief lleva brand.colors/fonts). Se mantiene
+    # para projects legacy `design_method=NULL` que usan transpile_bricks.
     _PhaseSpec("theme_styles", ThemeStylesAgent, required=False),
     # v0.23.1 — `ai_assist` desactivado del pipeline canónico.
     # En tier free Anthropic el rate-limit hace que solo el 6-7% de
@@ -102,7 +118,31 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # la línea siguiente). Los bloques UNKNOWN siguen generando
     # ResidualTasks vía `map_unknown` → `bricks_transpiler` agente.
     # _PhaseSpec("ai_assist", AiAssistAgent, required=False),
-    _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
+    #
+    # v0.25.0 PIVOTE — dos pipelines mutuamente exclusivos según
+    # `design_method`. Si `templates` → RedesignTemplatesAgent corre.
+    # Si `ai` → RedesignAIAgent corre. Si NULL (proyectos legacy
+    # v0.24.0) → `transpile_bricks` legacy corre (compat backwards).
+    _PhaseSpec(
+        "redesign_templates",
+        RedesignTemplatesAgent,
+        required=False,
+        condition_callable=lambda p: getattr(p, "design_method", None) == "templates",
+    ),
+    _PhaseSpec(
+        "redesign_ai",
+        RedesignAIAgent,
+        required=False,
+        condition_callable=lambda p: getattr(p, "design_method", None) == "ai",
+    ),
+    # Legacy v0.24.0 — solo corre si design_method=NULL (proyectos
+    # creados antes del pivote v0.25.0).
+    _PhaseSpec(
+        "transpile_bricks",
+        BricksTranspilerAgent,
+        required=False,
+        condition_callable=lambda p: getattr(p, "design_method", None) is None,
+    ),
     # v0.24.0 — Bloque A. Sube assets de R2 al WP media library destino
     # y reescribe URLs placeholder en bricks_pages.bricks_json. Sin esta
     # fase los frontends destino salen con 404 en todas las imágenes.
@@ -265,6 +305,12 @@ class Orchestrator:
     # ---------- helpers ----------
 
     def _should_run(self, spec: _PhaseSpec, project: Project) -> bool:
+        # v0.25.0 — `condition_callable` toma precedencia si presente.
+        if spec.condition_callable is not None:
+            try:
+                return bool(spec.condition_callable(project))
+            except Exception:  # noqa: BLE001 — callable defensive
+                return False
         if spec.condition_attr is None:
             return True
         return bool(getattr(project, spec.condition_attr, False))

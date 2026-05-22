@@ -40,14 +40,14 @@ describe("PipelineStepper", () => {
     expect(screen.getByText(/Start/)).toBeTruthy();
   });
 
-  it("renderiza un step por cada fase canónica del pipeline (17 total)", () => {
+  it("renderiza un step por cada fase canónica del pipeline (20 total)", () => {
     const phases = [_phase("scrape_origin", "completed")];
     render(<PipelineStepper phases={phases} />);
-    // Cada step lleva un `aria-label` con "N. Label".
-    // v0.24.0 — `asset_uploader` añadido entre transpile_bricks y
-    // deploy_wp (16 → 17). `ai_assist` sigue retirado (v0.23.1).
+    // v0.25.0 — añadidos brief_generator + redesign_templates +
+    // redesign_ai (17 → 20). transpile_bricks se mantiene visible como
+    // "legacy" para proyectos pre-pivote. ai_assist sigue retirado.
     const items = screen.getAllByRole("listitem");
-    expect(items.length).toBe(17);
+    expect(items.length).toBe(20);
   });
 
   it("primera fase completada usa color accent (lima)", () => {
@@ -62,8 +62,9 @@ describe("PipelineStepper", () => {
     const phases = [_phase("transpile_bricks", "running")];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    // v0.23.1 — transpile_bricks vuelve al índice 6 tras quitar ai_assist.
-    const target = items[6]!;
+    // v0.25.0 — transpile_bricks ahora en índice 9 tras añadir
+    // brief_generator (6) + redesign_templates (7) + redesign_ai (8).
+    const target = items[9]!;
     expect(target.innerHTML).toContain("animate-spin");
   });
 
@@ -71,9 +72,8 @@ describe("PipelineStepper", () => {
     const phases = [_phase("deploy_wp", "failed", { error_log: "SSH timeout" })];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    // v0.24.0 — deploy_wp pasa a índice 8 tras añadir asset_uploader
-    // entre transpile_bricks (6) y deploy_wp.
-    const target = items[8]!;
+    // v0.25.0 — deploy_wp pasa a índice 11 (asset_uploader=10, deploy_wp=11).
+    const target = items[11]!;
     expect(target.querySelector("div")?.className).toContain("border-wcm-danger");
   });
 
