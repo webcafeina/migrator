@@ -183,6 +183,30 @@ class WpDeployerAgent(BaseAgent):
                                 extra={"project_id": project.id},
                             )
                 merged.update(theme_payload)
+                # v0.25.0 — Si hay BRICKSTEMPLATE_API_URL configurado,
+                # añadir Remote Templates URL al option. Idempotente:
+                # operador cura una vez en setup hosting; los proyectos
+                # comparten. El password de licencia NO se persiste en
+                # el option (Bricks lo cachea en wp_options aparte). Esto
+                # solo apunta a la URL que Bricks va a consultar.
+                import os as _os
+                remote_url = _os.environ.get(
+                    "BRICKSTEMPLATE_REMOTE_URL",
+                    "https://brickstemplate.com/wp-json/bricks/v1/templates",
+                ).strip()
+                if remote_url:
+                    # Bricks 2.0+ acepta lista de remote URLs en
+                    # bricks_settings.remoteTemplates. Lo añadimos si
+                    # no está ya presente.
+                    remote_list = merged.get("remoteTemplates") or []
+                    if not any(r.get("url") == remote_url for r in remote_list):
+                        remote_list.append({
+                            "name": "BricksTemplate.com",
+                            "url": remote_url,
+                            # password va aparte (lo añade el operador
+                            # manualmente en Bricks > Settings la primera vez).
+                        })
+                        merged["remoteTemplates"] = remote_list
                 await cli.option_update(
                     "bricks_global_settings", merged, format="json"
                 )
