@@ -11,6 +11,94 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.27.0] — 2026-05-22
+
+**Image quality detection + Brief refinement iterativo + Thumbnails real-time
++ BricksPlus support**. Sprint largo que cierra 4 frentes abiertos tras
+v0.26.0 para llevar el producto a calidad comercial. ADR-057 documenta
+las decisiones completas.
+
+### Added
+
+- **B0 — Migración Alembic 0022**:
+  - `Asset.quality_score: Numeric(3,2)` + `Asset.quality_flags_json: JSONB`
+    para detección automática de imágenes feas.
+  - `Project.brief_refinement_proposals_json: JSONB` para persistir la
+    última batch de propuestas de mejora con AI.
+- **B1 — Image quality scoring heurístico**: nuevo
+  `apps/worker/.../services/image_quality.py` calcula score 0-1 con
+  flags `low_resolution / tiny_resolution / obsolete_format /
+  weird_aspect_ratio / tiny_filesize_for_size`. Threshold "fea" 0.50.
+  Integrado en `AssetOptimizerAgent` (sin I/O extra). Badge "calidad
+  baja" en `/preview` con tooltip + botón inline para regenerar imagen
+  con IA.
+- **B2 — Brief refinement OpenAI client + agent**:
+  - Nuevo `OpenAIClient.generate_brief_refinement(brief, pages_summary)`
+    con tool `emit_brief_refinements` (4 categorías: copy, cta,
+    design_method, reorder).
+  - Nuevo `BriefRefinementAgent` (reactivo, no en pipeline canónico)
+    persiste propuestas en `Project.brief_refinement_proposals_json`.
+  - Modelo gpt-5.5, coste estimado $0.10-0.50 por proyecto.
+- **B3 — `DiffViewer` component**: nuevo `apps/dashboard/src/components/
+  diff-viewer.tsx` soporta 3 shapes (string word-level LCS, object
+  side-by-side, array reorder con flechas). Sin nuevas deps —
+  implementación LCS lightweight inline. 9 tests vitest.
+- **B4 — Endpoints API refinement**:
+  - `POST /projects/{id}/brief/suggest-refinements` — encola task.
+  - `GET /projects/{id}/brief/refinements` — devuelve batch persistida
+    con `BriefRefinementProposal` Pydantic model.
+  - `POST /projects/{id}/brief/apply-refinement` con
+    `{proposal_id, regenerate: bool}` — aplica al Brief + opcional
+    encola `wcm.preview.regenerate_page`. Helper `_apply_refinement_to_brief`
+    testeable con validación granular según category.
+- **B5 — Worker task `wcm.brief.suggest_refinements`** + helper
+  `enqueue_brief_suggest_refinements`.
+- **B6 — UI panel "Sugerir mejoras (AI)"**:
+  - Nuevo `refinement-panel.tsx` subcomponente con propuestas agrupadas
+    por page_slug → category, DiffViewer + rationale + 2 botones
+    ("Aplicar al Brief" / "Aplicar + regenerar") + check ✓ si
+    `applied_at` ya está seteado. Footer con contador y coste real.
+  - Botón header `<Sparkles /> Sugerir mejoras (AI)` en PreviewPanel con
+    confirm de coste estimado.
+- **B7 — Thumbnails real-time post-regenerate**: `PreviewThumbnailsAgent.run()`
+  acepta `slug: str | None`. `wcm.preview.regenerate_page` invoca el
+  agente para el slug afectado tras regenerar. Mismo task también fija
+  bug Hybrid pre-existente (design_method=None corre ambos agentes).
+- **B8 — BricksPlus catalog support**: `scripts/import_brickstemplate.py`
+  acepta `--source bricksplus` con env vars `BRICKSPLUS_API_URL` +
+  `BRICKSPLUS_LICENSE`. `wp_deployer.py` añade `BRICKSPLUS_REMOTE_URL`
+  al `bricks_settings.remoteTemplates` si está configurado (Bricks 2.x
+  admite múltiples Remote URLs). No comprometido — operador decide
+  cuándo activar. `.env.example` actualizado.
+
+### Changed
+
+- `wcm.preview.regenerate_page` task ahora soporta `design_method=None`
+  (Hybrid): corre `RedesignTemplatesAgent` + `RedesignAIAgent` en
+  secuencia (igual que el pipeline canónico). Bug fix retroactivo
+  desde v0.26.0.
+
+### Fixed
+
+- Endpoint `POST /preview/regenerate-page` ya no rechazaba proyectos
+  Hybrid (validación pre-existente removida ya en B4 v0.26.0; ahora
+  el worker task también está alineado).
+
+### Pendiente (no bloquea release)
+
+- **B9** — E2E manual con cliente real (Templates + AI + Hybrid +
+  Image quality). Operador prueba desde dashboard con Claude
+  monitorizando worker. Output `docs/e2e-v027.md` con screenshots +
+  costes + tiempos + bugs.
+
+### Métricas
+
+- Tests backend: 1256 verde (+37 desde v0.26.0).
+- Tests dashboard: 294 verde (+10 desde v0.26.0).
+- ~2.700 líneas added, 8 archivos nuevos.
+
+---
+
 ## [0.26.0] — 2026-05-22
 
 **Híbrido por sección + Image generation + Thumbnails preview** (Figma OUT).

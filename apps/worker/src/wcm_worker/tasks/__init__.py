@@ -4,6 +4,7 @@
 
 # Import side-effect: registra las tasks en celery_app
 from wcm_worker.tasks import (  # noqa: F401
+    brief,
     clickup,
     enricher,
     fingerprinter,

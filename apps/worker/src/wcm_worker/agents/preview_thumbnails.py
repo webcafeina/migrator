@@ -67,26 +67,39 @@ class PreviewThumbnailsAgent(BaseAgent):
             os.environ.get("WCM_PREVIEW_THUMBS_DIR", "/tmp/wcm-thumbs")
         )
 
-    def run(self, ctx: AgentContext) -> AgentResult:
+    def run(self, ctx: AgentContext, *, slug: str | None = None) -> AgentResult:
+        """v0.27.0 B7 — `slug` opcional filtra a UNA sola página.
+
+        Usado por `wcm.preview.regenerate_page` para refrescar el
+        thumbnail solo de la página regenerada (sin volver a procesar
+        todas las del proyecto).
+        """
         if ctx.project_id is None:
             raise RedesignAgentError("PreviewThumbnailsAgent requiere project_id")
         project = ctx.session.get(Project, ctx.project_id)
         if project is None:
             raise RedesignAgentError(f"Project {ctx.project_id} no existe")
 
-        # Páginas deployadas (con wp_post_id).
+        # Páginas deployadas (con wp_post_id). Filtra por slug si dado.
         stmt = select(BricksPage).where(
             BricksPage.project_id == ctx.project_id,
             BricksPage.wp_post_id.is_not(None),
         )
+        if slug is not None:
+            stmt = stmt.where(BricksPage.slug == slug)
         pages = ctx.session.execute(stmt).scalars().all()
         if not pages:
+            reason = (
+                f"slug={slug!r}_not_deployed" if slug is not None
+                else "no_deployed_pages"
+            )
             return AgentResult(
                 summary=(
-                    f"Project {project.id}: 0 bricks_pages con wp_post_id "
+                    f"Project {project.id}: 0 bricks_pages "
+                    f"{'para slug=' + slug if slug else 'con wp_post_id'} "
                     "→ SKIPPED"
                 ),
-                outputs={"skipped": True, "reason": "no_deployed_pages"},
+                outputs={"skipped": True, "reason": reason},
             )
 
         # Resolver WP destino: site_url + auth.

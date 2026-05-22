@@ -190,23 +190,37 @@ class WpDeployerAgent(BaseAgent):
                 # el option (Bricks lo cachea en wp_options aparte). Esto
                 # solo apunta a la URL que Bricks va a consultar.
                 import os as _os
-                remote_url = _os.environ.get(
+                remote_list = merged.get("remoteTemplates") or []
+
+                # v0.25.0 — BricksTemplate.com (catálogo default).
+                bt_url = _os.environ.get(
                     "BRICKSTEMPLATE_REMOTE_URL",
                     "https://brickstemplate.com/wp-json/bricks/v1/templates",
                 ).strip()
-                if remote_url:
-                    # Bricks 2.0+ acepta lista de remote URLs en
-                    # bricks_settings.remoteTemplates. Lo añadimos si
-                    # no está ya presente.
-                    remote_list = merged.get("remoteTemplates") or []
-                    if not any(r.get("url") == remote_url for r in remote_list):
-                        remote_list.append({
-                            "name": "BricksTemplate.com",
-                            "url": remote_url,
-                            # password va aparte (lo añade el operador
-                            # manualmente en Bricks > Settings la primera vez).
-                        })
-                        merged["remoteTemplates"] = remote_list
+                if bt_url and not any(
+                    r.get("url") == bt_url for r in remote_list
+                ):
+                    remote_list.append({
+                        "name": "BricksTemplate.com",
+                        "url": bt_url,
+                        # password lo añade el operador manualmente
+                        # en Bricks > Settings la primera vez.
+                    })
+
+                # v0.27.0 B8 — BricksPlus opcional. Si env configurado,
+                # se añade junto al anterior (Bricks acepta múltiples
+                # Remote Template URLs simultáneos).
+                bp_url = _os.environ.get("BRICKSPLUS_REMOTE_URL", "").strip()
+                if bp_url and not any(
+                    r.get("url") == bp_url for r in remote_list
+                ):
+                    remote_list.append({
+                        "name": "BricksPlus",
+                        "url": bp_url,
+                    })
+
+                if remote_list:
+                    merged["remoteTemplates"] = remote_list
                 await cli.option_update(
                     "bricks_global_settings", merged, format="json"
                 )

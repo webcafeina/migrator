@@ -26,6 +26,7 @@ from typing import Any
 
 from wcm_db.models.projects import Project
 from wcm_worker.agents.base import AgentContext
+from wcm_worker.agents.preview_thumbnails import PreviewThumbnailsAgent
 from wcm_worker.agents.redesign_ai import RedesignAIAgent
 from wcm_worker.agents.redesign_templates import RedesignTemplatesAgent
 from wcm_worker.celery_app import celery_app
@@ -85,13 +86,19 @@ def run_regenerate_page(self, project_id: int, slug: str) -> dict[str, Any]:
         session.flush()
 
         try:
-            agent: Any
+            # v0.27.0 — Hybrid (design_method=None) ahora corre AMBOS
+            # agentes en secuencia (igual que el pipeline canónico).
+            # Templates first (emite placeholders para secciones AI),
+            # luego AI (rellena placeholders sección a sección).
+            agents: list[Any] = []
             if project.design_method == "ai":
-                agent = RedesignAIAgent()
+                agents = [RedesignAIAgent()]
             elif project.design_method == "templates":
-                agent = RedesignTemplatesAgent()
+                agents = [RedesignTemplatesAgent()]
+            elif project.design_method is None:
+                # Hybrid — templates primero, AI segundo.
+                agents = [RedesignTemplatesAgent(), RedesignAIAgent()]
             else:
-                # Legacy proyecto v0.24.0 — no aplicable a preview.
                 return {
                     "project_id": project_id,
                     "status": "legacy_design_method",
@@ -102,8 +109,10 @@ def run_regenerate_page(self, project_id: int, slug: str) -> dict[str, Any]:
                 }
 
             ctx = AgentContext(session=session, project_id=project_id)
+            results = []
             try:
-                result = agent.run(ctx)
+                for agent in agents:
+                    results.append(agent.run(ctx))
             except Exception as e:  # noqa: BLE001
                 log.exception(
                     "preview_regenerate_page_agent_failed",
@@ -118,11 +127,36 @@ def run_regenerate_page(self, project_id: int, slug: str) -> dict[str, Any]:
                 session.flush()
                 raise
 
+            # Resultado consolidado (último agente domina el summary).
+            result = results[-1]
             session.flush()
         finally:
             # SIEMPRE restaurar brief original.
             project.brief_json = original_brief
             session.flush()
+
+        # v0.27.0 B7 — thumbnail refresh post-regenerate (best-effort).
+        # No bloquea la task: si falla, warning + sigue.
+        try:
+            thumb_result = PreviewThumbnailsAgent().run(
+                AgentContext(session=session, project_id=project_id), slug=slug,
+            )
+            session.flush()
+            log.info(
+                "preview_thumbnail_refreshed",
+                extra={
+                    "project_id": project_id, "slug": slug,
+                    "captured": thumb_result.outputs.get("captured", 0),
+                },
+            )
+        except Exception as e:  # noqa: BLE001
+            log.warning(
+                "preview_thumbnail_refresh_failed",
+                extra={
+                    "project_id": project_id, "slug": slug,
+                    "error": str(e)[:200],
+                },
+            )
 
         publish_phase_event(
             project_id, f"preview_regenerate_{slug}",

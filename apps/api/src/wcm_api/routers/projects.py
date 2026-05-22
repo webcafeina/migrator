@@ -29,11 +29,13 @@ from wcm_api.services.source_credentials import (
     encrypt_source_credentials,
 )
 from wcm_api.tasks.enqueue import (
+    enqueue_brief_suggest_refinements,
     enqueue_preview_regenerate_page,
     enqueue_project_pipeline,
     enqueue_project_publish,
     enqueue_project_rollback,
 )
+from wcm_db.models.assets import Asset
 from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead
@@ -1135,6 +1137,10 @@ class PreviewSectionInfo(BaseModel):
     is_placeholder: bool = False
     asset_id: int | None = None
     headline: str | None = None
+    #: v0.27.0 B1 — calidad del asset asociado para badge en /preview.
+    asset_quality_score: float | None = None
+    asset_quality_flags: list[str] = Field(default_factory=list)
+    asset_is_low_quality: bool = False
 
 
 class PreviewPageInfo(BaseModel):
@@ -1233,6 +1239,12 @@ async def get_project_preview(
     bp_result = await session.execute(bp_stmt)
     bricks_pages = list(bp_result.scalars())
 
+    # v0.27.0 B1 — cargar Assets del proyecto en bulk para cruzar quality
+    # con cada section.asset_id sin N+1.
+    assets_stmt = select(Asset).where(Asset.project_id == project_id)
+    assets_result = await session.execute(assets_stmt)
+    assets_by_id = {a.id: a for a in assets_result.scalars()}
+
     pages_info: list[PreviewPageInfo] = []
     image_cost_total = 0.0
     # Si tenemos brief, usar como guía de páginas esperadas.
@@ -1244,7 +1256,9 @@ async def get_project_preview(
             slug = brief_page.get("slug") or "/"
             bp = bp_by_slug.get(slug)
             sections_data = brief_page.get("sections") or []
-            sections_info = [_section_to_preview_info(s) for s in sections_data]
+            sections_info = [
+                _section_to_preview_info(s, assets_by_id) for s in sections_data
+            ]
             for s in sections_data:
                 meta = s.get("ai_image_metadata") or {}
                 if isinstance(meta, dict):
@@ -1295,15 +1309,35 @@ async def get_project_preview(
     )
 
 
-def _section_to_preview_info(section: dict[str, Any]) -> PreviewSectionInfo:
-    """Mapea section del Brief a PreviewSectionInfo plana."""
+def _section_to_preview_info(
+    section: dict[str, Any],
+    assets_by_id: dict[int, Asset] | None = None,
+) -> PreviewSectionInfo:
+    """Mapea section del Brief a PreviewSectionInfo plana.
+
+    v0.27.0 — si `assets_by_id` provisto, cruza `asset_id` con quality
+    score/flags del Asset para que el dashboard muestre badge "calidad baja".
+    """
+    asset_id = section.get("asset_id")
+    quality_score: float | None = None
+    quality_flags: list[str] = []
+    is_low_quality = False
+    if asset_id and assets_by_id and asset_id in assets_by_id:
+        asset = assets_by_id[asset_id]
+        if asset.quality_score is not None:
+            quality_score = float(asset.quality_score)
+            quality_flags = list(asset.quality_flags_json or [])
+            is_low_quality = quality_score < 0.50
     return PreviewSectionInfo(
         type=section.get("type", "unknown"),
         design_method=section.get("design_method"),
         has_ai_image=bool(section.get("ai_image_metadata")),
         is_placeholder=False,  # placeholders viven en bricks_json, no en brief
-        asset_id=section.get("asset_id"),
+        asset_id=asset_id,
         headline=section.get("headline"),
+        asset_quality_score=quality_score,
+        asset_quality_flags=quality_flags,
+        asset_is_low_quality=is_low_quality,
     )
 
 
@@ -1499,6 +1533,243 @@ async def regenerate_preview_image(
         "project_id": project_id,
         "slug": payload.slug,
         "section_index": payload.section_index,
+    }
+
+
+# ============================================================================
+# v0.27.0 B4 — Brief refinement endpoints
+# ============================================================================
+
+
+class BriefRefinementProposal(BaseModel):
+    """Una propuesta individual generada por gpt-5.5."""
+
+    id: str
+    category: Literal["copy", "cta", "design_method", "reorder"]
+    page_slug: str
+    section_index: int
+    before: dict[str, Any]
+    after: dict[str, Any]
+    rationale: str
+    impact_estimate: Literal["low", "medium", "high"]
+    applied_at: datetime | None = None
+
+
+class BriefRefinementsResponse(BaseModel):
+    """GET /brief/refinements — batch persistido o vacío."""
+
+    project_id: int
+    generated_at: datetime | None = None
+    model: str | None = None
+    cost_usd: float = 0.0
+    tokens_in: int = 0
+    tokens_out: int = 0
+    proposals: list[BriefRefinementProposal] = Field(default_factory=list)
+
+
+class ApplyRefinementPayload(BaseModel):
+    """POST /brief/apply-refinement payload."""
+
+    proposal_id: str = Field(min_length=1, max_length=64)
+    regenerate: bool = Field(
+        default=False,
+        description="Si True, encola wcm.preview.regenerate_page tras aplicar.",
+    )
+
+
+def _apply_refinement_to_brief(
+    brief: dict[str, Any], proposal: dict[str, Any]
+) -> dict[str, Any]:
+    """v0.27.0 — aplica una propuesta al Brief (in-place mutation OK).
+
+    Devuelve el Brief modificado. Lanza `ValueError` si la propuesta
+    es inválida (page_slug no existe, section_index fuera de rango,
+    category desconocida).
+    """
+    category = proposal["category"]
+    page_slug = proposal["page_slug"]
+    section_index = int(proposal["section_index"])
+    after = proposal.get("after") or {}
+
+    page = next(
+        (p for p in brief.get("pages", []) if p.get("slug") == page_slug),
+        None,
+    )
+    if page is None:
+        raise ValueError(f"page_slug={page_slug!r} no encontrado en el Brief")
+    sections = page.get("sections") or []
+
+    if category == "reorder":
+        new_order = after.get("new_order") or []
+        if not isinstance(new_order, list) or len(new_order) != len(sections):
+            raise ValueError(
+                f"reorder new_order debe ser lista de {len(sections)} índices "
+                f"distintos; recibido {new_order!r}"
+            )
+        if sorted(new_order) != list(range(len(sections))):
+            raise ValueError(
+                f"reorder new_order debe ser permutación de 0..{len(sections)-1}"
+            )
+        page["sections"] = [sections[i] for i in new_order]
+        return brief
+
+    # copy/cta/design_method: necesitan section_index válido.
+    if section_index >= len(sections):
+        raise ValueError(
+            f"section_index={section_index} fuera de rango "
+            f"(página tiene {len(sections)} secciones)"
+        )
+    section = sections[section_index]
+
+    if category == "copy":
+        key = after.get("key")
+        value = after.get("value")
+        if key not in ("headline", "subheadline", "text", "description"):
+            raise ValueError(
+                f"copy key inválido: {key!r}. Permitidos: "
+                "headline/subheadline/text/description."
+            )
+        section[key] = value
+    elif category == "cta":
+        if "cta_text" in after:
+            section["cta_text"] = after["cta_text"]
+        if "cta_url" in after:
+            section["cta_url"] = after["cta_url"]
+    elif category == "design_method":
+        new_method = after.get("design_method")
+        if new_method not in ("templates", "ai"):
+            raise ValueError(
+                f"design_method inválido: {new_method!r}. Permitidos: templates/ai."
+            )
+        section["design_method"] = new_method
+    else:
+        raise ValueError(f"category desconocida: {category!r}")
+
+    return brief
+
+
+@router.post(
+    "/{project_id}/brief/suggest-refinements",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def suggest_brief_refinements(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.27.0 B4 — Encola BriefRefinementAgent que propone mejoras al
+    Brief con AI. Resultado persistido en
+    `Project.brief_refinement_proposals_json` y consumido por
+    `GET /brief/refinements`.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if not project.brief_json or not project.brief_json.get("pages"):
+        raise ConflictError(
+            "Project sin brief_json. BriefGenerator debe correr antes."
+        )
+
+    task_id = enqueue_brief_suggest_refinements(project_id)
+    return {
+        "task_id": task_id,
+        "project_id": project_id,
+        "status": "queued",
+    }
+
+
+@router.get(
+    "/{project_id}/brief/refinements",
+    response_model=BriefRefinementsResponse,
+)
+async def get_brief_refinements(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> BriefRefinementsResponse:
+    """v0.27.0 B4 — Devuelve la última batch de propuestas persistida."""
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    data = project.brief_refinement_proposals_json or {}
+    return BriefRefinementsResponse(
+        project_id=project_id,
+        generated_at=data.get("generated_at"),
+        model=data.get("model"),
+        cost_usd=float(data.get("cost_usd") or 0),
+        tokens_in=int(data.get("tokens_in") or 0),
+        tokens_out=int(data.get("tokens_out") or 0),
+        proposals=[
+            BriefRefinementProposal.model_validate(p)
+            for p in (data.get("proposals") or [])
+        ],
+    )
+
+
+@router.post(
+    "/{project_id}/brief/apply-refinement",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def apply_brief_refinement(
+    project_id: int,
+    payload: ApplyRefinementPayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.27.0 B4 — Aplica UNA propuesta concreta al Brief.
+
+    Idempotente: si `proposal.applied_at` ya está seteado, no re-aplica
+    pero sí encola regenerate si `regenerate=true`.
+
+    Si `regenerate=True`, encola `wcm.preview.regenerate_page` para la
+    página afectada tras editar el Brief.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if not project.brief_json:
+        raise ConflictError("Project sin brief_json.")
+    refinements = project.brief_refinement_proposals_json or {}
+    proposals_list = refinements.get("proposals") or []
+    proposal = next(
+        (p for p in proposals_list if p.get("id") == payload.proposal_id),
+        None,
+    )
+    if proposal is None:
+        raise NotFoundError(
+            f"proposal_id={payload.proposal_id!r} no encontrado en el batch actual."
+        )
+
+    already_applied = bool(proposal.get("applied_at"))
+    page_slug = proposal["page_slug"]
+
+    if not already_applied:
+        # Aplicar al Brief.
+        try:
+            new_brief = _apply_refinement_to_brief(
+                dict(project.brief_json), proposal,
+            )
+        except ValueError as e:
+            raise ConflictError(f"propuesta inválida: {e}") from e
+        project.brief_json = new_brief
+        proposal["applied_at"] = datetime.now(UTC).isoformat()
+        # Re-asignar el dict para que SQLAlchemy persista el cambio del JSONB.
+        project.brief_refinement_proposals_json = {
+            **refinements, "proposals": proposals_list,
+        }
+
+    await session.commit()
+
+    task_id = None
+    if payload.regenerate:
+        task_id = enqueue_preview_regenerate_page(project_id, page_slug)
+
+    return {
+        "project_id": project_id,
+        "proposal_id": payload.proposal_id,
+        "already_applied": already_applied,
+        "regenerate_task_id": task_id,
+        "regenerated": payload.regenerate,
     }
 
 

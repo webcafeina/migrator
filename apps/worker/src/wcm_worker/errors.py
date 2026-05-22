@@ -103,6 +103,15 @@ class RedesignAgentError(AgentError):
     blocks_pipeline = False
 
 
+class BriefRefinementError(AgentError):
+    """v0.27.0 — Error de BriefRefinementAgent.
+
+    No bloquea pipeline (es un agente reactivo lanzado bajo demanda por
+    el operador desde dashboard, no parte del flujo principal)."""
+
+    blocks_pipeline = False
+
+
 class AiAssistError(AgentError):
     """No bloqueante: si la AI vision falla, los bloques se mapean
     como RAW_HTML o quedan como UNKNOWN. El pipeline sigue.

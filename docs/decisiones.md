@@ -2322,6 +2322,66 @@ cerrar el MVP del pivote:
 
 ---
 
+## ADR-057 — Sprint v0.27.0: Image quality detection + Brief refinement + Thumbnails real-time + BricksPlus
+
+**Fecha**: 2026-05-22 (sesión nocturna, post v0.26.0)
+**Estado**: Aceptada
+
+### Contexto
+
+v0.26.0 cerró el MVP del pivote arquitectónico. Quedaban 4 frentes
+abiertos: (1) imágenes feas heredadas del origen sin detección/regen;
+(2) Brief sin refinement iterativo con AI; (3) thumbnails no se
+refrescaban tras regenerate-page; (4) BricksPlus como catálogo
+alternativo no preparado.
+
+### Decisión
+
+1. **Detección imagen fea Híbrida (1c)**: heurística determinista
+   automática en `AssetOptimizerAgent` + badge "calidad baja" en
+   `/preview` + botón manual disponible para CUALQUIER imagen.
+2. **Brief refinement MVP medio (2b)**: 4 categorías (copy, cta,
+   design_method, reorder). EXCLUIDO añadir/eliminar secciones.
+3. **Aplicación Híbrida (3c)**: cada propuesta con 2 botones
+   ("Aplicar al Brief" $0 / "Aplicar + regenerar" $0.05-0.30/sección AI).
+4. **BricksPlus parametrizable**: `--source bricksplus` + env vars.
+   Plumbing listo, NO comprometido en uso.
+5. **Thumbnails real-time**: `PreviewThumbnailsAgent.run(slug=...)`
+   invocado por `wcm.preview.regenerate_page` post-redesign.
+
+### Implementación
+
+- Alembic 0022 (`Asset.quality_score/flags_json`, `Project.brief_refinement_proposals_json`).
+- `services/image_quality.py` con 5 flags + threshold 0.50.
+- `OpenAIClient.generate_brief_refinement` con tool estricto.
+- `BriefRefinementAgent` reactivo (no en pipeline).
+- 3 endpoints: `POST /brief/suggest-refinements`, `GET /brief/refinements`,
+  `POST /brief/apply-refinement` con helper `_apply_refinement_to_brief`.
+- `DiffViewer` LCS lightweight (sin dep externa) + 3 shapes.
+- `RefinementPanel` UI agrupada por page → category.
+- `wcm.preview.regenerate_page` bug fix Hybrid + thumbnail refresh post.
+- Script `import_brickstemplate.py --source` + wp_deployer multi-URL.
+
+### Consecuencias
+
+- **Pros**: detección+regen imágenes feas, loop iterativo de mejora
+  del Brief en minutos, thumbnails actualizados en vivo, BricksPlus
+  listo para activar sin tocar código.
+- **Contras**: coste agregado ($0.10-0.50 refinement + $0.05/img),
+  más superficie de feature.
+- **Riesgos**: gpt-5.5 schema break (mitigación: schema estricto +
+  retry), reorder con índices obsoletos (documentado), falsos
+  positivos en logos pequeños (badge no bloquea).
+
+### Tarea de seguimiento
+
+- **v0.27.0 B9** — E2E manual con cliente real (4 escenarios).
+- **v0.28.0** — Añadir/eliminar secciones via refinement. Modernizar
+  imágenes con cross-referencia al asset original. Audit log de
+  refinements aplicados.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

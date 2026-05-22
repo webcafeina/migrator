@@ -33,6 +33,7 @@ from wcm_types.enums import AssetStatus
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import AssetOptimizerError
 from wcm_worker.integrations.r2 import R2Client, R2UploadError
+from wcm_worker.services.image_quality import assess_image_quality
 
 log = logging.getLogger("wcm.worker.asset_optimizer")
 
@@ -130,6 +131,9 @@ class AssetOptimizerAgent(BaseAgent):
                 asset.height = twin.height
                 asset.r2_key = twin.r2_key
                 asset.optimized_path = twin.optimized_path
+                # v0.27.0 — heredar quality del twin (mismo binario).
+                asset.quality_score = twin.quality_score
+                asset.quality_flags_json = twin.quality_flags_json
                 asset.status = AssetStatus.READY
                 deduplicated += 1
                 continue
@@ -141,6 +145,13 @@ class AssetOptimizerAgent(BaseAgent):
             if height:
                 asset.height = height
             asset.hash = content_hash
+            # v0.27.0 B1 — calcular quality_score determinista sin I/O extra.
+            quality = assess_image_quality(
+                width=asset.width, height=asset.height,
+                mime=asset.mime, size_bytes=asset.size_bytes,
+            )
+            asset.quality_score = quality.score
+            asset.quality_flags_json = quality.flags or None
             asset.status = AssetStatus.OPTIMIZED
             optimized += 1
 

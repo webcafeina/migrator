@@ -130,6 +130,17 @@ def enqueue_project_publish(project_id: int) -> str:
     return result.id
 
 
+def enqueue_brief_suggest_refinements(project_id: int) -> str:
+    """v0.27.0 B5 — encola BriefRefinementAgent que propone mejoras al
+    Brief con AI. Persiste resultado en Project.brief_refinement_proposals_json.
+    """
+    result = celery_app.send_task(
+        "wcm.brief.suggest_refinements",
+        kwargs={"project_id": project_id},
+    )
+    return result.id
+
+
 def enqueue_preview_regenerate_page(project_id: int, slug: str) -> str:
     """v0.25.1 B7 — re-ejecuta el agente de rediseño para 1 sola página.
 

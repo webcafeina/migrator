@@ -197,3 +197,50 @@ def test_resolve_wp_target_devuelve_none_si_falta(monkeypatch) -> None:
     monkeypatch.setenv("WP_DEFAULT_REST_USER", "u")
     monkeypatch.setenv("WP_DEFAULT_REST_APP_PASSWORD", "p")
     assert PreviewThumbnailsAgent._resolve_wp_target(MagicMock()) is None
+
+
+# ---------- v0.27.0 B7 — run(slug=...) filtra a una página ----------
+
+
+def test_run_con_slug_filtra_a_esa_pagina(
+    fake_session, wp_env, tmp_path,
+) -> None:
+    """Cuando se pasa slug, el query incluye filtro slug=X."""
+    project = _project()
+    bp = _bricks_page(slug="home", wp_post_id=101)
+    fake_session.get.return_value = project
+    # scalars().all() devuelve solo bp (si el query con filtro slug=home)
+    fake_session.execute.return_value.scalars.return_value.all.return_value = [bp]
+
+    captured_filters: list = []
+
+    def _spy_execute(stmt):
+        captured_filters.append(str(stmt))
+        m = MagicMock()
+        m.scalars.return_value.all.return_value = [bp]
+        return m
+    fake_session.execute.side_effect = _spy_execute
+
+    screenshotter = AsyncMock(return_value=b"PNG")
+    ctx = AgentContext(session=fake_session, project_id=project.id)
+    agent = PreviewThumbnailsAgent(
+        screenshotter=screenshotter, output_dir=tmp_path,
+    )
+    result = agent.run(ctx, slug="home")
+    assert result.outputs["captured"] == 1
+    # Verificamos que el WHERE incluye slug.
+    assert any("slug" in f.lower() for f in captured_filters)
+
+
+def test_run_con_slug_inexistente_skipped(
+    fake_session, wp_env, tmp_path,
+) -> None:
+    project = _project()
+    fake_session.get.return_value = project
+    fake_session.execute.return_value.scalars.return_value.all.return_value = []
+    ctx = AgentContext(session=fake_session, project_id=project.id)
+    result = PreviewThumbnailsAgent(output_dir=tmp_path).run(
+        ctx, slug="missing",
+    )
+    assert result.outputs["skipped"] is True
+    assert "missing" in result.outputs["reason"]

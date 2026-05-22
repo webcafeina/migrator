@@ -19,6 +19,9 @@ interface PreviewSectionInfo {
   is_placeholder: boolean;
   asset_id: number | null;
   headline: string | null;
+  asset_quality_score?: number | null;
+  asset_quality_flags?: string[];
+  asset_is_low_quality?: boolean;
 }
 
 interface PreviewPageInfo {

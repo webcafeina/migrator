@@ -10,6 +10,7 @@ from wcm_worker.agents.asset_uploader import AssetUploaderAgent
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.agents.bricks_transpiler import BricksTranspilerAgent
 from wcm_worker.agents.brief_generator import BriefGeneratorAgent
+from wcm_worker.agents.brief_refinement import BriefRefinementAgent
 from wcm_worker.agents.checklist_generator import ChecklistGeneratorAgent
 from wcm_worker.agents.clickup_syncer import ClickupSyncerAgent
 from wcm_worker.agents.content_extractor import ContentExtractorAgent
@@ -43,6 +44,7 @@ __all__ = [
     "AssetUploaderAgent",
     "BaseAgent",
     "BriefGeneratorAgent",
+    "BriefRefinementAgent",
     "BricksTranspilerAgent",
     "ChecklistGeneratorAgent",
     "ClickupSyncerAgent",

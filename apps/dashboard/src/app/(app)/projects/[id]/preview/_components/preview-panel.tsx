@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
+  AlertTriangle,
   Image as ImageIcon,
   Loader2,
   RotateCw,
@@ -15,6 +16,8 @@ import {
 import { ApiError, api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
+import { RefinementPanel } from "./refinement-panel";
+
 interface PreviewSectionInfo {
   type: string;
   design_method: string | null;
@@ -22,6 +25,10 @@ interface PreviewSectionInfo {
   is_placeholder: boolean;
   asset_id: number | null;
   headline: string | null;
+  // v0.27.0 B1
+  asset_quality_score?: number | null;
+  asset_quality_flags?: string[];
+  asset_is_low_quality?: boolean;
 }
 
 interface PreviewPageInfo {
@@ -75,6 +82,8 @@ export function PreviewPanel({
   );
   const [editingBrief, setEditingBrief] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [refinementOpen, setRefinementOpen] = useState(false);
+  const [suggestingRefinements, setSuggestingRefinements] = useState(false);
   const budgetPct = imageGenerationBudgetUsd > 0
     ? Math.min(100, (imageGenerationCostUsd / imageGenerationBudgetUsd) * 100)
     : 0;
@@ -153,6 +162,35 @@ export function PreviewPanel({
     });
   }
 
+  function handleSuggestRefinements() {
+    setError(null);
+    if (
+      !confirm(
+        "Generar propuestas de mejora con AI tiene un coste estimado de "
+          + "$0.10-0.50. ¿Continuar?",
+      )
+    )
+      return;
+    setSuggestingRefinements(true);
+    startTransition(async () => {
+      try {
+        await api.post(
+          `/api/v1/projects/${projectId}/brief/suggest-refinements`,
+        );
+        // Abrir panel; el panel hará fetch del estado actual y mostrará
+        // las propuestas cuando la task termine (ProjectPoller refresca).
+        setRefinementOpen(true);
+        router.refresh();
+      } catch (e) {
+        setError(
+          e instanceof ApiError ? e.message : "Error encolando refinement",
+        );
+      } finally {
+        setSuggestingRefinements(false);
+      }
+    });
+  }
+
   function handleApprove() {
     setError(null);
     if (!confirm("¿Aprobar el preview y publicar todas las páginas?")) return;
@@ -185,6 +223,30 @@ export function PreviewPanel({
           </p>
         </div>
         <div className="flex gap-2">
+          {/* v0.27.0 B6 — Sugerir mejoras con AI. */}
+          <button
+            type="button"
+            onClick={handleSuggestRefinements}
+            disabled={pending || suggestingRefinements}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-wcm-accent/40 bg-wcm-accent/10 px-3 py-1 text-[11px] text-wcm-accent hover:bg-wcm-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
+            title="Genera propuestas de mejora del Brief con gpt-5.5 (~$0.10-0.50)"
+          >
+            {suggestingRefinements ? (
+              <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+            ) : (
+              <Sparkles className="h-3 w-3" aria-hidden />
+            )}
+            Sugerir mejoras (AI)
+          </button>
+          <button
+            type="button"
+            onClick={() => setRefinementOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-wcm-detail/60 bg-wcm-secondary/40 px-3 py-1 text-[11px] hover:border-wcm-accent"
+            title="Ver propuestas anteriores"
+          >
+            <Sparkles className="h-3 w-3" aria-hidden />
+            ver propuestas
+          </button>
           <button
             type="button"
             onClick={() => setEditingBrief(true)}
@@ -420,6 +482,14 @@ export function PreviewPanel({
           }}
         />
       )}
+
+      {/* v0.27.0 B6 — Panel lateral de propuestas refinement. */}
+      {refinementOpen && (
+        <RefinementPanel
+          projectId={projectId}
+          onClose={() => setRefinementOpen(false)}
+        />
+      )}
     </section>
   );
 }
@@ -635,6 +705,21 @@ function SectionRow({
           imagen IA
         </span>
       )}
+      {/* v0.27.0 B1 — badge calidad baja en imagen del origen. */}
+      {section.asset_is_low_quality && !section.has_ai_image && (
+        <span
+          className="inline-flex items-center gap-1 rounded-sm border border-wcm-warning/40 bg-wcm-warning/10 px-1 text-[9.5px] text-wcm-warning"
+          title={
+            "Calidad baja detectada · flags: " +
+            (section.asset_quality_flags ?? []).join(", ") +
+            ` · score ${section.asset_quality_score?.toFixed(2) ?? "?"} ` +
+            "· puedes regenerar con IA"
+          }
+        >
+          <AlertTriangle className="h-2.5 w-2.5" aria-hidden />
+          calidad baja
+        </span>
+      )}
       <select
         value={section.design_method ?? ""}
         onChange={(e) =>
@@ -662,13 +747,17 @@ function SectionRow({
         )}
         sección
       </button>
-      {section.has_ai_image && (
+      {(section.has_ai_image || section.asset_is_low_quality) && (
         <button
           type="button"
           onClick={() => onRegenerateImage(slug, index)}
           disabled={isRegenImage || pending}
           className="inline-flex items-center gap-1 rounded-sm border border-wcm-detail/60 bg-wcm-primary px-1.5 py-0.5 text-[10px] hover:border-wcm-accent disabled:cursor-not-allowed disabled:opacity-50"
-          title="Regenerar la imagen IA de esta sección"
+          title={
+            section.has_ai_image
+              ? "Regenerar la imagen IA de esta sección"
+              : "Generar imagen IA en sustitución del origen (calidad baja)"
+          }
         >
           {isRegenImage ? (
             <Loader2 className="h-2.5 w-2.5 animate-spin" aria-hidden />

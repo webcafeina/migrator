@@ -52,6 +52,30 @@ log = logging.getLogger("import_brickstemplate")
 #: Endpoint canónico. Override env BRICKSTEMPLATE_API_URL si cambia.
 DEFAULT_API_URL = "https://brickstemplate.com/wp-json/bricks/v1/templates"
 
+#: v0.27.0 B8 — fuente alternativa BricksPlus. Sin uso comprometido,
+#: parametrizado por env para que el operador active cuando decida.
+#: Endpoint canónico igual (Bricks 2.x usa la misma forma).
+BRICKSPLUS_DEFAULT_API_URL = (
+    "https://bricksplus.com/wp-json/bricks/v1/templates"
+)
+
+#: Configuración por source. Cada source mapea a (env_url, env_license,
+#: default_url, default_out_dir).
+_SOURCE_CONFIGS: dict[str, dict[str, str]] = {
+    "brickstemplate": {
+        "env_url": "BRICKSTEMPLATE_API_URL",
+        "env_license": "BRICKSTEMPLATE_LICENSE",
+        "default_url": DEFAULT_API_URL,
+        "default_out": "docs/templates/brickstemplate",
+    },
+    "bricksplus": {
+        "env_url": "BRICKSPLUS_API_URL",
+        "env_license": "BRICKSPLUS_LICENSE",
+        "default_url": BRICKSPLUS_DEFAULT_API_URL,
+        "default_out": "docs/templates/bricksplus",
+    },
+}
+
 #: Mapping de categorías brickstemplate → nuestras categorías canónicas.
 #: Si brickstemplate categoriza algo distinto, mapeamos aquí. El resto
 #: pasa tal cual.
@@ -213,13 +237,30 @@ def main(argv: list[str] | None = None) -> int:
         format="%(levelname)s %(name)s: %(message)s", level=logging.INFO
     )
     parser = argparse.ArgumentParser(
-        description="Importa catálogo brickstemplate.com a JSON Bricks local."
+        description=(
+            "Importa catálogo Bricks (brickstemplate.com o BricksPlus) "
+            "a JSON local. v0.27.0 B8 — multi-source."
+        )
+    )
+    parser.add_argument(
+        "--source",
+        type=str,
+        choices=list(_SOURCE_CONFIGS.keys()),
+        default="brickstemplate",
+        help=(
+            "Catálogo a importar. brickstemplate (default) o bricksplus. "
+            "Cada source usa sus propios env vars: "
+            "BRICKSTEMPLATE_API_URL/LICENSE o BRICKSPLUS_API_URL/LICENSE."
+        ),
     )
     parser.add_argument(
         "--out",
         type=Path,
-        default=Path("docs/templates/brickstemplate"),
-        help="Directorio de salida (default: docs/templates/brickstemplate)",
+        default=None,
+        help=(
+            "Directorio de salida. Default depende de --source: "
+            "docs/templates/brickstemplate o docs/templates/bricksplus."
+        ),
     )
     parser.add_argument(
         "--limit",
@@ -230,16 +271,28 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--api-url",
         type=str,
-        default=os.environ.get("BRICKSTEMPLATE_API_URL", DEFAULT_API_URL),
+        default=None,
+        help=(
+            "Override URL del endpoint. Si no, usa env "
+            "BRICKSTEMPLATE_API_URL/BRICKSPLUS_API_URL según --source."
+        ),
     )
     args = parser.parse_args(argv)
 
-    license_password = os.environ.get("BRICKSTEMPLATE_LICENSE", "").strip()
+    source_cfg = _SOURCE_CONFIGS[args.source]
+    if args.out is None:
+        args.out = Path(source_cfg["default_out"])
+    if args.api_url is None:
+        args.api_url = os.environ.get(
+            source_cfg["env_url"], source_cfg["default_url"]
+        )
+
+    license_password = os.environ.get(source_cfg["env_license"], "").strip()
     if not license_password:
         log.error(
-            "Sin BRICKSTEMPLATE_LICENSE. Configurar:\n"
-            "  export BRICKSTEMPLATE_LICENSE='<tu_password>'\n"
-            "Tu password es el mismo que pegas en Bricks > Settings > "
+            f"Sin {source_cfg['env_license']}. Configurar:\n"
+            f"  export {source_cfg['env_license']}='<tu_password>'\n"
+            f"Tu password es el mismo que pegas en Bricks > Settings > "
             "Templates > Remote Templates URL (lo recibiste por email "
             "al comprar la suscripción)."
         )

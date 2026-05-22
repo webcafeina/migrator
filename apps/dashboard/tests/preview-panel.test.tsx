@@ -243,6 +243,43 @@ describe("PreviewPanel", () => {
     );
   });
 
+  it("badge 'calidad baja' aparece cuando asset_is_low_quality y sin imagen IA (v0.27.0)", () => {
+    const pagesWithLowQuality = [
+      {
+        ...PAGES[0]!,
+        sections: [
+          {
+            type: "hero",
+            design_method: "templates",
+            has_ai_image: false,
+            is_placeholder: false,
+            asset_id: 5,
+            headline: null,
+            asset_quality_score: 0.3,
+            asset_quality_flags: ["low_resolution", "obsolete_format"],
+            asset_is_low_quality: true,
+          },
+        ],
+      },
+    ];
+    render(
+      <PreviewPanel
+        projectId={42}
+        designMethod={null}
+        brief={BRIEF}
+        pages={pagesWithLowQuality}
+        projectStatus="ready_for_preview"
+      />,
+    );
+    expect(screen.getByText("calidad baja")).toBeInTheDocument();
+    // botón "imagen" también disponible para regenerar con IA.
+    expect(
+      screen.getByTitle(
+        "Generar imagen IA en sustitución del origen (calidad baja)",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("budget tracking se muestra cuando hay coste IA > 0", () => {
     render(
       <PreviewPanel

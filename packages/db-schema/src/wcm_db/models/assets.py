@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import (
@@ -10,6 +11,7 @@ from sqlalchemy import (
     Enum,
     ForeignKey,
     Integer,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -63,3 +65,13 @@ class Asset(Base, TimestampMixin):
         index=True,
     )
     error_message: Mapped[str | None] = mapped_column(Text)
+
+    #: v0.27.0 — score 0.00-1.00 calculado por heurística image_quality.
+    #: <0.50 = candidato a regenerar con gpt-image-2. NULL = no analizado
+    #: todavía (assets pre-v0.27.0).
+    quality_score: Mapped[Decimal | None] = mapped_column(
+        Numeric(precision=3, scale=2)
+    )
+    #: v0.27.0 — lista de flags accionables para tooltip en /preview:
+    #: ["low_resolution", "obsolete_format", "weird_aspect_ratio", ...]
+    quality_flags_json: Mapped[list[str] | None] = mapped_column(JSONB)

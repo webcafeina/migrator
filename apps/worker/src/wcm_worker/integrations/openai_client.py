@@ -385,6 +385,112 @@ TOOL_PAGE_REDESIGN: dict[str, Any] = {
 }
 
 
+#: BriefRefinement v0.27.0 — analiza Brief + páginas Bricks ya generadas
+#: y propone mejoras concretas en 4 categorías editables.
+SYSTEM_PROMPT_BRIEF_REFINEMENT = """Eres un consultor senior de UX writing y \
+conversión web. Tu tarea: dado un Brief de negocio y un resumen de las páginas \
+Bricks generadas, proponer **5 a 15 mejoras concretas** en una de estas 4 \
+categorías:
+
+1. **copy**: mejorar headlines, subheadlines, descriptions o cualquier texto \
+literal del Brief. Más enganchador, más beneficio-orientado, más concreto.
+2. **cta**: mejorar el texto del CTA (`cta_text`) y/o su URL destino (`cta_url`) \
+para aumentar clarity y conversión.
+3. **design_method**: cambiar el método de generación de una sección entre \
+`templates` (estable, determinista) y `ai` (creativo, más caro). Por ejemplo, \
+si el hero quedó plano con templates, sugerir cambiar a `ai`.
+4. **reorder**: cambiar el orden de las secciones dentro de una página para \
+mejorar el flujo narrativo (hero → problema → solución → social proof → CTA).
+
+Reglas:
+- **NO propongas añadir o eliminar secciones** (fuera de scope v0.27.0).
+- Cada propuesta debe ser **accionable y atómica**.
+- `before` y `after` deben ser **válidos según category**:
+  - `copy`: `{"key": "headline|subheadline|description|text", "value": "string"}`.
+  - `cta`: `{"cta_text": "string", "cta_url": "string"}`. Permites omitir uno.
+  - `design_method`: `{"design_method": "templates|ai"}`.
+  - `reorder`: `{"new_order": [int]}` (lista de índices originales en nuevo orden).
+- `rationale` máx 200 caracteres, en español de España, sin jerga.
+- `impact_estimate`: low/medium/high según relevancia comercial.
+- Idioma de copy generado: SIEMPRE español de España.
+
+Devuelve SIEMPRE la tool `emit_brief_refinements` con `proposals`.
+"""
+
+TOOL_BRIEF_REFINEMENT: dict[str, Any] = {
+    "type": "function",
+    "function": {
+        "name": "emit_brief_refinements",
+        "description": (
+            "Emite una lista de 5-15 propuestas de mejora del Brief en 4 "
+            "categorías: copy, cta, design_method, reorder. Cada propuesta "
+            "tiene before/after, rationale y impact_estimate."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "proposals": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": (
+                                    "UUID v4 corto generado por el modelo "
+                                    "para identificar la propuesta."
+                                ),
+                            },
+                            "category": {
+                                "type": "string",
+                                "enum": [
+                                    "copy", "cta", "design_method", "reorder",
+                                ],
+                            },
+                            "page_slug": {"type": "string"},
+                            "section_index": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "description": (
+                                    "Índice 0-based en page.sections[]. "
+                                    "Para `reorder`, índice de la página "
+                                    "(la reordenación es a nivel página)."
+                                ),
+                            },
+                            "before": {
+                                "type": "object",
+                                "additionalProperties": True,
+                            },
+                            "after": {
+                                "type": "object",
+                                "additionalProperties": True,
+                            },
+                            "rationale": {
+                                "type": "string",
+                                "maxLength": 240,
+                            },
+                            "impact_estimate": {
+                                "type": "string",
+                                "enum": ["low", "medium", "high"],
+                            },
+                        },
+                        "required": [
+                            "id", "category", "page_slug", "section_index",
+                            "before", "after", "rationale", "impact_estimate",
+                        ],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            "required": ["proposals"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 class OpenAIClient:
     """Cliente async para function calling estructurado.
 
@@ -504,6 +610,32 @@ class OpenAIClient:
             user_msg=user_msg,
             tool=TOOL_SECTION_REDESIGN,
             tool_name="emit_bricks_section",
+        )
+
+    async def generate_brief_refinement(
+        self,
+        *,
+        brief: dict[str, Any],
+        pages_summary: list[dict[str, Any]],
+    ) -> OpenAIResult:
+        """v0.27.0 — propone mejoras al Brief en 4 categorías.
+
+        `pages_summary` es un resumen COMPACTO (sin bricks_json crudo)
+        de cada página: `{slug, intent, sections: [{type, design_method,
+        headline, has_image}]}`. Mantiene el prompt corto y barato.
+
+        Modelo: `model_redesign` (default gpt-5.5). Coste estimado por
+        proyecto típico (Brief + 5 páginas + 20 secciones): $0.10-0.50.
+        """
+        user_msg = self._build_brief_refinement_user_message(
+            brief, pages_summary,
+        )
+        return await self._call_with_retry(
+            model=self.model_redesign,
+            system=SYSTEM_PROMPT_BRIEF_REFINEMENT,
+            user_msg=user_msg,
+            tool=TOOL_BRIEF_REFINEMENT,
+            tool_name="emit_brief_refinements",
         )
 
     async def generate_image(
@@ -730,6 +862,31 @@ class OpenAIClient:
             "Genera el array `content` de elementos Bricks NATIVOS para esta página.",
             "Usa colores del brand como `var(--bricks-color-*)` y fonts del brand.",
             "Estructura limpia, jerarquía clara, espaciado generoso. Mobile-first.",
+        ]
+        return "\n".join(parts)
+
+    @staticmethod
+    def _build_brief_refinement_user_message(
+        brief: dict[str, Any],
+        pages_summary: list[dict[str, Any]],
+    ) -> str:
+        """v0.27.0 — user message para BriefRefinement.
+
+        Estructura: Brief business + brand + páginas resumidas.
+        """
+        parts = [
+            "## Brief del negocio",
+            json.dumps(brief.get("business", {}), ensure_ascii=False, indent=2),
+            "",
+            "## Branding",
+            json.dumps(brief.get("brand", {}), ensure_ascii=False, indent=2),
+            "",
+            "## Resumen de páginas Bricks ya generadas",
+            json.dumps(pages_summary, ensure_ascii=False, indent=2),
+            "",
+            "Propón 5-15 mejoras concretas en categorías copy/cta/design_method/reorder.",
+            "Sé específico: cita el page_slug + section_index exactos.",
+            "NO propongas añadir o eliminar secciones (fuera de scope).",
         ]
         return "\n".join(parts)
 

@@ -29,6 +29,27 @@
 
 ## Última versión publicada
 
+**v0.27.0** (2026-05-22) — **Image quality detection + Brief refinement iterativo
++ Thumbnails real-time + BricksPlus support**. Sprint largo que cierra los 4
+frentes abiertos tras v0.26.0 para llevar el producto a calidad comercial.
+- **Image quality**: heurística determinista calcula score 0-1 + flags
+  (low_resolution, obsolete_format, weird_aspect_ratio, etc.) en
+  AssetOptimizerAgent. Badge "calidad baja" en `/preview` con tooltip + botón
+  regenerar con gpt-image-2.
+- **Brief refinement**: nuevo `BriefRefinementAgent` con gpt-5.5 propone 5-15
+  mejoras en 4 categorías (copy/cta/design_method/reorder). Panel lateral con
+  DiffViewer + botones híbridos ("Aplicar al Brief" $0 o "Aplicar + regenerar"
+  que encola task). Coste ~$0.10-0.50/proyecto.
+- **Thumbnails real-time**: `PreviewThumbnailsAgent.run(slug=...)` filtra a una
+  página; `wcm.preview.regenerate_page` invoca tras regenerar para refresh
+  automático del thumbnail. Bug fix Hybrid pre-existente.
+- **BricksPlus support**: script `import_brickstemplate.py --source bricksplus`
+  + env vars. wp_deployer añade BRICKSPLUS_REMOTE_URL al option si configurado.
+  No comprometido (plumbing listo).
+- 3 endpoints API nuevos, DiffViewer reusable, RefinementPanel UI.
+- Migración Alembic 0022 (3 columnas). ADR-057 documenta. 1256 backend + 294
+  dashboard verdes. B9 (E2E manual) pendiente.
+
 **v0.26.0** (2026-05-22) — **Híbrido por sección + Image generation + Thumbnails
 preview (Figma OUT)**. Cierra las 3 limitaciones del MVP del pivote v0.25.x:
 - **Hybrid por sección**: cada `pages[i].sections[j]` del Brief gana

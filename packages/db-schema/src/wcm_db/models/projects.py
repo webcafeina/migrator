@@ -98,6 +98,10 @@ class Project(Base, TimestampMixin):
     image_generation_budget_usd: Mapped[Decimal | None] = mapped_column(
         Numeric(precision=6, scale=2), default=Decimal("1.00")
     )
+    #: v0.27.0 — última batch de propuestas del BriefRefinementAgent.
+    #: Shape: `{generated_at, model, cost_usd, proposals: [...]}`.
+    #: Las propuestas individuales tienen `applied_at` para tracking.
+    brief_refinement_proposals_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
 
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)
