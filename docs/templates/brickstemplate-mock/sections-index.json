@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "description": "Catálogo MOCK para tests del SectionPicker + SlotMapper. NO usar en producción. El catálogo real se genera con `scripts/import_brickstemplate.py` y se guarda en `docs/templates/brickstemplate/`.",
+    "version": "mock-1",
+    "n_templates": 4
+  },
+  "templates": [
+    {
+      "id": "hero-minimalist-001",
+      "file": "hero/hero-minimalist-001.json",
+      "category": "hero",
+      "vibe": "minimalist",
+      "fits_sectors": ["agency", "consulting", "services", "portfolio"],
+      "fits_tones": ["formal", "premium", "serious"],
+      "slot_map": {
+        "content[1].settings.text": "headline",
+        "content[2].settings.text": "subheadline",
+        "content[3].settings.text": "cta.text",
+        "content[3].settings.link.url": "cta.url"
+      },
+      "n_images_slots": 0,
+      "n_text_slots": 2,
+      "n_cta_slots": 1
+    },
+    {
+      "id": "hero-playful-001",
+      "file": "hero/hero-playful-001.json",
+      "category": "hero",
+      "vibe": "playful",
+      "fits_sectors": ["restaurant", "ecommerce", "beauty", "fitness"],
+      "fits_tones": ["casual", "friendly", "playful"],
+      "slot_map": {
+        "content[1].settings.text": "headline",
+        "content[2].settings.text": "subheadline"
+      },
+      "n_images_slots": 0,
+      "n_text_slots": 2,
+      "n_cta_slots": 0
+    },
+    {
+      "id": "features-grid-001",
+      "file": "features/features-grid-001.json",
+      "category": "features",
+      "vibe": "corporate",
+      "fits_sectors": ["agency", "consulting", "services"],
+      "fits_tones": ["formal", "friendly"],
+      "slot_map": {
+        "content[1].settings.text": "headline"
+      },
+      "n_images_slots": 0,
+      "n_text_slots": 1,
+      "n_cta_slots": 0
+    },
+    {
+      "id": "cta-generic-001",
+      "file": "cta/cta-generic-001.json",
+      "category": "cta",
+      "vibe": "minimalist",
+      "fits_sectors": [],
+      "fits_tones": [],
+      "slot_map": {
+        "content[1].settings.text": "headline",
+        "content[2].settings.text": "cta.text"
+      },
+      "n_images_slots": 0,
+      "n_text_slots": 1,
+      "n_cta_slots": 1
+    }
+  ]
+}

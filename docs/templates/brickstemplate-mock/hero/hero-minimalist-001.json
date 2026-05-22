@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "id": "hero-minimalist-001",
+    "category": "hero",
+    "vibe": "minimalist",
+    "source": "MOCK — sin afiliación con brickstemplate.com real"
+  },
+  "content": [
+    {
+      "id": "secaaa",
+      "name": "section",
+      "parent": "0",
+      "children": ["conaaa", "headaa", "subaaa", "btnaaa"],
+      "settings": {
+        "_padding": {"top": "100px", "right": "24px", "bottom": "100px", "left": "24px"},
+        "_background": {"color": {"raw": "var(--bricks-color-bg)"}}
+      }
+    },
+    {
+      "id": "headaa",
+      "name": "heading",
+      "parent": "conaaa",
+      "children": [],
+      "settings": {
+        "tag": "h1",
+        "text": "TEMPLATE PLACEHOLDER: Headline principal",
+        "_typography": {
+          "font-size": "48px",
+          "font-weight": "700",
+          "text-align": "center",
+          "color": {"raw": "var(--bricks-color-primary)"}
+        }
+      }
+    },
+    {
+      "id": "subaaa",
+      "name": "text",
+      "parent": "conaaa",
+      "children": [],
+      "settings": {
+        "text": "<p>TEMPLATE PLACEHOLDER: Subheadline descriptiva del negocio</p>",
+        "_typography": {"text-align": "center", "color": {"raw": "var(--bricks-color-text)"}},
+        "_margin": {"top": "16px", "bottom": "32px"}
+      }
+    },
+    {
+      "id": "btnaaa",
+      "name": "button",
+      "parent": "conaaa",
+      "children": [],
+      "settings": {
+        "text": "Comenzar",
+        "link": {"type": "internal", "url": "#"},
+        "style": "primary",
+        "_background": {"color": {"raw": "var(--bricks-color-accent)"}},
+        "_typography": {"color": {"raw": "var(--bricks-color-primary)"}, "font-weight": "600"},
+        "_padding": {"top": "12px", "right": "32px", "bottom": "12px", "left": "32px"}
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "_meta": {"id": "hero-playful-001", "category": "hero", "vibe": "playful"},
+  "content": [
+    {
+      "id": "secbbb",
+      "name": "section",
+      "parent": "0",
+      "children": ["conbbb", "headbb", "subbbb"],
+      "settings": {
+        "_padding": {"top": "80px", "right": "24px", "bottom": "80px", "left": "24px"},
+        "_background": {"color": {"raw": "var(--bricks-color-accent)"}}
+      }
+    },
+    {
+      "id": "headbb",
+      "name": "heading",
+      "parent": "conbbb",
+      "children": [],
+      "settings": {
+        "tag": "h1",
+        "text": "TEMPLATE PLACEHOLDER",
+        "_typography": {"font-size": "56px", "font-weight": "900"}
+      }
+    },
+    {
+      "id": "subbbb",
+      "name": "text",
+      "parent": "conbbb",
+      "children": [],
+      "settings": {"text": "<p>Sub playful</p>"}
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "_meta": {"id": "features-grid-001", "category": "features", "vibe": "corporate"},
+  "content": [
+    {
+      "id": "secccc",
+      "name": "section",
+      "parent": "0",
+      "children": ["conccc", "headcc"],
+      "settings": {
+        "_padding": {"top": "80px", "right": "24px", "bottom": "80px", "left": "24px"}
+      }
+    },
+    {
+      "id": "headcc",
+      "name": "heading",
+      "parent": "conccc",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "text": "TEMPLATE PLACEHOLDER: Features title",
+        "_typography": {"text-align": "center"}
+      }
+    }
+  ]
+}

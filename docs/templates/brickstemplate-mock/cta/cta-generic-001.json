@@ -1,0 +1,33 @@
+{
+  "_meta": {"id": "cta-generic-001", "category": "cta", "vibe": "minimalist"},
+  "content": [
+    {
+      "id": "secddd",
+      "name": "section",
+      "parent": "0",
+      "children": ["conddd", "headdd", "btnddd"],
+      "settings": {
+        "_padding": {"top": "60px", "right": "24px", "bottom": "60px", "left": "24px"},
+        "_background": {"color": {"raw": "var(--bricks-color-primary)"}}
+      }
+    },
+    {
+      "id": "headdd",
+      "name": "heading",
+      "parent": "conddd",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "text": "TEMPLATE PLACEHOLDER: CTA title",
+        "_typography": {"text-align": "center", "color": {"raw": "var(--bricks-color-bg)"}}
+      }
+    },
+    {
+      "id": "btnddd",
+      "name": "button",
+      "parent": "conddd",
+      "children": [],
+      "settings": {"text": "Empezar ahora", "link": {"url": "#"}}
+    }
+  ]
+}
