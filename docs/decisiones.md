@@ -2149,6 +2149,97 @@ Como **complemento**, `docs/referencias/bricks-skills/` (wpgaurav) se mantiene p
 
 ---
 
+## ADR-055 — Pivote arquitectónico v0.25.0: rediseño desde origen vs replicación fiel
+
+**Fecha**: 2026-05-22 · **Sprint**: v0.25.0 · **Estado**: aceptado
+
+### Contexto
+
+Tras 3 sprints invertidos en replicar fielmente el origen:
+
+- **v0.22.0** — heurística + Claude Vision + RAW_HTML fallback.
+- **v0.23.0** — element_styles + globalClasses (patrón h2b.skill).
+- **v0.23.1** — desactivar Claude (sin tier pagado).
+- **v0.24.0** — fidelidad alta: asset_uploader R2→WP, NAV/FOOTER reales,
+  composite styles, hero composition, state_driver (slideshow/tabs/
+  accordion), multibuilder Webflow + Hostinger AI.
+
+**La validación visual del operador sobre mariya.design tras v0.24.0 confirma**:
+
+- 89% assets subidos OK, 91 globalClasses aplicadas, 17 fases canónicas.
+- PERO: el destino sigue sin parecerse al origen lo suficiente como
+  para que el operador valide el producto como "migración fiel".
+- Razón fundamental: replicar layouts complejos (Wix Studio composition,
+  position absolute, computed styles por nodo, IX2 Webflow) es
+  intrínsecamente complejo y siempre habrá pérdidas.
+
+### Decisión
+
+**Cambio de filosofía técnica + comercial**:
+
+1. La promesa al cliente pasa de **"migramos tu Wix a WP"** a
+   **"modernizamos tu web aprovechando tu contenido y branding actuales"**.
+2. Lo que se extrae del origen sigue siendo input crítico: contenido,
+   paleta, fonts, navigation, fingerprint sectorial, assets.
+3. Pero el OUTPUT YA NO replica el layout origen. Es un rediseño limpio,
+   editable, con elementos Bricks nativos, construido a partir de un
+   contrato canónico intermedio (`Brief JSON`).
+4. **Dos pipelines paralelos** de generación, operador elige por proyecto:
+   - **Templates**: catálogo curado de `brickstemplate.com` +
+     `SectionPicker` (determinista, hash(business.name) % N candidatos
+     filtrados por sector+tone) + `SlotMapper` (reemplazo de placeholders
+     en JSON Bricks). Sin coste API.
+   - **AI**: OpenAI gpt-4o (no Anthropic — sin créditos) con
+     function calling estructurado `emit_bricks_page`. ~$3-15/proyecto.
+5. **BriefGenerator** auto-detecta business_description, sector, tone,
+   target_audience, USPs con OpenAI gpt-4o-mini (~$0.01/proyecto) si los
+   campos no están seteados por el operador en el wizard.
+6. Pipeline legacy (`transpile_bricks` v0.24.0) se mantiene activo
+   condicionado a `design_method=NULL` (proyectos pre-v0.25.0).
+7. **Figma diferido a v0.26.0** como capa de revisión visual del
+   Brief detrás de feature flag (`WCM_FIGMA_PREVIEW=1`), NO traductor
+   Figma→Bricks (UiChemy no expone API pública, rompería automatización).
+
+### Consecuencias
+
+- **Positivas**:
+  - Complejidad técnica del output baja drásticamente (sin replicación
+    fiel de Wix Studio).
+  - El operador puede validar "calidad del diseño nuevo" (subjetivo
+    ≥80%) en lugar de "fidelidad pixel-perfect" (siempre <70%).
+  - Promesa comercial más realista y atractiva.
+  - Operador decide por proyecto: templates (gratis, determinista) o
+    AI (flexible, coste recurrente).
+  - Código v0.22-v0.24 NO se borra — sigue como input del Brief.
+- **Negativas**:
+  - El cliente final puede esperar "réplica fiel" si no se gestionan
+    bien las expectativas comerciales. Refinar copy del producto.
+  - Curación manual de `sections-index.json` (vibe, fits_sectors,
+    fits_tones, slot_map) consume tiempo del operador hasta tener un
+    catálogo robusto.
+  - AI generativo tiene variabilidad — para algunos proyectos el output
+    puede no ser óptimo (mitigado por fallback a templates).
+- **Riesgos**:
+  - Si los templates resultan insuficientes en variedad, complementar
+    con BricksPlus (lifetime ~$249) o construir 20 templates propios.
+  - GPT-4o coste por página puede escalar si el operador procesa
+    decenas de proyectos/mes con AI puro. Monitorizar y mover a
+    gpt-4o-mini si presupuesto lo requiere.
+
+### Tarea de seguimiento
+
+- **v0.25.1**: B7 edición iterativa Dashboard (preview por página +
+  regenerate sección/página + editar Brief). No entró en v0.25.0 por
+  scope.
+- **v0.26.0**: Figma preview + híbrido por sección.
+- Smoke test E2E con 3 proyectos (Wix mariya, Webflow demo, Hostinger
+  demo) post-release v0.25.0 para validar el approach.
+- Si tras 5 proyectos reales el operador valida la calidad subjetiva
+  ≥80%, refinar copy comercial del producto y empezar prospección
+  con nueva promesa.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.

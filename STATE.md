@@ -29,6 +29,26 @@
 
 ## Última versión publicada
 
+**v0.25.0** (2026-05-22) — **PIVOTE ARQUITECTÓNICO**: producto deja de
+prometer "clonar tu Wix a WP" → **"modernizamos tu web aprovechando
+tu contenido y branding actuales"**. Tras 3 sprints (v0.22-v0.24)
+invertidos en replicación fiel sin alcanzar fidelidad visual aceptable.
+Filosofía nueva: lo extraído del origen (contenido + paleta + fonts +
+nav + assets) sigue siendo input, pero el OUTPUT es un rediseño limpio
+en Bricks nativo, NO una réplica del origen.
+- **Brief JSON canónico** como contrato único intermedio (business +
+  brand + navigation + footer + pages[]).
+- **Dos pipelines paralelos** (operador elige por proyecto): Templates
+  (brickstemplate.com + SectionPicker + SlotMapper, determinista,
+  gratis) o AI (OpenAI gpt-4o, ~$3-15/proyecto, calidad variable).
+- **BriefGenerator** auto-detecta business_description, sector, tone,
+  target, USPs con gpt-4o-mini (~$0.01/proyecto) si están vacíos.
+- Wizard 6 pasos. Pipeline canónico 20 fases.
+- 8/11 bloques (B0+B1+B2+B3+B4+B5+B6+B8). B7 (edición iterativa
+  preview) diferido a v0.25.1. 1179 tests verdes.
+- Anthropic queda fuera (sin tier pagado, sin créditos).
+- ADR-041 documenta el pivote.
+
 **v0.24.0** (2026-05-22) — sprint **Fidelidad visual alta**. Cierra los
 3 gaps reales descubiertos en v0.23.0 (asset_uploader R2→WP nunca
 implementado, NAV/FOOTER vacíos, composite mappers sin element_styles)

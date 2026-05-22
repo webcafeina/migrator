@@ -11,6 +11,102 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.25.0] — 2026-05-22
+
+**PIVOTE ARQUITECTÓNICO** — producto deja de prometer "clonar tu Wix a WP" y pasa a **"modernizamos tu web aprovechando tu contenido y branding actuales"**. Tras v0.22.0-v0.24.0 invertidos en replicación fiel sin alcanzar fidelidad visual aceptable, la decisión de producto del 2026-05-22 invierte la filosofía técnica.
+
+### Added
+
+- **B0 — Brief fields en Project + Alembic 0020**: 8 campos nuevos
+  (`business_description`, `business_sector`, `target_audience`,
+  `tone_of_voice`, `usps_json`, `design_method`, `brief_json`,
+  `design_proposals_json`).
+
+- **B1 — Cliente OpenAI** (`apps/worker/.../integrations/openai_client.py`):
+  AsyncOpenAI SDK con function calling estructurado.
+  `generate_brief_metadata` (gpt-4o-mini, ~$0.01/proyecto) +
+  `generate_page_redesign` (gpt-4o, $0.30-1.50/página). Retry exp +
+  pausa 60s en 429. Errores tipados (`OpenAIAuthError`,
+  `OpenAIRateLimitError`, `OpenAIInvalidOutputError`).
+
+- **B2 — `BriefGeneratorAgent`** (fase nueva entre `extract_content`
+  y `theme_styles`). Construye el **Brief JSON canónico** (contrato
+  intermedio único): `{business, brand, navigation, footer, pages[]}`.
+  Auto-detecta business fields con OpenAI si están vacíos en Project.
+  Persiste en `Project.brief_json`.
+
+- **B3 — Wizard 6 pasos** (`apps/dashboard/.../new-project-wizard.tsx`):
+  pasos nuevos "Sobre el negocio" (description/sector/audience/tone/USPs)
+  y "Método de diseño" (radio Templates/AI). `ProjectCreate` schema
+  ampliado en `wcm_types`.
+
+- **B4 — `scripts/import_brickstemplate.py`**: descarga catálogo
+  brickstemplate.com via REST endpoint Bricks con password de licencia.
+  Persiste en `docs/templates/brickstemplate/` con `sections-index.json`
+  + JSON Bricks por template. Operador cura metadata (vibe, fits_sectors,
+  fits_tones, slot_map) manualmente. `wp_deployer` añade Remote
+  Templates URL al option `bricks_settings.remoteTemplates` del WP
+  destino (idempotente).
+
+- **B5 — Pipeline Templates** (nuevo paquete `redesign/`):
+  - `SectionPicker.pick()`: determinista por `hash(business_name)`,
+    filtra por category + sector + tone con relax progresivo. Devuelve
+    `PickedSection` o None.
+  - `SlotMapper.apply()`: deep-copy del template + regenera IDs Bricks
+    + reescribe parent/children refs + aplica slot replacements via
+    JSONPath simplificado (`content[0].settings.text`). Asset resolver
+    callable para `.image.url/id`.
+  - `RedesignTemplatesAgent`: orquesta picker+mapper por sección,
+    UPSERT bricks_pages, ResidualTask si no hay match.
+
+- **B6 — `RedesignAIAgent`** (OpenAI gpt-4o real): por cada Brief.page
+  llama `generate_page_redesign` + valida con `validate_bricks_page` +
+  1 retry con error context + fallback a templates si retry falla.
+  Cost tracking por página.
+
+- **B8 — Pipeline reorganizado**: `_PhaseSpec` gana
+  `condition_callable: Callable[[Project], bool] | None` para checks
+  no-boolean. Fases nuevas:
+  - `brief_generator` entre `detect_multilang` y `theme_styles`.
+  - `redesign_templates` (corre si `design_method='templates'`).
+  - `redesign_ai` (corre si `design_method='ai'`).
+  - `transpile_bricks` legacy (corre si `design_method=NULL`, compat
+    backwards proyectos v0.24.0).
+  - `theme_styles` degradado a informativo.
+  - Dashboard stepper 17 → 20 fases canónicas.
+
+### Changed
+
+- Anthropic queda **fuera del scope productivo** (créditos free agotados).
+  `claude_vision.py` mantenido como código histórico desactivado desde
+  v0.23.1. OpenAI lo sustituye en v0.25.0.
+
+### Limitaciones / pendiente
+
+- **B7 (Edición iterativa Dashboard preview + regenerate)**: diferido
+  a v0.25.1 (~3 días). Por ahora el operador edita `Brief.business_*`
+  manualmente desde la BD/API y re-lanza.
+- **Brickstemplate.com catálogo curado**: el operador debe ejecutar
+  `scripts/import_brickstemplate.py` + curar `sections-index.json`
+  con `fits_sectors`/`fits_tones`/`slot_map` para que SectionPicker
+  rinda bien. Sin curar, fallback a "cualquier candidato".
+
+### Tests
+
+- 1179 verdes (api 316 + packages 364 + worker 499 + dashboard 276
+  + cli 89). Stubs B5 stubs sustituidos por implementaciones reales.
+
+### Próximos sprints
+
+- **v0.25.1** — B7 edición iterativa preview + regenerate (no entró en v0.25.0).
+- **v0.26.0** — Figma como capa de revisión visual del Brief
+  (feature flag `WCM_FIGMA_PREVIEW=1`). Híbrido por bloque (templates
+  + AI mezclados por sección).
+- **v0.27.0** — Brief refinement con AI iterativo. BricksPlus
+  integration si templates de brickstemplate son insuficientes.
+
+---
+
 ## [0.24.0] — 2026-05-22
 
 Sprint **Fidelidad visual alta** — los 3 gaps reales detectados en
