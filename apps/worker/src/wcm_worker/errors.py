@@ -64,6 +64,45 @@ class AssetUploaderError(AgentError):
     blocks_pipeline = False
 
 
+class OpenAIClientError(AgentError):
+    """v0.25.0 — Error genérico del cliente OpenAI.
+
+    No bloqueante por sí solo: cada agente (BriefGenerator, RedesignAI)
+    decide su política. BriefGenerator tolera fallo (operador rellena
+    manualmente). RedesignAIAgent intenta 1 retry y luego cae a
+    templates.
+    """
+
+    blocks_pipeline = False
+
+
+class OpenAIAuthError(OpenAIClientError):
+    """401/403 — API key inválida o expirada. Bloquea inmediatamente
+    sin reintentar para no quemar requests inútiles."""
+
+
+class OpenAIRateLimitError(OpenAIClientError):
+    """429 — rate-limit del tier. El cliente reintenta con pausa larga."""
+
+
+class OpenAIInvalidOutputError(OpenAIClientError):
+    """El JSON devuelto no pasa el schema esperado (tool_use roto)."""
+
+
+class BriefGeneratorError(AgentError):
+    """v0.25.0 — No bloqueante: si BriefGenerator falla, el pipeline
+    para en `BLOCKED_HUMAN_INPUT` y el operador edita brief desde el
+    wizard."""
+
+    blocks_pipeline = False
+
+
+class RedesignAgentError(AgentError):
+    """v0.25.0 — Error de RedesignTemplatesAgent o RedesignAIAgent."""
+
+    blocks_pipeline = False
+
+
 class AiAssistError(AgentError):
     """No bloqueante: si la AI vision falla, los bloques se mapean
     como RAW_HTML o quedan como UNKNOWN. El pipeline sigue.

@@ -61,8 +61,12 @@ dependencies = [
     # v0.22.0 — Claude Vision para fidelidad visual al origen.
     # ai-assist agent invoca Claude con screenshot + HTML por sección
     # y recibe JSON Bricks nativo. Coste medio ~$0.08/sección con
-    # claude-sonnet-4-6.
+    # claude-sonnet-4-6. Desactivado del pipeline canónico en v0.23.1.
     "anthropic>=0.40",
+    # v0.25.0 — OpenAI gpt-4o para pipeline AI generativo del rediseño.
+    # BriefGenerator usa gpt-4o-mini (~$0.01/proyecto). RedesignAIAgent
+    # usa gpt-4o con tool_use forzado (~$0.30-1.50/página).
+    "openai>=1.40",
     # v0.22.0 — namespace CSS para el fallback RAW_HTML mapper.
     # Parser de CSS necesario para prefijar reglas con `[data-wcm-block]`
     # sin contaminar el resto de la página.
