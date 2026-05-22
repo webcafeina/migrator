@@ -40,14 +40,14 @@ describe("PipelineStepper", () => {
     expect(screen.getByText(/Start/)).toBeTruthy();
   });
 
-  it("renderiza un step por cada fase canónica del pipeline (16 total)", () => {
+  it("renderiza un step por cada fase canónica del pipeline (17 total)", () => {
     const phases = [_phase("scrape_origin", "completed")];
     render(<PipelineStepper phases={phases} />);
     // Cada step lleva un `aria-label` con "N. Label".
-    // v0.23.1 — ai_assist retirado del stepper (decisión operador
-    // 2026-05-22: tier free Anthropic no rinde, ver pipeline.py).
+    // v0.24.0 — `asset_uploader` añadido entre transpile_bricks y
+    // deploy_wp (16 → 17). `ai_assist` sigue retirado (v0.23.1).
     const items = screen.getAllByRole("listitem");
-    expect(items.length).toBe(16);
+    expect(items.length).toBe(17);
   });
 
   it("primera fase completada usa color accent (lima)", () => {
@@ -71,8 +71,9 @@ describe("PipelineStepper", () => {
     const phases = [_phase("deploy_wp", "failed", { error_log: "SSH timeout" })];
     render(<PipelineStepper phases={phases} />);
     const items = screen.getAllByRole("listitem");
-    // v0.23.1 — deploy_wp vuelve al índice 7 tras quitar ai_assist.
-    const target = items[7]!;
+    // v0.24.0 — deploy_wp pasa a índice 8 tras añadir asset_uploader
+    // entre transpile_bricks (6) y deploy_wp.
+    const target = items[8]!;
     expect(target.querySelector("div")?.className).toContain("border-wcm-danger");
   });
 

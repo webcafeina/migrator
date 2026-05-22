@@ -56,6 +56,14 @@ class ThemeStylesError(AgentError):
     blocks_pipeline = False
 
 
+class AssetUploaderError(AgentError):
+    """v0.24.0 — No bloqueante: si N uploads fallan, marca SKIPPED y
+    sigue. El destino renderea con URLs R2 (resolver doble seguridad)
+    hasta que el operador re-corra la fase."""
+
+    blocks_pipeline = False
+
+
 class AiAssistError(AgentError):
     """No bloqueante: si la AI vision falla, los bloques se mapean
     como RAW_HTML o quedan como UNKNOWN. El pipeline sigue.

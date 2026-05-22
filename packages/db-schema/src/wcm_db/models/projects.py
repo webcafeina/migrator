@@ -54,6 +54,15 @@ class Project(Base, TimestampMixin):
     #: transpiler (`{id, name, settings}`). El wp_deployer la serializa
     #: al option `bricks_global_classes` del destino.
     bricks_global_classes: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
+    #: v0.24.0 — Sprint N (NAV/FOOTER). Estructura jerárquica
+    #: `[{label, url, target, children: [...]}]` extraída del nav del
+    #: origen. Consumida por wp_deployer para crear el WP menu antes
+    #: del bricks_import_content.
+    nav_items_json: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
+    #: v0.24.0 — ID numérico del WP menu creado en el destino tras
+    #: `wp menu create`. Cache para que el nav-menu element del
+    #: bricks_json lo referencie sin REST query extra.
+    wp_menu_id: Mapped[int | None] = mapped_column(Integer)
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)
     deploy_credentials_encrypted: Mapped[str | None] = mapped_column(Text)

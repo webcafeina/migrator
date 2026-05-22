@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import (
+    DateTime,
     Enum,
     ForeignKey,
     Integer,
@@ -40,6 +42,16 @@ class Asset(Base, TimestampMixin):
     optimized_path: Mapped[str | None] = mapped_column(String(1024))
     r2_key: Mapped[str | None] = mapped_column(String(1024))
     wp_attachment_id: Mapped[int | None] = mapped_column(Integer)
+    #: v0.24.0 — Sprint A. NULL = pending upload a WP media library.
+    #: Tras `AssetUploaderAgent` exitoso, fija timestamp y permite
+    #: idempotencia en re-runs.
+    wp_media_uploaded_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    #: v0.24.0 — URL canónica del attachment en el destino. Cache para
+    #: reescritura masiva de `bricks_pages.bricks_json` sin GET REST
+    #: por asset.
+    wp_source_url: Mapped[str | None] = mapped_column(String(2048))
 
     alt_text: Mapped[str | None] = mapped_column(Text)
     sizes_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)  # thumbnail/medium/large variants

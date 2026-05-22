@@ -6,6 +6,9 @@ observacional v1, ADR-014), valida y persiste en `bricks_pages`.
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from typing import Any
+
 from sqlalchemy import select
 
 from wcm_bricks_transpiler import (
@@ -13,6 +16,7 @@ from wcm_bricks_transpiler import (
     transpile_page,
     validate_bricks_page,
 )
+from wcm_db.models.assets import Asset
 from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.projects import Project
@@ -44,7 +48,11 @@ class BricksTranspilerAgent(BaseAgent):
             project_id=ctx.project_id,
             page_id=0,  # se sobreescribe por página
             page_lang=project.primary_lang,
-            asset_resolver=_default_asset_resolver,
+            # v0.24.0 — resolver con BD-aware. Devuelve URL R2 si el
+            # asset_uploader aún no corrió, o URL WP final si ya hay
+            # `wp_source_url` poblado. Doble seguridad antes/después
+            # del bloque A.
+            asset_resolver=make_db_asset_resolver(ctx.session),
             # C.4 — theme sintetizado en fase anterior (puede ser None
             # si scraper httpx o ThemeStylesAgent SKIPPED).
             theme_styles=project.theme_styles_origin,
@@ -166,14 +174,61 @@ class BricksTranspilerAgent(BaseAgent):
 
 
 def _default_asset_resolver(asset_id: int) -> dict:
-    """Resolver por defecto en MVP — devuelve placeholder URL.
+    """Resolver legacy MVP — devuelve placeholder URL.
 
-    AssetOptimizerAgent (Fase 10) sustituirá esto por uploads reales a R2
-    o WP media library. Mientras tanto el bricks_json lleva URLs
-    placeholder que el wp-deployer reemplazará en commits posteriores.
+    v0.24.0 — Mantenido como compat para tests existentes. El pipeline
+    productivo construye un `_db_aware_asset_resolver` con session
+    inyectada (ver `make_db_asset_resolver`) que consulta `Asset.r2_key`
+    o `Asset.wp_source_url` según disponibilidad.
+
+    AssetUploaderAgent reescribe las URLs placeholder restantes tras
+    el deploy. Doble seguridad: aunque transpile corra antes del
+    uploader, el resolver da URL R2 si está disponible.
     """
     return {
         "url": f"/wp-content/uploads/placeholder-asset-{asset_id}.webp",
         "wp_attachment_id": None,
         "alt_text": "",
     }
+
+
+def make_db_asset_resolver(session: Any) -> Callable[[int], dict]:
+    """Factory: devuelve un resolver que consulta `Asset` en BD.
+
+    Estrategia:
+    1. Si `wp_source_url` poblado → URL real WP + `wp_attachment_id`.
+    2. Si `r2_key` poblado pero no WP → URL R2 (fallback degradado:
+       imágenes visibles sin attachment ID; el uploader posterior
+       reescribirá las URLs en bricks_pages cuando se ejecute).
+    3. Si nada poblado → placeholder (la `image_id` del bloque puede
+       estar mal o el asset aún no se ha optimizado).
+    """
+
+    def _resolver(asset_id: int) -> dict:
+        asset = session.get(Asset, asset_id)
+        if asset is None:
+            return _default_asset_resolver(asset_id)
+        if asset.wp_source_url:
+            return {
+                "url": asset.wp_source_url,
+                "wp_attachment_id": asset.wp_attachment_id,
+                "alt_text": asset.alt_text or "",
+                "width": asset.width,
+                "height": asset.height,
+            }
+        if asset.r2_key:
+            # Construir URL R2 desde public_url_base si está configurada.
+            import os as _os
+            base = _os.environ.get("R2_PUBLIC_URL_BASE", "").strip().rstrip("/")
+            if base:
+                return {
+                    "url": f"{base}/{asset.r2_key.lstrip('/')}",
+                    "wp_attachment_id": None,
+                    "alt_text": asset.alt_text or "",
+                    "width": asset.width,
+                    "height": asset.height,
+                }
+        # Sin URL utilizable, devolver placeholder (uploader lo arregla).
+        return _default_asset_resolver(asset_id)
+
+    return _resolver

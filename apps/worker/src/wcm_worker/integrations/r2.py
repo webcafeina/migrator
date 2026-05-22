@@ -110,6 +110,23 @@ class R2Client:
                 return None
             raise R2UploadError(f"head_object falló: {e}") from e
 
+    def get_bytes(self, key: str) -> bytes:
+        """Descarga el objeto `key` y devuelve sus bytes.
+
+        v0.24.0 — Requerido por `AssetUploaderAgent` para descargar
+        assets de R2 antes de subirlos al WP media library destino.
+
+        Lanza `R2UploadError` con causa original si la key no existe
+        o boto falla. NO devuelve None — el caller debe asumir bytes.
+        """
+        if not key:
+            raise R2UploadError("get_bytes requiere key no vacía")
+        try:
+            response = self._s3.get_object(Bucket=self.bucket, Key=key)
+            return response["Body"].read()
+        except Exception as e:  # noqa: BLE001 — boto raises ClientError sub-clases
+            raise R2UploadError(f"get_object({key!r}) falló: {e}") from e
+
     def delete_object(self, key: str) -> None:
         try:
             self._s3.delete_object(Bucket=self.bucket, Key=key)

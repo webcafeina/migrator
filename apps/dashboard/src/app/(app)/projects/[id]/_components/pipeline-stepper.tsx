@@ -29,6 +29,9 @@ const _PHASE_ORDER: Array<{ name: string; label: string; short: string }> = [
   // descomentar también esta línea para que el step vuelva a aparecer.
   // { name: "ai_assist", label: "Revisión visual con Claude (secciones complejas)", short: "AI" },
   { name: "transpile_bricks", label: "Transpilación a Bricks JSON", short: "Bricks" },
+  // v0.24.0 — Bloque A. Sube assets de R2 al WP media library destino
+  // y reescribe URLs placeholder en bricks_pages.bricks_json.
+  { name: "asset_uploader", label: "Subida de assets al WP destino", short: "Assets→WP" },
   { name: "deploy_wp", label: "Despliegue en WordPress destino", short: "Deploy WP" },
   { name: "migrate_woo", label: "Migración WooCommerce", short: "Woo" },
   { name: "configure_wpml", label: "Configuración WPML", short: "WPML" },

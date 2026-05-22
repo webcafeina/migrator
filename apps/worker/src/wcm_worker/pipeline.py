@@ -33,6 +33,7 @@ from wcm_db.models.projects import Project, ProjectPhase
 from wcm_types.enums import ProjectPhaseStatus, ProjectStatus
 from wcm_worker.agents import (
     AssetOptimizerAgent,
+    AssetUploaderAgent,
     BaseAgent,
     BricksTranspilerAgent,
     ChecklistGeneratorAgent,
@@ -102,6 +103,13 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # ResidualTasks vía `map_unknown` → `bricks_transpiler` agente.
     # _PhaseSpec("ai_assist", AiAssistAgent, required=False),
     _PhaseSpec("transpile_bricks", BricksTranspilerAgent),
+    # v0.24.0 — Bloque A. Sube assets de R2 al WP media library destino
+    # y reescribe URLs placeholder en bricks_pages.bricks_json. Sin esta
+    # fase los frontends destino salen con 404 en todas las imágenes.
+    # required=False: si falla N veces consecutive marca SKIPPED y sigue;
+    # el resolver doble-seguridad de bricks_transpiler ya devuelve URL
+    # R2 como fallback degradado.
+    _PhaseSpec("asset_uploader", AssetUploaderAgent, required=False),
     # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
     # poder rollback restaurando vía `wp db import`. required=True: sin
     # snapshot no se debe arrancar el deploy.

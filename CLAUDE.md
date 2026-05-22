@@ -287,3 +287,5 @@ Funciones obligatorias:
 - Arquitectura: [`docs/arquitectura.md`](./docs/arquitectura.md)
 - Despliegue: [`docs/despliegue.md`](./docs/despliegue.md)
 - Playbook operativo: [`docs/playbook-operativo.md`](./docs/playbook-operativo.md)
+- **Bricks JSON shapes (corpus dorado)**: [`docs/referencias/h2b-skill/h2b/references/`](./docs/referencias/h2b-skill/h2b/references/) — 31 elementos verbatim Bricks 2.1.4 (h2b v3.2.0). Consulta antes de implementar/editar mappers Bricks. ADR-040 documenta convenciones.
+- **Bricks Builder patterns pedagógicos**: [`docs/referencias/bricks-skills/`](./docs/referencias/bricks-skills/) — wpgaurav, complemento para typography/padding/globalClasses.

@@ -2094,6 +2094,61 @@ Tareas listadas en TaskList con prefijo `[ADR-054]`:
 
 ---
 
+## ADR-040 — Vendoring h2b.skill v3.2.0 como corpus dorado de shapes Bricks JSON
+
+**Fecha**: 2026-05-22 · **Sprint**: v0.24.0 · **Estado**: aceptado
+
+### Contexto
+
+El transpilador `wcm_bricks_transpiler` genera JSON para `_bricks_page_content_2` postmeta + options `bricks_global_classes` / `bricks_global_settings`. Necesitamos saber los **shapes exactos** que Bricks Builder acepta sin descartar silenciosamente.
+
+Tras release v0.23.0 descubrimos que un detalle del shape (color como `{"raw": "..."}` vs string pelado) cambia si el estilo se aplica o no — Bricks descarta lo que no parsea sin error visible. Esto motivó investigar fuentes de referencia.
+
+Opciones evaluadas:
+
+1. **Captura manual desde editor Bricks** (#168 plan original): el operador monta páginas con slider+tabs+accordion+nav-menu+repeater+gallery en un sitio Bricks, exporta JSON elemento por elemento. **Pro**: canónico oficial. **Contra**: requiere 30-45 min del operador por sprint + Bricks 2.x licencia activa.
+
+2. **academy.bricksbuilder.io/developer/**: documenta controles PHP por elemento pero NO publica JSON literal. Útil como reference secundaria pero incompleto. No documenta `bricks_global_classes` ni `bricks_global_settings`.
+
+3. **`wpgaurav/bricks-skills`** (ya vendorado en `docs/referencias/bricks-skills/` desde v0.23.0): documentación pedagógica del approach Core Framework personal. **Pro**: shapes `_typography`/`_padding`/`_background` confirmados verbatim. **Contra**: no cubre slider/tabs/accordion/repeater. Pattern Core Framework atá a un sistema de tokens de terceros.
+
+4. **`iamfilipp/html2bricks` v3.2.0** (https://github.com/iamfilipp/html2bricks, MIT): skill Claude que documenta verbatim shapes JSON de **31 elementos Bricks** (target 2.1.4), `BRICKS-NATIVE-PROPERTIES.md` con 99.5%+ cobertura, pitfalls confirmados (`_widthMax` no `_maxWidth`, `_cssClasses` string no array, etc.).
+
+### Decisión
+
+**Vendoring snapshot de `iamfilipp/html2bricks` v3.2.0 en `docs/referencias/h2b-skill/`** como corpus dorado de shapes Bricks JSON. No submódulo (el repo cambia y no queremos seguir tracking automático). Conserva `LICENSE` MIT + atribución en `README.md` del directorio.
+
+Como **complemento**, `docs/referencias/bricks-skills/` (wpgaurav) se mantiene para shapes pedagógicos de typography/padding/globalClasses ya consolidados desde v0.23.0.
+
+### Convenciones
+
+1. **Implementación de mapper**: primero consultar `h2b-skill/h2b/references/BRICKS-ELEMENTS.md`; si shape no encontrado o ambiguo, validar manualmente con `code2bricks.netlify.app` (HTML mínimo → JSON real).
+2. **Divergencia entre h2b y academy.bricksbuilder.io**: gana academy. Registrar excepción en `docs/referencias/h2b-skill/README.md` sección "Divergencias / overrides locales".
+3. **Target Bricks**: 2.1.4 (a fecha de vendoring). Si Webcafeína actualiza Bricks a 2.2/2.3+, revisar gaps y registrar.
+4. **Pitfalls v3.2.0** (recordatorio):
+   - `_widthMax` (NO `_maxWidth`)
+   - `_heightMin` (NO `_minHeight`)
+   - `_cssClasses` es **string con espacios** (no array)
+   - `_cssCustom` NO renderiza en frontend
+   - Estructura **plana** con relaciones por ID (children = lista de IDs)
+
+### Consecuencias
+
+- **Positivas**:
+  - Cero esfuerzo del operador para tener shapes verbatim de 31 elementos.
+  - Validación contra fixtures verbatim posible en `test_*.py` de mappers (snapshot tests).
+  - `code2bricks.netlify.app` queda como oracle de validación manual cuando dude el implementer.
+- **Negativas**:
+  - Si Filipp actualiza h2b a v3.3 con cambios relevantes, hay que re-vendorear manualmente.
+  - Si Bricks cambia shape entre 2.1.4 y 2.3+, descubrimos divergencias en runtime hasta que vendoreemos nuevo snapshot.
+
+### Tarea de seguimiento
+
+- Tras release v0.24.0, smoke test contra Bricks **2.3+** (versión actual destino del operador) — si shape divergente, registrar overrides en `README.md` del directorio.
+- Si gaps graves → reactivar tarea original #168 (captura manual del editor) como fallback puntual.
+
+---
+
 ## Cómo añadir una nueva decisión
 
 1. Incrementar `ADR-NNN`.
