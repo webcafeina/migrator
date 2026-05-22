@@ -76,6 +76,12 @@ class ProjectStatus(StrEnum):
     #: v0.19.0 — operador ejecutó rollback tras qa_failed/completed.
     #: Las páginas creadas por wp-deployer fueron eliminadas vía REST.
     ROLLED_BACK = "rolled_back"
+    #: v0.25.1 — proyecto pasó el pipeline (templates o AI) y las
+    #: páginas están en WP como `draft`. El operador revisa en
+    #: `/projects/[id]/preview`, puede regenerar páginas individuales o
+    #: editar el Brief; tras aprobar todo se pasan a `publish` y status
+    #: pasa a COMPLETED.
+    READY_FOR_PREVIEW = "ready_for_preview"
 
 
 class ProjectPhaseStatus(StrEnum):

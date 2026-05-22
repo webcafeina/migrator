@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 from datetime import UTC, datetime
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import RedirectResponse, Response, StreamingResponse
@@ -29,10 +29,12 @@ from wcm_api.services.source_credentials import (
     encrypt_source_credentials,
 )
 from wcm_api.tasks.enqueue import (
+    enqueue_preview_regenerate_page,
     enqueue_project_pipeline,
     enqueue_project_publish,
     enqueue_project_rollback,
 )
+from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.content_blocks import ContentBlock
 from wcm_db.models.leads import Lead
 from wcm_db.models.projects import Project, ProjectPhase
@@ -1118,4 +1120,241 @@ async def project_events(
         },
     )
 
+
+# ===========================================================================
+# v0.25.1 B7 — Edición iterativa Dashboard preview + regenerate
+# ===========================================================================
+
+
+class PreviewPageInfo(BaseModel):
+    """Página vista para el dashboard de preview."""
+
+    slug: str
+    title: str
+    intent: str | None = None
+    n_sections: int = 0
+    bricks_page_id: int | None = None
+    wp_post_id: int | None = None
+    wp_post_status: str | None = None
+    last_regenerated_at: datetime | None = None
+
+
+class PreviewResponse(BaseModel):
+    """GET /preview — info para la UI de revisión iterativa."""
+
+    project_id: int
+    project_status: ProjectStatus
+    design_method: str | None
+    brief: dict[str, Any] | None
+    pages: list[PreviewPageInfo]
+
+
+class BriefUpdatePayload(BaseModel):
+    """PATCH /brief — campos editables del Brief.
+
+    Solo los campos del business actualizables vía operador. El resto
+    del Brief (pages, sections, navigation, footer) se regenera via
+    regenerate-page endpoints.
+    """
+
+    business_description: str | None = None
+    business_sector: str | None = Field(default=None, max_length=80)
+    target_audience: str | None = None
+    tone_of_voice: str | None = Field(default=None, max_length=20)
+    usps_json: list[str] | None = None
+
+
+class RegeneratePagePayload(BaseModel):
+    slug: str = Field(min_length=1, max_length=255)
+
+
+@router.get("/{project_id}/preview", response_model=PreviewResponse)
+async def get_project_preview(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_any_user)],
+) -> PreviewResponse:
+    """v0.25.1 B7 — Info de revisión iterativa del proyecto.
+
+    Devuelve el Brief actual + lista de páginas generadas con su
+    estado en WP destino. El operador desde `/projects/[id]/preview`
+    usa este endpoint para renderizar la pantalla.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    # Cargar bricks_pages del proyecto.
+    bp_stmt = select(BricksPage).where(BricksPage.project_id == project_id)
+    bp_result = await session.execute(bp_stmt)
+    bricks_pages = list(bp_result.scalars())
+
+    pages_info: list[PreviewPageInfo] = []
+    # Si tenemos brief, usar como guía de páginas esperadas.
+    brief = project.brief_json
+    if brief and brief.get("pages"):
+        # Map de slug → bricks_page para lookup rápido.
+        bp_by_slug = {bp.slug: bp for bp in bricks_pages}
+        for brief_page in brief["pages"]:
+            slug = brief_page.get("slug") or "/"
+            bp = bp_by_slug.get(slug)
+            pages_info.append(
+                PreviewPageInfo(
+                    slug=slug,
+                    title=brief_page.get("title") or slug,
+                    intent=brief_page.get("intent"),
+                    n_sections=len(brief_page.get("sections") or []),
+                    bricks_page_id=bp.id if bp else None,
+                    wp_post_id=bp.wp_post_id if bp else None,
+                    wp_post_status=None,  # MVP — sin REST GET al WP destino
+                    last_regenerated_at=bp.updated_at if bp else None,
+                )
+            )
+    else:
+        # Sin brief: listar bricks_pages tal cual.
+        for bp in bricks_pages:
+            pages_info.append(
+                PreviewPageInfo(
+                    slug=bp.slug,
+                    title=bp.title or bp.slug,
+                    intent=None,
+                    n_sections=len(bp.bricks_json or []),
+                    bricks_page_id=bp.id,
+                    wp_post_id=bp.wp_post_id,
+                    wp_post_status=None,
+                    last_regenerated_at=bp.updated_at,
+                )
+            )
+
+    return PreviewResponse(
+        project_id=project.id,
+        project_status=project.status,
+        design_method=project.design_method,
+        brief=brief,
+        pages=pages_info,
+    )
+
+
+@router.patch("/{project_id}/brief", response_model=ProjectRead)
+async def update_project_brief(
+    project_id: int,
+    payload: BriefUpdatePayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> ProjectRead:
+    """v0.25.1 B7 — Editar campos business_* del Brief.
+
+    Actualiza los campos del Project (no toca brief_json directamente).
+    Para que los cambios afecten a `brief_json`, el operador debe
+    regenerar las páginas afectadas vía `regenerate-page`.
+
+    En MVP solo permite editar business_*. Edición de pages/sections
+    del brief queda para v0.25.2.
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+
+    data = payload.model_dump(exclude_none=True)
+    for key, value in data.items():
+        setattr(project, key, value)
+
+    # Actualizar brief_json.business con los nuevos valores si existe.
+    if project.brief_json and isinstance(project.brief_json, dict):
+        business = dict(project.brief_json.get("business") or {})
+        if "business_description" in data:
+            business["description"] = data["business_description"]
+        if "business_sector" in data:
+            business["sector"] = data["business_sector"]
+        if "target_audience" in data:
+            business["target_audience"] = data["target_audience"]
+        if "tone_of_voice" in data:
+            business["tone_of_voice"] = data["tone_of_voice"]
+        if "usps_json" in data:
+            business["usps"] = data["usps_json"]
+        project.brief_json = {**project.brief_json, "business": business}
+
+    await session.commit()
+    await session.refresh(project)
+    return ProjectRead.model_validate(project)
+
+
+@router.post(
+    "/{project_id}/preview/regenerate-page",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def regenerate_preview_page(
+    project_id: int,
+    payload: RegeneratePagePayload,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.25.1 B7 — Encola Celery task que re-ejecuta el agente de
+    rediseño SOLO para una página (filtrada del Brief).
+
+    Útil tras editar el Brief con `PATCH /brief` (regenerar páginas
+    afectadas) o si la calidad de la página no satisface al operador
+    (re-tirada para variar la generación AI/templates).
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if project.design_method not in ("templates", "ai"):
+        raise ConflictError(
+            f"design_method={project.design_method!r} no soporta "
+            "regenerate-page. Solo proyectos v0.25.0+ con templates/ai."
+        )
+    if not project.brief_json or not project.brief_json.get("pages"):
+        raise ConflictError(
+            "Project sin brief_json. BriefGenerator no corrió o "
+            "el brief está vacío."
+        )
+
+    task_id = enqueue_preview_regenerate_page(project_id, payload.slug)
+    return {
+        "task_id": task_id,
+        "project_id": project_id,
+        "slug": payload.slug,
+        "design_method": project.design_method,
+    }
+
+
+@router.post(
+    "/{project_id}/preview/approve",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def approve_preview(
+    project_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    _: Annotated[object, Depends(_operator_or_admin)],
+) -> dict:
+    """v0.25.1 B7 — Aprobar preview y publicar.
+
+    Cambia project.status → COMPLETED y encola PublishAgent que pasa
+    todas las páginas draft → publish en WP destino.
+
+    Es esencialmente un alias de `POST /publish` con marca de
+    `status=COMPLETED` previa (semánticamente: 'el operador validó
+    el preview y aprueba el deploy').
+    """
+    project = await session.get(Project, project_id)
+    if project is None:
+        raise NotFoundError(f"Project {project_id} no encontrado")
+    if project.status not in (
+        ProjectStatus.READY_FOR_PREVIEW,
+        ProjectStatus.COMPLETED,
+        ProjectStatus.QA_FAILED,
+    ):
+        raise ConflictError(
+            f"approve solo válido en status ready_for_preview/completed/qa_failed. "
+            f"Estado actual: {project.status.value}."
+        )
+    project.status = ProjectStatus.COMPLETED
+    await session.commit()
+    task_id = enqueue_project_publish(project_id)
+    return {
+        "task_id": task_id,
+        "project_id": project_id,
+        "status": "approved_publishing",
+    }
 

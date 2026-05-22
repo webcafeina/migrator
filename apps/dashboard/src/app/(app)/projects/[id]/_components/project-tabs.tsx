@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck,
+  Eye,
   GaugeCircle,
   GitCompare,
   LayoutDashboard,
@@ -30,6 +31,7 @@ interface TabSpec {
 
 const TABS: TabSpec[] = [
   { label: "Overview", icon: LayoutDashboard, suffix: "" },
+  { label: "Preview", icon: Eye, suffix: "/preview" },
   { label: "Checklist", icon: ClipboardCheck, suffix: "/checklist" },
   { label: "Visual diff", icon: GitCompare, suffix: "/diff" },
   { label: "QA", icon: GaugeCircle, suffix: "/qa" },

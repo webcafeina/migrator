@@ -29,6 +29,14 @@
 
 ## Última versión publicada
 
+**v0.25.1** (2026-05-22) — **B7 cerrado**: edición iterativa Dashboard.
+4 endpoints API (`GET /preview`, `PATCH /brief`, `POST /preview/regenerate-page`,
+`POST /preview/approve`) + estado `READY_FOR_PREVIEW` + task Celery
+`wcm.preview.regenerate_page` + pantalla nueva `/projects/[id]/preview`
+con `PreviewPanel` (lista de páginas, modal editar Brief, aprobar y
+publicar). Tab "Preview" añadido al ProjectTabs. 5 tests vitest nuevos,
+281 dashboard + 316 API verdes.
+
 **v0.25.0** (2026-05-22) — **PIVOTE ARQUITECTÓNICO**: producto deja de
 prometer "clonar tu Wix a WP" → **"modernizamos tu web aprovechando
 tu contenido y branding actuales"**. Tras 3 sprints (v0.22-v0.24)

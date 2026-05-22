@@ -11,6 +11,8 @@ from wcm_worker.tasks import (  # noqa: F401
     orchestrator,
     outreach,
     outreach_send,
+    preview,
     prospector,
+    publish,
     rollback,
 )

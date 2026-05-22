@@ -11,6 +11,44 @@ Cambios todavía sin tag.
 
 ---
 
+## [0.25.1] — 2026-05-22
+
+**B7 — Edición iterativa Dashboard preview + regenerate** (diferido del
+sprint v0.25.0 al cerrar B0-B6+B8+B10). Cierra el flujo operador del
+nuevo pipeline de rediseño: revisar página a página antes de publicar,
+editar Brief si hace falta, regenerar páginas individuales y aprobar
+publicación cuando el resultado convence.
+
+### Added
+
+- Endpoints API:
+  - `GET /projects/{id}/preview` — devuelve brief + metadata por página
+    (slug/title/intent/n_sections/wp_post_id/last_regenerated_at).
+  - `PATCH /projects/{id}/brief` — actualiza los 5 campos business
+    (description/sector/audience/tone/USPs) y sincroniza
+    `Project.brief_json["business"]`.
+  - `POST /projects/{id}/preview/regenerate-page` — encola Celery
+    `wcm.preview.regenerate_page` que re-ejecuta el agente
+    templates/AI para 1 sola página manteniendo el resto intacto.
+  - `POST /projects/{id}/preview/approve` — marca proyecto como
+    `COMPLETED` y encola publicación draft→publish.
+- Estado nuevo `ProjectStatus.READY_FOR_PREVIEW` para distinguir
+  proyectos que han terminado el pipeline de rediseño pero esperan
+  revisión humana antes de publicar.
+- Task Celery `wcm.preview.regenerate_page` que invoca
+  `RedesignTemplatesAgent` o `RedesignAIAgent` según `design_method`
+  con `brief_json["pages"]` filtrado a la página objetivo.
+- Pantalla nueva `/projects/[id]/preview` (Server Component) +
+  `PreviewPanel` (Client Component) con:
+  - Resumen del Brief en banner (sector, tono, target, USPs como chips).
+  - Lista de páginas con botón "Regenerar" + link al editor Bricks.
+  - Modal "Editar Brief" que dispara PATCH y refresca.
+  - Botón "Aprobar y publicar" con confirm.
+- Tab "Preview" añadido al `ProjectTabs` entre Overview y Checklist.
+- 5 tests vitest para `PreviewPanel`.
+
+---
+
 ## [0.25.0] — 2026-05-22
 
 **PIVOTE ARQUITECTÓNICO** — producto deja de prometer "clonar tu Wix a WP" y pasa a **"modernizamos tu web aprovechando tu contenido y branding actuales"**. Tras v0.22.0-v0.24.0 invertidos en replicación fiel sin alcanzar fidelidad visual aceptable, la decisión de producto del 2026-05-22 invierte la filosofía técnica.

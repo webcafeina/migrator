@@ -128,3 +128,16 @@ def enqueue_project_publish(project_id: int) -> str:
         kwargs={"project_id": project_id},
     )
     return result.id
+
+
+def enqueue_preview_regenerate_page(project_id: int, slug: str) -> str:
+    """v0.25.1 B7 — re-ejecuta el agente de rediseño para 1 sola página.
+
+    Encolado desde `POST /projects/{id}/preview/regenerate-page`.
+    El agente elegido depende de `Project.design_method` (templates/ai).
+    """
+    result = celery_app.send_task(
+        "wcm.preview.regenerate_page",
+        kwargs={"project_id": project_id, "slug": slug},
+    )
+    return result.id
