@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2, Rocket } from "lucide-react";
 
 import { ApiError, api } from "@/lib/api";
+import { eurToUsd, formatUsd } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import type { LeadRead, PreflightResult, ProjectRead } from "@/types/api";
 
@@ -66,6 +67,9 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
 
   // --- Paso 3 v0.25.0: Método de diseño ---
   const [designMethod, setDesignMethod] = useState<"templates" | "ai" | "">("");
+  // v0.27.0 — Budget gpt-image-2 (input en EUR, persistencia en USD).
+  // Default 0.90 EUR ≈ 1.00 USD (default backend si no se setea).
+  const [imageBudgetEur, setImageBudgetEur] = useState<string>("0.90");
 
   // --- Paso 4: Destino ---
   const [targetDomain, setTargetDomain] = useState("");
@@ -131,6 +135,13 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
         .filter(Boolean);
       if (uspsList.length > 0) body.usps_json = uspsList;
       if (designMethod) body.design_method = designMethod;
+      // v0.27.0 — Budget gpt-image-2: convertir EUR → USD para BD.
+      const budgetEurNum = Number.parseFloat(imageBudgetEur);
+      if (Number.isFinite(budgetEurNum) && budgetEurNum > 0) {
+        body.image_generation_budget_usd = Number(
+          eurToUsd(budgetEurNum).toFixed(2),
+        );
+      }
 
       const proj = await api.post<ProjectRead>("/api/v1/projects", body);
       setProjectId(proj.id);
@@ -518,6 +529,44 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
                   </div>
                 </div>
               </label>
+            </div>
+
+            {/* v0.27.0 — Budget gpt-image-2 (input EUR, persistencia USD). */}
+            <div className="mt-4 rounded-sm border border-wcm-detail/40 bg-wcm-primary/40 p-3">
+              <Field
+                htmlFor="w-image-budget"
+                label="Presupuesto imágenes IA (€)"
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    id="w-image-budget"
+                    type="number"
+                    min="0.10"
+                    max="90"
+                    step="0.10"
+                    value={imageBudgetEur}
+                    onChange={(e) => setImageBudgetEur(e.target.value)}
+                    className={cn(inputClass, "w-32 text-right")}
+                  />
+                  <span className="text-xs text-muted-foreground">€</span>
+                  <span className="text-[10.5px] text-muted-foreground">
+                    ≈ {(() => {
+                      const eur = Number.parseFloat(imageBudgetEur);
+                      if (!Number.isFinite(eur) || eur <= 0)
+                        return "$? USD";
+                      return formatUsd(eurToUsd(eur));
+                    })()}{" "}
+                    USD <em>(lo que factura OpenAI)</em>
+                  </span>
+                </div>
+                <p className="mt-1 text-[10.5px] text-muted-foreground">
+                  Límite duro de gasto en <code className="text-wcm-text/80">gpt-image-2</code>{" "}
+                  para rellenar slots de imagen vacíos en hero/image/gallery/testimonial.
+                  Cada imagen medium 1024×1024 ≈ $0.05. <strong>Default 0.90 €</strong>{" "}
+                  ≈ $1.00 (cubre ~20 imágenes). Si se supera, los slots restantes
+                  quedan como ResidualTask.
+                </p>
+              </Field>
             </div>
           </div>
         )}

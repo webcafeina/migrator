@@ -37,6 +37,13 @@ class ProjectCreate(ProjectBase):
     usps_json: list[str] | None = None
     # v0.25.0 — método de generación del diseño. NULL = legacy v0.24.0.
     design_method: Literal["templates", "ai"] | None = None
+    # v0.27.0 — budget gpt-image-2 por proyecto en USD. Opcional. Si
+    # vacío, RedesignImagesAgent usa el default 1.00 USD. El wizard del
+    # dashboard expone esto como EUR (con conversión visible) pero la
+    # API y BD trabajan en USD nativo (lo que factura OpenAI).
+    image_generation_budget_usd: float | None = Field(
+        default=None, ge=0.10, le=100.0
+    )
 
 
 class ProjectUpdate(WcmModel):
