@@ -195,7 +195,7 @@ class WpDeployerAgent(BaseAgent):
                 # v0.25.0 — BricksTemplate.com (catálogo default).
                 bt_url = _os.environ.get(
                     "BRICKSTEMPLATE_REMOTE_URL",
-                    "https://brickstemplate.com/wp-json/bricks/v1/templates",
+                    "https://brickstemplate.com/wp-json/bricks/v1/get-templates",
                 ).strip()
                 if bt_url and not any(
                     r.get("url") == bt_url for r in remote_list

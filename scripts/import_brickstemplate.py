@@ -49,14 +49,18 @@ import httpx
 
 log = logging.getLogger("import_brickstemplate")
 
-#: Endpoint canónico. Override env BRICKSTEMPLATE_API_URL si cambia.
-DEFAULT_API_URL = "https://brickstemplate.com/wp-json/bricks/v1/templates"
+#: Endpoint canónico Bricks Remote Templates API (verificado contra
+#: brickstemplate.com 2026-05-25). El plugin Bricks 2.x espera:
+#: GET /wp-json/bricks/v1/get-templates?site=<DESTINO>&password=<LICENCIA>
+DEFAULT_API_URL = "https://brickstemplate.com/wp-json/bricks/v1/get-templates"
 
-#: v0.27.0 B8 — fuente alternativa BricksPlus. Sin uso comprometido,
-#: parametrizado por env para que el operador active cuando decida.
-#: Endpoint canónico igual (Bricks 2.x usa la misma forma).
+#: v0.27.0 B8 — fuente alternativa BricksPlus. URL del dominio API
+#: NO confirmada (bricksplus.com no expone WP REST). Cuando el operador
+#: compre la licencia, obtendrá el URL del panel BricksPlus y deberá
+#: setear BRICKSPLUS_API_URL en .env con el valor correcto.
+#: Placeholder por ahora.
 BRICKSPLUS_DEFAULT_API_URL = (
-    "https://bricksplus.com/wp-json/bricks/v1/templates"
+    "https://bricksplus.com/wp-json/bricks/v1/get-templates"
 )
 
 #: Configuración por source. Cada source mapea a (env_url, env_license,
@@ -106,27 +110,62 @@ def _normalize_category(raw: str) -> str:
     return CATEGORY_NORMALIZE.get(low, low)
 
 
-def fetch_catalog(api_url: str, license_password: str) -> list[dict[str, Any]]:
-    """GET al endpoint con header `password` (forma nativa Bricks).
+def fetch_catalog(
+    api_url: str, license_password: str, requester_site: str,
+) -> list[dict[str, Any]]:
+    """GET al endpoint Bricks Remote Templates con query string nativo.
+
+    Forma verificada contra brickstemplate.com (2026-05-25):
+    `GET /wp-json/bricks/v1/get-templates?site=<DESTINO>&password=<LICENCIA>`
+
+    El parámetro `site` lo valida brickstemplate.com (whitelist por dominio
+    si el owner lo activó). Pasamos la URL del WP destino del operador
+    (típicamente test-migrator.webcafeina.com).
 
     Devuelve lista de templates JSON tal como los expone el endpoint.
     Cada item suele tener: {name, category, content, settings, ...}.
     """
-    log.info("fetch_catalog_start", extra={"url": api_url})
+    log.info("fetch_catalog_start", extra={"url": api_url, "site": requester_site})
     try:
         resp = httpx.get(
             api_url,
-            headers={"password": license_password},
+            params={"site": requester_site, "password": license_password},
             timeout=60.0,
             follow_redirects=True,
         )
     except httpx.HTTPError as e:
         log.error("fetch_catalog_http_error", extra={"error": str(e)[:300]})
         raise SystemExit(f"Error HTTP: {e}") from e
+    # Bricks devuelve HTTP 200 con {"error": {...}} aunque haya error de
+    # auth. Detectar y mapear a SystemExit explicativo.
+    if resp.status_code == 200:
+        try:
+            preview = resp.json()
+        except ValueError:
+            preview = None
+        if isinstance(preview, dict) and preview.get("error"):
+            code = preview["error"].get("code", "unknown")
+            message = preview["error"].get("message", "")
+            if code == "remote_templates_password_incorrect":
+                raise SystemExit(
+                    f"Password (licencia) incorrecta para {api_url}. "
+                    "Verifica BRICKSTEMPLATE_LICENSE."
+                )
+            if code == "no_site_url":
+                raise SystemExit(
+                    "Falta `site` en la petición. Usa --requester-site o "
+                    "asegúrate de tener WP_DEFAULT_SITE_URL en .env."
+                )
+            if code == "not_whitelisted":
+                raise SystemExit(
+                    f"El dominio {requester_site!r} no está en la whitelist del "
+                    "owner del catálogo Bricks. Pídele que añada tu URL en "
+                    "Bricks → Settings → Templates → My Templates Whitelist."
+                )
+            raise SystemExit(f"Bricks API error [{code}]: {message}")
     if resp.status_code == 401:
         raise SystemExit(
-            "401 Unauthorized — el password (licencia) es inválido. "
-            "Verifica BRICKSTEMPLATE_LICENSE."
+            "401 Unauthorized — verifica el endpoint."
         )
     if resp.status_code != 200:
         raise SystemExit(
@@ -277,6 +316,16 @@ def main(argv: list[str] | None = None) -> int:
             "BRICKSTEMPLATE_API_URL/BRICKSPLUS_API_URL según --source."
         ),
     )
+    parser.add_argument(
+        "--requester-site",
+        type=str,
+        default=None,
+        help=(
+            "URL del WP destino que solicita los templates (param `site` "
+            "obligatorio que Bricks valida contra su whitelist). "
+            "Default: WP_DEFAULT_SITE_URL del .env."
+        ),
+    )
     args = parser.parse_args(argv)
 
     source_cfg = _SOURCE_CONFIGS[args.source]
@@ -298,9 +347,19 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
+    requester_site = args.requester_site or os.environ.get(
+        "WP_DEFAULT_SITE_URL", ""
+    ).strip()
+    if not requester_site:
+        log.error(
+            "Sin --requester-site ni WP_DEFAULT_SITE_URL. Bricks API requiere "
+            "el dominio que solicita los templates."
+        )
+        return 1
+
     args.out.mkdir(parents=True, exist_ok=True)
 
-    raw_templates = fetch_catalog(args.api_url, license_password)
+    raw_templates = fetch_catalog(args.api_url, license_password, requester_site)
     log.info("catalog_fetched", extra={"n_raw_templates": len(raw_templates)})
 
     if args.limit > 0:
