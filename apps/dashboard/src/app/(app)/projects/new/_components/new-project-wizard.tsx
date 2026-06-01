@@ -466,7 +466,7 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
                   </div>
                   <div className="text-muted-foreground">
                     Hero + CTAs con <strong>AI generativo</strong> (OpenAI
-                    gpt-5.5, ~$0.05-0.30 por sección). Features, services,
+                    gpt-5, ~$0.05-0.30 por sección). Features, services,
                     testimonios, etc. con <strong>templates curados</strong>{" "}
                     de brickstemplate.com (gratis). Override por sección en
                     el preview. Coste típico: $1-5/proyecto.
@@ -519,10 +519,10 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
                 />
                 <div className="flex-1 text-xs">
                   <div className="font-semibold text-wcm-text">
-                    🤖 AI puro (OpenAI gpt-5.5)
+                    🤖 AI puro (OpenAI gpt-5)
                   </div>
                   <div className="text-muted-foreground">
-                    Todas las páginas generadas con gpt-5.5 (call por
+                    Todas las páginas generadas con gpt-5 (call por
                     página entera). Más caro y con más variabilidad que
                     híbrido. Coste estimado: <strong>$3-15 por proyecto</strong>.
                     Requiere <code className="text-wcm-text/80">OPENAI_API_KEY</code>.

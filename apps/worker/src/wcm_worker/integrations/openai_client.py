@@ -24,11 +24,15 @@ Diseño:
 - Retry exponencial + detección 429 con pausa larga.
 - Cost tracking (tokens × pricing) — registrar fuera (no en BD desde aquí).
 
-Pricing (a 2026-05-22, datos públicos OpenAI):
+Pricing (a 2026-05-28, datos públicos OpenAI):
 - `gpt-4o-mini`: $0.15/MTok input, $0.60/MTok output
 - `gpt-4o`: $2.50/MTok input, $10/MTok output
-- `gpt-5.5`: $5.00/MTok input, $30/MTok output (v0.26.0 default)
-- `gpt-5.5-pro`: $30/MTok input, $180/MTok output
+- `gpt-5`: $1.25/MTok input, $10/MTok output (v0.27.0 default redesign)
+- `gpt-5-mini`: $0.25/MTok input, $2/MTok output (estimación; cheaper alt)
+
+Nota: en v0.26.0 se asumió `gpt-5.5` por WebSearch, pero ese SKU no existe
+en OpenAI (alucinación del search). Los SKUs reales gpt-5 family son
+`gpt-5`, `gpt-5-mini`, `gpt-5-chat-latest`. Corregido v0.27.0.
 """
 
 from __future__ import annotations
@@ -52,11 +56,16 @@ log = logging.getLogger("wcm.worker.openai_client")
 
 #: Modelos por defecto.
 DEFAULT_MODEL_METADATA = "gpt-4o-mini"
-DEFAULT_MODEL_REDESIGN = "gpt-4o"
+#: v0.27.0 — default real `gpt-5` (no `gpt-5.5` que no existe).
+#: Override con env OPENAI_MODEL_REDESIGN.
+DEFAULT_MODEL_REDESIGN = "gpt-5"
 #: v0.26.0 — modelo de generación de imágenes (gpt-image-2 abril 2026).
 DEFAULT_MODEL_IMAGE = "gpt-image-2"
 
-DEFAULT_TIMEOUT_S = 90.0
+# v0.27.0 — gpt-5 family es reasoning model (thinking interno antes
+# de responder). 90s era suficiente para gpt-4o pero gpt-5 puede
+# tardar 2-4 min en respuestas estructuradas con tool_use forzado.
+DEFAULT_TIMEOUT_S = 300.0
 DEFAULT_RETRIES = 5
 #: Pausa tras 429 — tier free OpenAI suele exigir 60s mínimo.
 DEFAULT_RATE_LIMIT_PAUSE_S = 60.0
@@ -79,9 +88,10 @@ IMAGE_PRICING_USD: dict[tuple[str, str], float] = {
 PRICING_USD_PER_MTOK: dict[str, tuple[float, float]] = {
     "gpt-4o-mini": (0.15, 0.60),
     "gpt-4o": (2.50, 10.0),
-    # v0.26.0 — gpt-5.5 lanzado abril 2026, default redesign.
-    "gpt-5.5": (5.0, 30.0),
-    "gpt-5.5-pro": (30.0, 180.0),
+    # v0.27.0 — gpt-5 family (verificado contra /v1/models 2026-05-28).
+    "gpt-5": (1.25, 10.0),
+    "gpt-5-mini": (0.25, 2.0),
+    "gpt-5-chat-latest": (1.25, 10.0),
     # backups en caso de rotación a otros modelos:
     "gpt-4-turbo": (10.0, 30.0),
     "gpt-3.5-turbo": (0.50, 1.50),
@@ -756,21 +766,38 @@ class OpenAIClient:
         tool: dict[str, Any],
         tool_name: str,
     ) -> OpenAIResult:
-        """Una sola llamada a chat.completions.create con tool forzado."""
+        """Una sola llamada a chat.completions.create con tool forzado.
+
+        v0.27.0 — gpt-5 family rechaza `temperature` con valor != 1
+        (HTTP 400 unsupported_value). Solo enviamos el parámetro para
+        modelos gpt-4* donde sí es relevante.
+        """
+        kwargs: dict[str, Any] = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_msg},
+            ],
+            "tools": [tool],
+            "tool_choice": {
+                "type": "function",
+                "function": {"name": tool_name},
+            },
+        }
+        # gpt-5 family solo admite temperature=1 (el default). Para
+        # gpt-4 family pedimos 0.7 que mejora variabilidad estructural.
+        if not model.startswith("gpt-5"):
+            kwargs["temperature"] = 0.7
+        else:
+            # v0.27.0 — gpt-5 family acepta `reasoning_effort`. Default
+            # es `high` (thinking eterno: 5-18 min por página). Para tareas
+            # estructuradas con tool_use forzado `low` es suficiente:
+            # baja latencia a 30-90s sin sacrificar la calidad estructural
+            # (la decisión de estructura se hace en el system prompt + tool
+            # schema, no en el reasoning).
+            kwargs["reasoning_effort"] = "low"
         try:
-            response = await self._client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user_msg},
-                ],
-                tools=[tool],
-                tool_choice={
-                    "type": "function",
-                    "function": {"name": tool_name},
-                },
-                temperature=0.7,
-            )
+            response = await self._client.chat.completions.create(**kwargs)
         except Exception as e:  # noqa: BLE001 — SDK raises various subtypes
             msg = str(e).lower()
             if "401" in msg or "403" in msg or "invalid api key" in msg or "authentication" in msg:

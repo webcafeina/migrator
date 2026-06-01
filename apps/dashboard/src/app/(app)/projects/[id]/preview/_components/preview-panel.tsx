@@ -229,7 +229,7 @@ export function PreviewPanel({
             onClick={handleSuggestRefinements}
             disabled={pending || suggestingRefinements}
             className="inline-flex items-center gap-1.5 rounded-sm border border-wcm-accent/40 bg-wcm-accent/10 px-3 py-1 text-[11px] text-wcm-accent hover:bg-wcm-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
-            title="Genera propuestas de mejora del Brief con gpt-5.5 (~$0.10-0.50)"
+            title="Genera propuestas de mejora del Brief con gpt-5 (~$0.10-0.50)"
           >
             {suggestingRefinements ? (
               <Loader2 className="h-3 w-3 animate-spin" aria-hidden />

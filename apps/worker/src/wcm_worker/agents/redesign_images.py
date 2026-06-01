@@ -216,7 +216,12 @@ class RedesignImagesAgent(BaseAgent):
         business = brief.get("business") or {}
         brand = brief.get("brand") or {}
 
-        for page_idx, sec_idx, section_type in empty_slots:
+        total_slots = len(empty_slots)
+        log.info(
+            "redesign_images_start project_id=%s total_slots=%s budget_usd=%s",
+            project.id, total_slots, budget_usd,
+        )
+        for slot_idx, (page_idx, sec_idx, section_type) in enumerate(empty_slots, start=1):
             if cost_total >= budget_usd:
                 budget_exhausted = True
                 remaining = len(empty_slots) - images_generated - images_failed
@@ -236,11 +241,20 @@ class RedesignImagesAgent(BaseAgent):
             section = brief["pages"][page_idx]["sections"][sec_idx]
             prompt = self._build_prompt(business, brand, section, section_type)
 
+            log.info(
+                "redesign_images_slot_start slot=%s/%s page=%s sec=%s type=%s quality=%s size=%s cost_so_far=$%.4f",
+                slot_idx, total_slots, page_idx, sec_idx, section_type,
+                quality, size, float(cost_total),
+            )
             try:
                 result = await client.generate_image(
                     prompt=prompt, quality=quality, size=size,
                 )
                 cost_total += Decimal(str(result.cost_usd))
+                log.info(
+                    "redesign_images_slot_done slot=%s/%s cost=$%.4f total=$%.4f",
+                    slot_idx, total_slots, float(result.cost_usd), float(cost_total),
+                )
                 asset = self._persist_asset(
                     ctx=ctx, project=project,
                     result=result, alt_hint=section.get("headline") or section_type,
@@ -258,6 +272,10 @@ class RedesignImagesAgent(BaseAgent):
                 images_generated += 1
             except OpenAIClientError as e:
                 images_failed += 1
+                log.warning(
+                    "redesign_images_slot_failed slot=%s/%s page=%s sec=%s err=%s",
+                    slot_idx, total_slots, page_idx, sec_idx, str(e)[:160],
+                )
                 residuals_created += self._emit_residual_failed(
                     ctx, project, page_idx, sec_idx, section_type, e,
                 )

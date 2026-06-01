@@ -28,6 +28,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
 from wcm_db.models.projects import Project, ProjectPhase
@@ -373,39 +374,55 @@ class Orchestrator:
         summary: str = "",
         outputs: dict | None = None,
     ) -> None:
-        """Upsert por (project_id, phase_name). Idempotente."""
-        existing = self.session.execute(
-            select(ProjectPhase).where(
-                ProjectPhase.project_id == project_id,
-                ProjectPhase.phase_name == phase_name,
-            )
-        ).scalar_one_or_none()
+        """Upsert atómico por (project_id, phase_name).
 
+        Usa `INSERT ... ON CONFLICT DO UPDATE` de PostgreSQL para evitar
+        race conditions cuando hay 2 orchestrators corriendo en paralelo
+        (bug 2026-05-30 proyecto 29: dobles Resume creaban 2 tasks
+        Celery concurrentes que hacían SELECT-then-INSERT no atómico).
+        """
         now = datetime.now(UTC)
-        if existing is None:
-            phase = ProjectPhase(
-                project_id=project_id,
-                phase_name=phase_name,
-                status=status,
-                started_at=now if status == ProjectPhaseStatus.RUNNING else None,
-                completed_at=now if status in {ProjectPhaseStatus.COMPLETED, ProjectPhaseStatus.SKIPPED, ProjectPhaseStatus.FAILED} else None,
-                attempt=1,
-                output_summary={"summary": summary, "outputs": outputs or {}},
-            )
-            if status == ProjectPhaseStatus.FAILED:
-                phase.error_log = summary
-            self.session.add(phase)
-        else:
-            existing.status = status
-            existing.attempt += 1
-            if status == ProjectPhaseStatus.RUNNING:
-                existing.started_at = now
-            if status in {ProjectPhaseStatus.COMPLETED, ProjectPhaseStatus.SKIPPED, ProjectPhaseStatus.FAILED}:
-                existing.completed_at = now
-            existing.output_summary = {"summary": summary, "outputs": outputs or {}}
-            if status == ProjectPhaseStatus.FAILED:
-                existing.error_log = summary
+        is_terminal = status in {
+            ProjectPhaseStatus.COMPLETED,
+            ProjectPhaseStatus.SKIPPED,
+            ProjectPhaseStatus.FAILED,
+        }
+        output_summary = {"summary": summary, "outputs": outputs or {}}
+        started_at = now if status == ProjectPhaseStatus.RUNNING else None
+        completed_at = now if is_terminal else None
+        error_log = summary if status == ProjectPhaseStatus.FAILED else None
 
+        stmt = pg_insert(ProjectPhase).values(
+            project_id=project_id,
+            phase_name=phase_name,
+            status=status,
+            started_at=started_at,
+            completed_at=completed_at,
+            attempt=1,
+            output_summary=output_summary,
+            error_log=error_log,
+        )
+        # En conflicto (ya existe esa fase), actualiza incrementando attempt.
+        # COALESCE de started_at: preserva el primer started_at si ya existía
+        # y el nuevo es None (caso típico: RUNNING → COMPLETED).
+        update_values = {
+            "status": stmt.excluded.status,
+            "attempt": ProjectPhase.attempt + 1,
+            "output_summary": stmt.excluded.output_summary,
+            "updated_at": now,
+        }
+        if status == ProjectPhaseStatus.RUNNING:
+            update_values["started_at"] = now
+        if is_terminal:
+            update_values["completed_at"] = now
+        if status == ProjectPhaseStatus.FAILED:
+            update_values["error_log"] = summary
+
+        stmt = stmt.on_conflict_do_update(
+            constraint="uq_project_phases_project_phase",
+            set_=update_values,
+        )
+        self.session.execute(stmt)
         self.session.flush()
 
         # v0.19.0 — publica al canal Redis SSE. Silencioso si Redis falla

@@ -214,7 +214,9 @@ class RedesignAIAgent(BaseAgent):
                 tokens_out_total += result.tokens_out
 
                 content = result.data.get("content") or []
-                # Validar contra schema canónico.
+                # v0.27.0 — gpt-5-mini omite `children: []` en hojas; el
+                # schema lo exige. Normalizar antes de validar.
+                _normalize_children(content)
                 validation = validate_bricks_page(content)
                 if not validation.is_valid:
                     # 1 retry con error context.
@@ -239,6 +241,7 @@ class RedesignAIAgent(BaseAgent):
                     tokens_in_total += retry_result.tokens_in
                     tokens_out_total += retry_result.tokens_out
                     content = retry_result.data.get("content") or []
+                    _normalize_children(content)
                     validation = validate_bricks_page(content)
                     if not validation.is_valid:
                         # Retry también falló → fallback templates si disponible.
@@ -363,6 +366,7 @@ class RedesignAIAgent(BaseAgent):
                 outcome["tokens_out"] += result.tokens_out
 
                 subtree = result.data.get("content") or []
+                _normalize_children(subtree)
                 if not subtree:
                     outcome["sections_failed"] += 1
                     outcome["warnings"].append(
@@ -560,3 +564,69 @@ class RedesignAIAgent(BaseAgent):
 # Asset import — usado eventualmente para resolver URLs (no en MVP B6,
 # AI ya genera URLs directas en el prompt context).
 _ = Asset  # silence unused import linter
+
+
+def _strip_null_bytes(obj: Any) -> Any:
+    """v0.27.0 — recursivamente elimina caracteres NULL (`\\u0000`) de
+    strings dentro de estructuras dict/list. Postgres JSONB no admite
+    null bytes, y gpt-5-mini ocasionalmente los embebe en textos largos
+    (typical en quotes de legal/lorem largos). Mutación in-place donde
+    posible; para strings devuelve una nueva.
+    """
+    if isinstance(obj, str):
+        return obj.replace("\x00", "") if "\x00" in obj else obj
+    if isinstance(obj, dict):
+        for k, v in list(obj.items()):
+            new_v = _strip_null_bytes(v)
+            if new_v is not v:
+                obj[k] = new_v
+        return obj
+    if isinstance(obj, list):
+        for i, v in enumerate(obj):
+            new_v = _strip_null_bytes(v)
+            if new_v is not v:
+                obj[i] = new_v
+        return obj
+    return obj
+
+
+def _normalize_children(content: list[dict[str, Any]]) -> None:
+    """v0.27.0 — normaliza output de LLM antes de validar y persistir.
+
+    Defensa contra errores estructurales típicos de gpt-5-mini:
+    1. **Strip \\u0000** recursivo (Postgres JSONB no admite null bytes).
+    2. **children: []** si falta (hojas sin key children).
+    3. **Drop refs huérfanas**: si X.children incluye un id que no
+       existe como elemento del array, lo elimina (mejor perder un
+       hijo que tener el árbol inconsistente).
+    4. **parent ↔ children consistency**: si X.children incluye Y,
+       fuerza Y.parent = X.id (children es la fuente de verdad).
+    """
+    # Paso 0: limpiar null bytes recursivamente (Postgres-safe).
+    _strip_null_bytes(content)
+
+    # Paso 1: asegurar children: [] en todos.
+    for el in content:
+        if isinstance(el, dict) and "children" not in el:
+            el["children"] = []
+
+    # Paso 2: drop refs huérfanas en children.
+    valid_ids = {el["id"] for el in content if isinstance(el, dict) and "id" in el}
+    for el in content:
+        if not isinstance(el, dict):
+            continue
+        ch = el.get("children") or []
+        cleaned = [c for c in ch if c in valid_ids]
+        if cleaned != ch:
+            el["children"] = cleaned
+
+    # Paso 3: rebuild parent desde children (children es fuente de verdad).
+    id_to_el = {el["id"]: el for el in content if isinstance(el, dict) and "id" in el}
+    for parent_el in content:
+        if not isinstance(parent_el, dict):
+            continue
+        parent_id = parent_el.get("id")
+        for child_id in parent_el.get("children") or []:
+            child = id_to_el.get(child_id)
+            if child is not None and child.get("parent") != parent_id:
+                child["parent"] = parent_id

@@ -2,7 +2,7 @@
 
 /**
  * `<RefinementPanel />` — panel lateral con propuestas de mejora del Brief
- * generadas por gpt-5.5 (Sprint v0.27.0 B6).
+ * generadas por gpt-5 (Sprint v0.27.0 B6).
  *
  * Flujo:
  * 1. Operador hace click en "🪄 Sugerir mejoras" (PreviewPanel header).

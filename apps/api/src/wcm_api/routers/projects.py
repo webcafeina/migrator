@@ -1542,7 +1542,7 @@ async def regenerate_preview_image(
 
 
 class BriefRefinementProposal(BaseModel):
-    """Una propuesta individual generada por gpt-5.5."""
+    """Una propuesta individual generada por gpt-5."""
 
     id: str
     category: Literal["copy", "cta", "design_method", "reorder"]

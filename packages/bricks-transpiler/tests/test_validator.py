@@ -52,14 +52,19 @@ def test_orphan_parent_detected() -> None:
     assert "orphan_parent" in codes
 
 
-def test_top_level_only_must_have_parent_zero() -> None:
+def test_nested_section_emits_warning_not_error() -> None:
+    """v0.27.0 — Bricks acepta nested sections (poco común). Modelos IA
+    a veces las generan. Degradado a warning, no bloquea is_valid."""
     page = [
         {"id": "sec001", "name": "section", "parent": "0", "children": ["sec002"], "settings": {}},
         {"id": "sec002", "name": "section", "parent": "sec001", "children": [], "settings": {}},
     ]
     result = validate_bricks_page(page)
-    codes = [i.code for i in result.errors]
-    assert "top_level_with_parent" in codes
+    error_codes = [i.code for i in result.errors]
+    warning_codes = [i.code for i in result.warnings]
+    assert "top_level_with_parent" not in error_codes
+    assert "nested_section" in warning_codes
+    assert result.is_valid  # warnings no bloquean
 
 
 def test_atomic_with_children_rejected() -> None:

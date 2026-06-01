@@ -10,6 +10,7 @@ lista de issues — más útil para reportar al operador.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -18,6 +19,12 @@ from wcm_bricks_transpiler.schema import (
     BRICKS_ELEMENT_NAMES,
     TOP_LEVEL_ONLY,
 )
+
+#: v0.27.0 — regex permisivo para IDs Bricks. Permite IDs semánticos
+#: (`usp01_text`, `sec001`, `feature-icon-1`) además de los hash
+#: `[a-z0-9]{6}` que genera el transpiler nativo. Bricks acepta hasta
+#: 64 chars con `[a-z0-9_-]`.
+_BRICKS_ID_LOOSE_RE = re.compile(r"^[a-z0-9_-]{3,64}$")
 
 Severity = Literal["error", "warning"]
 
@@ -89,11 +96,16 @@ def validate_bricks_page(content: list[dict[str, Any]]) -> ValidationResult:
                 )
 
         eid = el.get("id")
-        if not isinstance(eid, str) or len(eid) != 6 or not eid.isalnum() or not eid.islower():
+        # v0.27.0 — Bricks acepta IDs de cualquier longitud `[a-z0-9_-]+`.
+        # Antes exigíamos exactamente 6 chars (convención del transpiler
+        # nativo), pero AIs como gpt-5-mini generan IDs semánticos como
+        # `usp01_text` que son válidos en Bricks. Relajado a min 3, max
+        # 64 chars, alfanumérico + guiones bajos/medios.
+        if not isinstance(eid, str) or not _BRICKS_ID_LOOSE_RE.match(eid):
             result.issues.append(
                 ValidationIssue(
                     "error", "invalid_id_format",
-                    f"id inválido en pos {idx}: {eid!r}. Esperado [a-z0-9]{{6}}.",
+                    f"id inválido en pos {idx}: {eid!r}. Esperado [a-z0-9_-]{{3,64}}.",
                     element_id=eid if isinstance(eid, str) else None,
                 )
             )
@@ -156,10 +168,15 @@ def validate_bricks_page(content: list[dict[str, Any]]) -> ValidationResult:
         parent = el.get("parent")
 
         if name in TOP_LEVEL_ONLY and parent != "0":
+            # v0.27.0 — degradado de error a warning. Bricks técnicamente
+            # acepta nested sections (poco común pero válido). Modelos
+            # IA como gpt-5-mini a veces crean arquitecturas con sections
+            # anidadas dentro de un container raíz. No bloquear.
             result.issues.append(
                 ValidationIssue(
-                    "error", "top_level_with_parent",
-                    f"{name} ({eid}) debe ser top-level (parent='0'), tiene parent={parent!r}.",
+                    "warning", "nested_section",
+                    f"{name} ({eid}) anidada bajo parent={parent!r} "
+                    "(práctica poco común pero válida en Bricks).",
                     element_id=eid,
                 )
             )
