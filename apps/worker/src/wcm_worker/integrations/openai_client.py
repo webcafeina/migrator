@@ -88,10 +88,16 @@ IMAGE_PRICING_USD: dict[tuple[str, str], float] = {
 PRICING_USD_PER_MTOK: dict[str, tuple[float, float]] = {
     "gpt-4o-mini": (0.15, 0.60),
     "gpt-4o": (2.50, 10.0),
-    # v0.27.0 — gpt-5 family (verificado contra /v1/models 2026-05-28).
+    # v0.27.0 — gpt-5 family.
     "gpt-5": (1.25, 10.0),
     "gpt-5-mini": (0.25, 2.0),
     "gpt-5-chat-latest": (1.25, 10.0),
+    # v0.28.0 — gpt-5.5 disponible desde 2026-04-23. Calidad alta para
+    # redesign AI (preferida por el operador para maquetación correcta).
+    "gpt-5.5": (5.0, 30.0),
+    "gpt-5.5-pro": (15.0, 75.0),
+    "gpt-5.4": (2.0, 16.0),
+    "gpt-5.4-mini": (0.30, 2.50),
     # backups en caso de rotación a otros modelos:
     "gpt-4-turbo": (10.0, 30.0),
     "gpt-3.5-turbo": (0.50, 1.50),
@@ -213,6 +219,119 @@ TOOL_BRIEF_METADATA: dict[str, Any] = {
 }
 
 
+def _augment_with_global_classes(
+    base_prompt: str, class_ids: list[str] | None,
+) -> str:
+    """Anexa al system prompt la lista de Global Classes disponibles.
+
+    Si `class_ids` es None o vacía, devuelve el prompt sin cambios — el LLM
+    no usará `_cssGlobalClasses`. Si proporcionado, le da al LLM la lista
+    cerrada con descripciones y la instrucción de no inventar.
+    """
+    if not class_ids:
+        return base_prompt
+    # Import lazy para no acoplar el client al paquete bricks-transpiler.
+    from wcm_bricks_transpiler import CLASS_DESCRIPTIONS  # noqa: PLC0415
+
+    lines = ["", "", "GLOBAL CLASSES DISPONIBLES (catálogo cerrado):"]
+    lines.append(
+        "Si necesitas typography o spacing reutilizable, usa "
+        "`_cssGlobalClasses` con uno o más de estos IDs. NO INVENTES otros — "
+        "cualquier ID fuera de esta lista será silenciosamente dropeado."
+    )
+    for cid in class_ids:
+        desc = CLASS_DESCRIPTIONS.get(cid, "")
+        lines.append(f"  - `{cid}`: {desc}")
+    lines.append(
+        "Si una clase no encaja perfectamente, omite `_cssGlobalClasses` y "
+        "aplica `_typography`/`_padding` inline en el elemento."
+    )
+    return base_prompt + "\n".join(lines)
+
+
+#: v0.28.0 — ejemplos VERBATIM del corpus h2b/bricks_shape_v214.json.
+#: Sirven como few-shot a gpt-5.5: el LLM ve el shape exacto que Bricks
+#: 2.1.4 consume y reduce drift estructural (snake_case, string colors,
+#: image planos, etc.). Mismo bloque para PAGE y SECTION prompts.
+_BRICKS_SHAPE_EXAMPLES = """\
+EJEMPLOS VERBATIM (Bricks 2.1.4 — copia el shape EXACTAMENTE):
+
+# Section con fondo color + imagen
+{"id":"sec001","name":"section","parent":"0","children":["con001"],"settings":{
+  "_padding":{"top":"4rem","right":"1rem","bottom":"4rem","left":"1rem"},
+  "_background":{
+    "color":{"raw":"var(--bricks-color-bg)"},
+    "image":{"url":"https://...","size":"cover","position":"center center"}
+  }
+}}
+
+# Container flex column con max-width
+{"id":"con001","name":"container","parent":"sec001","children":["hed001","txt001"],"settings":{
+  "_widthMax":"1200",
+  "_direction":"column",
+  "_padding":{"top":"2rem","right":"1rem","bottom":"2rem","left":"1rem"}
+}}
+
+# Heading h1 con typography KEBAB-CASE (font-size, font-family, line-height)
+{"id":"hed001","name":"heading","parent":"con001","children":[],"settings":{
+  "text":"Brand Identity for Premium Brands",
+  "tag":"h1",
+  "_typography":{
+    "font-family":"Playfair Display",
+    "font-size":"2.25rem",
+    "font-weight":"700",
+    "line-height":"1.2",
+    "color":{"raw":"var(--bricks-color-text)"}
+  },
+  "_cssGlobalClasses":["heading-1"]
+}}
+
+# Text-basic (plain paragraph) con color hex
+{"id":"txt001","name":"text-basic","parent":"con001","children":[],"settings":{
+  "text":"Subhead description with concrete value proposition.",
+  "_typography":{
+    "font-family":"Inter",
+    "font-size":"1rem",
+    "line-height":"1.6",
+    "color":{"hex":"#1a1a1a"}
+  }
+}}
+
+# Image WP (media library) — id + full + url + size
+{"id":"img001","name":"image","parent":"con001","children":[],"settings":{
+  "image":{
+    "id":4567,
+    "filename":"hero.jpg",
+    "size":"large",
+    "url":"https://wp.example.com/wp-content/uploads/2026/06/hero.jpg",
+    "full":"https://wp.example.com/wp-content/uploads/2026/06/hero.jpg"
+  },
+  "_aspectRatio":"16 / 9",
+  "_objectFit":"cover"
+}}
+
+# Image external (no WP) — external=true + url + filename
+{"id":"img002","name":"image","parent":"con001","children":[],"settings":{
+  "image":{
+    "url":"https://oaidalleapiprodscus.blob.core.windows.net/x.jpg",
+    "external":true,
+    "filename":"x.jpg"
+  }
+}}
+
+# Button con link external + icon
+{"id":"btn001","name":"button","parent":"con001","children":[],"settings":{
+  "text":"Send Your Brand Details",
+  "style":"primary",
+  "link":{"type":"external","url":"https://example.com/contact","newTab":true},
+  "icon":{"library":"fontawesomeSolid","icon":"fas fa-arrow-right"},
+  "iconPosition":"right",
+  "_typography":{"font-size":"1rem","color":{"raw":"var(--bricks-color-light)"}},
+  "_cssGlobalClasses":["btn","btn-primary"]
+}}
+"""
+
+
 #: RedesignAI — `gpt-4o`. Construye páginas Bricks completas desde el Brief.
 SYSTEM_PROMPT_PAGE_REDESIGN = """Eres un experto diseñador web especializado en \
 WordPress + Bricks Builder. Tu objetivo: dado un Brief de negocio y la spec de \
@@ -240,9 +359,20 @@ en las keys cuando cambies grid/padding por breakpoint.
 description). NO inventes copy ajeno al brief.
 9. **Diseño limpio y moderno**: pocas secciones, jerarquía clara, espaciado \
 generoso, paleta del brand. Sin position absolute, sin overlays raros.
+10. **Typography keys SIEMPRE en kebab-case con guion**: `font-size`, \
+`font-family`, `font-weight`, `line-height`, `letter-spacing`, `text-align`, \
+`text-transform`. NUNCA con underscore (`font_size`) NI camelCase (`fontSize`). \
+Bricks ignora keys mal-tipadas y renderiza con CSS default.
+11. **Preserve whitespace en strings de heading/text/button**: si la frase es \
+`"Brand Identity for Premium Brands"`, NO la escribas como `"Brand Identity forPremium Brands"`. \
+Cada palabra separada con espacio simple. Esto incluye trailing space cuando un span \
+del origen lo tenía. Ejemplos a evitar (mal): `"helloWorld"`, `"for.Premium"`, \
+`"Luxury-LedBrands"`. Ejemplos correctos: `"hello World"`, `"for. Premium"`, \
+`"Luxury-Led Brands"`.
 
 Devuelve SIEMPRE la tool `emit_bricks_page` con el array `content`.
-"""
+
+""" + _BRICKS_SHAPE_EXAMPLES
 
 #: Schema de la tool `emit_bricks_page` para RedesignAI.
 #: Catálogo de elementos permitidos centralizado y enum-validado.
@@ -283,9 +413,16 @@ unidades CSS.
 7. **Contenido del Brief**: úsalo literal cuando esté presente.
 8. **Una sola section root**: no múltiples top-level. Si la sección original \
 es compleja (hero con CTA), todo va dentro de la misma section root.
+9. **Typography keys en KEBAB-CASE con guion**: `font-size`, `font-family`, \
+`font-weight`, `line-height`, `letter-spacing`, `text-align`, `text-transform`. \
+NUNCA `font_size` (underscore) NI `fontSize` (camelCase) — Bricks ignora keys \
+mal-tipadas y el frontend cae a CSS default.
+10. **Whitespace en headings/text/buttons**: separa palabras con espacio simple. \
+NO `"forPremium"` → SÍ `"for Premium"`. NO `"Luxury-LedBrands"` → SÍ `"Luxury-Led Brands"`.
 
 Devuelve SIEMPRE la tool `emit_bricks_section` con el array `content`.
-"""
+
+""" + _BRICKS_SHAPE_EXAMPLES
 
 #: Schema de la tool `emit_bricks_section`. Comparte allowed_names con la
 #: tool de página entera para que el resto del pipeline (validador, mappers)
@@ -501,6 +638,43 @@ TOOL_BRIEF_REFINEMENT: dict[str, Any] = {
 }
 
 
+#: v0.28.0 B14 — Tool para LLMSectionRanker. Elige UN template entre
+#: candidatos filtrados por categoría.
+TOOL_CHOOSE_TEMPLATE: dict[str, Any] = {
+    "type": "function",
+    "function": {
+        "name": "emit_template_choice",
+        "description": (
+            "Elige UN template entre los candidatos según el Brief de "
+            "negocio y la sección. Devuelve template_id EXACTAMENTE como "
+            "aparece en la lista (NO inventes IDs)."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "template_id": {
+                    "type": "string",
+                    "description": (
+                        "ID exacto del template elegido. Debe ser uno de "
+                        "los IDs de la lista de candidatos."
+                    ),
+                },
+                "rationale": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": (
+                        "Por qué este template encaja mejor con la marca "
+                        "(sector, tone, propósito de la sección)."
+                    ),
+                },
+            },
+            "required": ["template_id", "rationale"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 class OpenAIClient:
     """Cliente async para function calling estructurado.
 
@@ -579,16 +753,24 @@ class OpenAIClient:
         *,
         brief: dict[str, Any],
         page_spec: dict[str, Any],
+        global_class_ids: list[str] | None = None,
     ) -> OpenAIResult:
         """Genera el array Bricks de UNA página a partir del Brief + spec.
 
         Modelo: `model_redesign` (default gpt-4o, v0.26.0 default gpt-5.5).
         Más caro pero mejor calidad estructural.
+
+        `global_class_ids` (v0.28.0 B11): si proporcionado, se anuncia al
+        LLM como catálogo cerrado de IDs disponibles en `_cssGlobalClasses`.
+        El LLM NO puede inventar otros.
         """
         user_msg = self._build_page_redesign_user_message(brief, page_spec)
+        system = _augment_with_global_classes(
+            SYSTEM_PROMPT_PAGE_REDESIGN, global_class_ids,
+        )
         return await self._call_with_retry(
             model=self.model_redesign,
-            system=SYSTEM_PROMPT_PAGE_REDESIGN,
+            system=system,
             user_msg=user_msg,
             tool=TOOL_PAGE_REDESIGN,
             tool_name="emit_bricks_page",
@@ -600,23 +782,22 @@ class OpenAIClient:
         brief: dict[str, Any],
         page_spec: dict[str, Any],
         section_spec: dict[str, Any],
+        global_class_ids: list[str] | None = None,
     ) -> OpenAIResult:
         """v0.26.0 — genera subárbol Bricks de UNA sección concreta.
 
-        Usado por `RedesignAIAgent` en modo Hybrid (cuando
-        `Project.design_method is None`) para procesar solo las secciones
-        marcadas como `design_method == "ai"`. La página se compone
-        ensamblando subtrees + las secciones generadas por templates.
-
-        Coste estimado por sección con gpt-5.5: $0.05-0.30 (vs
-        $0.30-1.50 por página entera con gpt-4o).
+        `global_class_ids` (v0.28.0 B11): catálogo cerrado de IDs disponibles
+        en `_cssGlobalClasses`. NO puede inventar otros.
         """
         user_msg = self._build_section_redesign_user_message(
             brief, page_spec, section_spec
         )
+        system = _augment_with_global_classes(
+            SYSTEM_PROMPT_SECTION_REDESIGN, global_class_ids,
+        )
         return await self._call_with_retry(
             model=self.model_redesign,
-            system=SYSTEM_PROMPT_SECTION_REDESIGN,
+            system=system,
             user_msg=user_msg,
             tool=TOOL_SECTION_REDESIGN,
             tool_name="emit_bricks_section",
@@ -647,6 +828,98 @@ class OpenAIClient:
             tool=TOOL_BRIEF_REFINEMENT,
             tool_name="emit_brief_refinements",
         )
+
+    async def choose_template_for_section(
+        self,
+        *,
+        brief_context: dict[str, Any],
+        section_spec: dict[str, Any],
+        candidates: list[dict[str, Any]],
+    ) -> OpenAIResult:
+        """v0.28.0 B14 — Elige UN template entre N candidatos del catálogo.
+
+        `brief_context`: `{business: {name, sector, tone, description},
+        brand: {colors, fonts}}`.
+        `section_spec`: la sección concreta del Brief que vamos a rellenar
+        (`{type, headline, has_image, has_cta, ...}`).
+        `candidates`: lista compacta de candidatos del catálogo (id,
+        n_elements, has_image, has_cta, content_summary).
+
+        Modelo: `model_redesign` (default gpt-5.5). Coste estimado por
+        llamada con ~25 candidatos: $0.01. Retry incluido en `_call_with_retry`.
+        """
+        system = (
+            "Eres un experto en selección de templates web Bricks Builder. "
+            "Dado un Brief de negocio + sección concreta + lista de templates "
+            "candidatos, elige el que MEJOR encaje con la estética y propósito "
+            "de la marca.\n\n"
+            "Considera:\n"
+            "- Sector del negocio (luxury, tech, restaurante, etc.)\n"
+            "- Tone of voice (minimalista, audaz, corporativo, divertido)\n"
+            "- Complejidad del template (nº elementos) vs necesidad de la sección\n"
+            "- Presencia de imagen y CTA según el Brief\n\n"
+            "Devuelve template_id EXACTAMENTE como aparece en candidates. "
+            "NUNCA inventes IDs."
+        )
+        user_msg = self._build_template_choice_user_message(
+            brief_context, section_spec, candidates,
+        )
+        return await self._call_with_retry(
+            model=self.model_redesign,
+            system=system,
+            user_msg=user_msg,
+            tool=TOOL_CHOOSE_TEMPLATE,
+            tool_name="emit_template_choice",
+        )
+
+    @staticmethod
+    def _build_template_choice_user_message(
+        brief_context: dict[str, Any],
+        section_spec: dict[str, Any],
+        candidates: list[dict[str, Any]],
+    ) -> str:
+        business = brief_context.get("business") or {}
+        brand = brief_context.get("brand") or {}
+        lines: list[str] = []
+        lines.append("BRIEF:")
+        if name := business.get("name"):
+            lines.append(f"- Business: {name}")
+        if desc := business.get("description"):
+            lines.append(f"- Description: {desc[:200]}")
+        if sector := business.get("sector"):
+            lines.append(f"- Sector: {sector}")
+        if tone := business.get("tone"):
+            lines.append(f"- Tone: {tone}")
+        if colors := brand.get("colors"):
+            colors_str = ", ".join(
+                f"{k}={v}" for k, v in list(colors.items())[:4]
+            ) if isinstance(colors, dict) else str(colors)[:120]
+            lines.append(f"- Brand colors: {colors_str}")
+        if fonts := brand.get("fonts"):
+            fonts_str = ", ".join(str(f) for f in fonts[:4]) if isinstance(fonts, list) else str(fonts)[:120]
+            lines.append(f"- Brand fonts: {fonts_str}")
+        lines.append("")
+        lines.append("SECTION:")
+        lines.append(f"- Type: {section_spec.get('type', '?')}")
+        if h := section_spec.get("headline"):
+            lines.append(f"- Headline target: {h[:120]}")
+        lines.append(f"- Needs image: {bool(section_spec.get('has_image') or section_spec.get('image_url'))}")
+        lines.append(f"- Needs CTA: {bool(section_spec.get('has_cta') or section_spec.get('cta'))}")
+        lines.append("")
+        lines.append(f"CANDIDATES ({len(candidates)}):")
+        for c in candidates:
+            cid = c.get("id", "?")
+            n_els = c.get("n_elements", "?")
+            n_cls = c.get("n_global_classes", "?")
+            img = "img" if c.get("has_image") else "no-img"
+            cta = "cta" if c.get("has_cta") else "no-cta"
+            summary = c.get("content_summary") or ""
+            lines.append(f"- id={cid} | {n_els}els {n_cls}classes | {img},{cta}")
+            if summary:
+                lines.append(f"    {summary[:120]}")
+        lines.append("")
+        lines.append("Elige UN template_id y justifícalo brevemente.")
+        return "\n".join(lines)
 
     async def generate_image(
         self,
@@ -789,13 +1062,14 @@ class OpenAIClient:
         if not model.startswith("gpt-5"):
             kwargs["temperature"] = 0.7
         else:
-            # v0.27.0 — gpt-5 family acepta `reasoning_effort`. Default
-            # es `high` (thinking eterno: 5-18 min por página). Para tareas
-            # estructuradas con tool_use forzado `low` es suficiente:
-            # baja latencia a 30-90s sin sacrificar la calidad estructural
-            # (la decisión de estructura se hace en el system prompt + tool
-            # schema, no en el reasoning).
-            kwargs["reasoning_effort"] = "low"
+            # v0.28.0 — gpt-5.4+ rechaza `reasoning_effort` cuando hay
+            # `tools` en /v1/chat/completions (forzaría migrar a /v1/responses
+            # API). Decisión: NO migrar — usar gpt-5.5 sin reasoning y
+            # garantizar shape Bricks via BricksAdapter determinista + Validator
+            # estricto (sprint v0.28.0). Para gpt-5/gpt-5-mini sí enviamos
+            # reasoning_effort=low (chat.completions lo soporta ahí).
+            if not (model.startswith("gpt-5.5") or model.startswith("gpt-5.4")):
+                kwargs["reasoning_effort"] = "low"
         try:
             response = await self._client.chat.completions.create(**kwargs)
         except Exception as e:  # noqa: BLE001 — SDK raises various subtypes

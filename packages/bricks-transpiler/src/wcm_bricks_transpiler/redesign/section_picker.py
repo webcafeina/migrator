@@ -105,7 +105,35 @@ class SectionPicker:
         `business_name` se usa para `hash()` determinista, garantiza
         misma elección entre re-runs del mismo proyecto.
         """
-        # Filtrar por categoría primero (siempre obligatorio).
+        candidates, level = self.get_candidates(
+            section_type=section_type,
+            business_sector=business_sector,
+            business_tone=business_tone,
+        )
+        if not candidates:
+            return None
+        idx = _stable_hash(business_name) % len(candidates)
+        chosen = candidates[idx]
+        return self._build_picked(chosen, level)
+
+    def get_candidates(
+        self,
+        *,
+        section_type: str,
+        business_sector: str | None = None,
+        business_tone: str | None = None,
+    ) -> tuple[list[dict[str, Any]], int]:
+        """v0.28.0 B14 — Devuelve `(candidates_filtered, fallback_level)`.
+
+        Expone la fase de filtrado relaxed sin aplicar el hash final.
+        Permite que `LLMSectionRanker` elija entre los candidatos vía LLM.
+
+        Niveles:
+        - 0: match perfecto (category + sector + tone)
+        - 1: match sin tone
+        - 2: match solo categoría
+        - -1: sin matches (lista vacía)
+        """
         category_candidates = [
             t for t in self.templates_index
             if t.get("category") == section_type
@@ -115,30 +143,39 @@ class SectionPicker:
                 "section_picker_no_category_match",
                 extra={"section_type": section_type},
             )
-            return None
+            return [], -1
 
-        # Intento 1: full match (category + sector + tone).
-        chosen, level = self._try_match(
-            category_candidates, business_name,
-            sector=business_sector, tone=business_tone, level=0,
-        )
-        # Intento 2: sin tone.
-        if chosen is None:
-            chosen, level = self._try_match(
-                category_candidates, business_name,
-                sector=business_sector, tone=None, level=1,
-            )
-        # Intento 3: sin sector ni tone (cualquiera de la categoría).
-        if chosen is None:
-            chosen, level = self._try_match(
-                category_candidates, business_name,
-                sector=None, tone=None, level=2,
-            )
+        for sector, tone, level in (
+            (business_sector, business_tone, 0),
+            (business_sector, None, 1),
+            (None, None, 2),
+        ):
+            filtered = [
+                t for t in category_candidates
+                if (not sector or not t.get("fits_sectors") or sector in t["fits_sectors"])
+                and (not tone or not t.get("fits_tones") or tone in t["fits_tones"])
+            ]
+            if filtered:
+                return filtered, level
+        return [], -1
 
-        if chosen is None:
-            return None
+    def load_template_by_metadata(
+        self,
+        template_metadata: dict[str, Any],
+    ) -> PickedSection | None:
+        """v0.28.0 B14 — Carga el JSON del template y devuelve PickedSection.
 
-        # Cargar JSON del template desde disco.
+        Usado por agentes que orquestan la selección externa (LLM ranker)
+        y luego piden cargar el JSON del template elegido.
+        """
+        return self._build_picked(template_metadata, fallback_level=0)
+
+    def _build_picked(
+        self,
+        chosen: dict[str, Any],
+        fallback_level: int,
+    ) -> PickedSection | None:
+        """Carga JSON del template desde disco y construye PickedSection."""
         template_path = self.catalog_dir / chosen.get("file", "")
         template_json = self._load_template_json(template_path)
         if template_json is None:
@@ -147,42 +184,15 @@ class SectionPicker:
                 extra={"id": chosen.get("id"), "path": str(template_path)},
             )
             return None
-
         return PickedSection(
             template_id=chosen.get("id", ""),
             template_file=chosen.get("file", ""),
             template_json=template_json,
             slot_map=chosen.get("slot_map") or {},
-            fallback_level=level,
+            fallback_level=fallback_level,
         )
 
     # ---------- helpers ----------
-
-    def _try_match(
-        self,
-        candidates: list[dict[str, Any]],
-        business_name: str,
-        *,
-        sector: str | None,
-        tone: str | None,
-        level: int,
-    ) -> tuple[dict[str, Any] | None, int]:
-        """Intenta encontrar matches con los filtros dados. Devuelve
-        `(chosen, level)`. Si nada matchea, `(None, level)`.
-        """
-        filtered: list[dict[str, Any]] = []
-        for t in candidates:
-            if sector and t.get("fits_sectors"):
-                if sector not in t["fits_sectors"]:
-                    continue
-            if tone and t.get("fits_tones"):
-                if tone not in t["fits_tones"]:
-                    continue
-            filtered.append(t)
-        if not filtered:
-            return None, level
-        idx = _stable_hash(business_name) % len(filtered)
-        return filtered[idx], level
 
     def _load_template_json(self, path: Path) -> dict[str, Any] | None:
         if not path.exists():

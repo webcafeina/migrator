@@ -109,6 +109,15 @@ class ThemeStylesAgent(BaseAgent):
         theme = synthesize_theme(computed, node_styles=node_styles)
         project.theme_styles_origin = theme
 
+        # v0.28.0 B11 — Catálogo canónico de Bricks Global Classes derivado
+        # del theme. Sin esto, en `design_method=ai` la columna queda NULL
+        # (RedesignAIAgent bypassa el transpiler) y el wp_deployer no
+        # sube nada → cualquier `_cssGlobalClasses` que emita el LLM
+        # apuntará a clases inexistentes en el WP destino.
+        from wcm_bricks_transpiler import build_canonical_catalog  # noqa: PLC0415
+
+        project.bricks_global_classes = build_canonical_catalog(theme)
+
         # Persistencia explicita (defensive: por si la session config no
         # autoflushea el mutación in-place del JSONB).
         ctx.session.add(project)
@@ -117,12 +126,14 @@ class ThemeStylesAgent(BaseAgent):
         return AgentResult(
             summary=(
                 f"Project {project.id}: theme sintetizado — "
-                f"{len(theme['colors'])} colors, {len(theme['typography'])} fonts"
+                f"{len(theme['colors'])} colors, {len(theme['typography'])} fonts, "
+                f"{len(project.bricks_global_classes)} global classes canónicas"
             ),
             outputs={
                 "skipped": False,
                 "colors": theme["colors"],
                 "typography_keys": list(theme["typography"].keys()),
+                "global_classes_count": len(project.bricks_global_classes),
             },
         )
 

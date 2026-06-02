@@ -35,17 +35,21 @@ Errores tipados: `RedesignAgentError(blocks_pipeline=False)`.
 
 from __future__ import annotations
 
+import asyncio
+import hashlib
 import logging
 import os
 from pathlib import Path
 from typing import Any
 
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import flag_modified
 
 from wcm_bricks_transpiler.redesign import (
     SectionPicker,
     SlotMapper,
 )
+from wcm_bricks_transpiler.redesign.llm_ranker import LLMSectionRanker
 from wcm_db.models.assets import Asset
 from wcm_db.models.bricks_pages import BricksPage
 from wcm_db.models.projects import Project
@@ -57,6 +61,7 @@ from wcm_types.enums import (
 )
 from wcm_worker.agents.base import AgentContext, AgentResult, BaseAgent
 from wcm_worker.errors import RedesignAgentError
+from wcm_worker.integrations.openai_client import OpenAIClient
 
 log = logging.getLogger("wcm.worker.redesign_templates")
 
@@ -77,6 +82,8 @@ class RedesignTemplatesAgent(BaseAgent):
         catalog_dir: Path | None = None,
         section_picker: SectionPicker | None = None,
         slot_mapper: SlotMapper | None = None,
+        ranker: LLMSectionRanker | None = None,
+        openai_client: OpenAIClient | None = None,
     ) -> None:
         # Resolver catalog_dir: arg > env > prod default.
         if catalog_dir is None:
@@ -88,6 +95,10 @@ class RedesignTemplatesAgent(BaseAgent):
         self.catalog_dir = catalog_dir
         self._injected_picker = section_picker
         self._injected_mapper = slot_mapper
+        # v0.28.0 B14 — ranker LLM opcional. Si None, lo construye lazy
+        # desde OPENAI_API_KEY si está disponible. Inyectable para tests.
+        self._injected_ranker = ranker
+        self._injected_openai = openai_client
 
     @staticmethod
     def _resolve_default_catalog() -> Path:
@@ -154,11 +165,27 @@ class RedesignTemplatesAgent(BaseAgent):
         business_sector = business.get("sector")
         business_tone = business.get("tone_of_voice")
 
+        # v0.28.0 B14 — Ranker LLM opcional.
+        ranker = self._build_ranker(business_name)
+        brief_context = {
+            "business": {
+                "name": business_name,
+                "sector": business_sector,
+                "tone": business_tone,
+                "description": business.get("description"),
+            },
+            "brand": brief.get("brand") or {},
+        }
+        # Cache de elecciones LLM (idempotente entre re-runs).
+        template_cache = dict(project.template_choices_cache_json or {})
+
         total_sections = 0
         templates_used = 0
         sections_unresolved = 0
         residual_count = 0
         pages_generated = 0
+        ranker_cost_total = 0.0
+        ranker_fallback_count = 0
 
         for brief_page in brief["pages"]:
             page_slug = brief_page.get("slug") or "/"
@@ -189,11 +216,17 @@ class RedesignTemplatesAgent(BaseAgent):
                     )
                     page_content.extend(placeholder)
                     continue
-                picked = picker.pick(
+                picked = self._select_template(
+                    picker=picker,
+                    ranker=ranker,
                     section_type=section_type,
+                    section_index=section_index,
+                    section_spec=section,
                     business_name=business_name,
                     business_sector=business_sector,
                     business_tone=business_tone,
+                    brief_context=brief_context,
+                    cache=template_cache,
                 )
                 if picked is None:
                     sections_unresolved += 1
@@ -201,6 +234,10 @@ class RedesignTemplatesAgent(BaseAgent):
                         ctx, project, page_slug, section,
                     )
                     continue
+                if hasattr(picked, "_ranker_cost"):
+                    ranker_cost_total += picked._ranker_cost
+                    if picked._ranker_fallback:
+                        ranker_fallback_count += 1
                 applied = mapper.apply(
                     template=picked.template_json,
                     section=section,
@@ -227,6 +264,11 @@ class RedesignTemplatesAgent(BaseAgent):
             )
             pages_generated += 1
 
+        # v0.28.0 B14 — Persistir cache si cambió.
+        if template_cache != (project.template_choices_cache_json or {}):
+            project.template_choices_cache_json = template_cache
+            flag_modified(project, "template_choices_cache_json")
+
         ctx.session.flush()
 
         return AgentResult(
@@ -234,7 +276,9 @@ class RedesignTemplatesAgent(BaseAgent):
                 f"Project {project.id}: redesign templates · "
                 f"{pages_generated} páginas · "
                 f"{templates_used}/{total_sections} secciones resueltas · "
-                f"{sections_unresolved} residuales"
+                f"{sections_unresolved} residuales · "
+                f"ranker cost ${ranker_cost_total:.4f} "
+                f"({ranker_fallback_count} fallbacks)"
             ),
             outputs={
                 "skipped": False,
@@ -242,6 +286,9 @@ class RedesignTemplatesAgent(BaseAgent):
                 "templates_used": templates_used,
                 "sections_total": total_sections,
                 "sections_unresolved": sections_unresolved,
+                "ranker_cost_usd": round(ranker_cost_total, 4),
+                "ranker_fallback_count": ranker_fallback_count,
+                "ranker_enabled": ranker is not None,
             },
             residual_tasks_created=residual_count,
         )
@@ -382,3 +429,121 @@ class RedesignTemplatesAgent(BaseAgent):
         )
         ctx.session.add(task)
         return 1
+
+    # ---------- v0.28.0 B14 — LLM ranker integration ----------
+
+    def _build_ranker(self, business_name: str) -> LLMSectionRanker | None:
+        """Construye el LLMSectionRanker si OPENAI_API_KEY está disponible.
+
+        Si no hay key, devuelve None y el flujo cae al hash determinista
+        del SectionPicker.pick() — no bloquea el pipeline.
+        """
+        if self._injected_ranker is not None:
+            return self._injected_ranker
+
+        client = self._injected_openai or OpenAIClient.from_env()
+        if client is None:
+            log.info("ranker_disabled_no_openai_key")
+            return None
+
+        async def llm_call(
+            brief_ctx: dict[str, Any],
+            section_spec: dict[str, Any],
+            candidates: list[dict[str, Any]],
+        ) -> dict[str, Any] | None:
+            try:
+                result = await client.choose_template_for_section(
+                    brief_context=brief_ctx,
+                    section_spec=section_spec,
+                    candidates=candidates,
+                )
+            except Exception as e:  # noqa: BLE001 — defensivo
+                log.warning(
+                    "openai_choose_template_failed err=%s", str(e)[:200],
+                )
+                return None
+            return {
+                "template_id": result.data.get("template_id"),
+                "rationale": result.data.get("rationale", ""),
+                "cost_usd": result.cost_usd,
+            }
+
+        def hash_fallback(_business_name: str, candidates: list[dict]) -> str:
+            """Fallback: hash determinista por business_name."""
+            if not candidates:
+                return ""
+            h = int(hashlib.md5(business_name.encode()).hexdigest()[:8], 16)
+            return candidates[h % len(candidates)].get("id", "")
+
+        return LLMSectionRanker(llm_call=llm_call, hash_fallback=hash_fallback)
+
+    def _select_template(
+        self,
+        *,
+        picker: SectionPicker,
+        ranker: LLMSectionRanker | None,
+        section_type: str,
+        section_index: int,
+        section_spec: dict[str, Any],
+        business_name: str,
+        business_sector: str | None,
+        business_tone: str | None,
+        brief_context: dict[str, Any],
+        cache: dict[str, Any],
+    ):
+        """Selecciona un template para una sección: ranker LLM si disponible,
+        fallback al `picker.pick()` (hash determinista)."""
+        candidates, level = picker.get_candidates(
+            section_type=section_type,
+            business_sector=business_sector,
+            business_tone=business_tone,
+        )
+        if not candidates:
+            return None
+        if ranker is None or len(candidates) == 1:
+            # Hash determinista (comportamiento legacy).
+            return picker.pick(
+                section_type=section_type,
+                business_name=business_name,
+                business_sector=business_sector,
+                business_tone=business_tone,
+            )
+        # Ranker LLM con cache.
+        try:
+            rank_result = asyncio.run(ranker.choose(
+                section_index=section_index,
+                section_spec=section_spec,
+                candidates=candidates,
+                brief_context=brief_context,
+                cache=cache,
+            ))
+        except RuntimeError as e:  # event loop closed or nested
+            log.warning("ranker_async_run_failed err=%s", str(e)[:200])
+            return picker.pick(
+                section_type=section_type,
+                business_name=business_name,
+                business_sector=business_sector,
+                business_tone=business_tone,
+            )
+        # Localizar metadata del template elegido.
+        chosen_meta = next(
+            (c for c in candidates if c.get("id") == rank_result.template_id),
+            None,
+        )
+        if chosen_meta is None:
+            log.warning(
+                "ranker_chosen_id_not_in_candidates id=%s",
+                rank_result.template_id,
+            )
+            return picker.pick(
+                section_type=section_type,
+                business_name=business_name,
+                business_sector=business_sector,
+                business_tone=business_tone,
+            )
+        picked = picker.load_template_by_metadata(chosen_meta)
+        if picked is not None:
+            # Anexar telemetría del ranker como atributos en el dataclass.
+            object.__setattr__(picked, "_ranker_cost", rank_result.cost_usd)
+            object.__setattr__(picked, "_ranker_fallback", rank_result.fallback_used)
+        return picked

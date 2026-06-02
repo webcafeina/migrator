@@ -476,3 +476,72 @@ def test_merge_subtree_by_index_no_encuentra_root_apend() -> None:
         current, section_index=42, new_subtree=new_subtree,
     )
     assert [el["id"] for el in merged] == ["sec000", "new001"]
+
+
+# -----------------------------------------------------------------------------
+# v0.28.0 — Whitespace fix (heading concatenado bug)
+# -----------------------------------------------------------------------------
+
+from wcm_worker.agents.redesign_ai import (
+    _fix_concatenated_words,
+    _fix_concatenated_words_in_texts,
+    _normalize_children,
+)
+
+
+def test_fix_concatenated_words_e2e_v027_bug() -> None:
+    """Bug exacto del E2E v0.27.0 (mariya.design home heading)."""
+    inp = "Brand Identity Systems forPremium andLuxury-LedBrands"
+    out = _fix_concatenated_words(inp)
+    assert out == "Brand Identity Systems for Premium and Luxury-Led Brands"
+
+
+def test_fix_concatenated_words_brand_name_short_preserved() -> None:
+    """Brand names cortos como 'MariyaDesign' usados como heading solo
+    NO deben separarse (< 3 palabras)."""
+    assert _fix_concatenated_words("MariyaDesign") == "MariyaDesign"
+
+
+def test_fix_concatenated_words_iphone_pro_preserved() -> None:
+    """'iPhone' tiene 1 sola char lowercase antes de 'P' → no romper."""
+    assert _fix_concatenated_words("Buy iPhone Pro today") == "Buy iPhone Pro today"
+
+
+def test_fix_concatenated_words_already_correct_unchanged() -> None:
+    assert _fix_concatenated_words("Welcome to our shop") == "Welcome to our shop"
+
+
+def test_fix_concatenated_words_punctuation_separator() -> None:
+    assert _fix_concatenated_words("Welcome to.Mary today") == "Welcome to. Mary today"
+
+
+def test_fix_concatenated_words_in_texts_applies_to_heading() -> None:
+    content = [
+        {"id": "sec001", "name": "section", "parent": "0", "children": ["h001"], "settings": {}},
+        {"id": "h001", "name": "heading", "parent": "sec001", "children": [],
+         "settings": {"text": "Hello world forPremium clients", "tag": "h1"}},
+    ]
+    fixed = _fix_concatenated_words_in_texts(content)
+    assert fixed == 1
+    assert content[1]["settings"]["text"] == "Hello world for Premium clients"
+
+
+def test_fix_concatenated_words_in_texts_skips_non_text_elements() -> None:
+    """settings.text en section (no en text elements) no se toca."""
+    content = [
+        {"id": "sec001", "name": "section", "parent": "0", "children": [],
+         "settings": {"text": "noTouch concatYes"}},
+    ]
+    fixed = _fix_concatenated_words_in_texts(content)
+    assert fixed == 0
+
+
+def test_normalize_children_includes_whitespace_fix() -> None:
+    """_normalize_children debe incluir el fix de whitespace al final."""
+    content = [
+        {"id": "sec001", "name": "section", "parent": "0", "children": ["h001"]},
+        {"id": "h001", "name": "heading", "parent": "sec001", "children": [],
+         "settings": {"text": "headingWith concatenatedWords here", "tag": "h1"}},
+    ]
+    _normalize_children(content)
+    assert content[1]["settings"]["text"] == "heading With concatenated Words here"

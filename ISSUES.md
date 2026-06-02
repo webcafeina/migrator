@@ -490,6 +490,42 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-039 — Distributed lock por project_id en wcm.orchestrator.run_project
+- **Tipo**: bug / **Fase**: post-v0.27.0 / **Prioridad**: P1
+- **Estado**: OPEN
+- **Contexto**: Detectado en E2E v0.27.0 B9 (proyectos 29 y 30).
+  `task_acks_late=True` (celery_app.py) + `visibility_timeout` Redis
+  por defecto (3600s) provocan que, si el worker se reinicia mientras
+  un orchestrator está corriendo, Redis hace **redelivery del mismo
+  task_id 1h después** al worker que vuelve. Resultado: 2 instancias
+  del mismo task corriendo en paralelo. Síntomas observados:
+    - Proyecto 29: race condition en `_mark_phase` (UniqueViolation,
+      resuelto con UPSERT atómico).
+    - Proyecto 30: 675 assets duplicados creados por la fase
+      scrape_origin re-ejecutada por la copia redelivery (676 → 1351).
+  El UPSERT atómico **mitiga** el corruption de project_phases pero
+  no impide la doble ejecución de fases I/O-bound (scrape, optimize,
+  redesign_ai con doble coste OpenAI).
+- **Acción**: implementar lock distribuido en `run_project` con Redis
+  SETNX + TTL renovable. Pseudocódigo:
+  ```python
+  lock_key = f"wcm:orchestrator:lock:project:{project_id}"
+  acquired = redis.set(lock_key, task_id, nx=True, ex=86400)
+  if not acquired:
+      log.warning("orchestrator_already_running_skip", project_id=project_id)
+      return {"skipped": True, "reason": "duplicate_task"}
+  try: orch.run_project(project_id)
+  finally: redis.delete(lock_key) if redis.get(lock_key) == task_id else None
+  ```
+  Heartbeat opcional para refrescar TTL si fases largas (>24h
+  improbable, pero conviene). Considerar también bajar
+  `task_acks_late=False` para `wcm.orchestrator.run_project`
+  específicamente (idempotencia a nivel app, no broker).
+- **Dueño**: técnico (siguiente sprint, no bloqueante para release v0.27.0
+  si E2E B9 se cierra con cleanup manual de assets duplicados).
+
+---
+
 ## Plantilla para nuevos issues
 
 ```

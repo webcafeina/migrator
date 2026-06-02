@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from typing import Any
 
 from sqlalchemy import select
@@ -144,6 +145,16 @@ class RedesignAIAgent(BaseAgent):
 
     # ---------- helpers async ----------
 
+    @staticmethod
+    def _global_class_ids_from(project: Project) -> list[str] | None:
+        """v0.28.0 B11 — Extrae los IDs del catálogo canónico que
+        `ThemeStylesAgent` ya persistió en `Project.bricks_global_classes`.
+        El LLM los recibe para usar en `_cssGlobalClasses` (catálogo cerrado).
+        """
+        classes = project.bricks_global_classes or []
+        ids = [c["id"] for c in classes if isinstance(c, dict) and "id" in c]
+        return ids or None
+
     async def _process_pages(
         self,
         *,
@@ -208,6 +219,7 @@ class RedesignAIAgent(BaseAgent):
             try:
                 result = await client.generate_page_redesign(
                     brief=brief, page_spec=brief_page,
+                    global_class_ids=self._global_class_ids_from(project),
                 )
                 cost_total += result.cost_usd
                 tokens_in_total += result.tokens_in
@@ -236,6 +248,7 @@ class RedesignAIAgent(BaseAgent):
                     }
                     retry_result = await client.generate_page_redesign(
                         brief=brief, page_spec=retry_spec,
+                        global_class_ids=self._global_class_ids_from(project),
                     )
                     cost_total += retry_result.cost_usd
                     tokens_in_total += retry_result.tokens_in
@@ -360,6 +373,7 @@ class RedesignAIAgent(BaseAgent):
                 result = await client.generate_section_redesign(
                     brief=brief, page_spec=brief_page,
                     section_spec=section_spec,
+                    global_class_ids=self._global_class_ids_from(project),
                 )
                 outcome["cost"] += result.cost_usd
                 outcome["tokens_in"] += result.tokens_in
@@ -590,10 +604,55 @@ def _strip_null_bytes(obj: Any) -> Any:
     return obj
 
 
+#: v0.28.0 — elementos con setting `text` que el LLM concatena sin
+#: whitespace (bug E2E v0.27.0 mariya.design: "forPremium andLuxury-LedBrands").
+_TEXT_ELEMENT_NAMES = frozenset({"heading", "text-basic", "text", "button"})
+
+#: Regex para detectar concatenación lower→Upper o punct→Upper. Exige
+#: ≥2 minúsculas para no romper palabras tipo "iPhone", "aHello", "uHTML".
+_CONCAT_LOWER_UPPER_RE = re.compile(r"([a-z]{2,}[.,!?:;]?)(?=[A-Z])")
+
+
+def _fix_concatenated_words(text: str) -> str:
+    """Inserta espacios en strings donde el LLM concatenó palabras.
+
+    Activa solo si el texto tiene ≥3 palabras existentes (≥2 espacios) —
+    así protegemos brand names cortos como "MariyaDesign", "iPhone",
+    "WordPress" cuando aparecen solos.
+
+    Patrones detectados:
+    - `for|Premium` → `for Premium` (lowercase + Upper)
+    - `world.|Hello` → `world. Hello` (lowercase + punct + Upper)
+    - `Luxury-Led|Brands` → `Luxury-Led Brands` (sin tocar el guion)
+    """
+    if not isinstance(text, str) or text.count(" ") < 2:
+        return text
+    return _CONCAT_LOWER_UPPER_RE.sub(r"\1 ", text)
+
+
+def _fix_concatenated_words_in_texts(content: list[dict[str, Any]]) -> int:
+    """Aplica `_fix_concatenated_words` a settings.text de elementos
+    de texto. Devuelve nº de strings modificadas (telemetría)."""
+    fixed = 0
+    for el in content:
+        if not isinstance(el, dict):
+            continue
+        if el.get("name") not in _TEXT_ELEMENT_NAMES:
+            continue
+        settings = el.get("settings") or {}
+        txt = settings.get("text")
+        if isinstance(txt, str):
+            new_txt = _fix_concatenated_words(txt)
+            if new_txt != txt:
+                settings["text"] = new_txt
+                fixed += 1
+    return fixed
+
+
 def _normalize_children(content: list[dict[str, Any]]) -> None:
     """v0.27.0 — normaliza output de LLM antes de validar y persistir.
 
-    Defensa contra errores estructurales típicos de gpt-5-mini:
+    Defensa contra errores estructurales típicos de gpt-5-mini / gpt-5.5:
     1. **Strip \\u0000** recursivo (Postgres JSONB no admite null bytes).
     2. **children: []** si falta (hojas sin key children).
     3. **Drop refs huérfanas**: si X.children incluye un id que no
@@ -601,6 +660,10 @@ def _normalize_children(content: list[dict[str, Any]]) -> None:
        hijo que tener el árbol inconsistente).
     4. **parent ↔ children consistency**: si X.children incluye Y,
        fuerza Y.parent = X.id (children es la fuente de verdad).
+    5. **v0.28.0 — Whitespace fix en heading/text/button**: el LLM
+       ocasionalmente concatena palabras sin espacio cuando el origen
+       las tenía en spans separados con trailing-space (bug E2E mariya
+       "Brand Identity Systems forPremium andLuxury-LedBrands").
     """
     # Paso 0: limpiar null bytes recursivamente (Postgres-safe).
     _strip_null_bytes(content)
@@ -630,3 +693,6 @@ def _normalize_children(content: list[dict[str, Any]]) -> None:
             child = id_to_el.get(child_id)
             if child is not None and child.get("parent") != parent_id:
                 child["parent"] = parent_id
+
+    # Paso 4: arreglar whitespace concatenado en textos.
+    _fix_concatenated_words_in_texts(content)

@@ -27,6 +27,51 @@
 - **Post-MVP: rediseño visual del dashboard** — ✅ CERRADO con v0.10.0 (2026-05-18). 11/11 pantallas operativas bajo el nuevo lenguaje.
 - **Post-rediseño: ampliación funcional** EN CURSO desde v0.11.0 (2026-05-18). Primer sprint sobre el dashboard ya rediseñado, sin tocar lenguaje visual — añadir features que faltaban para hacer E2E manuales del flujo de prospección y migración.
 
+## Sprint en curso
+
+**v0.28.0** (en curso desde 2026-06-01) — **Bricks shape verbatim + Adapter
+determinista + Validator + Catálogo fijo Global Classes (B.3) + Visual quality
+gate + Brickstemplate clipboard listener**. Sprint reactivo tras E2E v0.27.0
+(Mariya Design, project 30 borrado): destino salió texto plano sin estilos
+porque Bricks ignoraba silenciosamente `font_size` (snake_case) mientras
+espera `font-size` (kebab-case). 5 defensas en cascada para garantizar shape
+verbatim Bricks 2.1.4.
+
+**Cerrados (1407+ tests verdes por bloques, segfault flake combined):**
+- B0 — `packages/bricks-transpiler/src/wcm_bricks_transpiler/bricks_shape_v214.json` (12 elementos + 8 composite types + 6 anti-patterns)
+- B1 — Validator extendido settings shape (+13 tests). Detecta typography_underscore_key, spacing_shorthand_string, color_string_not_object, image_element_string, global_classes_object_item
+- B2 — `BricksAdapter` determinista (+21 tests). Idempotente. 95% cobertura
+- B3 — Whitespace fix en redesign_ai (+8 tests). Regex `[a-z]{2,}(?=[A-Z])` solo si texto ≥3 palabras
+- B4 — Prompt enriquecido con 7 ejemplos verbatim corpus h2b
+- B5 — Fase pipeline `bricks_adapt` posición 12 entre asset_uploader y pre_deploy_snapshot
+- B6 — `VisualQualityAgent` posición 19. Score 4 señales determinísticas. Threshold env-override
+- B7 — `scripts/cleanup_duplicate_assets.py` (9 tests). Dry-run default. Mitigación WCM-039
+- B11 — Catálogo fijo `bricks_global_classes` derivado del theme (12 IDs canónicos: wcm-h1..h4, wcm-body*, wcm-btn-*, wcm-section-padding-*). `ThemeStylesAgent` lo persiste. LLM recibe lista cerrada y NO puede inventar otros. BricksAdapter filtra los desconocidos
+- B12 — `scripts/import_brickstemplate_clipboard.py` (18 tests). Brickstemplate confirmó que NO usa Remote Templates API → import manual asistido. Detecta `source: bricksCopiedElements` en clipboard, persiste en `docs/templates/brickstemplate/<category>/<slug>.json` con dedup SHA y `sections-index.json`
+- B13 — Integración pipeline Hybrid. **482 templates en 33 categorías descargados** (back-to-top..testimonials; landing-page y template-kits no disponibles). Script `scripts/enrich_brickstemplate_index.py` (17 tests) genera `slot_map` heurístico + mapping categorías (call-to-action→cta, contact-us→contact_form). `SectionPicker.get_candidates()` + `load_template_by_metadata()` exposed para flow externo. SlotMapper regenera IDs Bricks para evitar colisión entre templates en misma página
+- B14 — `LLMSectionRanker` (13 tests). Elige template entre N candidatos vía LLM (gpt-5.5 sin reasoning). Cache en `Project.template_choices_cache_json` (Alembic 0023). Fallback al hash determinista si LLM falla. Coste ~$0.01/sección, ~$3/proyecto. Pipeline corre tanto en Templates puro como en Hybrid
+
+**Pendientes:**
+- B8 — E2E manual mariya.design con stack completo. Coste estimado ~$13.50 (texto $6 + imagen $4.40 + ranker $3)
+- B9 — Release v0.28.0 (CHANGELOG + ADR-058 + tag + gh release)
+
+**Decisiones técnicas v0.28.0:**
+- `OPENAI_MODEL_REDESIGN=gpt-5.5` SIN reasoning_effort (no soportado con tool_use en chat.completions; migración a /v1/responses diferida)
+- Sub-opción B.3 catálogo fijo global classes (no B.1 inferir, no B.2 LLM emite defs)
+- Ranker LLM con cache + fallback determinista (opción A); coste +$3 aceptado por operador 2026-06-02
+- Catálogo brickstemplate manual via clipboard listener (no Remote Templates API)
+
+**Issues activos:**
+- WCM-039 (P1) — Distributed lock por project_id en `wcm.orchestrator.run_project`. Race condition `task_acks_late=True` + restart worker. Mitigado parcialmente con UPSERT atómico en `_mark_phase` + script B7. Lock real diferido v0.29.0
+
+**Riesgos conocidos del peor caso B8 (advertido al operador 2026-06-02):**
+- Hybrid puede salir visualmente incoherente (estética brickstemplate + estética AI canónica chocan)
+- Templates: slot_map heurístico cubre solo 2-3 elementos/template → textos demo de wireframe.brickstemplate persisten
+- AI puro: LLM puede ignorar prompt y diseñar pobre (todo en una columna)
+- Recomendado para 1er E2E: **Solo Templates** (menor riesgo de Frankenstein)
+
+---
+
 ## Última versión publicada
 
 **v0.27.0** (2026-05-22) — **Image quality detection + Brief refinement iterativo

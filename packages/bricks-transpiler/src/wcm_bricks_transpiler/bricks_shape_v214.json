@@ -1,0 +1,443 @@
+{
+  "_meta": {
+    "version": "2.1.4",
+    "source": "docs/referencias/h2b-skill/h2b/references/ + docs/referencias/bricks-skills/",
+    "generated_at": "2026-06-01",
+    "purpose": "Shape canónico de elementos Bricks Builder consumido por (a) BricksAdapter determinista para convertir LLM semantic output → native Bricks JSON, (b) validator estricto de settings shape, (c) prompt LLM con ejemplos verbatim.",
+    "common_required_keys": ["id", "name", "parent", "children", "settings"]
+  },
+  "_conventions": {
+    "color_format": {
+      "options": [
+        {"shape": {"hex": "#000000"}, "use": "color literal"},
+        {"shape": {"raw": "var(--bricks-color-xxx)"}, "use": "CSS variable global"}
+      ],
+      "rejected": [
+        "{global: {id: '...'}} no existe en Bricks 2.1.4",
+        "string plana '#000' no se acepta — debe ser objeto"
+      ]
+    },
+    "spacing_format": {
+      "shape": {"top": "value", "right": "value", "bottom": "value", "left": "value"},
+      "units": ["rem", "px", "%", "em", "vh", "vw"],
+      "note": "Objeto verbatim — NO arrays, NO shorthand string"
+    },
+    "global_classes": {
+      "key": "_cssGlobalClasses",
+      "shape": ["classId1", "classId2"],
+      "note": "Array de strings IDs — NO objeto con id+name"
+    },
+    "typography_keys_case": {
+      "rule": "snake-case CON GUION (kebab-case)",
+      "valid_examples": ["font-family", "font-size", "font-weight", "line-height", "letter-spacing", "text-align", "text-transform", "text-decoration"],
+      "invalid_examples": ["font_size (underscore)", "fontSize (camel)", "fontFamily (camel)"],
+      "wrapper": "_typography",
+      "critical": "Este es el bug raíz del E2E v0.27.0 — gpt-5-mini producía font_size con underscore y Bricks lo ignoraba silenciosamente"
+    },
+    "responsive_suffixes": {
+      "syntax": "<setting_key>:<breakpoint>",
+      "breakpoints": ["laptop", "tablet_landscape", "tablet_portrait", "mobile_landscape", "mobile_portrait"],
+      "example": {"perPage:tablet_portrait": "2", "perPage:mobile_portrait": "1"}
+    },
+    "background_image_vs_image_element": {
+      "warning": "Shapes DISTINTOS",
+      "background_image": {"keys": ["url", "size", "position", "repeat"], "note": "sin id, sin filename"},
+      "image_element": {"keys": ["id", "url", "external", "filename", "size", "full"], "note": "id requerido si viene de WP media library"}
+    }
+  },
+  "elements": {
+    "section": {
+      "name": "section",
+      "category": "layout-root",
+      "settings": {
+        "tag": {"type": "select", "values": ["section", "header", "main", "footer"], "default": "section", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_background": {"type": "background", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": false,
+      "examples": [
+        {
+          "id": "sec001",
+          "name": "section",
+          "parent": "0",
+          "children": ["con001"],
+          "settings": {
+            "_padding": {"top": "4rem", "right": "1rem", "bottom": "4rem", "left": "1rem"},
+            "_background": {
+              "color": {"raw": "var(--bricks-color-bg)"}
+            }
+          }
+        }
+      ]
+    },
+    "container": {
+      "name": "container",
+      "category": "layout-flex",
+      "settings": {
+        "_width": {"type": "css-size", "required": false},
+        "_widthMax": {"type": "string-number-px", "required": false, "note": "px implícito — '1200' NO '1200px'"},
+        "_widthMin": {"type": "string-number-px", "required": false},
+        "_direction": {"type": "select", "values": ["row", "row-reverse", "column", "column-reverse"], "required": false, "note": "Implica _display: flex"},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_background": {"type": "background", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": false,
+      "examples": [
+        {
+          "id": "con001",
+          "name": "container",
+          "parent": "sec001",
+          "children": ["hed001"],
+          "settings": {
+            "_widthMax": "1200",
+            "_direction": "column",
+            "_padding": {"top": "2rem", "right": "1rem", "bottom": "2rem", "left": "1rem"}
+          }
+        }
+      ]
+    },
+    "block": {
+      "name": "block",
+      "category": "layout-generic",
+      "settings": {
+        "_display": {"type": "select", "values": ["flex", "block", "grid", "inline-block", "none"], "required": false},
+        "_direction": {"type": "select", "values": ["row", "column", "row-reverse", "column-reverse"], "required": false, "note": "Solo si _display: flex"},
+        "_justifyContent": {"type": "select", "values": ["flex-start", "flex-end", "center", "space-between", "space-around"], "required": false},
+        "_alignItems": {"type": "select", "values": ["flex-start", "flex-end", "center", "baseline", "stretch"], "required": false},
+        "_flexWrap": {"type": "select", "values": ["nowrap", "wrap", "wrap-reverse"], "required": false},
+        "_gap": {"type": "string-number-px", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": false
+    },
+    "div": {
+      "name": "div",
+      "category": "layout-generic",
+      "settings": {
+        "tag": {"type": "string", "default": "div", "required": false, "note": "Cualquier HTML tag semántico"},
+        "_width": {"type": "css-size", "required": false},
+        "_height": {"type": "css-size", "required": false},
+        "_display": {"type": "select", "values": ["block", "flex", "grid", "inline-block", "none"], "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_background": {"type": "background", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": false
+    },
+    "heading": {
+      "name": "heading",
+      "category": "text",
+      "settings": {
+        "text": {"type": "string", "required": true, "note": "Plain text del heading"},
+        "tag": {"type": "select", "values": ["h1", "h2", "h3", "h4", "h5", "h6"], "default": "h2", "required": false},
+        "_typography": {"type": "typography", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": true,
+      "examples": [
+        {
+          "id": "hed001",
+          "name": "heading",
+          "parent": "con001",
+          "children": [],
+          "settings": {
+            "text": "Brand Identity Systems for Premium and Luxury-Led Brands",
+            "tag": "h1",
+            "_typography": {
+              "font-family": "Playfair Display",
+              "font-size": "2.25rem",
+              "font-weight": "700",
+              "line-height": "1.2",
+              "color": {"raw": "var(--bricks-color-text)"}
+            },
+            "_cssGlobalClasses": ["heading-1"]
+          }
+        }
+      ]
+    },
+    "text-basic": {
+      "name": "text-basic",
+      "category": "text",
+      "settings": {
+        "text": {"type": "string", "required": true, "note": "Plain text, sin HTML"},
+        "_typography": {"type": "typography", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": true,
+      "note": "Sin tag (siempre <p>), sin HTML"
+    },
+    "text": {
+      "name": "text",
+      "category": "text-rich",
+      "settings": {
+        "text": {"type": "html-string", "required": true, "note": "HTML completo: <p>, <strong>, <em>, <a>..."},
+        "_typography": {"type": "typography", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": true
+    },
+    "image": {
+      "name": "image",
+      "category": "media",
+      "settings": {
+        "image": {"type": "image-element", "required": true, "note": "shape distinto a _background.image"},
+        "_aspectRatio": {"type": "string", "example": "16 / 9", "required": false},
+        "_objectFit": {"type": "select", "values": ["cover", "contain", "fill"], "required": false},
+        "_objectPosition": {"type": "string", "example": "center center", "required": false},
+        "_border": {"type": "border", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": false,
+      "examples": [
+        {
+          "id": "img001",
+          "name": "image",
+          "parent": "con001",
+          "children": [],
+          "settings": {
+            "image": {
+              "id": 123,
+              "filename": "hero.jpg",
+              "size": "large",
+              "url": "https://wp.example.com/wp-content/uploads/2026/06/hero.jpg",
+              "full": "https://wp.example.com/wp-content/uploads/2026/06/hero.jpg"
+            },
+            "_aspectRatio": "16 / 9",
+            "_objectFit": "cover"
+          }
+        },
+        {
+          "id": "img002",
+          "name": "image",
+          "parent": "con001",
+          "children": [],
+          "settings": {
+            "image": {
+              "url": "https://oaidalleapiprodscus.blob.core.windows.net/generated.jpg",
+              "external": true,
+              "filename": "generated.jpg"
+            }
+          }
+        }
+      ]
+    },
+    "button": {
+      "name": "button",
+      "category": "action",
+      "settings": {
+        "text": {"type": "string", "required": true},
+        "style": {"type": "select", "values": ["primary", "secondary", "light", "dark"], "required": false},
+        "link": {"type": "link", "required": false},
+        "icon": {"type": "icon", "required": false},
+        "iconPosition": {"type": "select", "values": ["left", "right"], "required": false},
+        "_typography": {"type": "typography", "required": false},
+        "_padding": {"type": "spacing", "required": false},
+        "_margin": {"type": "spacing", "required": false},
+        "_background": {"type": "background", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "typography_supported": true,
+      "examples": [
+        {
+          "id": "btn001",
+          "name": "button",
+          "parent": "con001",
+          "children": [],
+          "settings": {
+            "text": "Send Your Brand Details",
+            "style": "primary",
+            "link": {"type": "external", "url": "https://example.com/contact", "newTab": true},
+            "icon": {"library": "fontawesomeSolid", "icon": "fas fa-arrow-right"},
+            "iconPosition": "right",
+            "_typography": {"font-size": "1rem", "color": {"raw": "var(--bricks-color-light)"}},
+            "_cssGlobalClasses": ["btn", "btn-primary"]
+          }
+        }
+      ]
+    },
+    "image-gallery": {
+      "name": "image-gallery",
+      "category": "media-collection",
+      "settings": {
+        "items": {"type": "image-gallery-items", "required": true},
+        "perPage": {"type": "string-number", "required": false},
+        "gap": {"type": "string-number-px", "required": false},
+        "autoplay": {"type": "boolean", "required": false},
+        "pagination": {"type": "boolean", "required": false},
+        "arrows": {"type": "boolean", "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "items_shape": {"images": [{"id": "int|null", "url": "string", "external": "boolean", "filename": "string"}]}
+    },
+    "slider-nested": {
+      "name": "slider-nested",
+      "category": "interactive",
+      "alias": "slider",
+      "settings": {
+        "perPage": {"type": "string-number", "required": false},
+        "gap": {"type": "css-size", "required": false},
+        "autoplay": {"type": "boolean", "required": false},
+        "interval": {"type": "string-number-ms", "required": false},
+        "pauseOnHover": {"type": "boolean", "required": false},
+        "pagination": {"type": "boolean", "required": false},
+        "paginationBottom": {"type": "string-number-px", "required": false},
+        "arrows": {"type": "boolean", "required": false},
+        "height": {"type": "string", "values": ["none", "screen"], "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "note": "Children del slider son los slides (containers o divs)"
+    },
+    "nav-nested": {
+      "name": "nav-nested",
+      "category": "navigation",
+      "alias": "nav-menu",
+      "settings": {
+        "mobileMenu": {"type": "select", "values": ["always", "never", "laptop", "tablet_landscape", "tablet_portrait", "mobile_landscape", "mobile_portrait"], "required": false},
+        "_cssGlobalClasses": {"type": "array<string>", "required": false}
+      },
+      "children_types": ["dropdown", "text-link"],
+      "note": "Children son dropdowns con sub-items text-link"
+    }
+  },
+  "composite_types": {
+    "spacing": {
+      "shape": {"top": "string", "right": "string", "bottom": "string", "left": "string"},
+      "all_keys_optional": true,
+      "units_allowed": ["rem", "px", "%", "em", "vh", "vw"]
+    },
+    "typography": {
+      "shape": {
+        "font-family": "string",
+        "font-size": "string-with-unit",
+        "font-weight": "string (100-900)",
+        "line-height": "string (sin unidad común)",
+        "letter-spacing": "string-with-unit",
+        "text-align": "left | center | right | justify",
+        "text-transform": "none | uppercase | lowercase | capitalize",
+        "text-decoration": "none | underline | line-through",
+        "color": {"type": "color"}
+      },
+      "critical": "Todas las keys con GUIÓN (kebab-case), NO underscore",
+      "wrapper": "_typography"
+    },
+    "background": {
+      "shape": {
+        "color": {"type": "color", "optional": true},
+        "image": {
+          "type": "object",
+          "keys": ["url", "size", "position", "repeat"],
+          "url_required": true,
+          "id_present": false,
+          "optional": true
+        },
+        "gradient": {
+          "type": "object",
+          "keys": ["type", "angle", "stops"],
+          "stops_shape": [{"color": {"type": "color"}, "position": "string-number-%"}],
+          "optional": true
+        },
+        "overlay": {
+          "type": "color",
+          "optional": true,
+          "note": "Tinte sobre la imagen"
+        }
+      },
+      "wrapper": "_background"
+    },
+    "border": {
+      "shape": {
+        "width": "spacing-shape",
+        "style": "solid | dashed | dotted",
+        "color": {"type": "color"},
+        "radius": "spacing-shape"
+      },
+      "wrapper": "_border",
+      "alt_shorthand_radius": "_borderRadius con keys topLeft, topRight, bottomRight, bottomLeft"
+    },
+    "color": {
+      "options": [
+        {"hex": "#rrggbb"},
+        {"raw": "var(--bricks-color-xxx)"}
+      ]
+    },
+    "link": {
+      "shape": {
+        "type": "external | internal",
+        "url": "string",
+        "newTab": "boolean (optional)",
+        "title": "string (optional)"
+      }
+    },
+    "icon": {
+      "shape": {
+        "library": "fontawesomeSolid | fontawesomeBrands | ionicons | themify | ...",
+        "icon": "class string completa, ej. 'fas fa-arrow-right'"
+      }
+    },
+    "image-element": {
+      "shape": {
+        "id": "int (WP media id) o ausente si external=true",
+        "url": "string (required)",
+        "external": "boolean (true si image_url no es de WP media library)",
+        "filename": "string",
+        "size": "thumbnail | medium | large | full (Bricks lookup en WP)",
+        "full": "string (URL del original)"
+      },
+      "wp_required_fields": ["id", "url"],
+      "external_required_fields": ["url", "external", "filename"]
+    }
+  },
+  "rejected_anti_patterns": [
+    {
+      "pattern": "_typography.font_size",
+      "reason": "underscore en lugar de guion → Bricks ignora la key silenciosamente",
+      "fix": "_typography.font-size",
+      "severity": "critical"
+    },
+    {
+      "pattern": "_typography.fontSize",
+      "reason": "camelCase en lugar de kebab-case → Bricks ignora",
+      "fix": "_typography.font-size",
+      "severity": "critical"
+    },
+    {
+      "pattern": "color: '#000'",
+      "reason": "string plana en lugar de objeto",
+      "fix": "color: {hex: '#000000'}",
+      "severity": "critical"
+    },
+    {
+      "pattern": "image: 'https://...' (string)",
+      "reason": "Bricks espera objeto con id+url+...",
+      "fix": "image: {id: N, url: '...', size: 'large'}",
+      "severity": "critical"
+    },
+    {
+      "pattern": "_padding: '4rem'",
+      "reason": "shorthand string en lugar de objeto",
+      "fix": "_padding: {top: '4rem', right: '4rem', bottom: '4rem', left: '4rem'}",
+      "severity": "critical"
+    },
+    {
+      "pattern": "_cssGlobalClasses: [{id: 'x', name: 'y'}]",
+      "reason": "objetos en lugar de strings",
+      "fix": "_cssGlobalClasses: ['classId1']",
+      "severity": "high"
+    }
+  ]
+}

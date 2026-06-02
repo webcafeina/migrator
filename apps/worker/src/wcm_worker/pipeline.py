@@ -37,6 +37,7 @@ from wcm_worker.agents import (
     AssetOptimizerAgent,
     AssetUploaderAgent,
     BaseAgent,
+    BricksAdaptAgent,
     BricksTranspilerAgent,
     BriefGeneratorAgent,
     ChecklistGeneratorAgent,
@@ -54,6 +55,7 @@ from wcm_worker.agents import (
     ScraperOriginAgent,
     SeoPreserverAgent,
     VisualDiffAgent,
+    VisualQualityAgent,
     WooMigratorAgent,
     WpDeployerAgent,
     WpmlConfiguratorAgent,
@@ -170,6 +172,12 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # el resolver doble-seguridad de bricks_transpiler ya devuelve URL
     # R2 como fallback degradado.
     _PhaseSpec("asset_uploader", AssetUploaderAgent, required=False),
+    # v0.28.0 — Adapter determinista del shape Bricks 2.1.4. Corrige
+    # los anti-patrones del output LLM (snake_case typography, color
+    # strings, image planos) e inyecta wp_attachment_id en image refs
+    # que coinciden con assets subidos. Idempotente. Sin esta fase, el
+    # frontend WP renderizaba con CSS default (bug raíz E2E v0.27.0).
+    _PhaseSpec("bricks_adapt", BricksAdaptAgent, required=False),
     # ADR-042 — snapshot SQL del WP destino antes de modificarlo, para
     # poder rollback restaurando vía `wp db import`. required=True: sin
     # snapshot no se debe arrancar el deploy.
@@ -183,6 +191,12 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # notify. Si Playwright no está instalado o WP destino no configurado,
     # SKIPPED sin bloquear. La UI /preview consume preview_thumbnail_url.
     _PhaseSpec("preview_thumbnails", PreviewThumbnailsAgent, required=False),
+    # v0.28.0 — Gate final de render: abre cada page WP con Playwright y
+    # verifica que los Bricks Theme Styles se aplican (no caemos a CSS
+    # default Times/serif). Score por página + threshold ajustable. Sin
+    # Playwright o config WP → SKIPPED. Páginas bajo threshold emiten
+    # residual BLOCKING_GO_LIVE.
+    _PhaseSpec("visual_quality", VisualQualityAgent, required=False),
     _PhaseSpec("visual_diff", VisualDiffAgent, required=False),
     _PhaseSpec("qa", QaRunnerAgent, required=False),
     _PhaseSpec("generate_checklist", ChecklistGeneratorAgent, required=False),

@@ -56,6 +56,11 @@ class Project(Base, TimestampMixin):
     #: transpiler (`{id, name, settings}`). El wp_deployer la serializa
     #: al option `bricks_global_classes` del destino.
     bricks_global_classes: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
+    #: v0.28.0 B14 — Cache de elecciones del LLMSectionRanker. Shape:
+    #: `{cache_key: {template_id, rationale, model, cached_at}}` donde
+    #: cache_key = `f'{section_index}:{candidates_sha[:8]}'`. Permite
+    #: idempotencia entre re-runs del pipeline sin volver a llamar al LLM.
+    template_choices_cache_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     #: v0.24.0 — Sprint N (NAV/FOOTER). Estructura jerárquica
     #: `[{label, url, target, children: [...]}]` extraída del nav del
     #: origen. Consumida por wp_deployer para crear el WP menu antes
