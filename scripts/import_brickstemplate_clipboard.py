@@ -38,12 +38,10 @@ from typing import Any
 try:
     import pyperclip
 except ImportError:
-    print(
-        "ERROR: pyperclip no instalado. Ejecuta:\n"
-        "  pip install pyperclip",
-        file=sys.stderr,
-    )
-    sys.exit(2)
+    # Lazy import: el script se puede importar para testear funciones puras
+    # (parse_bricks_payload, slugify, etc.) sin pyperclip instalado. Solo
+    # `main()` requiere el módulo realmente.
+    pyperclip = None  # type: ignore[assignment]
 
 
 CATALOG_ROOT = Path("docs/templates/brickstemplate")
@@ -210,6 +208,14 @@ def save_template(
 
 
 def main() -> int:
+    if pyperclip is None:
+        print(
+            "ERROR: pyperclip no instalado. Ejecuta:\n"
+            "  pip install pyperclip",
+            file=sys.stderr,
+        )
+        return 2
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--category", required=True,
