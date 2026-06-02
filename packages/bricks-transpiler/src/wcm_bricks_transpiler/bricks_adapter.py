@@ -245,9 +245,9 @@ def _expand_spacing_shorthand(s: str) -> dict[str, str]:
     if len(parts) == 3:
         t, x, b = parts
         return {"top": t, "right": x, "bottom": b, "left": x}
-    # 4+ valores: t r b l
-    t, r, b, l = parts[:4]
-    return {"top": t, "right": r, "bottom": b, "left": l}
+    # 4+ valores: top right bottom left
+    top, right, bottom, left = parts[:4]
+    return {"top": top, "right": right, "bottom": bottom, "left": left}
 
 
 def _wrap_color(c: Any) -> Any:

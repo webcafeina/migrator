@@ -10,7 +10,12 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from wcm_worker.agents.base import AgentContext
-from wcm_worker.agents.redesign_ai import RedesignAIAgent
+from wcm_worker.agents.redesign_ai import (
+    RedesignAIAgent,
+    _fix_concatenated_words,
+    _fix_concatenated_words_in_texts,
+    _normalize_children,
+)
 from wcm_worker.errors import (
     OpenAIClientError,
     OpenAIInvalidOutputError,
@@ -481,12 +486,6 @@ def test_merge_subtree_by_index_no_encuentra_root_apend() -> None:
 # -----------------------------------------------------------------------------
 # v0.28.0 — Whitespace fix (heading concatenado bug)
 # -----------------------------------------------------------------------------
-
-from wcm_worker.agents.redesign_ai import (
-    _fix_concatenated_words,
-    _fix_concatenated_words_in_texts,
-    _normalize_children,
-)
 
 
 def test_fix_concatenated_words_e2e_v027_bug() -> None:

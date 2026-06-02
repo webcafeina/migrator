@@ -12,7 +12,6 @@ from wcm_worker.agents.visual_quality import (
     score_from_probe,
 )
 
-
 # -----------------------------------------------------------------------------
 # score_from_probe — función pura, sin Playwright
 # -----------------------------------------------------------------------------

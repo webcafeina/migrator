@@ -13,7 +13,6 @@ from wcm_bricks_transpiler.bricks_adapter import (
 )
 from wcm_bricks_transpiler.validator import validate_bricks_page
 
-
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
