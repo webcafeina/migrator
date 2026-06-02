@@ -1,0 +1,108 @@
+{
+  "content": [
+    {
+      "id": "vvjlsu",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "qctexs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cfvroz"
+        ]
+      },
+      "label": "Pagination v01"
+    },
+    {
+      "id": "qctexs",
+      "name": "pagination",
+      "parent": "vvjlsu",
+      "children": [],
+      "settings": {
+        "queryId": "ldpisn",
+        "prevIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-left"
+        },
+        "nextIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-right"
+        },
+        "_cssGlobalClasses": [
+          "wmsvjo"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "cfvroz",
+      "name": "migrator-pagination-v01-2",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "wmsvjo",
+      "name": "migrator-pagination-v01-2__pagination",
+      "settings": {
+        "justifyContent": "center",
+        "navigationBackground": {
+          "hex": "#ffffff",
+          "id": "mlnzir",
+          "name": "White"
+        },
+        "navigationTypography": {
+          "font-size": "1.4rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          }
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "navigationWidth": "5rem",
+        "navigationHeight": "4rem",
+        "gap": "0",
+        "navigationBorder": {
+          "width": {
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e0e0e0"
+          }
+        },
+        "navigationBackgroundActive": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "navigationTypographyActive": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

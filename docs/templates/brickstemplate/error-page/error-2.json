@@ -1,0 +1,320 @@
+{
+  "content": [
+    {
+      "id": "qmmuuj",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "rxxqfy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ivvzet"
+        ]
+      },
+      "label": "Error 2"
+    },
+    {
+      "id": "rxxqfy",
+      "name": "container",
+      "parent": "qmmuuj",
+      "children": [
+        "yizeyg",
+        "fwdaup",
+        "cicoro",
+        "weadmw",
+        "badxfj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lrphdj"
+        ]
+      }
+    },
+    {
+      "id": "yizeyg",
+      "name": "image",
+      "parent": "rxxqfy",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "nqcvjt"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/845x545.jpg",
+          "external": true,
+          "filename": "845x545.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "fwdaup",
+      "name": "heading",
+      "parent": "rxxqfy",
+      "children": [],
+      "settings": {
+        "text": "404 Not Found",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "fkdohp"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "cicoro",
+      "name": "heading",
+      "parent": "rxxqfy",
+      "children": [],
+      "settings": {
+        "text": "That page cannot be found.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rumpng"
+        ]
+      },
+      "label": "sub title"
+    },
+    {
+      "id": "weadmw",
+      "name": "text-basic",
+      "parent": "rxxqfy",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed,",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "bfobiv"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "badxfj",
+      "name": "block",
+      "parent": "rxxqfy",
+      "children": [
+        "ffqoix",
+        "prhwoj",
+        "pbhhxe",
+        "rikrir"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qpwvxo"
+        ]
+      },
+      "label": "Link Wrap"
+    },
+    {
+      "id": "ffqoix",
+      "name": "text-link",
+      "parent": "badxfj",
+      "children": [],
+      "settings": {
+        "text": "Home",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vfopbu"
+        ]
+      },
+      "label": "link",
+      "themeStyles": []
+    },
+    {
+      "id": "prhwoj",
+      "name": "text-link",
+      "parent": "badxfj",
+      "children": [],
+      "settings": {
+        "text": "Blog",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vfopbu"
+        ]
+      },
+      "label": "link",
+      "themeStyles": []
+    },
+    {
+      "id": "pbhhxe",
+      "name": "text-link",
+      "parent": "badxfj",
+      "children": [],
+      "settings": {
+        "text": "Support",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vfopbu"
+        ]
+      },
+      "label": "link",
+      "themeStyles": []
+    },
+    {
+      "id": "rikrir",
+      "name": "text-link",
+      "parent": "badxfj",
+      "children": [],
+      "settings": {
+        "text": "Contact Us",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vfopbu"
+        ]
+      },
+      "label": "link",
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "ivvzet",
+      "name": "migrator-error-2",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "lrphdj",
+      "name": "migrator-error-2__container",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_width": "80rem",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "nqcvjt",
+      "name": "migrator-error-2__image",
+      "settings": {
+        "_width": "60rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "fkdohp",
+      "name": "migrator-error-2__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "rumpng",
+      "name": "migrator-error-2__sub-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "bfobiv",
+      "name": "migrator-error-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_padding": {
+          "top": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "1rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "qpwvxo",
+      "name": "migrator-error-2__link-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "2rem",
+        "_justifyContent": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "vfopbu",
+      "name": "migrator-error-2__link",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.6rem",
+          "font-family": "Inter",
+          "font-weight": "500",
+          "line-height": "1.6"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

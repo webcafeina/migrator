@@ -1,0 +1,285 @@
+{
+  "content": [
+    {
+      "id": "xmwdat",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "zanolr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rwdqqe"
+        ]
+      },
+      "label": "Contact Us v01"
+    },
+    {
+      "id": "zanolr",
+      "name": "container",
+      "parent": "xmwdat",
+      "children": [
+        "apbayu",
+        "ammmvq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hdhbex"
+        ]
+      }
+    },
+    {
+      "id": "apbayu",
+      "name": "block",
+      "parent": "zanolr",
+      "children": [
+        "snimfn",
+        "awnhbl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rgzzcz"
+        ]
+      },
+      "label": "form wrap"
+    },
+    {
+      "id": "snimfn",
+      "name": "heading",
+      "parent": "apbayu",
+      "children": [],
+      "settings": {
+        "text": "Contact Us",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "lnfzct"
+        ]
+      }
+    },
+    {
+      "id": "awnhbl",
+      "name": "form",
+      "parent": "apbayu",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "0b2c52"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "c80a33"
+          },
+          {
+            "type": "tel",
+            "label": "Mobile",
+            "placeholder": "Mobile Number",
+            "required": true,
+            "id": "cdjmsj"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "required": true,
+            "id": "ff3f55"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "custom",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "_cssGlobalClasses": [
+          "mobryz"
+        ]
+      }
+    },
+    {
+      "id": "ammmvq",
+      "name": "block",
+      "parent": "zanolr",
+      "children": [
+        "nvvjjz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yrjcdg"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "nvvjjz",
+      "name": "image",
+      "parent": "ammmvq",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pgjwuz"
+        ],
+        "image": {
+          "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/portrait-call-center-woman.jpg",
+          "external": true,
+          "filename": "portrait-call-center-woman.jpg"
+        },
+        "tag": "figure"
+      },
+      "themeStyles": {}
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.8",
+  "globalClasses": [
+    {
+      "id": "rwdqqe",
+      "name": "migrator-contact-us-v01",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_padding": {
+          "top": "80",
+          "bottom": "80",
+          "left": "20",
+          "right": "20"
+        }
+      }
+    },
+    {
+      "id": "hdhbex",
+      "name": "migrator-contact-us-v01__container",
+      "settings": {
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.4)",
+            "hsl": "hsla(210, 8%, 62%, 0.4)"
+          }
+        },
+        "_padding:mobile_portrait": {
+          "bottom": 50
+        },
+        "_padding:mobile_landscape": {
+          "bottom": 50
+        }
+      }
+    },
+    {
+      "id": "rgzzcz",
+      "name": "migrator-contact-us-v01__form-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "left": 40
+        },
+        "_order:mobile_landscape": "1",
+        "_padding:mobile_portrait": {
+          "right": 40
+        },
+        "_rowGap:mobile_portrait": "10px"
+      }
+    },
+    {
+      "id": "lnfzct",
+      "name": "migrator-contact-us-v01__heading",
+      "settings": {
+        "_margin": {
+          "bottom": 30
+        }
+      }
+    },
+    {
+      "id": "mobryz",
+      "name": "migrator-contact-us-v01__form",
+      "settings": {
+        "fieldBackgroundColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct"
+        },
+        "fieldBorder": {
+          "width": {
+            "top": 1,
+            "right": 1,
+            "bottom": 1,
+            "left": 1
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#d5e4ff",
+            "id": "vybqbz"
+          },
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "fieldPadding": {
+          "top": 5,
+          "bottom": 5
+        },
+        "submitButtonWidth": "50"
+      }
+    },
+    {
+      "id": "yrjcdg",
+      "name": "migrator-contact-us-v01__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        },
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "pgjwuz",
+      "name": "migrator-contact-us-v01__image",
+      "settings": {
+        "_width": "480px"
+      }
+    }
+  ],
+  "globalElements": []
+}

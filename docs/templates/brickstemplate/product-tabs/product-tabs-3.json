@@ -1,0 +1,167 @@
+{
+  "content": [
+    {
+      "id": "dtuuwz",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "dkmqsy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pqqaxp"
+        ]
+      },
+      "label": "Product Tabs 3"
+    },
+    {
+      "id": "dkmqsy",
+      "name": "container",
+      "parent": "dtuuwz",
+      "children": [
+        "xafybw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vzzcyt"
+        ]
+      },
+      "label": "tabs wrap"
+    },
+    {
+      "id": "xafybw",
+      "name": "product-tabs",
+      "parent": "dkmqsy",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fvmerd"
+        ]
+      },
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "pqqaxp",
+      "name": "migrator-product-tabs-3",
+      "settings": {
+        "_padding": {
+          "left": "2rem",
+          "right": "2rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "4rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "0"
+        },
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        }
+      }
+    },
+    {
+      "id": "vzzcyt",
+      "name": "migrator-product-tabs-3__tabs-wrap",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        },
+        "_width": "1000"
+      }
+    },
+    {
+      "id": "fvmerd",
+      "name": "migrator-product-tabs-3__product-tabs",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5rem"
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "1.5rem",
+          "top": "1.5rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "tabsPadding:mobile_landscape": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600"
+        },
+        "panelPadding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "0",
+          "right": "0"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_cssCustom": ".woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}",
+        "tabsBorder": {
+          "style": "solid",
+          "width": {
+            "top": "0",
+            "right": "0",
+            "bottom": "2",
+            "left": "0"
+          },
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

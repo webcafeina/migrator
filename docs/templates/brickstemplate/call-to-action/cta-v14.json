@@ -1,0 +1,351 @@
+{
+  "content": [
+    {
+      "id": "imuwqm",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "yyloqx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ekycnh"
+        ]
+      },
+      "label": "CTA v14"
+    },
+    {
+      "id": "yyloqx",
+      "name": "container",
+      "parent": "imuwqm",
+      "children": [
+        "qrkghc",
+        "qsjsbu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dyeljr"
+        ]
+      }
+    },
+    {
+      "id": "qrkghc",
+      "name": "block",
+      "parent": "yyloqx",
+      "children": [
+        "eqnqoj",
+        "vbimyq",
+        "dgdrkl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iwdaon"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "eqnqoj",
+      "name": "heading",
+      "parent": "qrkghc",
+      "children": [],
+      "settings": {
+        "text": "Download Our App Right Now",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "etcskx"
+        ]
+      }
+    },
+    {
+      "id": "vbimyq",
+      "name": "text-basic",
+      "parent": "qrkghc",
+      "children": [],
+      "settings": {
+        "text": "Fusce maecenas blandit nisl augue netus ex sit efficitur et eget pulvinar scelerisque commodo facilisi iaculis sodales sollicitudin ante primis",
+        "_cssGlobalClasses": [
+          "nmxake"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "dgdrkl",
+      "name": "block",
+      "parent": "qrkghc",
+      "children": [
+        "dgkeer",
+        "khuaja"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cdtsup"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "dgkeer",
+      "name": "button",
+      "parent": "dgdrkl",
+      "children": [],
+      "settings": {
+        "text": "Google Play",
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-google-play"
+        },
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "cfhsyu"
+        ],
+        "style": "primary"
+      },
+      "label": "btn"
+    },
+    {
+      "id": "khuaja",
+      "name": "button",
+      "parent": "dgdrkl",
+      "children": [],
+      "settings": {
+        "text": "App Store",
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-apple"
+        },
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "cfhsyu"
+        ],
+        "style": "primary"
+      },
+      "label": "btn"
+    },
+    {
+      "id": "qsjsbu",
+      "name": "block",
+      "parent": "yyloqx",
+      "children": [
+        "ebvdkw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uhqkfe"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "ebvdkw",
+      "name": "image",
+      "parent": "qsjsbu",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bvifer"
+        ],
+        "image": {
+          "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/mobile-image.png",
+          "external": true,
+          "filename": "mobile-image.png"
+        },
+        "tag": "figure"
+      },
+      "themeStyles": {}
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.8",
+  "globalClasses": [
+    {
+      "id": "ekycnh",
+      "name": "migrator-cta-v14",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_background": {
+          "color": {
+            "hex": "#f1f6ff",
+            "id": "byqsjx"
+          }
+        }
+      }
+    },
+    {
+      "id": "dyeljr",
+      "name": "migrator-cta-v14__container",
+      "settings": {
+        "_direction": "column",
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80
+        },
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20,
+          "bottom": 60,
+          "top": 60
+        },
+        "_padding:mobile_landscape": {
+          "top": 60,
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "iwdaon",
+      "name": "migrator-cta-v14__content-wrap",
+      "settings": {
+        "_alignSelf": "center",
+        "_alignItems": "center",
+        "_order:mobile_portrait": "1",
+        "_order:mobile_landscape": "1"
+      }
+    },
+    {
+      "id": "etcskx",
+      "name": "migrator-cta-v14__heading",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        },
+        "_typography": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "nmxake",
+      "name": "migrator-cta-v14__text",
+      "settings": {
+        "_margin": {
+          "bottom": 30,
+          "right": 20,
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "left": 20
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "cdtsup",
+      "name": "migrator-cta-v14__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "30px",
+        "_justifyContent:mobile_portrait": "center",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "cfhsyu",
+      "name": "migrator-cta-v14__btn",
+      "settings": {
+        "style": "primary",
+        "iconPosition": "left",
+        "iconSpace": true,
+        "_padding": {
+          "top": 15,
+          "right": 35,
+          "bottom": 15,
+          "left": 35
+        },
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        },
+        "_padding:mobile_landscape": {
+          "top": "12",
+          "right": "25",
+          "bottom": "12",
+          "left": "25"
+        }
+      }
+    },
+    {
+      "id": "uhqkfe",
+      "name": "migrator-cta-v14__image-wrap",
+      "settings": {
+        "_overflow": "hidden",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "bvifer",
+      "name": "migrator-cta-v14__image",
+      "settings": {
+        "_margin:mobile_portrait": {
+          "unit": {
+            "top": "%",
+            "bottom": "%"
+          },
+          "top": 0,
+          "bottom": -50
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "top": "%",
+            "bottom": "%"
+          },
+          "top": 0,
+          "bottom": -40
+        },
+        "_margin": {
+          "bottom": "-30%"
+        },
+        "_padding": {
+          "top": 40
+        },
+        "_padding:mobile_portrait": {
+          "top": 0
+        },
+        "_padding:mobile_landscape": {
+          "top": 0
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

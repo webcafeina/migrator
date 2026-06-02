@@ -1,0 +1,120 @@
+{
+  "content": [
+    {
+      "id": "xfphrf",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "vfahzb",
+        "pbytab"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zhkppd"
+        ]
+      },
+      "label": "TOC v07"
+    },
+    {
+      "id": "vfahzb",
+      "name": "heading",
+      "parent": "xfphrf",
+      "children": [],
+      "settings": {
+        "text": "Table Of Content",
+        "_cssGlobalClasses": [
+          "gcyjie"
+        ]
+      },
+      "label": "toc title"
+    },
+    {
+      "id": "pbytab",
+      "name": "post-toc",
+      "parent": "xfphrf",
+      "children": [],
+      "settings": {
+        "contentSelector": "#brxe-eifhfj",
+        "headingsOffset": "70",
+        "_cssGlobalClasses": [
+          "umzcxz"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "zhkppd",
+      "name": "migrator-toc-v07",
+      "settings": {
+        "_rowGap": "1rem",
+        "_position": "sticky",
+        "_top": "5rem"
+      }
+    },
+    {
+      "id": "gcyjie",
+      "name": "migrator-toc-v07__toc-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.4rem",
+          "line-height": "3.4rem"
+        }
+      }
+    },
+    {
+      "id": "umzcxz",
+      "name": "migrator-toc-v07__post-toc",
+      "settings": {
+        "itemBorder": {
+          "width": {
+            "left": "0.5rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#a7a7a7"
+          }
+        },
+        "itemPadding": {
+          "top": "0.5rem",
+          "bottom": "0.5rem",
+          "left": "2rem"
+        },
+        "itemTypography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "400",
+          "font-size": "1.8rem",
+          "line-height": "2.8rem"
+        },
+        "itemBorderActive": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "itemTypographyActive": {
+          "font-weight": "700",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

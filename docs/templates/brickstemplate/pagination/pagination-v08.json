@@ -1,0 +1,107 @@
+{
+  "content": [
+    {
+      "id": "vvjlsu",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "qctexs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wgvjmq"
+        ]
+      },
+      "label": "Pagination v08"
+    },
+    {
+      "id": "qctexs",
+      "name": "pagination",
+      "parent": "vvjlsu",
+      "children": [],
+      "settings": {
+        "queryId": "wnkvbw",
+        "prevIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-left"
+        },
+        "nextIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-right"
+        },
+        "_cssGlobalClasses": [
+          "wjocrf"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "wgvjmq",
+      "name": "migrator-pagination-v08-2",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "wjocrf",
+      "name": "migrator-pagination-v08-2__pagination",
+      "settings": {
+        "justifyContent": "center",
+        "navigationTypography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.6rem"
+        },
+        "navigationWidth": "7rem",
+        "navigationHeight": "5rem",
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "navigationBackground": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "navigationBackgroundActive": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "navigationTypographyActive": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "navigationBackground:hover": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "navigationTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "gap": "0",
+        "navigationHeight:mobile_landscape": "4rem",
+        "navigationWidth:mobile_landscape": "5rem"
+      }
+    }
+  ],
+  "globalElements": []
+}

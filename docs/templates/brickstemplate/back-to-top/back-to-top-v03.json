@@ -1,0 +1,105 @@
+{
+  "content": [
+    {
+      "id": "jtoktx",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "vwxrbq",
+        "ghknsi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bphfig"
+        ]
+      },
+      "label": "Back To Top v03"
+    },
+    {
+      "id": "vwxrbq",
+      "name": "icon",
+      "parent": "jtoktx",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-angle-double-up"
+        },
+        "_cssId": "progress",
+        "_cssGlobalClasses": [
+          "bdcoql"
+        ]
+      }
+    },
+    {
+      "id": "ghknsi",
+      "name": "code",
+      "parent": "jtoktx",
+      "children": [],
+      "settings": {
+        "executeCode": true,
+        "_cssGlobalClasses": [
+          "ipibty"
+        ],
+        "signature": "66103709225f3e5b0762af746423e9d1",
+        "user_id": 2,
+        "time": 1711532642,
+        "cssCode": "#progress::before {\n    display: grid;\n    height: calc(100% - 15px);\n    width: calc(100% - 15px);\n    border-radius: 50%;\n    place-items: center;\n    font-size: 20px;\n  }",
+        "javascriptCode": "// Function for the smooth scroll effect\n        const smoothScrollTo = (targetPosition) => {\n            const startPosition = document.documentElement.scrollTop;\n            const distance = targetPosition - startPosition;\n            const duration = 800; // Time in milliseconds for smooth scroll animation\n            let startTime = null;\n\n            const animation = (currentTime) => {\n                if (!startTime) startTime = currentTime;\n                const timeElapsed = currentTime - startTime;\n                const scrollY = easeInOutQuad(timeElapsed, startPosition, distance, duration);\n                document.documentElement.scrollTop = scrollY;\n                if (timeElapsed < duration) {\n                    requestAnimationFrame(animation);\n                }\n            };\n\n            requestAnimationFrame(animation);\n        };\n\n        // Easing function for smooth scroll animation\n        const easeInOutQuad = (t, b, c, d) => {\n            t /= d / 2;\n            if (t < 1) return (c / 2) * t * t + b;\n            t--;\n            return (-c / 2) * (t * (t - 2) - 1) + b;\n        };\n\n        let calcScrollValue = () => {\n            let scrollProgress = document.getElementById(\"progress\");\n            let pos = document.documentElement.scrollTop;\n            let calcHeight =\n                document.documentElement.scrollHeight -\n                document.documentElement.clientHeight;\n            let scrollValue = Math.round((pos * 100) / calcHeight);\n            if (pos > 100) {\n                scrollProgress.style.display = \"grid\";\n            } else {\n                scrollProgress.style.display = \"none\";\n            }\n            scrollProgress.addEventListener(\"click\", () => {\n                smoothScrollTo(0); // Smoothly scroll to top when progress element is clicked\n            });\n            //Change icon background color\n            scrollProgress.style.background = `conic-gradient(#62708a ${scrollValue}%, #2b3546 ${scrollValue}%)`;\n        };\n\n        window.onscroll = calcScrollValue;\n        window.onload = calcScrollValue;"
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.2",
+  "globalClasses": [
+    {
+      "id": "bphfig",
+      "name": "migrator-back-to-top-v03",
+      "settings": []
+    },
+    {
+      "id": "bdcoql",
+      "name": "migrator-back-to-top-v03__icon",
+      "settings": {
+        "_position": "fixed",
+        "_top": "90vh",
+        "_right": "3rem",
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "mlnzir",
+          "name": "White"
+        },
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_padding": {
+          "top": "1.5rem",
+          "right": "1.5rem",
+          "bottom": "1.5rem",
+          "left": "1.5rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "100",
+            "right": "100",
+            "bottom": "100",
+            "left": "100"
+          }
+        },
+        "iconSize": "0",
+        "_cursor": "pointer"
+      }
+    },
+    {
+      "id": "ipibty",
+      "name": "migrator-back-to-top-v03__code",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

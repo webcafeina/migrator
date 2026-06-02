@@ -1,0 +1,89 @@
+{
+  "content": [
+    {
+      "id": "iwltja",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "yaordw",
+        "uqisdq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xewaqw"
+        ]
+      },
+      "label": "TOC v03"
+    },
+    {
+      "id": "yaordw",
+      "name": "heading",
+      "parent": "iwltja",
+      "children": [],
+      "settings": {
+        "text": "Table Of Content",
+        "_cssGlobalClasses": [
+          "ujkdju"
+        ]
+      },
+      "label": "toc title"
+    },
+    {
+      "id": "uqisdq",
+      "name": "post-toc",
+      "parent": "iwltja",
+      "children": [],
+      "settings": {
+        "contentSelector": "#brxe-eifhfj",
+        "headingsOffset": "10",
+        "_cssGlobalClasses": [
+          "djepbh"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "xewaqw",
+      "name": "migrator-toc-v03",
+      "settings": {
+        "_rowGap": "1.5rem",
+        "_position": "sticky",
+        "_top": "20"
+      }
+    },
+    {
+      "id": "ujkdju",
+      "name": "migrator-toc-v03__toc-title",
+      "settings": []
+    },
+    {
+      "id": "djepbh",
+      "name": "migrator-toc-v03__post-toc",
+      "settings": {
+        "itemTypography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.8rem",
+          "line-height": "2.8rem",
+          "font-weight": "400"
+        },
+        "itemTypographyActive": {
+          "font-weight": "700"
+        },
+        "itemPadding": {
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        },
+        "stickyTop": "10"
+      }
+    }
+  ],
+  "globalElements": []
+}

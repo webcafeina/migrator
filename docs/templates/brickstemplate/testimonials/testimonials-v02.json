@@ -1,0 +1,537 @@
+{
+  "content": [
+    {
+      "id": "zjphum",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "fwiqsu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nekena"
+        ]
+      },
+      "label": "Testimonials v02"
+    },
+    {
+      "id": "fwiqsu",
+      "name": "container",
+      "parent": "zjphum",
+      "children": [
+        "zmugnn",
+        "zupdqu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "exmtsf"
+        ]
+      }
+    },
+    {
+      "id": "zmugnn",
+      "name": "block",
+      "parent": "fwiqsu",
+      "children": [
+        "jizxuo",
+        "dtwnpq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zkjlus"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "jizxuo",
+      "name": "heading",
+      "parent": "zmugnn",
+      "children": [],
+      "settings": {
+        "text": "Testimonials",
+        "_cssGlobalClasses": [
+          "froddi"
+        ]
+      }
+    },
+    {
+      "id": "dtwnpq",
+      "name": "text-basic",
+      "parent": "zmugnn",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "_cssGlobalClasses": [
+          "rzgghm"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "zupdqu",
+      "name": "block",
+      "parent": "fwiqsu",
+      "children": [
+        "ufxmls",
+        "lwqhtx"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "jhbknp"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "ufxmls",
+      "name": "block",
+      "parent": "zupdqu",
+      "children": [
+        "nvzwti",
+        "zlmott",
+        "rwonip",
+        "qxoiln"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "tifiyt"
+        ]
+      },
+      "label": "testimonials"
+    },
+    {
+      "id": "nvzwti",
+      "name": "social-icons",
+      "parent": "ufxmls",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "bbgcqd"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "jemoxb"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "thxkeb"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "sdxvds"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "ghejlb"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "bxsjaq"
+        ]
+      },
+      "label": "star"
+    },
+    {
+      "id": "zlmott",
+      "name": "text-basic",
+      "parent": "ufxmls",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "wytnpl"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "rwonip",
+      "name": "text-basic",
+      "parent": "ufxmls",
+      "children": [],
+      "settings": {
+        "text": "Name Here",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "vqnrxx"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "qxoiln",
+      "name": "text-basic",
+      "parent": "ufxmls",
+      "children": [],
+      "settings": {
+        "text": "Product Designer",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "lgclob"
+        ]
+      },
+      "label": "designations"
+    },
+    {
+      "id": "lwqhtx",
+      "name": "block",
+      "parent": "zupdqu",
+      "children": [
+        "jchwjz",
+        "zixtve",
+        "djitav",
+        "pmzqps"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "tifiyt"
+        ]
+      },
+      "label": "testimonials"
+    },
+    {
+      "id": "jchwjz",
+      "name": "social-icons",
+      "parent": "lwqhtx",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "bbgcqd"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "jemoxb"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "thxkeb"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "sdxvds"
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-star"
+            },
+            "id": "ghejlb"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "bxsjaq"
+        ]
+      },
+      "label": "star"
+    },
+    {
+      "id": "zixtve",
+      "name": "text-basic",
+      "parent": "lwqhtx",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "wytnpl"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "djitav",
+      "name": "text-basic",
+      "parent": "lwqhtx",
+      "children": [],
+      "settings": {
+        "text": "Name Here",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "vqnrxx"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "pmzqps",
+      "name": "text-basic",
+      "parent": "lwqhtx",
+      "children": [],
+      "settings": {
+        "text": "Product Designer",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "lgclob"
+        ]
+      },
+      "label": "designations"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "nekena",
+      "name": "migrator-testimonials-v02-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "exmtsf",
+      "name": "migrator-testimonials-v02-2__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "zkjlus",
+      "name": "migrator-testimonials-v02-2__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "froddi",
+      "name": "migrator-testimonials-v02-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "rzgghm",
+      "name": "migrator-testimonials-v02-2__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "jhbknp",
+      "name": "migrator-testimonials-v02-2__testimonials-wrap",
+      "settings": {
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_gridAutoColumns": "auto-fill",
+        "_direction": "row",
+        "_direction:mobile_landscape": "column",
+        "_alignItems:mobile_landscape": "center",
+        "_columnGap:tablet_portrait": "3rem",
+        "_justifyContent:tablet_portrait": "center",
+        "_columnGap": "3rem",
+        "_rowGap:mobile_landscape": "3rem",
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(2, minmax(0, 1fr))",
+        "_gridGap": "3rem",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "tifiyt",
+      "name": "migrator-testimonials-v02-2__testimonials",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_padding": {
+          "top": "4rem",
+          "right": "2rem",
+          "bottom": "4rem",
+          "left": "2rem"
+        }
+      }
+    },
+    {
+      "id": "bxsjaq",
+      "name": "migrator-testimonials-v02-2__star",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "2.5rem"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        }
+      }
+    },
+    {
+      "id": "wytnpl",
+      "name": "migrator-testimonials-v02-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "2.8rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        }
+      }
+    },
+    {
+      "id": "vqnrxx",
+      "name": "migrator-testimonials-v02-2__name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.2rem",
+          "line-height": "3.2rem",
+          "font-weight": "600",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2rem"
+        }
+      }
+    },
+    {
+      "id": "lgclob",
+      "name": "migrator-testimonials-v02-2__designations",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

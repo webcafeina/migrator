@@ -1,0 +1,1155 @@
+{
+  "content": [
+    {
+      "id": "ybuvas",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "bqeoql"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "udeimq"
+        ]
+      }
+    },
+    {
+      "id": "bqeoql",
+      "name": "container",
+      "parent": "ybuvas",
+      "children": [
+        "ullxll",
+        "vnudrb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mpnrkj"
+        ]
+      }
+    },
+    {
+      "id": "ullxll",
+      "name": "block",
+      "parent": "bqeoql",
+      "children": [
+        "qijhbc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxqoex"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "qijhbc",
+      "name": "heading",
+      "parent": "ullxll",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 6",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "jutbyk"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "vnudrb",
+      "name": "block",
+      "parent": "bqeoql",
+      "children": [
+        "slvnfm",
+        "wyqogk",
+        "cvsdxg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tsmyvt"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "slvnfm",
+      "name": "block",
+      "parent": "vnudrb",
+      "children": [
+        "ancrew",
+        "fwrvid",
+        "etczta",
+        "kagosf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wojvye"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "ancrew",
+      "name": "block",
+      "parent": "slvnfm",
+      "children": [
+        "fgravz",
+        "lppobc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "volmxr"
+        ]
+      },
+      "label": "price wrap"
+    },
+    {
+      "id": "fgravz",
+      "name": "heading",
+      "parent": "ancrew",
+      "children": [],
+      "settings": {
+        "text": "Personal",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "brayrz"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "lppobc",
+      "name": "heading",
+      "parent": "ancrew",
+      "children": [],
+      "settings": {
+        "text": "$20 <span style=\"font-size:20px;\">/month",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "feiyok"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "fwrvid",
+      "name": "block",
+      "parent": "slvnfm",
+      "children": [
+        "zzjrov"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xfddnw"
+        ]
+      },
+      "label": "list 1 wrap"
+    },
+    {
+      "id": "zzjrov",
+      "name": "social-icons",
+      "parent": "fwrvid",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "oftbkz"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "etczta",
+      "name": "block",
+      "parent": "slvnfm",
+      "children": [
+        "hrdwkn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmmkbt"
+        ]
+      },
+      "label": "list 2 wrap "
+    },
+    {
+      "id": "hrdwkn",
+      "name": "social-icons",
+      "parent": "etczta",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "kacish"
+        ]
+      },
+      "themeStyles": [],
+      "label": "list 2"
+    },
+    {
+      "id": "kagosf",
+      "name": "block",
+      "parent": "slvnfm",
+      "children": [
+        "zzgpkx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmpyso"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "zzgpkx",
+      "name": "button",
+      "parent": "kagosf",
+      "children": [],
+      "settings": {
+        "text": "Get Start Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "agkaty"
+        ]
+      }
+    },
+    {
+      "id": "wyqogk",
+      "name": "block",
+      "parent": "vnudrb",
+      "children": [
+        "wafajk",
+        "bbuace",
+        "auxwpw",
+        "pbzwxv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wojvye"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "wafajk",
+      "name": "block",
+      "parent": "wyqogk",
+      "children": [
+        "awddyc",
+        "mjasmw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "volmxr"
+        ]
+      },
+      "label": "price wrap"
+    },
+    {
+      "id": "awddyc",
+      "name": "heading",
+      "parent": "wafajk",
+      "children": [],
+      "settings": {
+        "text": "Blogger",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "brayrz"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "mjasmw",
+      "name": "heading",
+      "parent": "wafajk",
+      "children": [],
+      "settings": {
+        "text": "$40 <span style=\"font-size:20px;\">/month",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "feiyok"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "bbuace",
+      "name": "block",
+      "parent": "wyqogk",
+      "children": [
+        "zvpxwe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cmrign"
+        ]
+      },
+      "label": "list 3 wrap"
+    },
+    {
+      "id": "zvpxwe",
+      "name": "social-icons",
+      "parent": "bbuace",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "oftbkz"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "auxwpw",
+      "name": "block",
+      "parent": "wyqogk",
+      "children": [
+        "pmifxj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bzkggg"
+        ]
+      },
+      "label": "list 4 wrap "
+    },
+    {
+      "id": "pmifxj",
+      "name": "social-icons",
+      "parent": "auxwpw",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "vjpuuf"
+        ]
+      },
+      "label": "list 4"
+    },
+    {
+      "id": "pbzwxv",
+      "name": "block",
+      "parent": "wyqogk",
+      "children": [
+        "vzjemt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmpyso"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "vzjemt",
+      "name": "button",
+      "parent": "pbzwxv",
+      "children": [],
+      "settings": {
+        "text": "Get Start Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "agkaty"
+        ]
+      }
+    },
+    {
+      "id": "cvsdxg",
+      "name": "block",
+      "parent": "vnudrb",
+      "children": [
+        "vjpvgs",
+        "dmaduk",
+        "kyoqkd",
+        "xgetjt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wojvye"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "vjpvgs",
+      "name": "block",
+      "parent": "cvsdxg",
+      "children": [
+        "dtxvmm",
+        "rtggst"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "volmxr"
+        ]
+      },
+      "label": "price wrap"
+    },
+    {
+      "id": "dtxvmm",
+      "name": "heading",
+      "parent": "vjpvgs",
+      "children": [],
+      "settings": {
+        "text": "Agency",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "brayrz"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "rtggst",
+      "name": "heading",
+      "parent": "vjpvgs",
+      "children": [],
+      "settings": {
+        "text": "$60 <span style=\"font-size:20px;\">/month",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "llfibs"
+        ]
+      },
+      "label": "pric"
+    },
+    {
+      "id": "dmaduk",
+      "name": "block",
+      "parent": "cvsdxg",
+      "children": [
+        "nxfkrx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "meybuu"
+        ]
+      },
+      "label": "list 5 wrap"
+    },
+    {
+      "id": "nxfkrx",
+      "name": "social-icons",
+      "parent": "dmaduk",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "oftbkz"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "kyoqkd",
+      "name": "block",
+      "parent": "cvsdxg",
+      "children": [
+        "bfmygj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cbagcx"
+        ]
+      },
+      "label": "list 6 wrap"
+    },
+    {
+      "id": "bfmygj",
+      "name": "social-icons",
+      "parent": "kyoqkd",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "cujwhb"
+        ]
+      },
+      "themeStyles": [],
+      "label": "list 6"
+    },
+    {
+      "id": "xgetjt",
+      "name": "block",
+      "parent": "cvsdxg",
+      "children": [
+        "pkbwfu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmpyso"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "pkbwfu",
+      "name": "button",
+      "parent": "xgetjt",
+      "children": [],
+      "settings": {
+        "text": "Get Start Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "agkaty"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "udeimq",
+      "name": "migrator-pricing-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "mpnrkj",
+      "name": "migrator-pricing-v06__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "sxqoex",
+      "name": "migrator-pricing-v06__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        },
+        "_padding:mobile_landscape": {
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "jutbyk",
+      "name": "migrator-pricing-v06__top-heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "tsmyvt",
+      "name": "migrator-pricing-v06__pricing-wrap",
+      "settings": {
+        "_direction": "column",
+        "_columnGap": "20px",
+        "_rowGap": "30px",
+        "_rowGap:tablet_portrait": "20px"
+      }
+    },
+    {
+      "id": "wojvye",
+      "name": "migrator-pricing-v06__pricing-item",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 30,
+          "right": 30,
+          "bottom": 30,
+          "left": 30
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_columnGap": "40px"
+      }
+    },
+    {
+      "id": "volmxr",
+      "name": "migrator-pricing-v06__price-wrap",
+      "settings": {
+        "_rowGap": "10px",
+        "_width": "20%",
+        "_width:mobile_landscape": "50%",
+        "_margin:mobile_landscape": {
+          "bottom": 30
+        },
+        "_width:mobile_portrait": "100%"
+      }
+    },
+    {
+      "id": "brayrz",
+      "name": "migrator-pricing-v06__plan-name",
+      "settings": []
+    },
+    {
+      "id": "feiyok",
+      "name": "migrator-pricing-v06__price",
+      "settings": []
+    },
+    {
+      "id": "xfddnw",
+      "name": "migrator-pricing-v06__list-1-wrap",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-end",
+        "_order:mobile_landscape": "1",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0",
+        "_alignItems:mobile_portrait": "flex-start",
+        "_margin:mobile_portrait": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "oftbkz",
+      "name": "migrator-pricing-v06__list",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "26px"
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px",
+        "gap:tablet_portrait": "5px",
+        "gapItem:tablet_portrait": "10px",
+        "_typography:tablet_portrait": {
+          "line-height": "22px"
+        }
+      }
+    },
+    {
+      "id": "zmmkbt",
+      "name": "migrator-pricing-v06__list-2-wrap-",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-start",
+        "_order:mobile_landscape": "2",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0"
+      }
+    },
+    {
+      "id": "kacish",
+      "name": "migrator-pricing-v06__list-2",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "26px"
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px",
+        "_typography:tablet_portrait": {
+          "line-height": "22px"
+        },
+        "gap:tablet_portrait": "5px",
+        "gapItem:tablet_portrait": "10px"
+      }
+    },
+    {
+      "id": "zmpyso",
+      "name": "migrator-pricing-v06__button-wrap",
+      "settings": {
+        "_width": "20%",
+        "_width:mobile_landscape": "40%",
+        "_margin:mobile_landscape": {
+          "bottom": 30
+        },
+        "_justifyContent:mobile_landscape": "center",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_width:mobile_portrait": "100%",
+        "_margin:mobile_portrait": {
+          "top": 30,
+          "bottom": 0
+        }
+      }
+    },
+    {
+      "id": "agkaty",
+      "name": "migrator-pricing-v06__button",
+      "settings": {
+        "style": "primary",
+        "_width": "100%",
+        "_padding": {
+          "top": 15,
+          "unit": {
+            "right": "px"
+          },
+          "bottom": 15
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#735dfd",
+            "id": "cwyawq",
+            "name": "Acent Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "cmrign",
+      "name": "migrator-pricing-v06__list-3-wrap",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-end",
+        "_order:mobile_landscape": "1",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0",
+        "_alignItems:mobile_portrait": "flex-start",
+        "_margin:mobile_portrait": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "bzkggg",
+      "name": "migrator-pricing-v06__list-4-wrap-",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-start",
+        "_order:mobile_landscape": "2",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0"
+      }
+    },
+    {
+      "id": "vjpuuf",
+      "name": "migrator-pricing-v06__list-4",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "26px"
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px",
+        "_typography:tablet_portrait": {
+          "line-height": "22px"
+        },
+        "gap:tablet_portrait": "5px",
+        "gapItem:tablet_portrait": "10px"
+      }
+    },
+    {
+      "id": "llfibs",
+      "name": "migrator-pricing-v06__pric",
+      "settings": []
+    },
+    {
+      "id": "meybuu",
+      "name": "migrator-pricing-v06__list-5-wrap",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-end",
+        "_order:mobile_landscape": "1",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0",
+        "_alignItems:mobile_portrait": "flex-start",
+        "_margin:mobile_portrait": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "cbagcx",
+      "name": "migrator-pricing-v06__list-6-wrap",
+      "settings": {
+        "_width": "30%",
+        "_alignItems": "flex-start",
+        "_order:mobile_landscape": "2",
+        "_width:mobile_landscape": "46%",
+        "_width:mobile_portrait": "100%",
+        "_order:mobile_portrait": "0"
+      }
+    },
+    {
+      "id": "cujwhb",
+      "name": "migrator-pricing-v06__list-6",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "26px"
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px",
+        "_typography:tablet_portrait": {
+          "line-height": "22px"
+        },
+        "gap:tablet_portrait": "5px",
+        "gapItem:tablet_portrait": "10px"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,241 @@
+{
+  "content": [
+    {
+      "id": "fhljkd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "qyvdbw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ycjzer"
+        ]
+      }
+    },
+    {
+      "id": "qyvdbw",
+      "name": "container",
+      "parent": "fhljkd",
+      "children": [
+        "mcfwma",
+        "gppzrx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kiovcu"
+        ]
+      }
+    },
+    {
+      "id": "mcfwma",
+      "name": "block",
+      "parent": "qyvdbw",
+      "children": [
+        "rtnjts",
+        "vnvtte",
+        "movyzd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "oteday"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "rtnjts",
+      "name": "icon-box",
+      "parent": "mcfwma",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-shopify"
+        },
+        "content": "<h4>Ligula primis ante efficitur </h4><p>Consectetur semper elementum porta molestie tempor est adipiscing parturient per pharetra auctor vivamus montes litora eu habitant hac ligula nullam</p>",
+        "_cssGlobalClasses": [
+          "uyhcip"
+        ]
+      }
+    },
+    {
+      "id": "vnvtte",
+      "name": "icon-box",
+      "parent": "mcfwma",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-shopify"
+        },
+        "content": "<h4>Ligula primis ante efficitur </h4><p>Consectetur semper elementum porta molestie tempor est adipiscing parturient per pharetra auctor vivamus montes litora eu habitant hac ligula nullam</p>",
+        "_cssGlobalClasses": [
+          "uyhcip"
+        ]
+      }
+    },
+    {
+      "id": "movyzd",
+      "name": "icon-box",
+      "parent": "mcfwma",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-shopify"
+        },
+        "content": "<h4>Ligula primis ante efficitur </h4><p>Consectetur semper elementum porta molestie tempor est adipiscing parturient per pharetra auctor vivamus montes litora eu habitant hac ligula nullam</p>",
+        "_cssGlobalClasses": [
+          "uyhcip"
+        ]
+      }
+    },
+    {
+      "id": "gppzrx",
+      "name": "block",
+      "parent": "qyvdbw",
+      "children": [
+        "yfdfvq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jvwmof"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "yfdfvq",
+      "name": "image",
+      "parent": "gppzrx",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nvkmgm"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/mobile-image.png",
+          "external": true,
+          "filename": "mobile-image.png"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ycjzer",
+      "name": "migrator-features-v17",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "kiovcu",
+      "name": "migrator-features-v17__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "oteday",
+      "name": "migrator-features-v17__box-wrap",
+      "settings": {
+        "_rowGap": "40px",
+        "_order:mobile_landscape": "1"
+      }
+    },
+    {
+      "id": "uyhcip",
+      "name": "migrator-features-v17__icon-box",
+      "settings": {
+        "verticalAlign": "center",
+        "direction": "row",
+        "iconMargin": {
+          "right": 30
+        },
+        "_padding": {
+          "top": 20,
+          "right": 30,
+          "bottom": 20,
+          "left": 30
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "iconSize": "80px",
+        "iconColor": {
+          "hex": "#62708a",
+          "id": "wzdtoc"
+        },
+        "typographyHeading": {
+          "line-height": "50px"
+        },
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "direction:mobile_portrait": "column",
+        "verticalAlign:mobile_portrait": "flex-start"
+      }
+    },
+    {
+      "id": "jvwmof",
+      "name": "migrator-features-v17__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "nvkmgm",
+      "name": "migrator-features-v17__image",
+      "settings": {
+        "_width:mobile_landscape": "300px",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

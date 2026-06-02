@@ -1,0 +1,852 @@
+{
+  "content": [
+    {
+      "id": "jtnghf",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ziqdxs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nxotds"
+        ]
+      },
+      "label": "FAQs v04"
+    },
+    {
+      "id": "ziqdxs",
+      "name": "container",
+      "parent": "jtnghf",
+      "children": [
+        "mmoscp",
+        "ihhuki"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "amvuyc"
+        ]
+      }
+    },
+    {
+      "id": "mmoscp",
+      "name": "block",
+      "parent": "ziqdxs",
+      "children": [
+        "jamkde",
+        "xbncvx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hchozh"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "jamkde",
+      "name": "heading",
+      "parent": "mmoscp",
+      "children": [],
+      "settings": {
+        "text": "Frequently Asked Questions",
+        "_cssGlobalClasses": [
+          "jilhtr"
+        ]
+      }
+    },
+    {
+      "id": "xbncvx",
+      "name": "text-basic",
+      "parent": "mmoscp",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "pijvlc"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "ihhuki",
+      "name": "block",
+      "parent": "ziqdxs",
+      "children": [
+        "dvrfut"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vnuwet"
+        ]
+      },
+      "label": "faqs tab wrap"
+    },
+    {
+      "id": "dvrfut",
+      "name": "tabs-nested",
+      "parent": "ihhuki",
+      "children": [
+        "tysihe",
+        "jrpoli"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dlwqfr"
+        ]
+      },
+      "label": "tabs wrap"
+    },
+    {
+      "id": "tysihe",
+      "name": "block",
+      "parent": "dvrfut",
+      "children": [
+        "skcjtf",
+        "xnuazo",
+        "mjyuki"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-menu"
+        },
+        "_cssGlobalClasses": [
+          "tffcbe"
+        ]
+      },
+      "label": "tab menu wrap"
+    },
+    {
+      "id": "skcjtf",
+      "name": "div",
+      "parent": "tysihe",
+      "children": [
+        "gyxvct"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-title"
+        },
+        "_cssGlobalClasses": [
+          "zxblzt"
+        ]
+      },
+      "label": "tab menu item"
+    },
+    {
+      "id": "gyxvct",
+      "name": "text-basic",
+      "parent": "skcjtf",
+      "children": [],
+      "settings": {
+        "text": "General",
+        "_cssGlobalClasses": [
+          "skcfoj"
+        ]
+      },
+      "label": "item name"
+    },
+    {
+      "id": "xnuazo",
+      "name": "div",
+      "parent": "tysihe",
+      "children": [
+        "hekcnn"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-title"
+        },
+        "_cssGlobalClasses": [
+          "zxblzt"
+        ]
+      },
+      "label": "tab menu item"
+    },
+    {
+      "id": "hekcnn",
+      "name": "text-basic",
+      "parent": "xnuazo",
+      "children": [],
+      "settings": {
+        "text": "Payment",
+        "_cssGlobalClasses": [
+          "skcfoj"
+        ]
+      },
+      "label": "item name"
+    },
+    {
+      "id": "mjyuki",
+      "name": "div",
+      "parent": "tysihe",
+      "children": [
+        "vnelxa"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-title"
+        },
+        "_cssGlobalClasses": [
+          "zxblzt"
+        ]
+      },
+      "label": "tab menu item"
+    },
+    {
+      "id": "vnelxa",
+      "name": "text-basic",
+      "parent": "mjyuki",
+      "children": [],
+      "settings": {
+        "text": "Refund",
+        "_cssGlobalClasses": [
+          "skcfoj"
+        ]
+      },
+      "label": "item name"
+    },
+    {
+      "id": "jrpoli",
+      "name": "block",
+      "parent": "dvrfut",
+      "children": [
+        "auezmb",
+        "ttksph",
+        "nhqicp"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-content"
+        },
+        "_cssGlobalClasses": [
+          "ujkpft"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "auezmb",
+      "name": "block",
+      "parent": "jrpoli",
+      "children": [
+        "rxqbns"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-pane"
+        },
+        "_cssGlobalClasses": [
+          "vfusww"
+        ]
+      },
+      "label": "Pane"
+    },
+    {
+      "id": "rxqbns",
+      "name": "block",
+      "parent": "auezmb",
+      "children": [
+        "qqajim",
+        "nrbeup"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ziuhls"
+        ]
+      },
+      "label": "faq wrap"
+    },
+    {
+      "id": "qqajim",
+      "name": "accordion",
+      "parent": "rxqbns",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "General placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "nrbeup",
+      "name": "accordion",
+      "parent": "rxqbns",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "General placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "ttksph",
+      "name": "block",
+      "parent": "jrpoli",
+      "children": [
+        "gmcejm"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-pane"
+        },
+        "_cssGlobalClasses": [
+          "vfusww"
+        ]
+      },
+      "label": "Pane"
+    },
+    {
+      "id": "gmcejm",
+      "name": "block",
+      "parent": "ttksph",
+      "children": [
+        "xuqeyz",
+        "xcwzfz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ziuhls"
+        ]
+      },
+      "label": "faq wrap"
+    },
+    {
+      "id": "xuqeyz",
+      "name": "accordion",
+      "parent": "gmcejm",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "Payment placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "xcwzfz",
+      "name": "accordion",
+      "parent": "gmcejm",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "Payment placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "nhqicp",
+      "name": "block",
+      "parent": "jrpoli",
+      "children": [
+        "nrzqme"
+      ],
+      "settings": {
+        "_hidden": {
+          "_cssClasses": "tab-pane"
+        },
+        "_cssGlobalClasses": [
+          "vfusww"
+        ]
+      },
+      "label": "Pane"
+    },
+    {
+      "id": "nrzqme",
+      "name": "block",
+      "parent": "nhqicp",
+      "children": [
+        "mvmudp",
+        "rjqmfw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ziuhls"
+        ]
+      },
+      "label": "faq wrap"
+    },
+    {
+      "id": "mvmudp",
+      "name": "accordion",
+      "parent": "nrzqme",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "Refund placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "rjqmfw",
+      "name": "accordion",
+      "parent": "nrzqme",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "Refund placeholder headline",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "_cssGlobalClasses": [
+          "szdvxg"
+        ]
+      },
+      "label": "faqs"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "nxotds",
+      "name": "migrator-faqs-v04",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "amvuyc",
+      "name": "migrator-faqs-v04__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "hchozh",
+      "name": "migrator-faqs-v04__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "20%",
+          "right": "20%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "right": "0",
+          "left": "0"
+        },
+        "_padding:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "jilhtr",
+      "name": "migrator-faqs-v04__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "pijvlc",
+      "name": "migrator-faqs-v04__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "vnuwet",
+      "name": "migrator-faqs-v04__faqs-tab-wrap",
+      "settings": []
+    },
+    {
+      "id": "dlwqfr",
+      "name": "migrator-faqs-v04__tabs-wrap",
+      "settings": {
+        "titlePadding": {
+          "top": "1.5rem",
+          "right": "3rem",
+          "bottom": "1.5rem",
+          "left": "3rem"
+        },
+        "titleActiveBackgroundColor": {
+          "hex": "#62708a",
+          "id": "qatgpn",
+          "name": "Text"
+        },
+        "titleActiveTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem"
+        },
+        "titleTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          }
+        },
+        "contentPadding": {
+          "bottom": "2rem",
+          "top": "2rem",
+          "right": "2rem",
+          "left": "2rem"
+        },
+        "contentPadding:mobile_portrait": {
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0"
+        },
+        "titleMargin": {
+          "bottom": "2rem"
+        },
+        "titlePadding:tablet_portrait": {
+          "left": "2rem",
+          "right": "2rem",
+          "top": "1rem",
+          "bottom": "1rem"
+        }
+      }
+    },
+    {
+      "id": "tffcbe",
+      "name": "migrator-faqs-v04__tab-menu-wrap",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "zxblzt",
+      "name": "migrator-faqs-v04__tab-menu-item",
+      "settings": []
+    },
+    {
+      "id": "skcfoj",
+      "name": "migrator-faqs-v04__item-name",
+      "settings": []
+    },
+    {
+      "id": "ujkpft",
+      "name": "migrator-faqs-v04__content-wrap",
+      "settings": []
+    },
+    {
+      "id": "vfusww",
+      "name": "migrator-faqs-v04__pane",
+      "settings": []
+    },
+    {
+      "id": "ziuhls",
+      "name": "migrator-faqs-v04__faq-wrap",
+      "settings": {
+        "_alignSelf": "center",
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(2, minmax(0, 1fr))",
+        "_gridGap": "4rem",
+        "_gridTemplateColumns:tablet_portrait": "1fr",
+        "_justifyContentGrid:tablet_portrait": "center",
+        "_justifyItemsGrid:tablet_portrait": "center",
+        "_gridGap:tablet_portrait": "0"
+      }
+    },
+    {
+      "id": "szdvxg",
+      "name": "migrator-faqs-v04__faqs",
+      "settings": {
+        "titleTypography": {
+          "font-size": "2rem",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "3.2rem"
+        },
+        "iconTypography": {
+          "font-size": "3rem",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "iconExpandedTypography": {
+          "font-size": "3rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "titleBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "titleMargin": {
+          "bottom": "2rem"
+        },
+        "titlePadding": {
+          "top": "1rem",
+          "right": "2rem",
+          "bottom": "1rem",
+          "left": "2rem"
+        },
+        "contentBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "contentPadding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "contentMargin": {
+          "bottom": "2rem"
+        },
+        "contentTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "titleTypography:mobile_portrait": {
+          "font-size": "1.8rem",
+          "line-height": "3rem"
+        },
+        "titleActiveBackgroundColor": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "titleActiveTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "2rem"
+        },
+        "iconTypography:mobile_portrait": {
+          "font-size": "2rem"
+        },
+        "iconExpandedTypography:mobile_portrait": {
+          "font-size": "2rem"
+        },
+        "titleActiveTypography:mobile_portrait": {
+          "font-size": "1.8rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

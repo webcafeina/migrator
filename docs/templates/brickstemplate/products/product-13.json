@@ -1,0 +1,542 @@
+{
+  "content": [
+    {
+      "id": "cgawkh",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "xdjghs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vhaqqf"
+        ]
+      },
+      "label": "Product 13"
+    },
+    {
+      "id": "xdjghs",
+      "name": "container",
+      "parent": "cgawkh",
+      "children": [
+        "sxaeuq",
+        "laxohl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ctaxeo"
+        ]
+      }
+    },
+    {
+      "id": "sxaeuq",
+      "name": "block",
+      "parent": "xdjghs",
+      "children": [
+        "yameml",
+        "gerknc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "waxqpv"
+        ]
+      },
+      "label": "Content wrap"
+    },
+    {
+      "id": "yameml",
+      "name": "heading",
+      "parent": "sxaeuq",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet molestie malesuada etiam mollis.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ivfdor"
+        ]
+      }
+    },
+    {
+      "id": "gerknc",
+      "name": "text-basic",
+      "parent": "sxaeuq",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet porttitor eget augue sapien et pharetra vulputate rhoncus pretium interdum ultricies eleifend mauris cras finibus placerat elementum laoreet.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "tqdggd"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "laxohl",
+      "name": "block",
+      "parent": "xdjghs",
+      "children": [
+        "zbpcth"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "swttsl"
+        ]
+      },
+      "label": "Product wrap"
+    },
+    {
+      "id": "zbpcth",
+      "name": "block",
+      "parent": "laxohl",
+      "children": [
+        "kzabif"
+      ],
+      "settings": {
+        "tag": "li",
+        "hasLoop": true,
+        "query": {
+          "objectType": "post",
+          "post_type": [
+            "product"
+          ],
+          "posts_per_page": "6"
+        },
+        "_cssGlobalClasses": [
+          "mypopm"
+        ]
+      },
+      "label": "Product content"
+    },
+    {
+      "id": "kzabif",
+      "name": "block",
+      "parent": "zbpcth",
+      "children": [
+        "getkwe",
+        "uctoya"
+      ],
+      "settings": {
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{post_url}"
+        },
+        "_cssGlobalClasses": [
+          "fmncgx"
+        ]
+      },
+      "label": "Product card (CSS)"
+    },
+    {
+      "id": "getkwe",
+      "name": "block",
+      "parent": "kzabif",
+      "children": [
+        "aipzqt",
+        "ehvooj",
+        "esvxpc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kpqovr"
+        ]
+      },
+      "label": "Image wrap"
+    },
+    {
+      "id": "aipzqt",
+      "name": "image",
+      "parent": "getkwe",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{woo_product_images}",
+          "size": "large"
+        },
+        "tag": "figure",
+        "caption": "none",
+        "link": "url",
+        "url": {
+          "type": "meta",
+          "useDynamicData": "{post_url}"
+        },
+        "_cssGlobalClasses": [
+          "vsdnri"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "ehvooj",
+      "name": "text-basic",
+      "parent": "getkwe",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{woo_product_on_sale}",
+        "_conditions": [
+          [
+            {
+              "id": "klwjzn",
+              "key": "woo_product_sale",
+              "compare": "==",
+              "value": "1"
+            }
+          ]
+        ],
+        "_cssGlobalClasses": [
+          "wjdecr"
+        ]
+      },
+      "label": "on sale"
+    },
+    {
+      "id": "esvxpc",
+      "name": "product-add-to-cart",
+      "parent": "getkwe",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hdqgix"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Add to cart"
+    },
+    {
+      "id": "uctoya",
+      "name": "block",
+      "parent": "kzabif",
+      "children": [
+        "zqehaz",
+        "nqlldj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "csrswa"
+        ]
+      },
+      "label": "Product meta"
+    },
+    {
+      "id": "zqehaz",
+      "name": "product-title",
+      "parent": "uctoya",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "linkToProduct": true,
+        "_cssGlobalClasses": [
+          "numwiq"
+        ]
+      },
+      "themeStyles": [],
+      "label": "title"
+    },
+    {
+      "id": "nqlldj",
+      "name": "product-price",
+      "parent": "uctoya",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lsetsd"
+        ]
+      },
+      "themeStyles": [],
+      "label": "price"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "vhaqqf",
+      "name": "migrator-product-13",
+      "settings": {
+        "_padding": {
+          "bottom": "8rem",
+          "top": "8rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "6rem",
+          "top": "6rem"
+        }
+      }
+    },
+    {
+      "id": "ctaxeo",
+      "name": "migrator-product-13__container",
+      "settings": {
+        "_rowGap": "6rem",
+        "_rowGap:mobile_landscape": "4rem"
+      }
+    },
+    {
+      "id": "waxqpv",
+      "name": "migrator-product-13__content-wrap",
+      "settings": {
+        "_width": "80rem",
+        "_alignItems": "center",
+        "_alignSelf": "center",
+        "_rowGap": "2rem",
+        "_width:mobile_landscape": "100%",
+        "_rowGap:mobile_landscape": "1rem"
+      }
+    },
+    {
+      "id": "ivfdor",
+      "name": "migrator-product-13__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "clamp(2.600rem, 1.591vw + 1.964rem, 4.000rem);",
+          "line-height": "1.3",
+          "font-weight": "700",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "tqdggd",
+      "name": "migrator-product-13__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "text-align": "center",
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "swttsl",
+      "name": "migrator-product-13__product-wrap",
+      "settings": {
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        },
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(3, minmax(0, 1fr))",
+        "_gridGap": "4rem 3rem",
+        "_gridGap:tablet_portrait": "3rem 3rem",
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_gridTemplateColumns:mobile_landscape": "1fr"
+      }
+    },
+    {
+      "id": "mypopm",
+      "name": "migrator-product-13__product-content",
+      "settings": {
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "fmncgx",
+      "name": "migrator-product-13__product-card",
+      "settings": {
+        "_rowGap": "2rem",
+        "_cssCustom": ".migrator-product-13__product-card:hover .migrator-product-13__add-to-cart{\n  transform: translateY(-2rem);\n}"
+      }
+    },
+    {
+      "id": "kpqovr",
+      "name": "migrator-product-13__image-wrap",
+      "settings": {
+        "_position": "relative",
+        "_overflow": "hidden"
+      }
+    },
+    {
+      "id": "vsdnri",
+      "name": "migrator-product-13__image",
+      "settings": {
+        "_overflow": "hidden"
+      }
+    },
+    {
+      "id": "wjdecr",
+      "name": "migrator-product-13__on-sale",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.4rem",
+          "line-height": "1.3"
+        },
+        "_padding": {
+          "bottom": "0.5rem",
+          "top": "0.5rem",
+          "left": "1rem",
+          "right": "1rem"
+        },
+        "_position": "absolute",
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      }
+    },
+    {
+      "id": "hdqgix",
+      "name": "migrator-product-13__add-to-cart",
+      "settings": {
+        "buttonBackgroundColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-weight": "600"
+        },
+        "buttonBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "buttonPadding": {
+          "bottom": "0.8rem",
+          "top": "0.8rem",
+          "left": "1.5rem",
+          "right": "1.5rem"
+        },
+        "buttonTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_alignSelf": "center",
+        "_position": "absolute",
+        "_bottom": "0",
+        "_cssTransition": "all .3s",
+        "buttonBorder": {
+          "radius": {
+            "left": "100",
+            "bottom": "100",
+            "top": "100",
+            "right": "100"
+          }
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "buttonWidth": "50%",
+        "_transform": {
+          "translateY": "100"
+        }
+      }
+    },
+    {
+      "id": "csrswa",
+      "name": "migrator-product-13__product-meta",
+      "settings": {
+        "_rowGap": "1rem"
+      }
+    },
+    {
+      "id": "numwiq",
+      "name": "migrator-product-13__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "2rem",
+          "font-weight": "700",
+          "line-height": "1.5"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "lsetsd",
+      "name": "migrator-product-13__price",
+      "settings": {
+        "regularPriceTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2rem",
+          "line-height": "1.3",
+          "font-weight": "600"
+        },
+        "salePriceTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2rem",
+          "line-height": "1.3",
+          "font-weight": "600"
+        },
+        "regularPriceTypography:mobile_landscape": {
+          "font-size": "1.8rem"
+        },
+        "salePriceTypography:mobile_landscape": {
+          "font-size": "1.8rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,279 @@
+{
+  "content": [
+    {
+      "id": "5a3b38",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "611ba8"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jyiewf"
+        ]
+      },
+      "label": "Product Categories 18"
+    },
+    {
+      "id": "611ba8",
+      "name": "container",
+      "parent": "5a3b38",
+      "children": [
+        "c66c74"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "veerho"
+        ]
+      }
+    },
+    {
+      "id": "c66c74",
+      "name": "block",
+      "parent": "611ba8",
+      "children": [
+        "ccdceb"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "nabfai"
+        ]
+      },
+      "label": "term wrap"
+    },
+    {
+      "id": "ccdceb",
+      "name": "block",
+      "parent": "c66c74",
+      "children": [
+        "32acaa",
+        "9c9191"
+      ],
+      "settings": {
+        "hasLoop": true,
+        "query": {
+          "objectType": "term",
+          "taxonomy": [
+            "product_cat"
+          ],
+          "number": "4"
+        },
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "aiswhc"
+        ]
+      },
+      "label": "term content"
+    },
+    {
+      "id": "32acaa",
+      "name": "image",
+      "parent": "ccdceb",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{woo_product_cat_image}",
+          "size": "large"
+        },
+        "caption": "none",
+        "link": "url",
+        "url": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "_cssGlobalClasses": [
+          "tkcinu"
+        ]
+      },
+      "label": "cat img",
+      "themeStyles": []
+    },
+    {
+      "id": "9c9191",
+      "name": "block",
+      "parent": "ccdceb",
+      "children": [
+        "ddb034"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tzfvnx"
+        ]
+      },
+      "label": "btn wrap"
+    },
+    {
+      "id": "ddb034",
+      "name": "button",
+      "parent": "9c9191",
+      "children": [],
+      "settings": {
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "text": "{term_name}",
+        "_cssGlobalClasses": [
+          "ywavjb"
+        ]
+      },
+      "label": "shop btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "jyiewf",
+      "name": "migrator-product-categories-18",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "5rem",
+          "top": "5rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "4rem",
+          "bottom": "4rem"
+        }
+      }
+    },
+    {
+      "id": "veerho",
+      "name": "migrator-product-categories-18__container",
+      "settings": {
+        "_rowGap": "4rem",
+        "_rowGap:mobile_landscape": "3rem",
+        "_alignSelf": "stretch"
+      }
+    },
+    {
+      "id": "nabfai",
+      "name": "migrator-product-categories-18__term-wrap",
+      "settings": {
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(4, minmax(0, 1fr))",
+        "_gridGap": "2rem",
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "aiswhc",
+      "name": "migrator-product-categories-18__term-content",
+      "settings": {
+        "_overflow": "hidden",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "tkcinu",
+      "name": "migrator-product-categories-18__cat-img",
+      "settings": {
+        "_gradient": {
+          "applyTo": "overlay"
+        },
+        "_border": {
+          "radius": {
+            "top": "1.5rem",
+            "right": "1.5rem",
+            "bottom": "1.5rem",
+            "left": "1.5rem"
+          }
+        },
+        "_gradient:hover": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "skcrce",
+              "color": {
+                "hex": "#636363",
+                "rgb": "rgba(99, 99, 99, 0.3)",
+                "hsl": "hsla(0, 0%, 39%, 0.3)"
+              }
+            }
+          ]
+        },
+        "_objectFit": "cover"
+      }
+    },
+    {
+      "id": "tzfvnx",
+      "name": "migrator-product-categories-18__btn-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_position": "absolute",
+        "_bottom": "3rem",
+        "_bottom:mobile_landscape": "1.5rem"
+      }
+    },
+    {
+      "id": "ywavjb",
+      "name": "migrator-product-categories-18__shop-btn",
+      "settings": {
+        "_position": "static",
+        "_typography": {
+          "font-size": "1.6rem",
+          "line-height": "1.3",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-weight": "600"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_padding": {
+          "bottom": "0.7rem",
+          "top": "0.7rem",
+          "left": "1.2rem",
+          "right": "1.2rem"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_overflow": "hidden",
+        "_cssTransition:hover": "all .3s",
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

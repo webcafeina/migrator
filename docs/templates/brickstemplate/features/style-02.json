@@ -1,0 +1,321 @@
+{
+  "content": [
+    {
+      "id": "mkabfp",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "pmwitj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wdhqqh"
+        ]
+      },
+      "label": "Style 02"
+    },
+    {
+      "id": "pmwitj",
+      "name": "container",
+      "parent": "mkabfp",
+      "children": [
+        "rdyfue",
+        "cxagct"
+      ],
+      "settings": {
+        "_cssCustom": ".bb-box10-s2 {\n    position: relative;\n}\n\n.bb-box10-s2:before {\n    content: \"\";\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    width: 30px;\n    height: 30px;\n    border-top: 5px solid #7a64ff;\n    border-right: 5px solid #7a64ff;\n    transition: all 0.7s;\n}\n\n.bb-box10-s2:after {\n    content: \"\";\n    position: absolute;\n    bottom: 0px;\n    left: 0px;\n    width: 30px;\n    height: 30px;\n    border-bottom: 5px solid #7a64ff;\n    border-left: 5px solid #7a64ff;\n    transition: all 0.7s;\n}\n.bb-box10-s2:hover:before,\n.bb-box10-s2:hover:after {\n    width: 100%;\n    height: 100%;\n}\n",
+        "_cssGlobalClasses": [
+          "ugbngc"
+        ]
+      },
+      "label": "Container"
+    },
+    {
+      "id": "rdyfue",
+      "name": "block",
+      "parent": "pmwitj",
+      "children": [
+        "gtovkc",
+        "idaagf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lwrfep"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "gtovkc",
+      "name": "heading",
+      "parent": "rdyfue",
+      "children": [],
+      "settings": {
+        "text": "Icon Box With Custom CSS Style 02",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "aexhbw"
+        ]
+      }
+    },
+    {
+      "id": "idaagf",
+      "name": "text",
+      "parent": "rdyfue",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "uimake"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "cxagct",
+      "name": "block",
+      "parent": "pmwitj",
+      "children": [
+        "xuqjqv",
+        "qyioly",
+        "fniusm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "upjybu"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "xuqjqv",
+      "name": "icon-box",
+      "parent": "cxagct",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s2",
+        "_cssGlobalClasses": [
+          "nisdnp"
+        ]
+      }
+    },
+    {
+      "id": "qyioly",
+      "name": "icon-box",
+      "parent": "cxagct",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s2",
+        "_cssGlobalClasses": [
+          "nisdnp"
+        ]
+      }
+    },
+    {
+      "id": "fniusm",
+      "name": "icon-box",
+      "parent": "cxagct",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s2",
+        "_cssGlobalClasses": [
+          "nisdnp"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "wdhqqh",
+      "name": "migrator-features-v44",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ugbngc",
+      "name": "migrator-features-v44__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "unit": {
+            "top": "px"
+          },
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        },
+        "_cssCustom": ".bb-box10-s2 {\n    position: relative;\n}\n\n.bb-box10-s2:before {\n    content: \"\";\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    width: 30px;\n    height: 30px;\n    border-top: 5px solid #7a64ff;\n    border-right: 5px solid #7a64ff;\n    transition: all 0.7s;\n}\n\n.bb-box10-s2:after {\n    content: \"\";\n    position: absolute;\n    bottom: 0px;\n    left: 0px;\n    width: 30px;\n    height: 30px;\n    border-bottom: 5px solid #7a64ff;\n    border-left: 5px solid #7a64ff;\n    transition: all 0.7s;\n}\n.bb-box10-s2:hover:before,\n.bb-box10-s2:hover:after {\n    width: 100%;\n    height: 100%;\n}\n"
+      }
+    },
+    {
+      "id": "lwrfep",
+      "name": "migrator-features-v44__content-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "aexhbw",
+      "name": "migrator-features-v44__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "uimake",
+      "name": "migrator-features-v44__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "upjybu",
+      "name": "migrator-features-v44__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "nisdnp",
+      "name": "migrator-features-v44__icon-box",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "iconBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "iconBorder": {
+          "radius": {
+            "unit": {
+              "top": "%",
+              "right": "%",
+              "bottom": "%",
+              "left": "%"
+            },
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "iconSize": "60px",
+        "_padding": {
+          "top": 40,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "iconMargin": {
+          "bottom": 20
+        },
+        "verticalAlign": "center",
+        "_zIndex": "1",
+        "iconPadding": {
+          "top": "15",
+          "right": "15",
+          "bottom": "15",
+          "left": "15"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

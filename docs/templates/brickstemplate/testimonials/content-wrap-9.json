@@ -1,0 +1,469 @@
+{
+  "content": [
+    {
+      "id": "7e9999",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "d526aa"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmnnqh"
+        ]
+      }
+    },
+    {
+      "id": "d526aa",
+      "name": "container",
+      "parent": "7e9999",
+      "children": [
+        "b55575",
+        "ef73b9"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jzjcuz"
+        ]
+      }
+    },
+    {
+      "id": "b55575",
+      "name": "block",
+      "parent": "d526aa",
+      "children": [
+        "432af3",
+        "d245bd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "izvuql"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "432af3",
+      "name": "heading",
+      "parent": "b55575",
+      "children": [],
+      "settings": {
+        "text": "Testimonials Style 6",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rpjmqn"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "d245bd",
+      "name": "text-basic",
+      "parent": "b55575",
+      "children": [],
+      "settings": {
+        "text": "Habitant mollis ut non velit hendrerit litora bibendum rhoncus eros montes torquent pellentesque aliquet inceptos nisi magnis at molestie euismod",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "amtzeo"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "ef73b9",
+      "name": "block",
+      "parent": "d526aa",
+      "children": [
+        "7226be",
+        "78776e",
+        "a04574"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tkhqbx"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "7226be",
+      "name": "block",
+      "parent": "ef73b9",
+      "children": [
+        "8b38aa",
+        "9de33c",
+        "2fdb20",
+        "a2cbcd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ekgycw"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "8b38aa",
+      "name": "image",
+      "parent": "7226be",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "npqrsz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/brooke-cagle-JBwcenOuRCg-unsplash.jpg",
+          "external": true,
+          "filename": "brooke-cagle-JBwcenOuRCg-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "9de33c",
+      "name": "heading",
+      "parent": "7226be",
+      "children": [],
+      "settings": {
+        "text": "Olivia",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "dsxpkr"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "2fdb20",
+      "name": "text-basic",
+      "parent": "7226be",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "zktfsk"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "a2cbcd",
+      "name": "text-basic",
+      "parent": "7226be",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "rdnugx"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "78776e",
+      "name": "block",
+      "parent": "ef73b9",
+      "children": [
+        "d98095",
+        "f533c3",
+        "a9a277",
+        "8323c5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ekgycw"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "d98095",
+      "name": "image",
+      "parent": "78776e",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "npqrsz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/tyler-nix-sh3LSNbyj7k-unsplash.jpg",
+          "external": true,
+          "filename": "tyler-nix-sh3LSNbyj7k-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "f533c3",
+      "name": "heading",
+      "parent": "78776e",
+      "children": [],
+      "settings": {
+        "text": "Emma",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "dsxpkr"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "a9a277",
+      "name": "text-basic",
+      "parent": "78776e",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "zktfsk"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "8323c5",
+      "name": "text-basic",
+      "parent": "78776e",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "rdnugx"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "a04574",
+      "name": "block",
+      "parent": "ef73b9",
+      "children": [
+        "5af558",
+        "a9dfc9",
+        "be9c41",
+        "367fd9"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ekgycw"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "5af558",
+      "name": "image",
+      "parent": "a04574",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "npqrsz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/vinicius-wiesehofer-UOavP_Z38lE-unsplash.jpg",
+          "external": true,
+          "filename": "vinicius-wiesehofer-UOavP_Z38lE-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "a9dfc9",
+      "name": "heading",
+      "parent": "a04574",
+      "children": [],
+      "settings": {
+        "text": "Sophia",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "dsxpkr"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "be9c41",
+      "name": "text-basic",
+      "parent": "a04574",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "zktfsk"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "367fd9",
+      "name": "text-basic",
+      "parent": "a04574",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "rdnugx"
+        ]
+      },
+      "label": "text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "zmnnqh",
+      "name": "migrator-testimonials-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "jzjcuz",
+      "name": "migrator-testimonials-v06__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "izvuql",
+      "name": "migrator-testimonials-v06__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "rpjmqn",
+      "name": "migrator-testimonials-v06__top-heading",
+      "settings": []
+    },
+    {
+      "id": "amtzeo",
+      "name": "migrator-testimonials-v06__top-text",
+      "settings": {
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": 0
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "tkhqbx",
+      "name": "migrator-testimonials-v06__testimonials-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 50
+        }
+      }
+    },
+    {
+      "id": "ekgycw",
+      "name": "migrator-testimonials-v06__testimonials-item",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "npqrsz",
+      "name": "migrator-testimonials-v06__image",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "dsxpkr",
+      "name": "migrator-testimonials-v06__name",
+      "settings": {
+        "_typography": {
+          "font-size": "24px"
+        }
+      }
+    },
+    {
+      "id": "zktfsk",
+      "name": "migrator-testimonials-v06__designation",
+      "settings": []
+    },
+    {
+      "id": "rdnugx",
+      "name": "migrator-testimonials-v06__text",
+      "settings": {
+        "_margin": {
+          "top": 10
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "right": 20,
+          "left": 20,
+          "bottom": 20
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

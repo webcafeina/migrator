@@ -1,0 +1,546 @@
+{
+  "content": [
+    {
+      "id": "a72b99",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "aa20ea"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rrvcus"
+        ]
+      }
+    },
+    {
+      "id": "aa20ea",
+      "name": "container",
+      "parent": "a72b99",
+      "children": [
+        "f0815f",
+        "e6cbc0"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uhfddn"
+        ]
+      }
+    },
+    {
+      "id": "f0815f",
+      "name": "block",
+      "parent": "aa20ea",
+      "children": [
+        "baf481"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ebsvvb"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "baf481",
+      "name": "heading",
+      "parent": "f0815f",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 15",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "vuihje"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "e6cbc0",
+      "name": "block",
+      "parent": "aa20ea",
+      "children": [
+        "e58bc7"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rdolsa"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "e58bc7",
+      "name": "pricing-tables",
+      "parent": "e6cbc0",
+      "children": [],
+      "settings": {
+        "pricingTables": [
+          {
+            "title": "Plan 01",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "29",
+            "priceSuffix": "99",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "njeuob",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD"
+          },
+          {
+            "title": "Plan 01",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "99",
+            "priceSuffix": "99",
+            "priceMeta": "Yearly",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "ckgmmb",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD",
+            "showUnder": "tab-2"
+          },
+          {
+            "title": "Plan 02",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "159",
+            "priceSuffix": "99",
+            "priceMeta": "Yearly",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "wmjslx",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD",
+            "ribbonText": "Popular",
+            "ribbonBackgroundColor": {
+              "hex": "#34c174",
+              "id": "zjodvr"
+            },
+            "showUnder": "tab-2"
+          },
+          {
+            "title": "Plan 02",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "69",
+            "priceSuffix": "99",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "wjzsvg",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD",
+            "ribbonText": "Popular",
+            "ribbonBackgroundColor": {
+              "hex": "#34c174",
+              "id": "zjodvr"
+            }
+          },
+          {
+            "title": "Plan 03",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "199",
+            "priceSuffix": "99",
+            "priceMeta": "Yearly",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "ahxuah",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD",
+            "showUnder": "tab-2"
+          },
+          {
+            "title": "Plan 03",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "99",
+            "priceSuffix": "99",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "eurtjc",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD"
+          }
+        ],
+        "tabs": true,
+        "tab1Label": "Monthly",
+        "tab2Label": "Yearly",
+        "defaultTab": "tab-1",
+        "_cssGlobalClasses": [
+          "zbpokw"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "rrvcus",
+      "name": "migrator-pricing-v15",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "uhfddn",
+      "name": "migrator-pricing-v15__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "ebsvvb",
+      "name": "migrator-pricing-v15__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        }
+      }
+    },
+    {
+      "id": "vuihje",
+      "name": "migrator-pricing-v15__top-heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "rdolsa",
+      "name": "migrator-pricing-v15__pricing-wrap",
+      "settings": []
+    },
+    {
+      "id": "zbpokw",
+      "name": "migrator-pricing-v15__pricing-tables",
+      "settings": {
+        "_boxShadow": {
+          "values": {
+            "offsetX": 5,
+            "offsetY": 10,
+            "blur": 30,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#212121",
+            "hsl": "hsla(0, 0, 13%, 0.1)",
+            "rgb": "rgba(33, 33, 33, 0.1)"
+          }
+        },
+        "gutter": "30px",
+        "tabWidth": "15%",
+        "tabBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "tabTitleTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "tabPadding": {
+          "top": 10,
+          "right": 25,
+          "bottom": 10,
+          "left": 25
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#34c174",
+          "id": "zjodvr"
+        },
+        "tabWidth:mobile_landscape": "20%",
+        "tabWidth:mobile_portrait": "40%"
+      }
+    }
+  ],
+  "globalElements": []
+}

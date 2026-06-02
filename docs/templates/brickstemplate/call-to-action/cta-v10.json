@@ -1,0 +1,266 @@
+{
+  "content": [
+    {
+      "id": "tnrpar",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "irpgel"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "udvnpe"
+        ]
+      },
+      "label": "CTA v10"
+    },
+    {
+      "id": "irpgel",
+      "name": "container",
+      "parent": "tnrpar",
+      "children": [
+        "kponbo",
+        "vtjplp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mgqric"
+        ]
+      }
+    },
+    {
+      "id": "kponbo",
+      "name": "block",
+      "parent": "irpgel",
+      "children": [
+        "qzmwpc",
+        "gcijea"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ozjegh"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "qzmwpc",
+      "name": "heading",
+      "parent": "kponbo",
+      "children": [],
+      "settings": {
+        "text": "Try Now Before Buying 30 Days Free Trial",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "wesnwp"
+        ]
+      }
+    },
+    {
+      "id": "gcijea",
+      "name": "text-basic",
+      "parent": "kponbo",
+      "children": [],
+      "settings": {
+        "text": "Risus bibendum aliquet ut venenatis consectetuer massa ac elementum lectus litora nibh iaculis proin viverra tempus consectetur duis habitasse inceptos",
+        "_cssGlobalClasses": [
+          "bpbakq"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "vtjplp",
+      "name": "block",
+      "parent": "irpgel",
+      "children": [
+        "hkkeql"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cewxiv"
+        ]
+      },
+      "label": "from wrap"
+    },
+    {
+      "id": "hkkeql",
+      "name": "form",
+      "parent": "vtjplp",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "1a9992"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "0f1ba9"
+          },
+          {
+            "type": "select",
+            "label": "Message",
+            "required": true,
+            "id": "b66e15",
+            "options": "Personal Plan\nBlogger Plan \nAgency Plan",
+            "placeholder": "Select an option"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonText": "Start Now",
+        "_cssGlobalClasses": [
+          "cpzutd"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "udvnpe",
+      "name": "migrator-cta-v10",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "mgqric",
+      "name": "migrator-cta-v10__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "ozjegh",
+      "name": "migrator-cta-v10__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "wesnwp",
+      "name": "migrator-cta-v10__heading",
+      "settings": {
+        "_typography": {
+          "line-height": "50px"
+        },
+        "_typography:tablet_portrait": {
+          "line-height": "32px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "bpbakq",
+      "name": "migrator-cta-v10__text",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "cewxiv",
+      "name": "migrator-cta-v10__from-wrap",
+      "settings": {
+        "_padding": {
+          "top": 40,
+          "right": 40,
+          "bottom": 40,
+          "left": 40
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        }
+      }
+    },
+    {
+      "id": "cpzutd",
+      "name": "migrator-cta-v10__form",
+      "settings": {
+        "fieldBorder": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "fieldMargin": {
+          "bottom": 20
+        },
+        "submitButtonWidth": "30",
+        "submitButtonMargin": {
+          "top": 20
+        },
+        "submitButtonWidth:mobile_portrait": "60",
+        "submitButtonWidth:mobile_landscape": "50"
+      }
+    }
+  ],
+  "globalElements": []
+}

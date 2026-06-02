@@ -1,0 +1,474 @@
+{
+  "content": [
+    {
+      "id": "myqbzo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "dgnrkl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "glkicu"
+        ]
+      },
+      "label": "Features v01"
+    },
+    {
+      "id": "dgnrkl",
+      "name": "container",
+      "parent": "myqbzo",
+      "children": [
+        "evgmmz",
+        "dvcett"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bvuczh"
+        ]
+      }
+    },
+    {
+      "id": "evgmmz",
+      "name": "block",
+      "parent": "dgnrkl",
+      "children": [
+        "odeyou",
+        "bdkvsf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fkzedp"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "odeyou",
+      "name": "heading",
+      "parent": "evgmmz",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "_cssGlobalClasses": [
+          "rvbymn"
+        ]
+      }
+    },
+    {
+      "id": "bdkvsf",
+      "name": "text-basic",
+      "parent": "evgmmz",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "lwvawl"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "dvcett",
+      "name": "block",
+      "parent": "dgnrkl",
+      "children": [
+        "fsggph",
+        "veflqv",
+        "mkulmj"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "guheux"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "fsggph",
+      "name": "block",
+      "parent": "dvcett",
+      "children": [
+        "mgsofj",
+        "iphbcr",
+        "tshkzj"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "cqykwk"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "mgsofj",
+      "name": "icon",
+      "parent": "fsggph",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "fylpcu"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "iphbcr",
+      "name": "heading",
+      "parent": "fsggph",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "ycmrql"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "tshkzj",
+      "name": "text-basic",
+      "parent": "fsggph",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "suhxpc"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "veflqv",
+      "name": "block",
+      "parent": "dvcett",
+      "children": [
+        "hrfybt",
+        "acnjui",
+        "zthwjf"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "cqykwk"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "hrfybt",
+      "name": "icon",
+      "parent": "veflqv",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "fylpcu"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "acnjui",
+      "name": "heading",
+      "parent": "veflqv",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "ycmrql"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "zthwjf",
+      "name": "text-basic",
+      "parent": "veflqv",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "suhxpc"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "mkulmj",
+      "name": "block",
+      "parent": "dvcett",
+      "children": [
+        "zexfnb",
+        "ahsssh",
+        "jkvpjm"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "cqykwk"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "zexfnb",
+      "name": "icon",
+      "parent": "mkulmj",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "fylpcu"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "ahsssh",
+      "name": "heading",
+      "parent": "mkulmj",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "ycmrql"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "jkvpjm",
+      "name": "text-basic",
+      "parent": "mkulmj",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "suhxpc"
+        ]
+      },
+      "label": "box text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "glkicu",
+      "name": "migrator-features-v01-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "bvuczh",
+      "name": "migrator-features-v01-2__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "fkzedp",
+      "name": "migrator-features-v01-2__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "20%",
+          "right": "20%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "5%",
+          "right": "5%"
+        },
+        "_padding:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "rvbymn",
+      "name": "migrator-features-v01-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.2rem",
+          "line-height": "4.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.1rem",
+          "line-height": "4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        }
+      }
+    },
+    {
+      "id": "lwvawl",
+      "name": "migrator-features-v01-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "guheux",
+      "name": "migrator-features-v01-2__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "stretch",
+        "_columnGap": "2rem",
+        "_rowGap": "2rem",
+        "_justifyContent:mobile_landscape": "center",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "cqykwk",
+      "name": "migrator-features-v01-2__icon-box",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_alignItems": "center",
+        "_padding": {
+          "top": "4.8rem",
+          "right": "3.2rem",
+          "bottom": "4.8rem",
+          "left": "3.2rem"
+        },
+        "_width": "33%",
+        "_rowGap": "1rem",
+        "_width:mobile_landscape": "80%",
+        "_width:mobile_portrait": "100%",
+        "_padding:tablet_portrait": {
+          "right": "2rem",
+          "bottom": "3.8rem",
+          "left": "2rem",
+          "top": "3.8rem"
+        }
+      }
+    },
+    {
+      "id": "fylpcu",
+      "name": "migrator-features-v01-2__box-icon",
+      "settings": []
+    },
+    {
+      "id": "ycmrql",
+      "name": "migrator-features-v01-2__box-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.4rem",
+          "line-height": "3.4rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "2.4rem",
+          "line-height": "3.4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.2rem",
+          "line-height": "3.2rem"
+        },
+        "_padding": {
+          "top": "1rem"
+        }
+      }
+    },
+    {
+      "id": "suhxpc",
+      "name": "migrator-features-v01-2__box-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

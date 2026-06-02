@@ -1,0 +1,114 @@
+{
+  "content": [
+    {
+      "id": "vvjlsu",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "qctexs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ivjfde"
+        ]
+      },
+      "label": "Pagination v06"
+    },
+    {
+      "id": "qctexs",
+      "name": "pagination",
+      "parent": "vvjlsu",
+      "children": [],
+      "settings": {
+        "queryId": "ldpisn",
+        "prevIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-left"
+        },
+        "nextIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-right"
+        },
+        "_cssGlobalClasses": [
+          "xcgoku"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "ivjfde",
+      "name": "migrator-pagination-v06-2",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "xcgoku",
+      "name": "migrator-pagination-v06-2__pagination",
+      "settings": {
+        "justifyContent": "center",
+        "navigationTypography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.6rem"
+        },
+        "navigationWidth": "4rem",
+        "navigationHeight": "4rem",
+        "gap": "2rem",
+        "navigationTypographyActive": {
+          "font-size": "1.6rem",
+          "line-height": "2.6rem",
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "navigationBorderActive": {
+          "width": {
+            "bottom": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "navigationBorder": {
+          "style": "solid",
+          "width": {
+            "bottom": "0.2rem"
+          },
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "navigationBorder:hover": {
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "navigationTypography:hover": {
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "gap:mobile_landscape": "1rem"
+      }
+    }
+  ],
+  "globalElements": []
+}

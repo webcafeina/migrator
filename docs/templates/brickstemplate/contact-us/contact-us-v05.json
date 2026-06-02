@@ -1,0 +1,422 @@
+{
+  "content": [
+    {
+      "id": "gzclct",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "dayjvt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rdwyeb"
+        ]
+      },
+      "label": "Contact Us v05"
+    },
+    {
+      "id": "dayjvt",
+      "name": "container",
+      "parent": "gzclct",
+      "children": [
+        "mizkiw",
+        "ezqezp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qcrwke"
+        ]
+      }
+    },
+    {
+      "id": "mizkiw",
+      "name": "block",
+      "parent": "dayjvt",
+      "children": [
+        "qahkvx",
+        "lwaewt",
+        "yvxkbg",
+        "cxbpfz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kltzck"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "qahkvx",
+      "name": "heading",
+      "parent": "mizkiw",
+      "children": [],
+      "settings": {
+        "text": "Contact Us",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "zrwftz"
+        ]
+      }
+    },
+    {
+      "id": "lwaewt",
+      "name": "text-basic",
+      "parent": "mizkiw",
+      "children": [],
+      "settings": {
+        "text": "Senectus facilisi pretium turpis fringilla efficitur dis vehicula metus ipsum potenti aenean integer sollicitudin phasellus",
+        "_cssGlobalClasses": [
+          "qqdgcv"
+        ]
+      }
+    },
+    {
+      "id": "yvxkbg",
+      "name": "social-icons",
+      "parent": "mizkiw",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-phone"
+            },
+            "id": "vgrwnt",
+            "label": "457-594-8799",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-map-pin"
+            },
+            "id": "hyfatf",
+            "label": "4624 Angus Road",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeSolid",
+              "icon": "fas fa-envelope"
+            },
+            "id": "vtwjiq",
+            "label": "4624 Angus Road",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "wojfyr"
+        ]
+      },
+      "label": "address"
+    },
+    {
+      "id": "cxbpfz",
+      "name": "social-icons",
+      "parent": "mizkiw",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "background": {
+              "hex": "#4cc2ff"
+            },
+            "id": "oiyaci",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "background": {
+              "hex": "#3b5998"
+            },
+            "id": "mcegtx",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "background": {
+              "hex": "#4E433C"
+            },
+            "id": "hlvdsn",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "ptppyg"
+        ]
+      },
+      "label": "social"
+    },
+    {
+      "id": "ezqezp",
+      "name": "block",
+      "parent": "dayjvt",
+      "children": [
+        "qothur"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rxqszl"
+        ]
+      },
+      "label": "form wrap"
+    },
+    {
+      "id": "qothur",
+      "name": "form",
+      "parent": "ezqezp",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "0b2c52"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "c80a33"
+          },
+          {
+            "type": "tel",
+            "label": "Mobile",
+            "placeholder": "Mobile Number",
+            "required": true,
+            "id": "cdjmsj"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "required": true,
+            "id": "ff3f55"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "custom",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "_cssGlobalClasses": [
+          "evgbfz"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.8",
+  "globalClasses": [
+    {
+      "id": "rdwyeb",
+      "name": "migrator-contact-us-v05",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "qcrwke",
+      "name": "migrator-contact-us-v05__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "kltzck",
+      "name": "migrator-contact-us-v05__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "zrwftz",
+      "name": "migrator-contact-us-v05__heading",
+      "settings": []
+    },
+    {
+      "id": "qqdgcv",
+      "name": "migrator-contact-us-v05__text-basic",
+      "settings": {
+        "_margin": {
+          "bottom": 0
+        }
+      }
+    },
+    {
+      "id": "wojfyr",
+      "name": "migrator-contact-us-v05__address",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column",
+        "gap": "5px",
+        "gapItem": "10px",
+        "justifyIcons": "flex-start"
+      }
+    },
+    {
+      "id": "ptppyg",
+      "name": "migrator-contact-us-v05__social",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "18px",
+          "line-height": "18px"
+        },
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "_margin": {
+          "top": 10
+        },
+        "_padding": {
+          "top": 15,
+          "right": 15,
+          "bottom": 15,
+          "left": 15
+        },
+        "gap": "10px"
+      }
+    },
+    {
+      "id": "rxqszl",
+      "name": "migrator-contact-us-v05__form-wrap",
+      "settings": {
+        "_padding": {
+          "top": 40,
+          "right": 40,
+          "bottom": 40,
+          "left": 40
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        }
+      }
+    },
+    {
+      "id": "evgbfz",
+      "name": "migrator-contact-us-v05__form",
+      "settings": {
+        "fieldBackgroundColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct"
+        },
+        "fieldBorder": {
+          "width": {
+            "top": 1,
+            "right": 1,
+            "bottom": 1,
+            "left": 1
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#d5e4ff",
+            "id": "vybqbz"
+          },
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "fieldPadding": {
+          "top": 5,
+          "bottom": 5
+        },
+        "submitButtonWidth": "50",
+        "_width:mobile_portrait": "100%",
+        "submitButtonMargin": {
+          "top": 20
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

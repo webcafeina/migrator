@@ -1,0 +1,801 @@
+{
+  "content": [
+    {
+      "id": "bf22db",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "4f5a2b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iqvaoe"
+        ]
+      }
+    },
+    {
+      "id": "4f5a2b",
+      "name": "container",
+      "parent": "bf22db",
+      "children": [
+        "fb588c",
+        "a8b7c8"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "acnfjd"
+        ]
+      }
+    },
+    {
+      "id": "fb588c",
+      "name": "block",
+      "parent": "4f5a2b",
+      "children": [
+        "6ac3fb",
+        "6b8d80"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jguety"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "6ac3fb",
+      "name": "heading",
+      "parent": "fb588c",
+      "children": [],
+      "settings": {
+        "text": "Testimonials Style 4",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "njyrpk"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "6b8d80",
+      "name": "text-basic",
+      "parent": "fb588c",
+      "children": [],
+      "settings": {
+        "text": "Habitant mollis ut non velit hendrerit litora bibendum rhoncus eros montes torquent pellentesque aliquet inceptos nisi magnis at molestie euismod",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmtuvs"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "a8b7c8",
+      "name": "block",
+      "parent": "4f5a2b",
+      "children": [
+        "e083dd",
+        "daa3e9",
+        "c8cc1f"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "detnfz"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "e083dd",
+      "name": "block",
+      "parent": "a8b7c8",
+      "children": [
+        "8db215",
+        "0e2f17",
+        "3bcbbb",
+        "e968be",
+        "c00c08"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kkxumy"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "8db215",
+      "name": "image",
+      "parent": "e083dd",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xnxtyp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "0e2f17",
+      "name": "text-basic",
+      "parent": "e083dd",
+      "children": [],
+      "settings": {
+        "text": "Tristique et netus gravida sodales ad hac mattis tellus lectus tempus per maximus lacinia massa dignissim class fames conubia eros",
+        "_cssGlobalClasses": [
+          "dplztz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "3bcbbb",
+      "name": "block",
+      "parent": "e083dd",
+      "children": [
+        "a6c668",
+        "b0080f",
+        "25810b",
+        "20b600",
+        "764eae"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ayooqb"
+        ]
+      },
+      "label": "rating"
+    },
+    {
+      "id": "a6c668",
+      "name": "icon",
+      "parent": "3bcbbb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "b0080f",
+      "name": "icon",
+      "parent": "3bcbbb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "25810b",
+      "name": "icon",
+      "parent": "3bcbbb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "20b600",
+      "name": "icon",
+      "parent": "3bcbbb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "764eae",
+      "name": "icon",
+      "parent": "3bcbbb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-star-half-stroke"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "e968be",
+      "name": "heading",
+      "parent": "e083dd",
+      "children": [],
+      "settings": {
+        "text": "Emily",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nkhtqd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "c00c08",
+      "name": "text-basic",
+      "parent": "e083dd",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "epgogb"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "daa3e9",
+      "name": "block",
+      "parent": "a8b7c8",
+      "children": [
+        "ddbbcc",
+        "b489ea",
+        "9128d4",
+        "e9c7a7",
+        "500ab6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kkxumy"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "ddbbcc",
+      "name": "image",
+      "parent": "daa3e9",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xnxtyp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/seth-doyle-BZ2PNGD5Emw-unsplash.jpg",
+          "external": true,
+          "filename": "seth-doyle-BZ2PNGD5Emw-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "b489ea",
+      "name": "text-basic",
+      "parent": "daa3e9",
+      "children": [],
+      "settings": {
+        "text": "Tristique et netus gravida sodales ad hac mattis tellus lectus tempus per maximus lacinia massa dignissim class fames conubia eros",
+        "_cssGlobalClasses": [
+          "dplztz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "9128d4",
+      "name": "block",
+      "parent": "daa3e9",
+      "children": [
+        "02125e",
+        "dd8c18",
+        "a78758",
+        "0d59e0",
+        "3c3ef2"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ayooqb"
+        ]
+      },
+      "label": "rating"
+    },
+    {
+      "id": "02125e",
+      "name": "icon",
+      "parent": "9128d4",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "dd8c18",
+      "name": "icon",
+      "parent": "9128d4",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "a78758",
+      "name": "icon",
+      "parent": "9128d4",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "0d59e0",
+      "name": "icon",
+      "parent": "9128d4",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "3c3ef2",
+      "name": "icon",
+      "parent": "9128d4",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-star-half-stroke"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "e9c7a7",
+      "name": "heading",
+      "parent": "daa3e9",
+      "children": [],
+      "settings": {
+        "text": "Camila",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nkhtqd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "500ab6",
+      "name": "text-basic",
+      "parent": "daa3e9",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "epgogb"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "c8cc1f",
+      "name": "block",
+      "parent": "a8b7c8",
+      "children": [
+        "3e82da",
+        "e82e5c",
+        "5d9715",
+        "b9fbd8",
+        "b83cd0"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kkxumy"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "3e82da",
+      "name": "image",
+      "parent": "c8cc1f",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xnxtyp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "e82e5c",
+      "name": "text-basic",
+      "parent": "c8cc1f",
+      "children": [],
+      "settings": {
+        "text": "Tristique et netus gravida sodales ad hac mattis tellus lectus tempus per maximus lacinia massa dignissim class fames conubia eros",
+        "_cssGlobalClasses": [
+          "dplztz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "5d9715",
+      "name": "block",
+      "parent": "c8cc1f",
+      "children": [
+        "a79325",
+        "3f9cae",
+        "bd9ec6",
+        "c20172",
+        "259c1d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ayooqb"
+        ]
+      },
+      "label": "rating"
+    },
+    {
+      "id": "a79325",
+      "name": "icon",
+      "parent": "5d9715",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "3f9cae",
+      "name": "icon",
+      "parent": "5d9715",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "bd9ec6",
+      "name": "icon",
+      "parent": "5d9715",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "c20172",
+      "name": "icon",
+      "parent": "5d9715",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-star"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "259c1d",
+      "name": "icon",
+      "parent": "5d9715",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-star-half-stroke"
+        },
+        "_cssGlobalClasses": [
+          "vrkmss"
+        ]
+      }
+    },
+    {
+      "id": "b9fbd8",
+      "name": "heading",
+      "parent": "c8cc1f",
+      "children": [],
+      "settings": {
+        "text": "Michael",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nkhtqd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "b83cd0",
+      "name": "text-basic",
+      "parent": "c8cc1f",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "epgogb"
+        ]
+      },
+      "label": "designation"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "iqvaoe",
+      "name": "migrator-testimonials-v04",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "acnfjd",
+      "name": "migrator-testimonials-v04__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "jguety",
+      "name": "migrator-testimonials-v04__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 40
+        },
+        "_alignItems": "center",
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "njyrpk",
+      "name": "migrator-testimonials-v04__top-heading",
+      "settings": []
+    },
+    {
+      "id": "nmtuvs",
+      "name": "migrator-testimonials-v04__top-text",
+      "settings": {
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": ""
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "detnfz",
+      "name": "migrator-testimonials-v04__testimonials-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 50
+        }
+      }
+    },
+    {
+      "id": "kkxumy",
+      "name": "migrator-testimonials-v04__testimonials-item",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_padding": {
+          "top": 30,
+          "right": 30,
+          "bottom": 30,
+          "left": 30
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        },
+        "_alignItems": "center",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding:tablet_portrait": {
+          "top": 30,
+          "right": 20,
+          "left": 20,
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "xnxtyp",
+      "name": "migrator-testimonials-v04__image",
+      "settings": {
+        "_width": "100px",
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "_alignSelf": "center",
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "dplztz",
+      "name": "migrator-testimonials-v04__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "ayooqb",
+      "name": "migrator-testimonials-v04__rating",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "center",
+        "_columnGap": "4px",
+        "_margin": {
+          "bottom": 25
+        },
+        "_margin:tablet_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "vrkmss",
+      "name": "migrator-testimonials-v04__icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconSize": "25px"
+      }
+    },
+    {
+      "id": "nkhtqd",
+      "name": "migrator-testimonials-v04__name",
+      "settings": {
+        "_margin": {
+          "bottom": 4
+        }
+      }
+    },
+    {
+      "id": "epgogb",
+      "name": "migrator-testimonials-v04__designation",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

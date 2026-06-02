@@ -1,0 +1,271 @@
+{
+  "content": [
+    {
+      "id": "xrzpix",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "yptimx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bpkzcn"
+        ]
+      }
+    },
+    {
+      "id": "yptimx",
+      "name": "container",
+      "parent": "xrzpix",
+      "children": [
+        "cljtep",
+        "gskoov",
+        "bacjto",
+        "urbwem",
+        "ewqmti"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iwmaju"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "cljtep",
+      "name": "image",
+      "parent": "yptimx",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qzwzyl"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/Refer-a-friend-amico.png",
+          "external": true,
+          "filename": "Refer-a-friend-amico.png"
+        }
+      }
+    },
+    {
+      "id": "gskoov",
+      "name": "heading",
+      "parent": "yptimx",
+      "children": [],
+      "settings": {
+        "text": "Subscribe to our blog",
+        "_cssGlobalClasses": [
+          "fipnfi"
+        ]
+      }
+    },
+    {
+      "id": "bacjto",
+      "name": "text-basic",
+      "parent": "yptimx",
+      "children": [],
+      "settings": {
+        "text": "Inceptos nostra orci habitasse urna vitae lacus eu tempus etiam si accumsan suspendisse adipiscing vivamus pulvinar sem velit morbi porttitor nulla auctor",
+        "_cssGlobalClasses": [
+          "pdxfvl"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "urbwem",
+      "name": "form",
+      "parent": "yptimx",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "3cd0a2",
+            "width": "60",
+            "width:mobile_portrait": "100"
+          }
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "lg",
+        "submitButtonText": "Subscribe Now",
+        "_cssGlobalClasses": [
+          "wtkabm"
+        ]
+      }
+    },
+    {
+      "id": "ewqmti",
+      "name": "icon",
+      "parent": "yptimx",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-close"
+        },
+        "_interactions": [
+          {
+            "id": "yqbgvd",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2772"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "xmfxla"
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "bpkzcn",
+      "name": "migrator-popup-v20",
+      "settings": []
+    },
+    {
+      "id": "iwmaju",
+      "name": "migrator-popup-v20__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "qzwzyl",
+      "name": "migrator-popup-v20__image",
+      "settings": {
+        "_width": "250px",
+        "_width:mobile_portrait": "200px"
+      }
+    },
+    {
+      "id": "fipnfi",
+      "name": "migrator-popup-v20__heading",
+      "settings": {
+        "_typography:tablet_portrait": {
+          "font-size": "32px",
+          "line-height": "36px"
+        },
+        "_typography": {
+          "font-size": "32px",
+          "line-height": "36px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "pdxfvl",
+      "name": "migrator-popup-v20__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "top": "20px",
+          "bottom": "20px"
+        }
+      }
+    },
+    {
+      "id": "wtkabm",
+      "name": "migrator-popup-v20__form",
+      "settings": {
+        "submitButtonWidth": "40",
+        "_width": "80%",
+        "submitButtonBorder": {
+          "width": {
+            "top": "2",
+            "right": "2",
+            "bottom": "2",
+            "left": "2"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#8976fd",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "fieldMargin": {
+          "bottom": "0"
+        },
+        "_width:mobile_portrait": "100%",
+        "submitButtonWidth:mobile_portrait": "100",
+        "fieldMargin:mobile_portrait": {
+          "bottom": "10"
+        },
+        "submitButtonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          },
+          "font-size": "16"
+        },
+        "submitButtonBackgroundColor:hover": {
+          "hex": "#735dfd",
+          "id": "cwyawq",
+          "name": "Acent Hover"
+        }
+      }
+    },
+    {
+      "id": "xmfxla",
+      "name": "migrator-popup-v20__close",
+      "settings": {
+        "iconSize": "15px",
+        "_position": "absolute",
+        "_top": "0",
+        "_right": "0",
+        "_background": {
+          "color": {
+            "hex": "#000000"
+          }
+        },
+        "_padding": {
+          "top": "9px",
+          "right": "9px",
+          "bottom": "9px",
+          "left": "9px"
+        },
+        "iconColor": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        },
+        "_border": {
+          "radius": {
+            "top": "10",
+            "right": "10",
+            "bottom": "10",
+            "left": "10"
+          }
+        },
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "15px",
+        "iconSize:mobile_portrait": "12px"
+      }
+    }
+  ],
+  "globalElements": []
+}

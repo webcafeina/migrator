@@ -1,0 +1,557 @@
+{
+  "content": [
+    {
+      "id": "odhzmu",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "krlyww"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dpunsv"
+        ]
+      },
+      "label": "Pro and Cons V05"
+    },
+    {
+      "id": "krlyww",
+      "name": "container",
+      "parent": "odhzmu",
+      "children": [
+        "lizfll"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jfpday"
+        ]
+      }
+    },
+    {
+      "id": "lizfll",
+      "name": "block",
+      "parent": "krlyww",
+      "children": [
+        "oxtytp",
+        "ztdjse"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cyfygy"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "oxtytp",
+      "name": "block",
+      "parent": "lizfll",
+      "children": [
+        "gjcakv",
+        "ksobsp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zgdrdl"
+        ]
+      },
+      "label": "pros wrap"
+    },
+    {
+      "id": "gjcakv",
+      "name": "block",
+      "parent": "oxtytp",
+      "children": [
+        "rrlpuv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hhhomh"
+        ]
+      },
+      "label": "Pros title wrap"
+    },
+    {
+      "id": "rrlpuv",
+      "name": "heading",
+      "parent": "gjcakv",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "text": "Pros",
+        "_cssGlobalClasses": [
+          "cctspm"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "ksobsp",
+      "name": "block",
+      "parent": "oxtytp",
+      "children": [
+        "tvgcyz",
+        "rxhzlf",
+        "sehakr"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "pkokrv"
+        ]
+      },
+      "label": "pros list wrap"
+    },
+    {
+      "id": "tvgcyz",
+      "name": "block",
+      "parent": "ksobsp",
+      "children": [
+        "aqhoag"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "aqhoag",
+      "name": "text-basic",
+      "parent": "tvgcyz",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "rxhzlf",
+      "name": "block",
+      "parent": "ksobsp",
+      "children": [
+        "bapflc"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "bapflc",
+      "name": "text-basic",
+      "parent": "rxhzlf",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "sehakr",
+      "name": "block",
+      "parent": "ksobsp",
+      "children": [
+        "vlzaur"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "vlzaur",
+      "name": "text-basic",
+      "parent": "sehakr",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "ztdjse",
+      "name": "block",
+      "parent": "lizfll",
+      "children": [
+        "ckfhpj",
+        "guytzf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pumlfx"
+        ]
+      },
+      "label": "cons wrap"
+    },
+    {
+      "id": "ckfhpj",
+      "name": "block",
+      "parent": "ztdjse",
+      "children": [
+        "uadmnz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plzspt"
+        ]
+      },
+      "label": "cons title wrap"
+    },
+    {
+      "id": "uadmnz",
+      "name": "heading",
+      "parent": "ckfhpj",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "text": "Cons",
+        "_cssGlobalClasses": [
+          "cctspm"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "guytzf",
+      "name": "block",
+      "parent": "ztdjse",
+      "children": [
+        "jabqun",
+        "cvvwas",
+        "rbifjr"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "syaqov"
+        ]
+      },
+      "label": "cons list wrap"
+    },
+    {
+      "id": "jabqun",
+      "name": "block",
+      "parent": "guytzf",
+      "children": [
+        "sgpkcj"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "sgpkcj",
+      "name": "text-basic",
+      "parent": "jabqun",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "cvvwas",
+      "name": "block",
+      "parent": "guytzf",
+      "children": [
+        "uivwii"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "uivwii",
+      "name": "text-basic",
+      "parent": "cvvwas",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "rbifjr",
+      "name": "block",
+      "parent": "guytzf",
+      "children": [
+        "jiesyu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wloyqb"
+        ]
+      },
+      "label": "list wrap"
+    },
+    {
+      "id": "jiesyu",
+      "name": "text-basic",
+      "parent": "rbifjr",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "nmdedb"
+        ]
+      },
+      "label": "text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.4",
+  "globalClasses": [
+    {
+      "id": "dpunsv",
+      "name": "migrator-pc-v05",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "jfpday",
+      "name": "migrator-pc-v05__container",
+      "settings": []
+    },
+    {
+      "id": "cyfygy",
+      "name": "migrator-pc-v05__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "5rem",
+        "_rowGap:mobile_landscape": "4rem",
+        "_columnGap:tablet_portrait": "3rem"
+      }
+    },
+    {
+      "id": "zgdrdl",
+      "name": "migrator-pc-v05__pros-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem"
+      }
+    },
+    {
+      "id": "hhhomh",
+      "name": "migrator-pc-v05__pros-title-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#2ecc71"
+          }
+        },
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        }
+      }
+    },
+    {
+      "id": "cctspm",
+      "name": "migrator-pc-v05__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "5rem",
+          "line-height": "6rem",
+          "font-family": "Poppins",
+          "font-weight": "600"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "4rem",
+          "line-height": "5rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3rem",
+          "line-height": "4rem"
+        }
+      }
+    },
+    {
+      "id": "pkokrv",
+      "name": "migrator-pc-v05__pros-list-wrap",
+      "settings": {
+        "_rowGap": "2rem",
+        "_display": "flex",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "wloyqb",
+      "name": "migrator-pc-v05__list-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_padding": {
+          "bottom": "1.5rem",
+          "top": "1.5rem",
+          "left": "1.5rem",
+          "right": "1.5rem"
+        },
+        "_direction": "row",
+        "_columnGap": "1.5rem",
+        "_direction:mobile_landscape": "row",
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "2",
+            "blur": "8",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#636363",
+            "rgb": "rgba(99, 99, 99, 0.2)",
+            "hsl": "hsla(0, 0%, 39%, 0.2)"
+          }
+        }
+      }
+    },
+    {
+      "id": "nmdedb",
+      "name": "migrator-pc-v05__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "wzdtoc",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.8rem",
+          "font-family": "Poppins",
+          "font-weight": "400"
+        }
+      }
+    },
+    {
+      "id": "pumlfx",
+      "name": "migrator-pc-v05__cons-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem"
+      }
+    },
+    {
+      "id": "plzspt",
+      "name": "migrator-pc-v05__cons-title-wrap",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#e74c3c"
+          }
+        },
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem"
+        },
+        "_alignItems": "center",
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        }
+      }
+    },
+    {
+      "id": "syaqov",
+      "name": "migrator-pc-v05__cons-list-wrap",
+      "settings": {
+        "_padding": {
+          "left": "0"
+        },
+        "_rowGap": "2rem",
+        "_display": "flex",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

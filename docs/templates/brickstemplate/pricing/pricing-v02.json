@@ -1,0 +1,1568 @@
+{
+  "content": [
+    {
+      "id": "jtgaar",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "lfjwpf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "srzfcd"
+        ]
+      },
+      "label": "Pricing v02"
+    },
+    {
+      "id": "lfjwpf",
+      "name": "container",
+      "parent": "jtgaar",
+      "children": [
+        "ofrxnz",
+        "drfqmt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hkvhyr"
+        ]
+      }
+    },
+    {
+      "id": "ofrxnz",
+      "name": "block",
+      "parent": "lfjwpf",
+      "children": [
+        "guowsi",
+        "oarwwj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uvwteb"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "guowsi",
+      "name": "heading",
+      "parent": "ofrxnz",
+      "children": [],
+      "settings": {
+        "text": "Our Pricing",
+        "_cssGlobalClasses": [
+          "jwkyiv"
+        ]
+      }
+    },
+    {
+      "id": "oarwwj",
+      "name": "text-basic",
+      "parent": "ofrxnz",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized",
+        "_cssGlobalClasses": [
+          "xlguvi"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "drfqmt",
+      "name": "block",
+      "parent": "lfjwpf",
+      "children": [
+        "mvcced",
+        "qhqshw",
+        "xitkns"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ffswhs"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "mvcced",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "blmuaa",
+        "wcomue",
+        "mddjxv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ixlmpe"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "blmuaa",
+      "name": "block",
+      "parent": "mvcced",
+      "children": [
+        "smlukh",
+        "bwutqt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nrvyqv"
+        ]
+      },
+      "label": "top row"
+    },
+    {
+      "id": "smlukh",
+      "name": "heading",
+      "parent": "blmuaa",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "clqbrb"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "bwutqt",
+      "name": "heading",
+      "parent": "blmuaa",
+      "children": [],
+      "settings": {
+        "text": "$29",
+        "_cssGlobalClasses": [
+          "npivyj"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "wcomue",
+      "name": "block",
+      "parent": "mvcced",
+      "children": [
+        "hnilnj",
+        "nzcaus",
+        "xjsjye",
+        "rwpicd",
+        "gpzeug"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "aeivct"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "hnilnj",
+      "name": "block",
+      "parent": "wcomue",
+      "children": [
+        "milmwe",
+        "ooazzx"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "milmwe",
+      "name": "icon",
+      "parent": "hnilnj",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "ooazzx",
+      "name": "text-basic",
+      "parent": "hnilnj",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "nzcaus",
+      "name": "block",
+      "parent": "wcomue",
+      "children": [
+        "ookmmg",
+        "qiigts"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "ookmmg",
+      "name": "icon",
+      "parent": "nzcaus",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "qiigts",
+      "name": "text-basic",
+      "parent": "nzcaus",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "xjsjye",
+      "name": "block",
+      "parent": "wcomue",
+      "children": [
+        "jnonty",
+        "cazycq"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "jnonty",
+      "name": "icon",
+      "parent": "xjsjye",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "cazycq",
+      "name": "text-basic",
+      "parent": "xjsjye",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "rwpicd",
+      "name": "block",
+      "parent": "wcomue",
+      "children": [
+        "xhxjsl",
+        "bcqmlr"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "xhxjsl",
+      "name": "icon",
+      "parent": "rwpicd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "bcqmlr",
+      "name": "text-basic",
+      "parent": "rwpicd",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "gpzeug",
+      "name": "block",
+      "parent": "wcomue",
+      "children": [
+        "shnifm",
+        "dhmuez"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "shnifm",
+      "name": "icon",
+      "parent": "gpzeug",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "dhmuez",
+      "name": "text-basic",
+      "parent": "gpzeug",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "mddjxv",
+      "name": "button",
+      "parent": "mvcced",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "lonzwb"
+        ]
+      },
+      "label": "pricing btn"
+    },
+    {
+      "id": "qhqshw",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "ryfman",
+        "vuyxhj",
+        "kbhynn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ixlmpe"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "ryfman",
+      "name": "block",
+      "parent": "qhqshw",
+      "children": [
+        "iuuqbv",
+        "chxqkx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qvyjit"
+        ]
+      },
+      "label": "header"
+    },
+    {
+      "id": "iuuqbv",
+      "name": "heading",
+      "parent": "ryfman",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "clqbrb"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "chxqkx",
+      "name": "heading",
+      "parent": "ryfman",
+      "children": [],
+      "settings": {
+        "text": "$49",
+        "_cssGlobalClasses": [
+          "npivyj"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "vuyxhj",
+      "name": "block",
+      "parent": "qhqshw",
+      "children": [
+        "yoakju",
+        "sdhgnk",
+        "croict",
+        "fspqpm",
+        "ecyvwc",
+        "phmnyf",
+        "odxrtq",
+        "zegsfp"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "aeivct"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "yoakju",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "ttsrbm",
+        "dgnhti"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "ttsrbm",
+      "name": "icon",
+      "parent": "yoakju",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "dgnhti",
+      "name": "text-basic",
+      "parent": "yoakju",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "sdhgnk",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "phdqlq",
+        "wgprew"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "phdqlq",
+      "name": "icon",
+      "parent": "sdhgnk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "wgprew",
+      "name": "text-basic",
+      "parent": "sdhgnk",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "croict",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "vnrgmj",
+        "vyibpz"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "vnrgmj",
+      "name": "icon",
+      "parent": "croict",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "vyibpz",
+      "name": "text-basic",
+      "parent": "croict",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "fspqpm",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "elrccn",
+        "ttrzdz"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "elrccn",
+      "name": "icon",
+      "parent": "fspqpm",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "ttrzdz",
+      "name": "text-basic",
+      "parent": "fspqpm",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "ecyvwc",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "nhzauq",
+        "jxdjwj"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "nhzauq",
+      "name": "icon",
+      "parent": "ecyvwc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "jxdjwj",
+      "name": "text-basic",
+      "parent": "ecyvwc",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "phmnyf",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "muizkb",
+        "ygpgaf"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "muizkb",
+      "name": "icon",
+      "parent": "phmnyf",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "ygpgaf",
+      "name": "text-basic",
+      "parent": "phmnyf",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "odxrtq",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "ywsxkm",
+        "lsqyqt"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "ywsxkm",
+      "name": "icon",
+      "parent": "odxrtq",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "lsqyqt",
+      "name": "text-basic",
+      "parent": "odxrtq",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "zegsfp",
+      "name": "block",
+      "parent": "vuyxhj",
+      "children": [
+        "vvjtnw",
+        "timucu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "vvjtnw",
+      "name": "icon",
+      "parent": "zegsfp",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "timucu",
+      "name": "text-basic",
+      "parent": "zegsfp",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "kbhynn",
+      "name": "button",
+      "parent": "qhqshw",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "lonzwb"
+        ]
+      },
+      "label": "pricing btn"
+    },
+    {
+      "id": "xitkns",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "pjytfj",
+        "iqqerx",
+        "tjswgf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ixlmpe"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "pjytfj",
+      "name": "block",
+      "parent": "xitkns",
+      "children": [
+        "tfbajk",
+        "sseegq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qvyjit"
+        ]
+      },
+      "label": "header"
+    },
+    {
+      "id": "tfbajk",
+      "name": "heading",
+      "parent": "pjytfj",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "clqbrb"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "sseegq",
+      "name": "heading",
+      "parent": "pjytfj",
+      "children": [],
+      "settings": {
+        "text": "$99",
+        "_cssGlobalClasses": [
+          "npivyj"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "iqqerx",
+      "name": "block",
+      "parent": "xitkns",
+      "children": [
+        "rhmyik",
+        "eqmqdk",
+        "tqvhdx",
+        "trsgrc",
+        "stencn"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "aeivct"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "rhmyik",
+      "name": "block",
+      "parent": "iqqerx",
+      "children": [
+        "dinuwz",
+        "dazcuu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "dinuwz",
+      "name": "icon",
+      "parent": "rhmyik",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "dazcuu",
+      "name": "text-basic",
+      "parent": "rhmyik",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "eqmqdk",
+      "name": "block",
+      "parent": "iqqerx",
+      "children": [
+        "nyjzbn",
+        "xurhyn"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "nyjzbn",
+      "name": "icon",
+      "parent": "eqmqdk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "xurhyn",
+      "name": "text-basic",
+      "parent": "eqmqdk",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "tqvhdx",
+      "name": "block",
+      "parent": "iqqerx",
+      "children": [
+        "qnramc",
+        "ixgnmj"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "qnramc",
+      "name": "icon",
+      "parent": "tqvhdx",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "ixgnmj",
+      "name": "text-basic",
+      "parent": "tqvhdx",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "trsgrc",
+      "name": "block",
+      "parent": "iqqerx",
+      "children": [
+        "rxrfny",
+        "peincd"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "rxrfny",
+      "name": "icon",
+      "parent": "trsgrc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "peincd",
+      "name": "text-basic",
+      "parent": "trsgrc",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "stencn",
+      "name": "block",
+      "parent": "iqqerx",
+      "children": [
+        "cjfpsk",
+        "gpgedu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "dyeitk"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "cjfpsk",
+      "name": "icon",
+      "parent": "stencn",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-check"
+        },
+        "_cssGlobalClasses": [
+          "cchxma"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "gpgedu",
+      "name": "text-basic",
+      "parent": "stencn",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ykwpiq"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "tjswgf",
+      "name": "button",
+      "parent": "xitkns",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "lonzwb"
+        ]
+      },
+      "label": "pricing btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "srzfcd",
+      "name": "migrator-pricing-v02-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "hkvhyr",
+      "name": "migrator-pricing-v02-2__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "uvwteb",
+      "name": "migrator-pricing-v02-2__heading-wrap",
+      "settings": {
+        "_rowGap": "2rem",
+        "_alignItems": "center",
+        "_padding": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "jwkyiv",
+      "name": "migrator-pricing-v02-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "xlguvi",
+      "name": "migrator-pricing-v02-2__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "text-align": "center",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    },
+    {
+      "id": "ffswhs",
+      "name": "migrator-pricing-v02-2__pricing-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "2rem",
+        "_alignItems": "stretch",
+        "_flexWrap:tablet_portrait": "wrap",
+        "_display": "grid",
+        "_gridGap": "2rem",
+        "_gridTemplateColumns": "1fr 1fr 1fr",
+        "_gridTemplateColumns:tablet_portrait": "2fr 2fr",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_justifyItemsGrid:mobile_landscape": "center",
+        "_alignItemsGrid": "center"
+      }
+    },
+    {
+      "id": "ixlmpe",
+      "name": "migrator-pricing-v02-2__pricing",
+      "settings": {
+        "_alignItems": "center",
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          },
+          "radius": {
+            "top": "0.8rem",
+            "right": "0.8rem",
+            "bottom": "0.8rem",
+            "left": "0.8rem"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_flexGrow:tablet_portrait": "1",
+        "_width:mobile_landscape": "70%",
+        "_width:mobile_portrait": "100%",
+        "_padding": {
+          "bottom": "5rem"
+        },
+        "_rowGap": "4rem"
+      }
+    },
+    {
+      "id": "nrvyqv",
+      "name": "migrator-pricing-v02-2__top-row",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_padding": {
+          "top": "5rem",
+          "right": "2rem",
+          "bottom": "5rem",
+          "left": "2rem"
+        },
+        "_rowGap": "2rem"
+      }
+    },
+    {
+      "id": "clqbrb",
+      "name": "migrator-pricing-v02-2__plan-name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.8rem",
+          "line-height": "4.8rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.4rem",
+          "line-height": "4.4rem"
+        }
+      }
+    },
+    {
+      "id": "npivyj",
+      "name": "migrator-pricing-v02-2__plan-price",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "5rem",
+          "line-height": "5.2rem"
+        }
+      }
+    },
+    {
+      "id": "aeivct",
+      "name": "migrator-pricing-v02-2__pricing-text-wrap",
+      "settings": {
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_rowGap": "0.8rem",
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "dyeitk",
+      "name": "migrator-pricing-v02-2__pricing-text",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "1rem",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "cchxma",
+      "name": "migrator-pricing-v02-2__list-icon",
+      "settings": {
+        "iconSize": "2.3rem"
+      }
+    },
+    {
+      "id": "ykwpiq",
+      "name": "migrator-pricing-v02-2__list-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    },
+    {
+      "id": "drxoco",
+      "name": "wf-btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.6rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "enohqp",
+      "name": "wf-btn--primary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "lonzwb",
+      "name": "migrator-pricing-v02-2__pricing-btn",
+      "settings": {
+        "style": "secondary"
+      }
+    },
+    {
+      "id": "qvyjit",
+      "name": "migrator-pricing-v02-2__header",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_padding": {
+          "top": "5rem",
+          "right": "2rem",
+          "bottom": "5rem",
+          "left": "2rem"
+        },
+        "_rowGap": "2rem"
+      }
+    }
+  ],
+  "globalElements": []
+}

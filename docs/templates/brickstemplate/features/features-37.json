@@ -1,0 +1,341 @@
+{
+  "content": [
+    {
+      "id": "wjggou",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "lulowr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sttlwb"
+        ]
+      },
+      "label": "Features 37"
+    },
+    {
+      "id": "lulowr",
+      "name": "container",
+      "parent": "wjggou",
+      "children": [
+        "gvqvpt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pikkrq"
+        ]
+      }
+    },
+    {
+      "id": "gvqvpt",
+      "name": "block",
+      "parent": "lulowr",
+      "children": [
+        "gddzgf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "onazsa"
+        ]
+      },
+      "label": "slider wrap"
+    },
+    {
+      "id": "gddzgf",
+      "name": "slider-nested",
+      "parent": "gvqvpt",
+      "children": [
+        "dmmnyr",
+        "rgbpxq"
+      ],
+      "settings": {
+        "_cssClasses": "custom_slider_06",
+        "arrows": true,
+        "perPage:mobile_portrait": "1",
+        "perPage": "1",
+        "_cssGlobalClasses": [
+          "gnrzev"
+        ],
+        "height": "70vh"
+      },
+      "label": "Slider (CSS)"
+    },
+    {
+      "id": "dmmnyr",
+      "name": "block",
+      "parent": "gddzgf",
+      "children": [
+        "txxfhn",
+        "gfkubf",
+        "kyezul"
+      ],
+      "settings": {
+        "_cssClasses": "slidebg",
+        "_cssGlobalClasses": [
+          "ebcthh"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "txxfhn",
+      "name": "heading",
+      "parent": "dmmnyr",
+      "children": [],
+      "settings": {
+        "text": "Men Cloths",
+        "_cssClasses": "slider_content",
+        "_cssGlobalClasses": [
+          "rupsjm"
+        ]
+      },
+      "label": "slide title"
+    },
+    {
+      "id": "gfkubf",
+      "name": "text-basic",
+      "parent": "dmmnyr",
+      "children": [],
+      "settings": {
+        "text": "Tempus potenti erat luctus donec tellus amet netus nam condimentum duis tempor metus taciti malesuada ",
+        "_cssClasses": "slider_content",
+        "_cssGlobalClasses": [
+          "abvvnj"
+        ]
+      },
+      "label": "slide text"
+    },
+    {
+      "id": "kyezul",
+      "name": "button",
+      "parent": "dmmnyr",
+      "children": [],
+      "settings": {
+        "text": "Shop Now",
+        "style": "primary",
+        "_cssClasses": "slider_content",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "hnzmxm"
+        ]
+      },
+      "label": "slide btn"
+    },
+    {
+      "id": "rgbpxq",
+      "name": "block",
+      "parent": "gddzgf",
+      "children": [
+        "siqawl",
+        "grjkpe",
+        "genhji"
+      ],
+      "settings": {
+        "_cssClasses": "slidebg",
+        "_cssGlobalClasses": [
+          "ebcthh"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "siqawl",
+      "name": "heading",
+      "parent": "rgbpxq",
+      "children": [],
+      "settings": {
+        "text": "Men Cloths",
+        "_cssClasses": "slider_content",
+        "_cssGlobalClasses": [
+          "rupsjm"
+        ]
+      },
+      "label": "slide title"
+    },
+    {
+      "id": "grjkpe",
+      "name": "text-basic",
+      "parent": "rgbpxq",
+      "children": [],
+      "settings": {
+        "text": "Tempus potenti erat luctus donec tellus amet netus nam condimentum duis tempor metus taciti malesuada ",
+        "_cssClasses": "slider_content",
+        "_cssGlobalClasses": [
+          "abvvnj"
+        ]
+      },
+      "label": "slide text"
+    },
+    {
+      "id": "genhji",
+      "name": "button",
+      "parent": "rgbpxq",
+      "children": [],
+      "settings": {
+        "text": "Shop Now",
+        "style": "primary",
+        "_cssClasses": "slider_content",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "hnzmxm"
+        ]
+      },
+      "label": "slide btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "sttlwb",
+      "name": "migrator-features-v37",
+      "settings": {
+        "_padding": {
+          "top": "60px",
+          "right": "20px",
+          "bottom": "60px",
+          "left": "20px"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "pikkrq",
+      "name": "migrator-features-v37__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_rowGap": "20px"
+      },
+      "_exists": false
+    },
+    {
+      "id": "onazsa",
+      "name": "migrator-features-v37__slider-wrap",
+      "settings": {},
+      "_exists": false
+    },
+    {
+      "id": "gnrzev",
+      "name": "migrator-features-v37__slider",
+      "settings": {
+        "arrowHeight": "60",
+        "arrowWidth": "100",
+        "arrowBackground": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "arrowBorder": {
+          "color": {
+            "hex": "#34c174",
+            "id": "zjodvr",
+            "name": "Green"
+          }
+        },
+        "arrowBackground:hover": {
+          "hex": "#34c174",
+          "id": "zjodvr",
+          "name": "Green"
+        },
+        "height": "70vh",
+        "_cssCustom": ".custom_slider_06 .splide__arrow {\n    position: absolute;\n    bottom: -30px;\n  \ttop: auto;\n    left: auto;\n  \tpadding: 15px;\n  opacity: 0;\n}\n.custom_slider_06 .splide__arrow svg {\n  fill: #fff;\n}\n.custom_slider_06:hover .splide__arrow {\n    opacity: 1;\n}\n\n.custom_slider_06 .splide__arrow--prev {\n    right: 100px;\n}\n.custom_slider_06 .splide__arrow--next {\n    right: 0px;\n}\n\n.slider_content {\n  opacity: 0;\n  transform: translateY(100px);\n  transition: transform 0.3s ease, opacity 0.3s ease;\n}\n\n.custom_slider_06:hover .slider_content {\n  transform: translateY(0);\n  opacity: 1;\n}\n.slidebg {\n  position: relative;\n}\n\n.slidebg::before {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-image: linear-gradient(to bottom right, #8467d9, #34c174);\n  opacity: 0;\n  transition: background-image 0.3s ease, opacity 0.3s ease;\n}\n\n\n.slidebg:hover::before {\n  background-color: rgba(0, 0, 0, 0.5); /* Overlay color on hover */\n  opacity: 0.7;\n}\n\n\n"
+      },
+      "_exists": false
+    },
+    {
+      "id": "ebcthh",
+      "name": "migrator-features-v37__slide",
+      "settings": {
+        "_background": {
+          "image": {
+            "id": 3241,
+            "filename": "portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "size": "full",
+            "full": "https://bbpreview.local/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "url": "https://bbpreview.local/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg"
+          }
+        },
+        "_padding": {
+          "left": "80px",
+          "right": "50%"
+        },
+        "_alignItems": "flex-start",
+        "_rowGap": "20",
+        "_gradient:hover": [],
+        "_padding:mobile_landscape": {
+          "right": "40%",
+          "left": "40px"
+        },
+        "_padding:mobile_portrait": {
+          "left": "20px",
+          "right": "30%"
+        },
+        "_rowGap:mobile_landscape": "10",
+        "_background:mobile_landscape": {
+          "image": {
+            "id": 3441,
+            "filename": "portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall-mobile.jpg",
+            "size": "full",
+            "full": "https://bbpreview.local/wp-content/uploads/2023/06/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall-mobile.jpg",
+            "url": "https://bbpreview.local/wp-content/uploads/2023/06/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall-mobile.jpg"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "rupsjm",
+      "name": "migrator-features-v37__slide-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "36px",
+          "line-height": "46px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "26px",
+          "line-height": "36px"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "abvvnj",
+      "name": "migrator-features-v37__slide-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "18px",
+          "line-height": "28px"
+        },
+        "_padding": {
+          "bottom": "20px"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "10px"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "hnzmxm",
+      "name": "migrator-features-v37__slide-btn",
+      "settings": {},
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

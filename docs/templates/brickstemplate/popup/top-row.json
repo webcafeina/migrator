@@ -1,0 +1,452 @@
+{
+  "content": [
+    {
+      "id": "hgkjcr",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "nvffmu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "htwuzp"
+        ]
+      }
+    },
+    {
+      "id": "nvffmu",
+      "name": "container",
+      "parent": "hgkjcr",
+      "children": [
+        "qltgfb",
+        "gjyzxa",
+        "scpsyd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "odproa"
+        ]
+      }
+    },
+    {
+      "id": "qltgfb",
+      "name": "block",
+      "parent": "nvffmu",
+      "children": [
+        "wydmpd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jiwtue"
+        ]
+      },
+      "label": "top row"
+    },
+    {
+      "id": "wydmpd",
+      "name": "heading",
+      "parent": "qltgfb",
+      "children": [],
+      "settings": {
+        "text": "Buy your favorite food at discounted price",
+        "_cssGlobalClasses": [
+          "yvjzph"
+        ]
+      }
+    },
+    {
+      "id": "gjyzxa",
+      "name": "block",
+      "parent": "nvffmu",
+      "children": [
+        "oltcjk",
+        "wepecl",
+        "rchezs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "krtlma"
+        ]
+      },
+      "label": "bottom row"
+    },
+    {
+      "id": "oltcjk",
+      "name": "block",
+      "parent": "gjyzxa",
+      "children": [
+        "roswda",
+        "mrwuoj",
+        "ptxkis"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ffmlxj"
+        ]
+      },
+      "label": "product"
+    },
+    {
+      "id": "roswda",
+      "name": "image",
+      "parent": "oltcjk",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vpspqz"
+        ],
+        "image": {
+          "id": 3061,
+          "filename": "top-view-fish-chips-plate.jpg",
+          "size": "medium",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/top-view-fish-chips-plate.jpg",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/top-view-fish-chips-plate-300x300.jpg"
+        }
+      }
+    },
+    {
+      "id": "mrwuoj",
+      "name": "heading",
+      "parent": "oltcjk",
+      "children": [],
+      "settings": {
+        "text": "$20",
+        "_cssGlobalClasses": [
+          "qkcxaa"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "ptxkis",
+      "name": "heading",
+      "parent": "oltcjk",
+      "children": [],
+      "settings": {
+        "text": "Product Name",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "xsvces"
+        ]
+      },
+      "label": "product name"
+    },
+    {
+      "id": "wepecl",
+      "name": "block",
+      "parent": "gjyzxa",
+      "children": [
+        "wdeclk",
+        "mhelpc",
+        "sbebmj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ffmlxj"
+        ]
+      },
+      "label": "product"
+    },
+    {
+      "id": "wdeclk",
+      "name": "image",
+      "parent": "wepecl",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vpspqz"
+        ],
+        "image": {
+          "id": 3059,
+          "filename": "high-angle-delicious-food-plate.jpg",
+          "size": "medium",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/high-angle-delicious-food-plate.jpg",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/high-angle-delicious-food-plate-300x300.jpg"
+        }
+      }
+    },
+    {
+      "id": "mhelpc",
+      "name": "heading",
+      "parent": "wepecl",
+      "children": [],
+      "settings": {
+        "text": "$20",
+        "_cssGlobalClasses": [
+          "qkcxaa"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "sbebmj",
+      "name": "heading",
+      "parent": "wepecl",
+      "children": [],
+      "settings": {
+        "text": "Product Name",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "xsvces"
+        ]
+      },
+      "label": "product name"
+    },
+    {
+      "id": "rchezs",
+      "name": "block",
+      "parent": "gjyzxa",
+      "children": [
+        "eyyopd",
+        "uylysc",
+        "hrrugm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ffmlxj"
+        ]
+      },
+      "label": "product"
+    },
+    {
+      "id": "eyyopd",
+      "name": "image",
+      "parent": "rchezs",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vpspqz"
+        ],
+        "image": {
+          "id": 3060,
+          "filename": "decorative-candles-muffins-with-star-sprinkles-against.jpg",
+          "size": "medium",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/decorative-candles-muffins-with-star-sprinkles-against.jpg",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/decorative-candles-muffins-with-star-sprinkles-against-300x300.jpg"
+        }
+      }
+    },
+    {
+      "id": "uylysc",
+      "name": "heading",
+      "parent": "rchezs",
+      "children": [],
+      "settings": {
+        "text": "$20",
+        "_cssGlobalClasses": [
+          "qkcxaa"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "hrrugm",
+      "name": "heading",
+      "parent": "rchezs",
+      "children": [],
+      "settings": {
+        "text": "Product Name",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "xsvces"
+        ]
+      },
+      "label": "product name"
+    },
+    {
+      "id": "scpsyd",
+      "name": "heading",
+      "parent": "nvffmu",
+      "children": [],
+      "settings": {
+        "text": "no thanks",
+        "_interactions": [
+          {
+            "id": "wlclcx",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2766"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "egdtji"
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "htwuzp",
+      "name": "migrator-popup-v15",
+      "settings": {
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "odproa",
+      "name": "migrator-popup-v15__container",
+      "settings": {
+        "_padding": {
+          "bottom": "80px"
+        },
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "jiwtue",
+      "name": "migrator-popup-v15__top-row",
+      "settings": {
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/high-angle-hummus-crackers-arrangement.jpg",
+            "external": true,
+            "filename": "high-angle-hummus-crackers-arrangement.jpg"
+          }
+        },
+        "_height": "350px",
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "mhxpye",
+              "color": {
+                "hex": "#212121",
+                "rgb": "rgba(33, 33, 33, 0.55)",
+                "hsl": "hsla(0, 0%, 13%, 0.55)"
+              }
+            }
+          ]
+        },
+        "_alignSelf": "center",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "yvjzph",
+      "name": "migrator-popup-v15__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "36px",
+          "line-height": "42px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "28px",
+          "line-height": "32px"
+        }
+      }
+    },
+    {
+      "id": "krtlma",
+      "name": "migrator-popup-v15__bottom-row",
+      "settings": {
+        "_alignItems": "center",
+        "_direction": "row",
+        "_justifyContent": "center",
+        "_alignSelf": "center",
+        "_margin": {
+          "top": "-80"
+        },
+        "_zIndex": "1"
+      }
+    },
+    {
+      "id": "ffmlxj",
+      "name": "migrator-popup-v15__product",
+      "settings": {
+        "_alignItems": "center",
+        "_width:mobile_landscape": "33.33%",
+        "_display:mobile_portrait": "none"
+      }
+    },
+    {
+      "id": "vpspqz",
+      "name": "migrator-popup-v15__image",
+      "settings": {
+        "_width": "200px",
+        "_width:tablet_portrait": "180px",
+        "_width:mobile_landscape": "150px",
+        "_width:mobile_portrait": "120px",
+        "_padding": {
+          "bottom": "10px"
+        }
+      }
+    },
+    {
+      "id": "qkcxaa",
+      "name": "migrator-popup-v15__price",
+      "settings": {
+        "_typography": {
+          "font-size": "22px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "20px"
+        }
+      }
+    },
+    {
+      "id": "xsvces",
+      "name": "migrator-popup-v15__product-name",
+      "settings": {
+        "_typography": {
+          "font-size": "20px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "18px"
+        }
+      }
+    },
+    {
+      "id": "egdtji",
+      "name": "migrator-popup-v15__close",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "text-transform": "uppercase",
+          "font-size": "16",
+          "font-weight": "400"
+        },
+        "_padding": {
+          "top": "20px"
+        },
+        "_cursor": "pointer"
+      }
+    }
+  ],
+  "globalElements": []
+}

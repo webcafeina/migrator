@@ -1,0 +1,551 @@
+{
+  "content": [
+    {
+      "id": "rjalwp",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ysjost"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "edaeej"
+        ]
+      }
+    },
+    {
+      "id": "ysjost",
+      "name": "container",
+      "parent": "rjalwp",
+      "children": [
+        "kvsaxm",
+        "camwub"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ipfzrb"
+        ]
+      }
+    },
+    {
+      "id": "kvsaxm",
+      "name": "block",
+      "parent": "ysjost",
+      "children": [
+        "dqdinn",
+        "eihcdd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "czuppq"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "dqdinn",
+      "name": "heading",
+      "parent": "kvsaxm",
+      "children": [],
+      "settings": {
+        "text": "Our Team Style 06",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "gctmzx"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "eihcdd",
+      "name": "text-basic",
+      "parent": "kvsaxm",
+      "children": [],
+      "settings": {
+        "text": "Dictumst diam letius aptent mus natoque morbi accumsan primis arcu phasellus vehicula vulputate nam luctus semper at condimentum nibh egestas",
+        "_cssGlobalClasses": [
+          "wbrdfp"
+        ],
+        "tag": "p"
+      },
+      "label": "top text"
+    },
+    {
+      "id": "camwub",
+      "name": "block",
+      "parent": "ysjost",
+      "children": [
+        "lixmoa",
+        "bjivon",
+        "bjgnkq",
+        "ghsdco"
+      ],
+      "settings": {
+        "_cssCustom": ".bt-team6 {\n    position: relative;\n    overflow: hidden;\n    transition: all 0.5s;\n}\n.bt-img6 {\n    transition: all 0.5s;\n}\n.bt-name6 {\n    transition: all 0.5s;\n    transform: translateY(180px);\n}\n.bt-team6:hover .bt-name6 {\n    transform: translateY(0);\n}\n.bt-team6:hover .bt-img6 {\n    transform: translateY(-15%);\n}",
+        "_cssGlobalClasses": [
+          "rzwddf"
+        ]
+      },
+      "label": "team wrap"
+    },
+    {
+      "id": "lixmoa",
+      "name": "block",
+      "parent": "camwub",
+      "children": [
+        "fjdyjp",
+        "rvqvkh"
+      ],
+      "settings": {
+        "_cssClasses": "bt-team6",
+        "_cssGlobalClasses": [
+          "povijn"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "fjdyjp",
+      "name": "image",
+      "parent": "lixmoa",
+      "children": [],
+      "settings": {
+        "_cssClasses": "bt-img6",
+        "_cssGlobalClasses": [
+          "incjmp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2025/03/arrul-lin-sYhUhse5uT8-unsplash.jpg",
+          "external": true,
+          "filename": "arrul-lin-sYhUhse5uT8-unsplash.jpg"
+        }
+      },
+      "themeStyles": {}
+    },
+    {
+      "id": "rvqvkh",
+      "name": "block",
+      "parent": "lixmoa",
+      "children": [
+        "oxwxed",
+        "bglrxf"
+      ],
+      "settings": {
+        "_cssClasses": "bt-name6",
+        "_cssGlobalClasses": [
+          "jzbahl"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "oxwxed",
+      "name": "heading",
+      "parent": "rvqvkh",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cgpbaa"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "bglrxf",
+      "name": "text-basic",
+      "parent": "rvqvkh",
+      "children": [],
+      "settings": {
+        "text": "Web Developer",
+        "_cssGlobalClasses": [
+          "xhuaib"
+        ],
+        "tag": "p"
+      },
+      "label": "designation"
+    },
+    {
+      "id": "bjivon",
+      "name": "block",
+      "parent": "camwub",
+      "children": [
+        "vrautr",
+        "wnfvbe"
+      ],
+      "settings": {
+        "_cssClasses": "bt-team6",
+        "_cssGlobalClasses": [
+          "povijn"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "vrautr",
+      "name": "image",
+      "parent": "bjivon",
+      "children": [],
+      "settings": {
+        "_cssClasses": "bt-img6",
+        "_cssGlobalClasses": [
+          "incjmp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2025/03/jakob-owens-lkMJcGDZLVs-unsplash.jpg",
+          "external": true,
+          "filename": "jakob-owens-lkMJcGDZLVs-unsplash.jpg"
+        }
+      },
+      "themeStyles": {}
+    },
+    {
+      "id": "wnfvbe",
+      "name": "block",
+      "parent": "bjivon",
+      "children": [
+        "csfvvw",
+        "gkzvhd"
+      ],
+      "settings": {
+        "_cssClasses": "bt-name6",
+        "_cssGlobalClasses": [
+          "jzbahl"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "csfvvw",
+      "name": "heading",
+      "parent": "wnfvbe",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cgpbaa"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "gkzvhd",
+      "name": "text-basic",
+      "parent": "wnfvbe",
+      "children": [],
+      "settings": {
+        "text": "Web Developer",
+        "_cssGlobalClasses": [
+          "xhuaib"
+        ],
+        "tag": "p"
+      },
+      "label": "designation"
+    },
+    {
+      "id": "bjgnkq",
+      "name": "block",
+      "parent": "camwub",
+      "children": [
+        "yubukq",
+        "hcztas"
+      ],
+      "settings": {
+        "_cssClasses": "bt-team6",
+        "_cssGlobalClasses": [
+          "povijn"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "yubukq",
+      "name": "image",
+      "parent": "bjgnkq",
+      "children": [],
+      "settings": {
+        "_cssClasses": "bt-img6",
+        "_cssGlobalClasses": [
+          "incjmp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2025/03/joseph-gonzalez-iFgRcqHznqg-unsplash.jpg",
+          "external": true,
+          "filename": "joseph-gonzalez-iFgRcqHznqg-unsplash.jpg"
+        }
+      },
+      "themeStyles": {}
+    },
+    {
+      "id": "hcztas",
+      "name": "block",
+      "parent": "bjgnkq",
+      "children": [
+        "wzeeuw",
+        "ckbfjt"
+      ],
+      "settings": {
+        "_cssClasses": "bt-name6",
+        "_cssGlobalClasses": [
+          "jzbahl"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "wzeeuw",
+      "name": "heading",
+      "parent": "hcztas",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cgpbaa"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "ckbfjt",
+      "name": "text-basic",
+      "parent": "hcztas",
+      "children": [],
+      "settings": {
+        "text": "Web Developer",
+        "_cssGlobalClasses": [
+          "xhuaib"
+        ],
+        "tag": "p"
+      },
+      "label": "designation"
+    },
+    {
+      "id": "ghsdco",
+      "name": "block",
+      "parent": "camwub",
+      "children": [
+        "rstose",
+        "kqppzd"
+      ],
+      "settings": {
+        "_cssClasses": "bt-team6",
+        "_cssGlobalClasses": [
+          "povijn"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "rstose",
+      "name": "image",
+      "parent": "ghsdco",
+      "children": [],
+      "settings": {
+        "_cssClasses": "bt-img6",
+        "_cssGlobalClasses": [
+          "incjmp"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2025/03/meysam-jarahkar-LI7jB1925j0-unsplash.jpg",
+          "external": true,
+          "filename": "meysam-jarahkar-LI7jB1925j0-unsplash.jpg"
+        }
+      },
+      "themeStyles": {}
+    },
+    {
+      "id": "kqppzd",
+      "name": "block",
+      "parent": "ghsdco",
+      "children": [
+        "kaxcge",
+        "kmyvmo"
+      ],
+      "settings": {
+        "_cssClasses": "bt-name6",
+        "_cssGlobalClasses": [
+          "jzbahl"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "kaxcge",
+      "name": "heading",
+      "parent": "kqppzd",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cgpbaa"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "kmyvmo",
+      "name": "text-basic",
+      "parent": "kqppzd",
+      "children": [],
+      "settings": {
+        "text": "Web Developer",
+        "_cssGlobalClasses": [
+          "xhuaib"
+        ],
+        "tag": "p"
+      },
+      "label": "designation"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "edaeej",
+      "name": "migrator-team-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ipfzrb",
+      "name": "migrator-team-v06__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "czuppq",
+      "name": "migrator-team-v06__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "bottom": 50
+        }
+      }
+    },
+    {
+      "id": "gctmzx",
+      "name": "migrator-team-v06__top-heading",
+      "settings": []
+    },
+    {
+      "id": "wbrdfp",
+      "name": "migrator-team-v06__top-text",
+      "settings": {
+        "_padding": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_typography": {
+          "text-align": "center"
+        }
+      },
+      "modified": 1742936398,
+      "user_id": 2
+    },
+    {
+      "id": "rzwddf",
+      "name": "migrator-team-v06__team-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "10px",
+        "_cssCustom": ".bt-team6 {\n    position: relative;\n    overflow: hidden;\n    transition: all 0.5s;\n}\n.bt-img6 {\n    transition: all 0.5s;\n}\n.bt-name6 {\n    transition: all 0.5s;\n    transform: translateY(180px);\n}\n.bt-team6:hover .bt-name6 {\n    transform: translateY(0);\n}\n.bt-team6:hover .bt-img6 {\n    transform: translateY(-15%);\n}",
+        "_justifyContent:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "povijn",
+      "name": "migrator-team-v06__team-item",
+      "settings": {
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        },
+        "_widthMax:mobile_landscape": "50%",
+        "_height:mobile_portrait": "370px",
+        "_widthMax:mobile_portrait": "80%"
+      }
+    },
+    {
+      "id": "incjmp",
+      "name": "migrator-team-v06__image",
+      "settings": []
+    },
+    {
+      "id": "jzbahl",
+      "name": "migrator-team-v06__name-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_justifyContent": "center",
+        "_padding": {
+          "top": 20,
+          "bottom": 20
+        },
+        "_position": "absolute",
+        "_top:mobile_portrait": "60%",
+        "_bottom": "0px"
+      }
+    },
+    {
+      "id": "cgpbaa",
+      "name": "migrator-team-v06__name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "xhuaib",
+      "name": "migrator-team-v06__designation",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

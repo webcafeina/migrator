@@ -1,0 +1,338 @@
+{
+  "content": [
+    {
+      "id": "55e48e",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "9490f2"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bpuncq"
+        ]
+      }
+    },
+    {
+      "id": "9490f2",
+      "name": "container",
+      "parent": "55e48e",
+      "children": [
+        "e06101"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qkdbmh"
+        ]
+      }
+    },
+    {
+      "id": "e06101",
+      "name": "block",
+      "parent": "9490f2",
+      "children": [
+        "6f0084",
+        "d99130"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "phcagm"
+        ]
+      },
+      "label": "team wrap"
+    },
+    {
+      "id": "6f0084",
+      "name": "block",
+      "parent": "e06101",
+      "children": [
+        "33356b",
+        "4fbe7e",
+        "757cf5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gcqajf"
+        ]
+      },
+      "label": "left content"
+    },
+    {
+      "id": "33356b",
+      "name": "heading",
+      "parent": "6f0084",
+      "children": [],
+      "settings": {
+        "text": "Testimonials ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ftjxwf"
+        ]
+      }
+    },
+    {
+      "id": "4fbe7e",
+      "name": "text-basic",
+      "parent": "6f0084",
+      "children": [],
+      "settings": {
+        "text": "Facilisis ultricies nascetur interdum donec vehicula hendrerit ornare dui egestas turpis elementum sociosqu venenatis blandit",
+        "_cssGlobalClasses": [
+          "wtwimi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "757cf5",
+      "name": "button",
+      "parent": "6f0084",
+      "children": [],
+      "settings": {
+        "text": "View More",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "vvepxo"
+        ]
+      }
+    },
+    {
+      "id": "d99130",
+      "name": "block",
+      "parent": "e06101",
+      "children": [
+        "fd27e1"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ucnldo"
+        ]
+      },
+      "label": "right content"
+    },
+    {
+      "id": "fd27e1",
+      "name": "testimonials",
+      "parent": "d99130",
+      "children": [],
+      "settings": {
+        "items": [
+          {
+            "content": "Lorem ipsum dolor ist amte. Consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+            "name": "Emily",
+            "title": "Developer",
+            "image": {
+              "id": 396,
+              "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+              "size": "full",
+              "full": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+              "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+            },
+            "id": "pwbeji"
+          },
+          {
+            "content": "Lorem ipsum dolor ist amte. Consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+            "name": "Camila",
+            "title": "Developer",
+            "image": {
+              "id": 393,
+              "filename": "seth-doyle-BZ2PNGD5Emw-unsplash.jpg",
+              "size": "full",
+              "full": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/seth-doyle-BZ2PNGD5Emw-unsplash.jpg",
+              "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/seth-doyle-BZ2PNGD5Emw-unsplash.jpg"
+            },
+            "id": "actwgo"
+          },
+          {
+            "content": "Lorem ipsum dolor ist amte. Consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+            "name": "Thomas",
+            "title": "Developer",
+            "image": {
+              "id": 395,
+              "filename": "midas-hofstra-tidSLv-UaNs-unsplash.jpg",
+              "size": "full",
+              "full": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/midas-hofstra-tidSLv-UaNs-unsplash.jpg",
+              "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/midas-hofstra-tidSLv-UaNs-unsplash.jpg"
+            },
+            "id": "fdryam"
+          }
+        ],
+        "infinite": true,
+        "arrows": true,
+        "autoplay": true,
+        "pauseOnHover": true,
+        "_cssGlobalClasses": [
+          "ubhojs"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "bpuncq",
+      "name": "migrator-testimonials-v05",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "qkdbmh",
+      "name": "migrator-testimonials-v05__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "phcagm",
+      "name": "migrator-testimonials-v05__team-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 50
+        },
+        "_rowGap:mobile_landscape": "40"
+      }
+    },
+    {
+      "id": "gcqajf",
+      "name": "migrator-testimonials-v05__left-content",
+      "settings": {
+        "_padding": {
+          "right": "5%"
+        },
+        "_width": "40%",
+        "_width:mobile_landscape": "100%",
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "ftjxwf",
+      "name": "migrator-testimonials-v05__heading",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "wtwimi",
+      "name": "migrator-testimonials-v05__text",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "vvepxo",
+      "name": "migrator-testimonials-v05__button",
+      "settings": {
+        "style": "primary",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding": {
+          "left": "16",
+          "top": "8",
+          "right": "16",
+          "bottom": "8"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#735dfd",
+            "id": "cwyawq",
+            "name": "Acent Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "ucnldo",
+      "name": "migrator-testimonials-v05__right-content",
+      "settings": {
+        "_width": "60%",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "ubhojs",
+      "name": "migrator-testimonials-v05__testimonials",
+      "settings": {
+        "arrowTypography": {
+          "color": {
+            "hex": "#616161"
+          },
+          "font-size": "30"
+        },
+        "prevArrow": {
+          "library": "ionicons",
+          "icon": "ion-ios-arrow-back"
+        },
+        "prevArrowLeft": "32px",
+        "nextArrow": {
+          "library": "ionicons",
+          "icon": "ion-ios-arrow-forward"
+        },
+        "nextArrowRight": "32px",
+        "_alignSelf": "center",
+        "textAlign": "center",
+        "imageAlign": "center",
+        "imageBorder": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "arrowTypography:tablet_portrait": {
+          "font-size": "25"
+        },
+        "arrowHeight:mobile_portrait": "0",
+        "arrowWidth:mobile_portrait": "70"
+      }
+    }
+  ],
+  "globalElements": []
+}

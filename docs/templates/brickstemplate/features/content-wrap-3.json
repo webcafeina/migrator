@@ -1,0 +1,300 @@
+{
+  "content": [
+    {
+      "id": "hfnjho",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ixeeua"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ywlrtx"
+        ]
+      }
+    },
+    {
+      "id": "ixeeua",
+      "name": "container",
+      "parent": "hfnjho",
+      "children": [
+        "spfbes",
+        "lcjmgg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "eictmb"
+        ]
+      }
+    },
+    {
+      "id": "spfbes",
+      "name": "block",
+      "parent": "ixeeua",
+      "children": [
+        "nyxdpb",
+        "djfesw",
+        "yepaxo",
+        "gwoble"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qybhyk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "nyxdpb",
+      "name": "heading",
+      "parent": "spfbes",
+      "children": [],
+      "settings": {
+        "text": "Dui enim hac pretium justo torquent si et proin curabitur augue.",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "lrvpho"
+        ]
+      }
+    },
+    {
+      "id": "djfesw",
+      "name": "text",
+      "parent": "spfbes",
+      "children": [],
+      "settings": {
+        "text": "<p>Ut senectus sapien enim luctus montes platea consectetuer letius eleifend nisl penatibus ultrices lobortis taciti feugiat adipiscing congue quisque felis</p>",
+        "_cssGlobalClasses": [
+          "vvazqk"
+        ]
+      }
+    },
+    {
+      "id": "yepaxo",
+      "name": "block",
+      "parent": "spfbes",
+      "children": [
+        "lwijar",
+        "twouph"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "stwcha"
+        ]
+      },
+      "label": "icon text"
+    },
+    {
+      "id": "lwijar",
+      "name": "icon-box",
+      "parent": "yepaxo",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "ionicons",
+          "icon": "ion-ios-print"
+        },
+        "content": "<h4>Icon box heading</h4>",
+        "_cssGlobalClasses": [
+          "vwgfsn"
+        ]
+      }
+    },
+    {
+      "id": "twouph",
+      "name": "icon-box",
+      "parent": "yepaxo",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "ionicons",
+          "icon": "ion-logo-ionic"
+        },
+        "content": "<h4>Icon box heading</h4>",
+        "_cssGlobalClasses": [
+          "vwgfsn"
+        ]
+      }
+    },
+    {
+      "id": "gwoble",
+      "name": "block",
+      "parent": "spfbes",
+      "children": [
+        "vtqtrd",
+        "fxeoje"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "stwcha"
+        ]
+      },
+      "label": "icon text"
+    },
+    {
+      "id": "vtqtrd",
+      "name": "icon-box",
+      "parent": "gwoble",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "ionicons",
+          "icon": "ion-logo-game-controller-b"
+        },
+        "content": "<h4>Icon box heading</h4>",
+        "_cssGlobalClasses": [
+          "vwgfsn"
+        ]
+      }
+    },
+    {
+      "id": "fxeoje",
+      "name": "icon-box",
+      "parent": "gwoble",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-dropbox"
+        },
+        "content": "<h4>Icon box heading</h4>",
+        "_cssGlobalClasses": [
+          "vwgfsn"
+        ]
+      }
+    },
+    {
+      "id": "lcjmgg",
+      "name": "block",
+      "parent": "ixeeua",
+      "children": [
+        "ooessk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "inroru"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "ooessk",
+      "name": "image",
+      "parent": "lcjmgg",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zxtkau"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/New-entries-amico.svg",
+          "external": true,
+          "filename": "New-entries-amico.svg"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ywlrtx",
+      "name": "migrator-features-v20",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "eictmb",
+      "name": "migrator-features-v20__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "qybhyk",
+      "name": "migrator-features-v20__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_order:mobile_landscape": "1",
+        "_rowGap:mobile_landscape": "15px"
+      }
+    },
+    {
+      "id": "lrvpho",
+      "name": "migrator-features-v20__heading",
+      "settings": {
+        "_order:mobile_portrait": "1",
+        "_margin:mobile_portrait": {
+          "top": 10
+        }
+      }
+    },
+    {
+      "id": "vvazqk",
+      "name": "migrator-features-v20__text",
+      "settings": {
+        "_order:mobile_portrait": "2"
+      }
+    },
+    {
+      "id": "stwcha",
+      "name": "migrator-features-v20__icon-text",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_justifyContent:mobile_portrait": "center"
+      }
+    },
+    {
+      "id": "vwgfsn",
+      "name": "migrator-features-v20__icon-box",
+      "settings": {
+        "direction": "row",
+        "verticalAlign": "center",
+        "contentAlign": "center",
+        "contentMargin": {
+          "right": "",
+          "left": 20
+        },
+        "iconSize": "30px",
+        "contentMargin:mobile_portrait": {
+          "left": 15
+        }
+      }
+    },
+    {
+      "id": "inroru",
+      "name": "migrator-features-v20__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end"
+      }
+    },
+    {
+      "id": "zxtkau",
+      "name": "migrator-features-v20__image",
+      "settings": {
+        "_margin:mobile_landscape": {
+          "bottom": 30
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

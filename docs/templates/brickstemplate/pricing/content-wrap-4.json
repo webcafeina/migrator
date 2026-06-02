@@ -1,0 +1,639 @@
+{
+  "content": [
+    {
+      "id": "cb82e7",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "9d7175"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wqmyvq"
+        ]
+      }
+    },
+    {
+      "id": "9d7175",
+      "name": "container",
+      "parent": "cb82e7",
+      "children": [
+        "eaefa8",
+        "824545"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ovawdr"
+        ]
+      }
+    },
+    {
+      "id": "eaefa8",
+      "name": "block",
+      "parent": "9d7175",
+      "children": [
+        "ba6edd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "djiozc"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "ba6edd",
+      "name": "heading",
+      "parent": "eaefa8",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 5",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "bwdzht"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "824545",
+      "name": "block",
+      "parent": "9d7175",
+      "children": [
+        "ee2eee",
+        "5f1258",
+        "085d0e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rfdowd"
+        ]
+      }
+    },
+    {
+      "id": "ee2eee",
+      "name": "block",
+      "parent": "824545",
+      "children": [
+        "fbfde4",
+        "335cbf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "umnsfm"
+        ]
+      },
+      "label": "Pricing"
+    },
+    {
+      "id": "fbfde4",
+      "name": "heading",
+      "parent": "ee2eee",
+      "children": [],
+      "settings": {
+        "text": "Pricing",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ggywrh"
+        ]
+      }
+    },
+    {
+      "id": "335cbf",
+      "name": "text-basic",
+      "parent": "ee2eee",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.",
+        "_cssGlobalClasses": [
+          "xetnwi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "5f1258",
+      "name": "block",
+      "parent": "824545",
+      "children": [
+        "5f3b32",
+        "0e5127",
+        "bbccf6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iztaru"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "5f3b32",
+      "name": "heading",
+      "parent": "5f1258",
+      "children": [],
+      "settings": {
+        "text": "Personal Plan ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "isyhhl"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "0e5127",
+      "name": "social-icons",
+      "parent": "5f1258",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "fqaetb",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "naaeyu",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "lyjouv",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-xmark"
+            },
+            "id": "uldxbr",
+            "color": {
+              "hex": "#e2e4e6"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "einfec"
+        ]
+      },
+      "label": "list 1"
+    },
+    {
+      "id": "bbccf6",
+      "name": "button",
+      "parent": "5f1258",
+      "children": [],
+      "settings": {
+        "text": "$30 Per Month",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "oinifp"
+        ]
+      }
+    },
+    {
+      "id": "085d0e",
+      "name": "block",
+      "parent": "824545",
+      "children": [
+        "302438",
+        "5e2336",
+        "324c20"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iztaru"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "302438",
+      "name": "heading",
+      "parent": "085d0e",
+      "children": [],
+      "settings": {
+        "text": "Agency Plan",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "isyhhl"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "5e2336",
+      "name": "social-icons",
+      "parent": "085d0e",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "ucwjqz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bfppcz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qhpwdq",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "apgsnw",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "czxhfi",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "qmoefw",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "fdywdc",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "zyleni"
+        ]
+      },
+      "label": "list 2"
+    },
+    {
+      "id": "324c20",
+      "name": "button",
+      "parent": "085d0e",
+      "children": [],
+      "settings": {
+        "text": "$50 Per Month",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "oinifp"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "wqmyvq",
+      "name": "migrator-pricing-v05",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ovawdr",
+      "name": "migrator-pricing-v05__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "djiozc",
+      "name": "migrator-pricing-v05__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        },
+        "_padding:mobile_landscape": {
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "bwdzht",
+      "name": "migrator-pricing-v05__top-heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "rfdowd",
+      "name": "migrator-pricing-v05__block",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_rowGap:mobile_landscape": "50px"
+      }
+    },
+    {
+      "id": "umnsfm",
+      "name": "migrator-pricing-v05__pricing",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "right": 50
+        },
+        "_width": "29.33%",
+        "_width:mobile_landscape": "100%",
+        "_alignItems:mobile_landscape": "center",
+        "_padding:mobile_landscape": {
+          "right": 0
+        }
+      }
+    },
+    {
+      "id": "ggywrh",
+      "name": "migrator-pricing-v05__heading",
+      "settings": []
+    },
+    {
+      "id": "xetnwi",
+      "name": "migrator-pricing-v05__text",
+      "settings": {
+        "_typography:mobile_landscape": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "iztaru",
+      "name": "migrator-pricing-v05__pricing-item",
+      "settings": {
+        "_padding": {
+          "top": 50,
+          "bottom": 50,
+          "right": 20,
+          "left": 20
+        },
+        "_border": {
+          "width": {
+            "top": 2,
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "color": {
+            "hex": "#f5f5f5"
+          },
+          "style": "solid"
+        },
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_width": "35.33%",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "isyhhl",
+      "name": "migrator-pricing-v05__plan-name",
+      "settings": {
+        "_typography": {
+          "font-size": "45px"
+        },
+        "_margin": {
+          "bottom": 30
+        },
+        "_typography:tablet_portrait": {
+          "line-height": "52px"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "38px"
+        }
+      }
+    },
+    {
+      "id": "einfec",
+      "name": "migrator-pricing-v05__list-1",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px"
+      }
+    },
+    {
+      "id": "oinifp",
+      "name": "migrator-pricing-v05__button",
+      "settings": {
+        "style": "primary",
+        "_margin": {
+          "top": 30
+        },
+        "_width": "100%",
+        "_padding": {
+          "top": 15,
+          "unit": {
+            "right": "px"
+          },
+          "bottom": 15
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#735dfd",
+            "id": "cwyawq",
+            "name": "Acent Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "zyleni",
+      "name": "migrator-pricing-v05__list-2",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px"
+      }
+    }
+  ],
+  "globalElements": []
+}

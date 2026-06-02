@@ -1,0 +1,313 @@
+{
+  "content": [
+    {
+      "id": "45f5cc",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "b67477"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ajiuhk"
+        ]
+      }
+    },
+    {
+      "id": "b67477",
+      "name": "container",
+      "parent": "45f5cc",
+      "children": [
+        "245b46",
+        "8d41d9"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dduxgy"
+        ]
+      }
+    },
+    {
+      "id": "245b46",
+      "name": "block",
+      "parent": "b67477",
+      "children": [
+        "d2f378",
+        "89b0c5",
+        "553d99"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ikugen"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "d2f378",
+      "name": "heading",
+      "parent": "245b46",
+      "children": [],
+      "settings": {
+        "text": "Adipiscing risus nunc et quam taciti metus arcu",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "iyxmfv"
+        ]
+      }
+    },
+    {
+      "id": "89b0c5",
+      "name": "text",
+      "parent": "245b46",
+      "children": [],
+      "settings": {
+        "text": "<p>Consequat gravida facilisis inceptos magna malesuada dui arcu est habitant dis semper</p>",
+        "_cssGlobalClasses": [
+          "basdmo"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "553d99",
+      "name": "block",
+      "parent": "245b46",
+      "children": [
+        "3d18ed",
+        "416ce1"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plddko"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "3d18ed",
+      "name": "button",
+      "parent": "553d99",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "tbdrkr"
+        ],
+        "style": "primary"
+      },
+      "label": "Button 1"
+    },
+    {
+      "id": "416ce1",
+      "name": "button",
+      "parent": "553d99",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "ttekkv"
+        ]
+      },
+      "label": "Button 2"
+    },
+    {
+      "id": "8d41d9",
+      "name": "block",
+      "parent": "b67477",
+      "children": [
+        "19f912"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pzbxub"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "19f912",
+      "name": "image",
+      "parent": "8d41d9",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qnkird"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/mobile-image.png",
+          "external": true,
+          "filename": "mobile-image.png"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ajiuhk",
+      "name": "migrator-hero-v07",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "dduxgy",
+      "name": "migrator-hero-v07__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 80,
+          "bottom": 50
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "top": 60,
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "ikugen",
+      "name": "migrator-hero-v07__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_margin:mobile_landscape": {
+          "bottom": 30
+        },
+        "_alignItems:mobile_landscape": "center",
+        "_rowGap:mobile_portrait": "10px"
+      }
+    },
+    {
+      "id": "iyxmfv",
+      "name": "migrator-hero-v07__heading",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "basdmo",
+      "name": "migrator-hero-v07__text",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "plddko",
+      "name": "migrator-hero-v07__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_margin": {
+          "top": 20
+        },
+        "_columnGap": "40px",
+        "_justifyContent:mobile_landscape": "center",
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        },
+        "_direction:mobile_portrait": "row"
+      }
+    },
+    {
+      "id": "tbdrkr",
+      "name": "migrator-hero-v07__button-1",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 10,
+          "right": 25,
+          "bottom": 10,
+          "left": 25
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "ttekkv",
+      "name": "migrator-hero-v07__button-2",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 10,
+          "right": 25,
+          "bottom": 10,
+          "left": 25
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#e6e1f7",
+            "id": "amcoyi"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#000000",
+            "id": "jfhhzf"
+          }
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "pzbxub",
+      "name": "migrator-hero-v07__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_margin": {
+          "top": 0
+        },
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "qnkird",
+      "name": "migrator-hero-v07__image",
+      "settings": {
+        "_width:mobile_portrait": "70%"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,317 @@
+{
+  "content": [
+    {
+      "id": "bd1bdd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "8c0281"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xuhclr"
+        ]
+      },
+      "label": "Features V42"
+    },
+    {
+      "id": "8c0281",
+      "name": "container",
+      "parent": "bd1bdd",
+      "children": [
+        "5786e5",
+        "17d077"
+      ],
+      "settings": {
+        "_cssCustom": ".bb-box11-s3 {\n    position: relative;\n    overflow: hidden;\n}\n\n.bb-box11-s3:before {\n    content: \"\";\n    position: absolute;\n    top: 0;\n    left: calc(-100% + 5px);\n    background-color: #7a64ff;\n    height: 100%;\n    width: 100%;\n    z-index: -1;\n    transition: all 0.5s;\n}\n.bb-box11-s3:hover:before {\n    left: 0;\n}\n.bb-box11-s3 .content,\n.bb-box11-s3 h4,\n.bb-box11-s3 .icon {\n    transition: all 0.5s ease-out;\n}\n\n.bb-box11-s3:hover .content,\n.bb-box11-s3:hover h4 {\n    color: #ffffff;\n}\n\n.bb-box11-s3:hover .icon {\n    background-color: #ffffff !important;\n    color: #8467d9 !important;\n}\n",
+        "_cssGlobalClasses": [
+          "cetdjl"
+        ]
+      },
+      "label": "Container"
+    },
+    {
+      "id": "5786e5",
+      "name": "block",
+      "parent": "8c0281",
+      "children": [
+        "abbf1b",
+        "08982b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lnbpes"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "abbf1b",
+      "name": "heading",
+      "parent": "5786e5",
+      "children": [],
+      "settings": {
+        "text": "Icon Box With Custom CSS Style 03",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hkdivb"
+        ]
+      }
+    },
+    {
+      "id": "08982b",
+      "name": "text",
+      "parent": "5786e5",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "krulvu"
+        ]
+      }
+    },
+    {
+      "id": "17d077",
+      "name": "block",
+      "parent": "8c0281",
+      "children": [
+        "e5703a",
+        "8d091e",
+        "d2bba2"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "paqlwv"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "e5703a",
+      "name": "icon-box",
+      "parent": "17d077",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4>Icon box heading</h4><p>Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box11-s3",
+        "_cssGlobalClasses": [
+          "vesmmi"
+        ]
+      }
+    },
+    {
+      "id": "8d091e",
+      "name": "icon-box",
+      "parent": "17d077",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4>Icon box heading</h4><p>Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box11-s3",
+        "_cssGlobalClasses": [
+          "vesmmi"
+        ]
+      }
+    },
+    {
+      "id": "d2bba2",
+      "name": "icon-box",
+      "parent": "17d077",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4>Icon box heading</h4><p>Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box11-s3",
+        "_cssGlobalClasses": [
+          "vesmmi"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.1",
+  "globalClasses": [
+    {
+      "id": "xuhclr",
+      "name": "bt-features-v42",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "cetdjl",
+      "name": "bt-features-v42__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20,
+          "top": 70,
+          "bottom": 70
+        },
+        "_cssCustom": ".bb-box11-s3 {\n    position: relative;\n    overflow: hidden;\n}\n\n.bb-box11-s3:before {\n    content: \"\";\n    position: absolute;\n    top: 0;\n    left: calc(-100% + 5px);\n    background-color: #7a64ff;\n    height: 100%;\n    width: 100%;\n    z-index: -1;\n    transition: all 0.5s;\n}\n.bb-box11-s3:hover:before {\n    left: 0;\n}\n.bb-box11-s3 .content,\n.bb-box11-s3 h4,\n.bb-box11-s3 .icon {\n    transition: all 0.5s ease-out;\n}\n\n.bb-box11-s3:hover .content,\n.bb-box11-s3:hover h4 {\n    color: #ffffff;\n}\n\n.bb-box11-s3:hover .icon {\n    background-color: #ffffff !important;\n    color: #8467d9 !important;\n}\n"
+      }
+    },
+    {
+      "id": "lnbpes",
+      "name": "bt-features-v42__content-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "hkdivb",
+      "name": "bt-features-v42__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "krulvu",
+      "name": "bt-features-v42__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "paqlwv",
+      "name": "bt-features-v42__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "vesmmi",
+      "name": "bt-features-v42__icon-box",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "iconBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "iconBorder": {
+          "radius": {
+            "unit": {
+              "top": "%",
+              "right": "%",
+              "bottom": "%",
+              "left": "%"
+            },
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "iconSize": "60px",
+        "_padding": {
+          "top": 40,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "iconMargin": {
+          "bottom": 20
+        },
+        "verticalAlign": "center",
+        "_zIndex": "1",
+        "iconPadding": {
+          "top": "15",
+          "right": "15",
+          "bottom": "15",
+          "left": "15"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

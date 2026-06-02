@@ -1,0 +1,83 @@
+{
+  "content": [
+    {
+      "id": "ikisjr",
+      "name": "product-tabs",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vuervl"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Product tabs 2"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "vuervl",
+      "name": "migrator-product-tabs-2",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5rem"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "1.5rem",
+          "top": "1.5rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "tabsPadding:mobile_landscape": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600"
+        },
+        "tabsBorder": {
+          "style": "none"
+        },
+        "panelPadding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem",
+          "right": "2rem",
+          "left": "2rem"
+        },
+        "tabsDirection": "row",
+        "tabActiveBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "tabsBackgroundColor": {
+          "hex": "#f1f0ee",
+          "id": "nohmnw",
+          "name": "Lighter - BG"
+        },
+        "_cssCustom": ".migrator-product-tabs-2 .woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,261 @@
+{
+  "content": [
+    {
+      "id": "daghcr",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ofpirw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kwhgvf"
+        ]
+      }
+    },
+    {
+      "id": "ofpirw",
+      "name": "container",
+      "parent": "daghcr",
+      "children": [
+        "flyjdh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vdicvr"
+        ]
+      }
+    },
+    {
+      "id": "flyjdh",
+      "name": "block",
+      "parent": "ofpirw",
+      "children": [
+        "oghxof",
+        "hploal",
+        "dixorw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uypcwt"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "oghxof",
+      "name": "image",
+      "parent": "flyjdh",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "esedpi"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/beautiful-smiling-young-blonde-woman-pointing-sunglasses-holding-shopping-bags-credit-card-pink-wall-1-1024x683.jpg",
+          "external": true,
+          "filename": "beautiful-smiling-young-blonde-woman-pointing-sunglasses-holding-shopping-bags-credit-card-pink-wall-1-1024x683.jpg"
+        }
+      }
+    },
+    {
+      "id": "hploal",
+      "name": "heading",
+      "parent": "flyjdh",
+      "children": [],
+      "settings": {
+        "text": "Do you want a Limited Time 70% Discount",
+        "_cssGlobalClasses": [
+          "wpnwmc"
+        ]
+      }
+    },
+    {
+      "id": "dixorw",
+      "name": "block",
+      "parent": "flyjdh",
+      "children": [
+        "pnntsy",
+        "mzigki"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tzriff"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "pnntsy",
+      "name": "button",
+      "parent": "dixorw",
+      "children": [],
+      "settings": {
+        "text": "YES",
+        "link": {
+          "type": "external",
+          "url": "https://brickstemplate.com/"
+        },
+        "_cssGlobalClasses": [
+          "ygkeex"
+        ]
+      },
+      "label": "yes btn"
+    },
+    {
+      "id": "mzigki",
+      "name": "button",
+      "parent": "dixorw",
+      "children": [],
+      "settings": {
+        "text": "NO",
+        "link": {
+          "type": "external",
+          "url": "https://brickstemplate.com/"
+        },
+        "_cssGlobalClasses": [
+          "uipvqe"
+        ]
+      },
+      "label": "no btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "kwhgvf",
+      "name": "migrator-popup-v18",
+      "settings": []
+    },
+    {
+      "id": "vdicvr",
+      "name": "migrator-popup-v18__container",
+      "settings": {
+        "_position": "relative",
+        "_justifyContent": "flex-end"
+      }
+    },
+    {
+      "id": "uypcwt",
+      "name": "migrator-popup-v18__content-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "esedpi",
+      "name": "migrator-popup-v18__image",
+      "settings": []
+    },
+    {
+      "id": "wpnwmc",
+      "name": "migrator-popup-v18__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "36px",
+          "line-height": "42px",
+          "color": {
+            "hex": "#8467d9"
+          },
+          "text-align": "center"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "32px",
+          "line-height": "42px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center",
+          "font-size": "32px",
+          "line-height": "42px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "36px",
+          "line-height": "42px"
+        },
+        "_padding": {
+          "top": "30px",
+          "bottom": "40px",
+          "left": "10px",
+          "right": "10px"
+        }
+      }
+    },
+    {
+      "id": "tzriff",
+      "name": "migrator-popup-v18__button-wrap",
+      "settings": {
+        "_direction": "row"
+      }
+    },
+    {
+      "id": "ygkeex",
+      "name": "migrator-popup-v18__yes-btn",
+      "settings": {
+        "style": "primary",
+        "_width": "50%",
+        "_background": {
+          "color": {
+            "hex": "#8e44ad"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "20px",
+          "text-transform": "uppercase"
+        },
+        "_border": {
+          "width": {
+            "right": "1px"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_cursor": "pointer"
+      }
+    },
+    {
+      "id": "uipvqe",
+      "name": "migrator-popup-v18__no-btn",
+      "settings": {
+        "style": "primary",
+        "_width": "50%",
+        "_background": {
+          "color": {
+            "hex": "#8e44ad"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "20px",
+          "text-transform": "uppercase"
+        },
+        "_border": {
+          "width": {
+            "right": "1px"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_cursor": "pointer",
+        "_interactions": [
+          {
+            "id": "vjvblf",
+            "trigger": "click",
+            "action": "hide"
+          }
+        ]
+      }
+    }
+  ],
+  "globalElements": []
+}

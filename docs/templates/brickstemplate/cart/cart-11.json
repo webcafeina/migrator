@@ -1,0 +1,129 @@
+{
+  "content": [
+    {
+      "id": "rsdedy",
+      "name": "woocommerce-mini-cart",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pkkkha"
+        ],
+        "icon": {
+          "library": "themify",
+          "icon": "ti-shopping-cart"
+        }
+      },
+      "themeStyles": [],
+      "label": "Cart 11"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "pkkkha",
+      "name": "migrator-cart-11",
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-shopping-cart"
+        },
+        "cartCountBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "iconTypography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "3rem"
+        },
+        "buttonBackgroundColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.4rem",
+          "font-weight": "600",
+          "line-height": "2.8"
+        },
+        "buttonBorder": {
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "cartDetailsBorder": {
+          "style": "solid",
+          "width": {
+            "top": "1",
+            "right": "1",
+            "bottom": "1",
+            "left": "1"
+          },
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          },
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        },
+        "cartDetailsTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.5"
+        },
+        "cartDetailsBoxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "2",
+            "blur": "4",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#636363",
+            "rgb": "rgba(99, 99, 99, 0.2)",
+            "hsl": "hsla(0, 0%, 39%, 0.2)"
+          }
+        },
+        "buttonBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "buttonTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      },
+      "modified": 1736109334,
+      "user_id": 2
+    }
+  ],
+  "globalElements": []
+}

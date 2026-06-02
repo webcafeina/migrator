@@ -1,0 +1,318 @@
+{
+  "content": [
+    {
+      "id": "ltxifv",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "lqptba"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qaojja"
+        ]
+      },
+      "label": "Style 01"
+    },
+    {
+      "id": "lqptba",
+      "name": "container",
+      "parent": "ltxifv",
+      "children": [
+        "ifihjm",
+        "dzcxrd"
+      ],
+      "settings": {
+        "_cssCustom": ".bb-box10-s1 {\n    position: relative;\n}\n\n.bb-box10-s1:before {\n    content: \"\";\n    position: absolute;\n    top: 0px;\n    left: 0px;\n    width: 30px;\n    height: 30px;\n    border-top: 5px solid #8467D9;\n    border-left: 5px solid #8467D9;\n    transition: all 0.7s;\n}\n\n.bb-box10-s1:after {\n    content: \"\";\n    position: absolute;\n    bottom: 0px;\n    right: 0px;\n    width: 30px;\n    height: 30px;\n    border-bottom: 5px solid #8467D9;\n    border-right: 5px solid #8467D9;\n    transition: all 0.7s;\n}\n.bb-box10-s1:hover:before,\n.bb-box10-s1:hover:after {\n    width: 100%;\n    height: 100%;\n}\n",
+        "_cssGlobalClasses": [
+          "wsywma"
+        ]
+      },
+      "label": "Container "
+    },
+    {
+      "id": "ifihjm",
+      "name": "block",
+      "parent": "lqptba",
+      "children": [
+        "kcwfib",
+        "odpdrr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "otaeby"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "kcwfib",
+      "name": "heading",
+      "parent": "ifihjm",
+      "children": [],
+      "settings": {
+        "text": "Icon Box With Custom CSS Style 01",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "yrgfsa"
+        ]
+      }
+    },
+    {
+      "id": "odpdrr",
+      "name": "text",
+      "parent": "ifihjm",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "ammkpn"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "dzcxrd",
+      "name": "block",
+      "parent": "lqptba",
+      "children": [
+        "yklhny",
+        "prmqyp",
+        "nbtorg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wgcuoe"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "yklhny",
+      "name": "icon-box",
+      "parent": "dzcxrd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s1",
+        "_cssGlobalClasses": [
+          "mqgwdf"
+        ]
+      }
+    },
+    {
+      "id": "prmqyp",
+      "name": "icon-box",
+      "parent": "dzcxrd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s1",
+        "_cssGlobalClasses": [
+          "mqgwdf"
+        ]
+      }
+    },
+    {
+      "id": "nbtorg",
+      "name": "icon-box",
+      "parent": "dzcxrd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-wordpress"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Curae venenatis proin in commodo mollis habitasse lobortis curabitur tincidunt odio hac id mus metus</p>",
+        "_cssClasses": "bb-box10-s1",
+        "_cssGlobalClasses": [
+          "mqgwdf"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "qaojja",
+      "name": "migrator-features-v10",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "wsywma",
+      "name": "migrator-features-v10__container-",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20,
+          "top": 70,
+          "bottom": 70
+        },
+        "_cssCustom": ".bb-box10-s1 {\n    position: relative;\n}\n\n.bb-box10-s1:before {\n    content: \"\";\n    position: absolute;\n    top: 0px;\n    left: 0px;\n    width: 30px;\n    height: 30px;\n    border-top: 5px solid #8467D9;\n    border-left: 5px solid #8467D9;\n    transition: all 0.7s;\n}\n\n.bb-box10-s1:after {\n    content: \"\";\n    position: absolute;\n    bottom: 0px;\n    right: 0px;\n    width: 30px;\n    height: 30px;\n    border-bottom: 5px solid #8467D9;\n    border-right: 5px solid #8467D9;\n    transition: all 0.7s;\n}\n.bb-box10-s1:hover:before,\n.bb-box10-s1:hover:after {\n    width: 100%;\n    height: 100%;\n}\n"
+      }
+    },
+    {
+      "id": "otaeby",
+      "name": "migrator-features-v10__content-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "yrgfsa",
+      "name": "migrator-features-v10__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "ammkpn",
+      "name": "migrator-features-v10__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "wgcuoe",
+      "name": "migrator-features-v10__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "mqgwdf",
+      "name": "migrator-features-v10__icon-box",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "iconBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "iconBorder": {
+          "radius": {
+            "unit": {
+              "top": "%",
+              "right": "%",
+              "bottom": "%",
+              "left": "%"
+            },
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "iconSize": "60px",
+        "_padding": {
+          "top": 40,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "iconMargin": {
+          "bottom": 20
+        },
+        "verticalAlign": "center",
+        "_zIndex": "1",
+        "iconPadding": {
+          "top": "15",
+          "right": "15",
+          "bottom": "15",
+          "left": "15"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

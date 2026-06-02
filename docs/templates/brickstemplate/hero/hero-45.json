@@ -1,0 +1,780 @@
+{
+  "content": [
+    {
+      "id": "yvsgmp",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ckyquu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yyzhsu"
+        ]
+      },
+      "label": "Hero 45"
+    },
+    {
+      "id": "ckyquu",
+      "name": "container",
+      "parent": "yvsgmp",
+      "children": [
+        "odzbhu",
+        "fvbodr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "asemsh"
+        ]
+      }
+    },
+    {
+      "id": "odzbhu",
+      "name": "block",
+      "parent": "ckyquu",
+      "children": [
+        "xntfvf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ppcdxj"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "xntfvf",
+      "name": "div",
+      "parent": "odzbhu",
+      "children": [
+        "jrviqy",
+        "zgfnal",
+        "wnidct"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bwlrzh"
+        ]
+      },
+      "label": "inner content"
+    },
+    {
+      "id": "jrviqy",
+      "name": "heading",
+      "parent": "xntfvf",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet aptent habitasse",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "unpnzh"
+        ]
+      }
+    },
+    {
+      "id": "zgfnal",
+      "name": "text-basic",
+      "parent": "xntfvf",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet penatibus sagittis pede class sem conubia eros sociosqu ullamcorper erat ut vivamus euismod non dictumst inceptos elit tempor ligula ad habitasse malesuada nullam",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "mmnzkx"
+        ]
+      },
+      "label": "Text"
+    },
+    {
+      "id": "wnidct",
+      "name": "button",
+      "parent": "xntfvf",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "zdkcnd"
+        ]
+      },
+      "label": "button"
+    },
+    {
+      "id": "fvbodr",
+      "name": "block",
+      "parent": "ckyquu",
+      "children": [
+        "oltrvl",
+        "kvewoe",
+        "vtkjli"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "uvtabm"
+        ]
+      },
+      "label": "Card wrap"
+    },
+    {
+      "id": "oltrvl",
+      "name": "block",
+      "parent": "fvbodr",
+      "children": [
+        "hqxiav",
+        "hdybyz",
+        "jvcjuj"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "tqgwfs"
+        ]
+      },
+      "label": "card 1"
+    },
+    {
+      "id": "hqxiav",
+      "name": "image",
+      "parent": "oltrvl",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "hkusqa"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/495x495.jpg",
+          "external": true,
+          "filename": "495x495.jpg"
+        }
+      },
+      "label": "card image",
+      "themeStyles": []
+    },
+    {
+      "id": "hdybyz",
+      "name": "heading",
+      "parent": "oltrvl",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet aptent habitasse",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "zxhpkn"
+        ]
+      },
+      "label": "card title"
+    },
+    {
+      "id": "jvcjuj",
+      "name": "text-basic",
+      "parent": "oltrvl",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet penatibus sagittis pede class sem conubia eros sociosqu ullamcorper erat ut vivamus euismod non dictumst inceptos elit tempor ligula ad habitasse malesuada nullam",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "cuvvee"
+        ]
+      },
+      "label": "card text"
+    },
+    {
+      "id": "kvewoe",
+      "name": "block",
+      "parent": "fvbodr",
+      "children": [
+        "owbcol",
+        "kikvst",
+        "mckhpl"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "xfctzx"
+        ]
+      },
+      "label": "card 2"
+    },
+    {
+      "id": "owbcol",
+      "name": "image",
+      "parent": "kvewoe",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "hkusqa"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/495x495.jpg",
+          "external": true,
+          "filename": "495x495.jpg"
+        }
+      },
+      "label": "card image",
+      "themeStyles": []
+    },
+    {
+      "id": "kikvst",
+      "name": "heading",
+      "parent": "kvewoe",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet aptent habitasse",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "zxhpkn"
+        ]
+      },
+      "label": "card title"
+    },
+    {
+      "id": "mckhpl",
+      "name": "text-basic",
+      "parent": "kvewoe",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet penatibus sagittis pede class sem conubia eros sociosqu ullamcorper erat ut vivamus euismod non dictumst inceptos elit tempor ligula ad habitasse malesuada nullam",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "cuvvee"
+        ]
+      },
+      "label": "card text"
+    },
+    {
+      "id": "vtkjli",
+      "name": "block",
+      "parent": "fvbodr",
+      "children": [
+        "fwqzss",
+        "jlvmxz",
+        "dghged"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "diatyk"
+        ]
+      },
+      "label": "card 3"
+    },
+    {
+      "id": "fwqzss",
+      "name": "image",
+      "parent": "vtkjli",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "hkusqa"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/495x495.jpg",
+          "external": true,
+          "filename": "495x495.jpg"
+        }
+      },
+      "label": "card image",
+      "themeStyles": []
+    },
+    {
+      "id": "jlvmxz",
+      "name": "heading",
+      "parent": "vtkjli",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet aptent habitasse",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "zxhpkn"
+        ]
+      },
+      "label": "card title"
+    },
+    {
+      "id": "dghged",
+      "name": "text-basic",
+      "parent": "vtkjli",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet penatibus sagittis pede class sem conubia eros sociosqu ullamcorper erat ut vivamus euismod non dictumst inceptos elit tempor ligula ad habitasse malesuada nullam",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "cuvvee"
+        ]
+      },
+      "label": "card text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "yyzhsu",
+      "name": "migrator-hero-45",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "8rem",
+          "bottom": "8rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "6rem",
+          "bottom": "8rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "asemsh",
+      "name": "migrator-hero-45__container",
+      "settings": {
+        "_display": "grid",
+        "_gridGap": "3rem",
+        "_gridTemplateColumns": "repeat(2, minmax(0, 1fr))",
+        "_gridTemplateColumns:tablet_portrait": "repeat(1, minmax(0, 1fr))",
+        "_justifyItemsGrid:tablet_portrait": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "ppcdxj",
+      "name": "migrator-hero-45__content-wrap",
+      "settings": [],
+      "_exists": false
+    },
+    {
+      "id": "bwlrzh",
+      "name": "migrator-hero-45__inner-content",
+      "settings": {
+        "_position": "sticky",
+        "_top": "8rem",
+        "_display": "flex",
+        "_flexWrap": "wrap",
+        "_rowGap": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "unpnzh",
+      "name": "migrator-hero-45__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "5rem",
+          "line-height": "1.1",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.6rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "mmnzkx",
+      "name": "migrator-hero-45__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "1.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "zdkcnd",
+      "name": "migrator-hero-45__button",
+      "settings": {
+        "_typography": {
+          "font-size": "1.6rem",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "font-weight": "400",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_padding": {
+          "bottom": "1.4rem",
+          "top": "1.4rem",
+          "left": "2.4rem",
+          "right": "2.4rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_cssTransition": "all .5s",
+        "_padding:mobile_landscape": {
+          "bottom": "1rem",
+          "top": "1rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "iconTypography": {
+          "font-size": "3rem"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "1rem",
+          "top": "1rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "iconTypography:tablet_portrait": {
+          "font-size": "2.5rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "uvtabm",
+      "name": "migrator-hero-45__card-wrap",
+      "settings": {
+        "_padding": {
+          "left": "0"
+        },
+        "_width:tablet_portrait": "60rem",
+        "_alignSelf:tablet_portrait": "center",
+        "_alignItems:tablet_portrait": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "tqgwfs",
+      "name": "migrator-hero-45__card-1",
+      "settings": {
+        "_padding": {
+          "bottom": "5rem",
+          "top": "5rem",
+          "left": "4rem",
+          "right": "4rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          },
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_transform": {
+          "rotateX": "-3deg",
+          "rotateY": "-3deg",
+          "rotateZ": "-3deg"
+        },
+        "_position": "sticky",
+        "_top": "8rem",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_rowGap": "2rem",
+        "_padding:tablet_portrait": {
+          "bottom": "4rem",
+          "top": "4rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "hkusqa",
+      "name": "migrator-hero-45__card-image",
+      "settings": {
+        "_width": "6rem",
+        "_aspectRatio": "1 / 1",
+        "_objectFit": "cover",
+        "_objectPosition": "50%",
+        "_border": {
+          "radius": {
+            "top": "50%",
+            "right": "50%",
+            "bottom": "50%",
+            "left": "50%"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "zxhpkn",
+      "name": "migrator-hero-45__card-title",
+      "settings": {
+        "_typography": {
+          "font-size": "2.8rem",
+          "line-height": "1.3",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "2.2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "cuvvee",
+      "name": "migrator-hero-45__card-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "1.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "xfctzx",
+      "name": "migrator-hero-45__card-2",
+      "settings": {
+        "_padding": {
+          "bottom": "5rem",
+          "top": "5rem",
+          "left": "4rem",
+          "right": "4rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          },
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_transform": {
+          "rotateX": "3deg",
+          "rotateY": "3deg",
+          "rotateZ": "3deg"
+        },
+        "_position": "sticky",
+        "_top": "8rem",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_rowGap": "2rem",
+        "_padding:tablet_portrait": {
+          "bottom": "4rem",
+          "top": "4rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "diatyk",
+      "name": "migrator-hero-45__card-3",
+      "settings": {
+        "_padding": {
+          "bottom": "5rem",
+          "top": "5rem",
+          "left": "4rem",
+          "right": "4rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          },
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_transform": {
+          "rotateX": "-3deg",
+          "rotateY": "-3deg",
+          "rotateZ": "-3deg"
+        },
+        "_position": "sticky",
+        "_top": "8rem",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_rowGap": "2rem",
+        "_padding:tablet_portrait": {
+          "bottom": "4rem",
+          "top": "4rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

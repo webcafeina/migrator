@@ -1,0 +1,70 @@
+{
+  "content": [
+    {
+      "id": "nejlvy",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "nfsuhv",
+        "ivcyrz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cfiglr"
+        ]
+      },
+      "label": "Back To Top v05"
+    },
+    {
+      "id": "nfsuhv",
+      "name": "div",
+      "parent": "nejlvy",
+      "children": [],
+      "settings": {
+        "_cssId": "progress",
+        "_cssGlobalClasses": [
+          "ogitdu"
+        ]
+      },
+      "label": "icon"
+    },
+    {
+      "id": "ivcyrz",
+      "name": "code",
+      "parent": "nejlvy",
+      "children": [],
+      "settings": {
+        "executeCode": true,
+        "_cssGlobalClasses": [
+          "iryotk"
+        ],
+        "signature": "c3231c847339c797dd9d36e4f921bf5f",
+        "user_id": 2,
+        "time": 1711532642,
+        "cssCode": "/* The existing styles for the Back to Top button */\n  #progress {\n    position: fixed;\n    bottom: 30px;\n    right: 30px;\n    height: 50px;\n    width: 50px;\n    display: none;\n    place-items: center;\n    border-radius: 30%;\n    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);\n    cursor: pointer;\n  }\n  #progress::before {\n    content: \"↑\"; /* The content of the pseudo-element, which displays the arrow symbol */\n    display: grid;\n    height: calc(100% - 10px);\n    width: calc(100% - 10px);\n    background-color: #2b3546;\n    border-radius: 30%;\n    place-items: center;\n    font-size: 20px;\n    color: #ffffff;\n  }",
+        "javascriptCode": "let calcScrollValue = () => {\n    let scrollProgress = document.getElementById(\"progress\");\n    let pos = document.documentElement.scrollTop;\n    let calcHeight =\n      document.documentElement.scrollHeight -\n      document.documentElement.clientHeight;\n    let scrollValue = Math.round((pos * 100) / calcHeight);\n    if (pos > 100) {\n      scrollProgress.style.display = \"grid\";\n    } else {\n      scrollProgress.style.display = \"none\";\n    }\n    scrollProgress.addEventListener(\"click\", () => {\n      smoothScrollTo(0); // Smoothly scroll to top when progress element is clicked\n    });\n    scrollProgress.style.background = `conic-gradient(#8467D9 ${scrollValue}%, #d7d7d7 ${scrollValue}%)`;\n  };\n\n  const smoothScrollTo = (targetPosition) => {\n    const startPosition = document.documentElement.scrollTop;\n    const distance = targetPosition - startPosition;\n    const duration = 800; // Time in milliseconds for smooth scroll animation\n    let startTime = null;\n\n    const animation = (currentTime) => {\n      if (!startTime) startTime = currentTime;\n      const timeElapsed = currentTime - startTime;\n      const scrollY = easeInOutQuad(timeElapsed, startPosition, distance, duration);\n      document.documentElement.scrollTop = scrollY;\n      if (timeElapsed < duration) {\n        requestAnimationFrame(animation);\n      }\n    };\n\n    requestAnimationFrame(animation);\n  };\n\n  // Easing function for smooth scroll animation\n  const easeInOutQuad = (t, b, c, d) => {\n    t /= d / 2;\n    if (t < 1) return (c / 2) * t * t + b;\n    t--;\n    return (-c / 2) * (t * (t - 2) - 1) + b;\n  };\n\n  window.onscroll = calcScrollValue;\n  window.onload = calcScrollValue;"
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.2",
+  "globalClasses": [
+    {
+      "id": "cfiglr",
+      "name": "migrator-back-to-top-v05",
+      "settings": []
+    },
+    {
+      "id": "ogitdu",
+      "name": "migrator-back-to-top-v05__icon",
+      "settings": []
+    },
+    {
+      "id": "iryotk",
+      "name": "migrator-back-to-top-v05__code",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

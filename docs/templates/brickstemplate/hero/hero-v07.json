@@ -1,0 +1,511 @@
+{
+  "content": [
+    {
+      "id": "uaitez",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "qrxqhx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "veuwrf"
+        ]
+      },
+      "label": "Hero v07"
+    },
+    {
+      "id": "qrxqhx",
+      "name": "container",
+      "parent": "uaitez",
+      "children": [
+        "ebjkai"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uwimda"
+        ]
+      }
+    },
+    {
+      "id": "ebjkai",
+      "name": "block",
+      "parent": "qrxqhx",
+      "children": [
+        "knbvrb",
+        "kovtbe",
+        "rhqumc",
+        "baaerl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "awcxcg"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "knbvrb",
+      "name": "heading",
+      "parent": "ebjkai",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder headline.",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "pdeguj"
+        ]
+      }
+    },
+    {
+      "id": "kovtbe",
+      "name": "text-basic",
+      "parent": "ebjkai",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "_cssGlobalClasses": [
+          "uslsiw"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "rhqumc",
+      "name": "block",
+      "parent": "ebjkai",
+      "children": [
+        "kyinbo",
+        "tqmfns"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zlebmj"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "kyinbo",
+      "name": "button",
+      "parent": "rhqumc",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "kmoyod"
+        ]
+      },
+      "label": "primary btn"
+    },
+    {
+      "id": "tqmfns",
+      "name": "button",
+      "parent": "rhqumc",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "ebpnsw",
+          "ssyctb"
+        ]
+      },
+      "label": "secondary btn"
+    },
+    {
+      "id": "baaerl",
+      "name": "block",
+      "parent": "ebjkai",
+      "children": [
+        "qxfnkg",
+        "bnwaqy",
+        "hfkevz",
+        "spnhnx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kxfeek"
+        ]
+      },
+      "label": "social link"
+    },
+    {
+      "id": "qxfnkg",
+      "name": "text-basic",
+      "parent": "baaerl",
+      "children": [],
+      "settings": {
+        "text": "FaceBook",
+        "tag": "custom",
+        "customTag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "rlwbwh"
+        ]
+      },
+      "label": "social name"
+    },
+    {
+      "id": "bnwaqy",
+      "name": "text-basic",
+      "parent": "baaerl",
+      "children": [],
+      "settings": {
+        "text": "Instagram",
+        "tag": "custom",
+        "customTag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "rlwbwh"
+        ]
+      },
+      "label": "social name"
+    },
+    {
+      "id": "hfkevz",
+      "name": "text-basic",
+      "parent": "baaerl",
+      "children": [],
+      "settings": {
+        "text": "Youtube",
+        "tag": "custom",
+        "customTag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "rlwbwh"
+        ]
+      },
+      "label": "social name"
+    },
+    {
+      "id": "spnhnx",
+      "name": "text-basic",
+      "parent": "baaerl",
+      "children": [],
+      "settings": {
+        "tag": "custom",
+        "customTag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "text": "LinkedIn ",
+        "_cssGlobalClasses": [
+          "rlwbwh"
+        ]
+      },
+      "label": "social name"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "veuwrf",
+      "name": "migrator-hero-v07-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        },
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "image": {
+            "id": 101,
+            "filename": "image-placeholder.svg",
+            "size": "full",
+            "full": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/image-placeholder.svg",
+            "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/image-placeholder.svg"
+          }
+        },
+        "_justifyContent": "center",
+        "_heightMin": "80rem",
+        "_heightMin:tablet_portrait": "70rem",
+        "_heightMin:mobile_landscape": "60rem"
+      }
+    },
+    {
+      "id": "uwimda",
+      "name": "migrator-hero-v07-2__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_direction:mobile_landscape": "column"
+      }
+    },
+    {
+      "id": "awcxcg",
+      "name": "migrator-hero-v07-2__content-wrap",
+      "settings": {
+        "_width": "67%",
+        "_padding": {
+          "bottom": "0"
+        },
+        "_rowGap": "2rem",
+        "_width:mobile_landscape": "100%",
+        "_width:tablet_portrait": "80%"
+      }
+    },
+    {
+      "id": "pdeguj",
+      "name": "migrator-hero-v07-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "6.4rem",
+          "line-height": "7.4rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "5.8rem",
+          "line-height": "6.8rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "4.6rem",
+          "line-height": "5.6rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "5.2rem",
+          "line-height": "6.2rem"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "1rem"
+        }
+      }
+    },
+    {
+      "id": "uslsiw",
+      "name": "migrator-hero-v07-2__text",
+      "settings": {
+        "_padding": {
+          "bottom": "4rem"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "3rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "2rem"
+        }
+      }
+    },
+    {
+      "id": "zlebmj",
+      "name": "migrator-hero-v07-2__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "5rem",
+        "_rowGap:mobile_portrait": "2rem",
+        "_columnGap:mobile_portrait": "3rem"
+      }
+    },
+    {
+      "id": "drxoco",
+      "name": "wf-btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.6rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "enohqp",
+      "name": "wf-btn--primary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "kmoyod",
+      "name": "migrator-hero-v07-2__primary-btn",
+      "settings": {
+        "style": "primary"
+      }
+    },
+    {
+      "id": "ebpnsw",
+      "name": "wf-btn--secondary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ff0000",
+            "rgb": "rgba(255, 0, 0, 0)",
+            "hsl": "hsla(0, 100%, 50%, 0)"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "ssyctb",
+      "name": "migrator-hero-v07-2__secondary-btn",
+      "settings": {
+        "style": "secondary"
+      }
+    },
+    {
+      "id": "kxfeek",
+      "name": "migrator-hero-v07-2__social-link",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "3.2rem",
+        "_padding": {
+          "top": "10rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem"
+        },
+        "_columnGap:mobile_portrait": "1.5rem",
+        "_rowGap:mobile_portrait": "1rem"
+      }
+    },
+    {
+      "id": "rlwbwh",
+      "name": "migrator-hero-v07-2__social-name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-family": "Inter",
+          "font-weight": "400"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,184 @@
+{
+  "content": [
+    {
+      "id": "ebf71a",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "795c71"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tgglnf"
+        ]
+      }
+    },
+    {
+      "id": "795c71",
+      "name": "container",
+      "parent": "ebf71a",
+      "children": [
+        "df3473",
+        "5b3a90",
+        "6f5203"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ngbkcg"
+        ]
+      }
+    },
+    {
+      "id": "df3473",
+      "name": "nav-menu",
+      "parent": "795c71",
+      "children": [],
+      "settings": {
+        "mobileMenu": "tablet_portrait",
+        "menu": "48",
+        "mobileMenuFadeIn": true,
+        "_cssGlobalClasses": [
+          "xuwltj"
+        ]
+      },
+      "label": "menu left"
+    },
+    {
+      "id": "5b3a90",
+      "name": "image",
+      "parent": "795c71",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "zvzcut"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/Web-Logo-dark.png",
+          "external": true,
+          "filename": "Web-Logo-dark.png"
+        }
+      },
+      "label": "logo"
+    },
+    {
+      "id": "6f5203",
+      "name": "nav-menu",
+      "parent": "795c71",
+      "children": [],
+      "settings": {
+        "mobileMenu": "tablet_portrait",
+        "menu": "48",
+        "mobileMenuFadeIn": true,
+        "_cssGlobalClasses": [
+          "hgkcgz"
+        ]
+      },
+      "label": "menu right"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "tgglnf",
+      "name": "migrator-header-v08",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_direction": "row",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ngbkcg",
+      "name": "migrator-header-v08__container",
+      "settings": {
+        "_padding": {
+          "top": 15,
+          "bottom": 15
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "right": "60",
+          "left": "60"
+        },
+        "_padding:mobile_portrait": {
+          "right": "20",
+          "left": "20"
+        }
+      }
+    },
+    {
+      "id": "xuwltj",
+      "name": "migrator-header-v08__menu-left",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "wzdtoc"
+          }
+        },
+        "mobileMenuPosition": "right",
+        "mobileMenuToggleWidth:mobile_landscape": "30px",
+        "mobileMenuToggleWidth:mobile_portrait": "30px",
+        "mobileMenuAlignItems:mobile_portrait": "center",
+        "mobileMenuToggleColorClose:mobile_portrait": {
+          "hex": "#ffffff",
+          "id": "rdwpct"
+        }
+      }
+    },
+    {
+      "id": "zvzcut",
+      "name": "migrator-header-v08__logo",
+      "settings": {
+        "_width": "220px",
+        "_width:mobile_portrait": "220px"
+      }
+    },
+    {
+      "id": "hgkcgz",
+      "name": "migrator-header-v08__menu-right",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "wzdtoc"
+          }
+        },
+        "_margin": {
+          "left": -30
+        },
+        "_margin:mobile_landscape": {
+          "left": 0
+        },
+        "mobileMenuToggleWidth:mobile_landscape": "30px",
+        "mobileSubMenuPadding:mobile_landscape": {
+          "top": 0,
+          "bottom": 0
+        },
+        "mobileMenuToggleWidth:mobile_portrait": "30px",
+        "mobileMenuAlignItems:mobile_portrait": "center",
+        "mobileMenuToggleColorClose:mobile_portrait": {
+          "hex": "#ffffff",
+          "id": "rdwpct"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

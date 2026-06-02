@@ -1,0 +1,113 @@
+{
+  "content": [
+    {
+      "id": "smahit",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "vqpfcm",
+        "ykuigu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pjztcr"
+        ]
+      },
+      "label": "Back To Top v01"
+    },
+    {
+      "id": "vqpfcm",
+      "name": "button",
+      "parent": "smahit",
+      "children": [],
+      "settings": {
+        "text": "Back To Top",
+        "_cssId": "backToTopBtn",
+        "_attributes": [
+          {
+            "id": "czstvx",
+            "value": "data-scroll-percentage",
+            "name": "per"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "wticsa"
+        ]
+      }
+    },
+    {
+      "id": "ykuigu",
+      "name": "code",
+      "parent": "smahit",
+      "children": [],
+      "settings": {
+        "executeCode": true,
+        "_cssGlobalClasses": [
+          "mjxjla"
+        ],
+        "signature": "dd540d4cc8ce0b9bc205b4bf34f2c34e",
+        "user_id": 2,
+        "time": 1711532642,
+        "cssCode": "#backToTopBtn::before {\n  content: attr(data-scroll-percentage) '%';\n  position: absolute;\n  top: -30px;\n  left: 50%;\n  width: 100%;\n  transform: translateX(-50%);\n  color: #2b3546;\n  font-size: 1.6rem;\n}\n\n#backToTopBtn:hover::before {\n  content: 'Scroll ' attr(data-scroll-percentage) '%';\n}",
+        "javascriptCode": "// Easing function for smooth scroll\nfunction easeInOutCubic(t) {\n  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;\n}\n\n// Function to show/hide the Back to Top button\nfunction toggleBackToTopButton() {\n  const backToTopBtn = document.getElementById('backToTopBtn');\n  if (window.pageYOffset > 300) {\n    backToTopBtn.style.display = 'block';\n  } else {\n    backToTopBtn.style.display = 'none';\n  }\n}\n\n// Function to smoothly scroll to the top of the page\nfunction scrollToTop() {\n  const startY = window.pageYOffset;\n  const distance = startY;\n  const duration = 1000; // Time in milliseconds for the scroll animation\n  let startTime = null;\n\n  function animation(currentTime) {\n    if (!startTime) startTime = currentTime;\n    const timeElapsed = currentTime - startTime;\n    const scrollY = startY - easeInOutCubic(timeElapsed / duration) * distance;\n    window.scrollTo(0, scrollY);\n\n    // Update scroll percentage attribute and display\n    const backToTopBtn = document.getElementById('backToTopBtn');\n    const currentScrollPercentage = Math.round((scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);\n    backToTopBtn.setAttribute('data-scroll-percentage', currentScrollPercentage);\n    backToTopBtn.style.setProperty('--scroll-percentage', currentScrollPercentage + '%');\n\n    if (timeElapsed < duration) requestAnimationFrame(animation);\n  }\n\n  requestAnimationFrame(animation);\n}\n\n// Function to update scroll percentage on scroll\nfunction updateScrollPercentage() {\n  const backToTopBtn = document.getElementById('backToTopBtn');\n  const currentScrollPercentage = Math.round((window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100);\n  backToTopBtn.setAttribute('data-scroll-percentage', currentScrollPercentage);\n  backToTopBtn.style.setProperty('--scroll-percentage', currentScrollPercentage + '%');\n}\n\n// Add event listeners\nwindow.addEventListener('scroll', () => {\n  toggleBackToTopButton();\n  updateScrollPercentage();\n});\n\ndocument.getElementById('backToTopBtn').addEventListener('click', scrollToTop);"
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.2",
+  "globalClasses": [
+    {
+      "id": "pjztcr",
+      "name": "migrator-back-to-top-v01",
+      "settings": []
+    },
+    {
+      "id": "wticsa",
+      "name": "migrator-back-to-top-v01__button",
+      "settings": {
+        "style": "primary",
+        "_position": "fixed",
+        "_top": "90vh",
+        "_right": "3rem",
+        "_padding": {
+          "top": "0.5rem",
+          "right": "1rem",
+          "bottom": "0.5rem",
+          "left": "1rem"
+        },
+        "_typography": {
+          "font-size": "1.2rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_cursor": "pointer",
+        "_typography:mobile_portrait": {
+          "font-size": "1rem"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "0.3rem",
+          "top": "0.3rem",
+          "left": "0.8rem",
+          "right": "0.8rem"
+        }
+      }
+    },
+    {
+      "id": "mjxjla",
+      "name": "migrator-back-to-top-v01__code",
+      "settings": {}
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,193 @@
+{
+  "content": [
+    {
+      "id": "ec3a05",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "047055"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "acnfoi"
+        ]
+      }
+    },
+    {
+      "id": "a93874",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "361661"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ytbbuj"
+        ]
+      }
+    },
+    {
+      "id": "361661",
+      "name": "container",
+      "parent": "a93874",
+      "children": [
+        "aa4030"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dncgrw"
+        ]
+      },
+      "label": "logo wrap"
+    },
+    {
+      "id": "047055",
+      "name": "container",
+      "parent": "ec3a05",
+      "children": [
+        "fcc3ef",
+        "2cfb2a"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kbwzfm"
+        ]
+      },
+      "label": "top row"
+    },
+    {
+      "id": "fcc3ef",
+      "name": "nav-menu",
+      "parent": "047055",
+      "children": [],
+      "settings": {
+        "mobileMenu": "mobile_portrait",
+        "_cssGlobalClasses": [
+          "mawhdz"
+        ]
+      }
+    },
+    {
+      "id": "2cfb2a",
+      "name": "search",
+      "parent": "047055",
+      "children": [],
+      "settings": {
+        "searchOverlayTitle": "Search site",
+        "_cssGlobalClasses": [
+          "qwfyzm"
+        ]
+      }
+    },
+    {
+      "id": "aa4030",
+      "name": "image",
+      "parent": "361661",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "khdlgo"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/Web-Logo-dark.png",
+          "external": true,
+          "filename": "Web-Logo-dark.png"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "acnfoi",
+      "name": "migrator-header-v03",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_direction": "row",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        }
+      }
+    },
+    {
+      "id": "ytbbuj",
+      "name": "migrator-header-v03-2",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_direction": "row",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "dncgrw",
+      "name": "migrator-header-v03-2__logo-wrap",
+      "settings": {
+        "_padding": {
+          "top": 10,
+          "bottom": 30
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_direction": "row",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "kbwzfm",
+      "name": "migrator-header-v03__top-row",
+      "settings": {
+        "_padding": {
+          "top": 10,
+          "bottom": 10
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "right": 20
+        },
+        "_padding:mobile_portrait": {
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "mawhdz",
+      "name": "migrator-header-v03__nav-menu",
+      "settings": []
+    },
+    {
+      "id": "qwfyzm",
+      "name": "migrator-header-v03__search",
+      "settings": []
+    },
+    {
+      "id": "khdlgo",
+      "name": "migrator-header-v03-2__image",
+      "settings": {
+        "_width": "320px",
+        "_width:mobile_portrait": "220px"
+      }
+    }
+  ],
+  "globalElements": []
+}

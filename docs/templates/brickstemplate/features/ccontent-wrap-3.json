@@ -1,0 +1,286 @@
+{
+  "content": [
+    {
+      "id": "udlepd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "taegai"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sjsutt"
+        ]
+      }
+    },
+    {
+      "id": "taegai",
+      "name": "container",
+      "parent": "udlepd",
+      "children": [
+        "nlcnnf",
+        "nbdvhk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ugiddj"
+        ]
+      }
+    },
+    {
+      "id": "nlcnnf",
+      "name": "block",
+      "parent": "taegai",
+      "children": [
+        "zulgck",
+        "jblwri"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zwwmwr"
+        ]
+      },
+      "label": "ccontent wrap"
+    },
+    {
+      "id": "zulgck",
+      "name": "heading",
+      "parent": "nlcnnf",
+      "children": [],
+      "settings": {
+        "text": "Libero massa eu bibendum mauris consequat ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "bshxbq"
+        ]
+      }
+    },
+    {
+      "id": "jblwri",
+      "name": "text",
+      "parent": "nlcnnf",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "damhlj"
+        ]
+      }
+    },
+    {
+      "id": "nbdvhk",
+      "name": "block",
+      "parent": "taegai",
+      "children": [
+        "yeskqv",
+        "nlvqyl",
+        "gapacx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qayxjp"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "yeskqv",
+      "name": "icon-box",
+      "parent": "nbdvhk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-bar-chart-alt"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Dui adipiscing efficitur primis nisl libero ut et imperdiet nisi nunc bibendum mollis habitant</p>",
+        "_cssGlobalClasses": [
+          "ibnzeb"
+        ]
+      }
+    },
+    {
+      "id": "nlvqyl",
+      "name": "icon-box",
+      "parent": "nbdvhk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-bar-chart-alt"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Dui adipiscing efficitur primis nisl libero ut et imperdiet nisi nunc bibendum mollis habitant</p>",
+        "_cssGlobalClasses": [
+          "ibnzeb"
+        ]
+      }
+    },
+    {
+      "id": "gapacx",
+      "name": "icon-box",
+      "parent": "nbdvhk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-bar-chart-alt"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Dui adipiscing efficitur primis nisl libero ut et imperdiet nisi nunc bibendum mollis habitant</p>",
+        "_cssGlobalClasses": [
+          "ibnzeb"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "sjsutt",
+      "name": "migrator-features-v01",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "ugiddj",
+      "name": "migrator-features-v01__container",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "bottom": 60,
+          "left": 20,
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "zwwmwr",
+      "name": "migrator-features-v01__ccontent-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_margin": {
+          "bottom": 30
+        }
+      }
+    },
+    {
+      "id": "bshxbq",
+      "name": "migrator-features-v01__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "right": "10%",
+          "left": "10%",
+          "bottom": "25px"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "damhlj",
+      "name": "migrator-features-v01__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "right": "20%",
+          "left": "20%"
+        },
+        "_padding:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "qayxjp",
+      "name": "migrator-features-v01__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "40px"
+      }
+    },
+    {
+      "id": "ibnzeb",
+      "name": "migrator-features-v01__icon-box",
+      "settings": {
+        "contentAlign": "center",
+        "verticalAlign": "center",
+        "iconMargin": {
+          "bottom": 15
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_padding": {
+          "top": 40,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "typographyHeading": {
+          "line-height": "50px"
+        },
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconSize": "60px",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

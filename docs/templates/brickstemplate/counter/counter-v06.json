@@ -1,0 +1,490 @@
+{
+  "content": [
+    {
+      "id": "pvlsie",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "svsfdf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "intzfo"
+        ]
+      },
+      "label": "Counter v06"
+    },
+    {
+      "id": "svsfdf",
+      "name": "container",
+      "parent": "pvlsie",
+      "children": [
+        "guvttp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pqikcq"
+        ]
+      }
+    },
+    {
+      "id": "guvttp",
+      "name": "block",
+      "parent": "svsfdf",
+      "children": [
+        "xxkwte",
+        "vcgloi",
+        "jzeubu",
+        "ibspuf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fincha"
+        ]
+      },
+      "label": "wrapper"
+    },
+    {
+      "id": "xxkwte",
+      "name": "block",
+      "parent": "guvttp",
+      "children": [
+        "mzlzgt",
+        "mnvnwv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "euzkfo"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "mzlzgt",
+      "name": "block",
+      "parent": "xxkwte",
+      "children": [
+        "ckcqsq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "heyiem"
+        ]
+      },
+      "label": "icon wrap"
+    },
+    {
+      "id": "ckcqsq",
+      "name": "icon",
+      "parent": "mzlzgt",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-trophy"
+        },
+        "_cssGlobalClasses": [
+          "gdrplt"
+        ]
+      }
+    },
+    {
+      "id": "mnvnwv",
+      "name": "block",
+      "parent": "xxkwte",
+      "children": [
+        "ipmwxi",
+        "rkvyps"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plydvk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "ipmwxi",
+      "name": "counter",
+      "parent": "mnvnwv",
+      "children": [],
+      "settings": {
+        "countTo": "300",
+        "_cssGlobalClasses": [
+          "buiome"
+        ]
+      }
+    },
+    {
+      "id": "rkvyps",
+      "name": "heading",
+      "parent": "mnvnwv",
+      "children": [],
+      "settings": {
+        "text": "Projects",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "kobiwz"
+        ]
+      }
+    },
+    {
+      "id": "vcgloi",
+      "name": "block",
+      "parent": "guvttp",
+      "children": [
+        "hteixa",
+        "azsngw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "euzkfo"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "hteixa",
+      "name": "block",
+      "parent": "vcgloi",
+      "children": [
+        "spdnno"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "heyiem"
+        ]
+      },
+      "label": "icon wrap"
+    },
+    {
+      "id": "spdnno",
+      "name": "icon",
+      "parent": "hteixa",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-clock"
+        },
+        "_cssGlobalClasses": [
+          "gdrplt"
+        ]
+      }
+    },
+    {
+      "id": "azsngw",
+      "name": "block",
+      "parent": "vcgloi",
+      "children": [
+        "evrrle",
+        "cwbucp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plydvk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "evrrle",
+      "name": "counter",
+      "parent": "azsngw",
+      "children": [],
+      "settings": {
+        "countTo": "300",
+        "_cssGlobalClasses": [
+          "buiome"
+        ]
+      }
+    },
+    {
+      "id": "cwbucp",
+      "name": "heading",
+      "parent": "azsngw",
+      "children": [],
+      "settings": {
+        "text": "Hours",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "kobiwz"
+        ]
+      }
+    },
+    {
+      "id": "jzeubu",
+      "name": "block",
+      "parent": "guvttp",
+      "children": [
+        "skphnz",
+        "uqwdlr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "euzkfo"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "skphnz",
+      "name": "block",
+      "parent": "jzeubu",
+      "children": [
+        "jbrela"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "heyiem"
+        ]
+      },
+      "label": "icon wrap"
+    },
+    {
+      "id": "jbrela",
+      "name": "icon",
+      "parent": "skphnz",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-circle-user"
+        },
+        "_cssGlobalClasses": [
+          "gdrplt"
+        ]
+      }
+    },
+    {
+      "id": "uqwdlr",
+      "name": "block",
+      "parent": "jzeubu",
+      "children": [
+        "gvfxzl",
+        "mcxktm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plydvk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "gvfxzl",
+      "name": "counter",
+      "parent": "uqwdlr",
+      "children": [],
+      "settings": {
+        "countTo": "300",
+        "_cssGlobalClasses": [
+          "buiome"
+        ]
+      }
+    },
+    {
+      "id": "mcxktm",
+      "name": "heading",
+      "parent": "uqwdlr",
+      "children": [],
+      "settings": {
+        "text": "Clients",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "kobiwz"
+        ]
+      }
+    },
+    {
+      "id": "ibspuf",
+      "name": "block",
+      "parent": "guvttp",
+      "children": [
+        "nybrfc",
+        "cnuxrd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "euzkfo"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "nybrfc",
+      "name": "block",
+      "parent": "ibspuf",
+      "children": [
+        "afaoss"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "heyiem"
+        ]
+      },
+      "label": "icon wrap"
+    },
+    {
+      "id": "afaoss",
+      "name": "icon",
+      "parent": "nybrfc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-cookie-bite"
+        },
+        "_cssGlobalClasses": [
+          "gdrplt"
+        ]
+      }
+    },
+    {
+      "id": "cnuxrd",
+      "name": "block",
+      "parent": "ibspuf",
+      "children": [
+        "imeste",
+        "rizfsx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plydvk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "imeste",
+      "name": "counter",
+      "parent": "cnuxrd",
+      "children": [],
+      "settings": {
+        "countTo": "300",
+        "_cssGlobalClasses": [
+          "buiome"
+        ]
+      }
+    },
+    {
+      "id": "rizfsx",
+      "name": "heading",
+      "parent": "cnuxrd",
+      "children": [],
+      "settings": {
+        "text": "Cookies",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "kobiwz"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "intzfo",
+      "name": "migrator-counter-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f1f6ff",
+            "id": "byqsjx"
+          }
+        }
+      }
+    },
+    {
+      "id": "pqikcq",
+      "name": "migrator-counter-v06__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 120,
+          "bottom": 120
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "fincha",
+      "name": "migrator-counter-v06__wrapper",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px"
+      }
+    },
+    {
+      "id": "euzkfo",
+      "name": "migrator-counter-v06__counter-item",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px"
+      }
+    },
+    {
+      "id": "heyiem",
+      "name": "migrator-counter-v06__icon-wrap",
+      "settings": {
+        "_justifyContent": "center",
+        "_rowGap": "px",
+        "_width": "30%",
+        "_width:mobile_landscape": "27%",
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "gdrplt",
+      "name": "migrator-counter-v06__icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        }
+      }
+    },
+    {
+      "id": "plydvk",
+      "name": "migrator-counter-v06__content-wrap",
+      "settings": {
+        "_justifyContent": "center",
+        "_width": "70%",
+        "_rowGap": "5px",
+        "_width:mobile_portrait": "65%"
+      }
+    },
+    {
+      "id": "buiome",
+      "name": "migrator-counter-v06__counter",
+      "settings": {
+        "_typography": {
+          "font-size": "36px",
+          "font-weight": "800",
+          "color": {
+            "hex": "#000000",
+            "id": "jfhhzf"
+          },
+          "line-height": "48px"
+        }
+      }
+    },
+    {
+      "id": "kobiwz",
+      "name": "migrator-counter-v06__heading",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,382 @@
+{
+  "content": [
+    {
+      "id": "jtnghf",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ziqdxs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zrpqcg"
+        ]
+      },
+      "label": "FAQs v03"
+    },
+    {
+      "id": "ziqdxs",
+      "name": "container",
+      "parent": "jtnghf",
+      "children": [
+        "mmoscp",
+        "aonxos"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yfhrno"
+        ]
+      }
+    },
+    {
+      "id": "mmoscp",
+      "name": "block",
+      "parent": "ziqdxs",
+      "children": [
+        "jamkde",
+        "xbncvx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hprlwi"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "jamkde",
+      "name": "heading",
+      "parent": "mmoscp",
+      "children": [],
+      "settings": {
+        "text": "Frequently Asked Questions",
+        "_cssGlobalClasses": [
+          "yjqzww"
+        ]
+      }
+    },
+    {
+      "id": "xbncvx",
+      "name": "text-basic",
+      "parent": "mmoscp",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "rrxfpg"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "aonxos",
+      "name": "block",
+      "parent": "ziqdxs",
+      "children": [
+        "bvvakz",
+        "fuozgx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jeuxnu"
+        ]
+      },
+      "label": "faqs wrap"
+    },
+    {
+      "id": "bvvakz",
+      "name": "accordion",
+      "parent": "aonxos",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "expandFirstItem": true,
+        "_cssGlobalClasses": [
+          "tywutc"
+        ]
+      },
+      "label": "faqs"
+    },
+    {
+      "id": "fuozgx",
+      "name": "accordion",
+      "parent": "aonxos",
+      "children": [],
+      "settings": {
+        "accordions": [
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "evnghr"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "wwjxxj"
+          },
+          {
+            "title": "This is just a placeholder",
+            "content": "<p>Lorem ipsum dolor ist amte, consectetuer adipiscing eilt. Aenean commodo ligula egget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quak felis, ultricies nec, pellentesque eu, pretium quid, sem.</p>",
+            "id": "zyahzg"
+          }
+        ],
+        "icon": {
+          "icon": "ion-ios-arrow-forward",
+          "library": "ionicons"
+        },
+        "iconExpanded": {
+          "icon": "ion-ios-arrow-down",
+          "library": "ionicons"
+        },
+        "expandFirstItem": true,
+        "_cssGlobalClasses": [
+          "tywutc"
+        ]
+      },
+      "label": "faqs"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "zrpqcg",
+      "name": "migrator-faqs-v03__faqs-v03",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "yfhrno",
+      "name": "migrator-faqs-v03__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "hprlwi",
+      "name": "migrator-faqs-v03__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "20%",
+          "right": "20%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "right": "0",
+          "left": "0"
+        },
+        "_padding:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "yjqzww",
+      "name": "migrator-faqs-v03__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "rrxfpg",
+      "name": "migrator-faqs-v03__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "jeuxnu",
+      "name": "migrator-faqs-v03__faqs-wrap",
+      "settings": {
+        "_alignSelf": "center",
+        "_width:mobile_landscape": "90%",
+        "_width:mobile_portrait": "100%",
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(2, minmax(0, 1fr))",
+        "_gridGap": "4rem",
+        "_gridTemplateColumns:tablet_portrait": "1fr",
+        "_width:tablet_portrait": "80%",
+        "_gridGap:tablet_portrait": "0"
+      }
+    },
+    {
+      "id": "tywutc",
+      "name": "migrator-faqs-v03__faqs",
+      "settings": {
+        "titleTypography": {
+          "font-size": "2rem",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "3.2rem"
+        },
+        "iconTypography": {
+          "font-size": "3rem",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "iconExpandedTypography": {
+          "font-size": "3rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "titleBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "titleMargin": {
+          "bottom": "2rem"
+        },
+        "titlePadding": {
+          "top": "1rem",
+          "right": "2rem",
+          "bottom": "1rem",
+          "left": "2rem"
+        },
+        "contentBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "contentPadding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "contentMargin": {
+          "bottom": "2rem"
+        },
+        "contentTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "titleTypography:mobile_portrait": {
+          "font-size": "1.8rem",
+          "line-height": "3rem"
+        },
+        "titleActiveBackgroundColor": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "titleActiveTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "2rem"
+        },
+        "iconTypography:mobile_portrait": {
+          "font-size": "2rem"
+        },
+        "iconExpandedTypography:mobile_portrait": {
+          "font-size": "2rem"
+        },
+        "titleActiveTypography:mobile_portrait": {
+          "font-size": "1.8rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

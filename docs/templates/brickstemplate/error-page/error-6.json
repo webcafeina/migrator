@@ -1,0 +1,293 @@
+{
+  "content": [
+    {
+      "id": "jpceca",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "gqldde"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "unmgfp"
+        ]
+      },
+      "label": "Error 6"
+    },
+    {
+      "id": "gqldde",
+      "name": "container",
+      "parent": "jpceca",
+      "children": [
+        "pyaiil"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jgynjo"
+        ]
+      }
+    },
+    {
+      "id": "pyaiil",
+      "name": "block",
+      "parent": "gqldde",
+      "children": [
+        "rpifzn",
+        "mlsbdj",
+        "gfeoyw",
+        "cwjpvc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "enkiqk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "rpifzn",
+      "name": "image",
+      "parent": "pyaiil",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "nilrke"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/image-placeholder-2560x1600-1.jpg",
+          "external": true,
+          "filename": "image-placeholder-2560x1600-1.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "mlsbdj",
+      "name": "heading",
+      "parent": "pyaiil",
+      "children": [],
+      "settings": {
+        "text": "404 Page Not Found",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "swtlln"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "gfeoyw",
+      "name": "text-basic",
+      "parent": "pyaiil",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for either does not exist or has been moved to a new location.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "laudic"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "cwjpvc",
+      "name": "button",
+      "parent": "pyaiil",
+      "children": [],
+      "settings": {
+        "text": "Back To HomePage",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "qbbzor"
+        ]
+      },
+      "label": "btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "unmgfp",
+      "name": "migrator-error-6",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_height": "100vh",
+        "_justifyContent": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "jgynjo",
+      "name": "migrator-error-6__container",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "4rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "enkiqk",
+      "name": "migrator-error-6__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_width": "70rem",
+        "_padding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "4",
+            "blur": "12",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0.1)",
+            "hsl": "hsla(0, 0%, 0%, 0.1)"
+          }
+        },
+        "_rowGap": "3rem",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "nilrke",
+      "name": "migrator-error-6__image",
+      "settings": [],
+      "_exists": false
+    },
+    {
+      "id": "swtlln",
+      "name": "migrator-error-6__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "laudic",
+      "name": "migrator-error-6__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "qbbzor",
+      "name": "migrator-error-6__btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "1.6"
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0",
+            "right": "0",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_width": "100%"
+      },
+      "_exists": false,
+      "modified": 1754255875,
+      "user_id": 2
+    }
+  ],
+  "globalElements": []
+}

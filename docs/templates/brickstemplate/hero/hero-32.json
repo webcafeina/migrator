@@ -1,0 +1,538 @@
+{
+  "content": [
+    {
+      "id": "qemfpt",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "xhkolb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gzoqsv"
+        ]
+      },
+      "label": "Hero 32"
+    },
+    {
+      "id": "xhkolb",
+      "name": "container",
+      "parent": "qemfpt",
+      "children": [
+        "twvotp",
+        "cxusgv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aaykqx"
+        ]
+      }
+    },
+    {
+      "id": "twvotp",
+      "name": "block",
+      "parent": "xhkolb",
+      "children": [
+        "yrmpko"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jqvweq"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "yrmpko",
+      "name": "image",
+      "parent": "twvotp",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "aklxbz"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2025/09/1440x523.jpg",
+          "external": true,
+          "filename": "1440x523.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "cxusgv",
+      "name": "block",
+      "parent": "xhkolb",
+      "children": [
+        "xmhbfn",
+        "ocxxxq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gtcfcc"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "xmhbfn",
+      "name": "block",
+      "parent": "cxusgv",
+      "children": [
+        "nfgowu",
+        "khlsfj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "quwvbj"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "nfgowu",
+      "name": "text-basic",
+      "parent": "xmhbfn",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor ",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ssswsv"
+        ]
+      },
+      "label": "Subheading"
+    },
+    {
+      "id": "khlsfj",
+      "name": "heading",
+      "parent": "xmhbfn",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet aptent habitasse lacus.",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "mwwuqz"
+        ]
+      }
+    },
+    {
+      "id": "ocxxxq",
+      "name": "block",
+      "parent": "cxusgv",
+      "children": [
+        "yqfqcp",
+        "hwqkmf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qxqgzg"
+        ]
+      },
+      "label": "text wrap"
+    },
+    {
+      "id": "yqfqcp",
+      "name": "text-basic",
+      "parent": "ocxxxq",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet platea ridiculus montes cubilia dapibus vitae vel congue at maecenas netus ligula in pharetra inceptos bibendum scelerisque",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "enqswc"
+        ]
+      },
+      "label": "inner text"
+    },
+    {
+      "id": "hwqkmf",
+      "name": "div",
+      "parent": "ocxxxq",
+      "children": [
+        "qmngqp",
+        "rysjco"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sqjhdm"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "qmngqp",
+      "name": "button",
+      "parent": "hwqkmf",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "spzlzc"
+        ]
+      },
+      "label": "button"
+    },
+    {
+      "id": "rysjco",
+      "name": "button",
+      "parent": "hwqkmf",
+      "children": [],
+      "settings": {
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "text": "I am a button",
+        "_cssGlobalClasses": [
+          "pibenn"
+        ]
+      },
+      "label": "button outline"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "gzoqsv",
+      "name": "migrator-hero-32",
+      "settings": {
+        "_padding": {
+          "bottom": "8rem",
+          "top": "8rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "6rem",
+          "top": "6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "aaykqx",
+      "name": "migrator-hero-32__container",
+      "settings": {
+        "_rowGap": "5rem",
+        "_rowGap:mobile_landscape": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "jqvweq",
+      "name": "migrator-hero-32__image-wrap",
+      "settings": {
+        "_alignItems": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "aklxbz",
+      "name": "migrator-hero-32__image",
+      "settings": {
+        "_width": "100%",
+        "_objectFit": "cover",
+        "_objectPosition": "50%",
+        "_aspectRatio": "6 / 2.5"
+      },
+      "_exists": false
+    },
+    {
+      "id": "gtcfcc",
+      "name": "migrator-hero-32__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "2rem",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "quwvbj",
+      "name": "migrator-hero-32__heading-wrap",
+      "settings": [],
+      "_exists": false
+    },
+    {
+      "id": "ssswsv",
+      "name": "migrator-hero-32__subheading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.1",
+          "font-weight": "500",
+          "font-family": "Inter",
+          "text-transform": "uppercase"
+        },
+        "_margin": {
+          "bottom": "0"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "mwwuqz",
+      "name": "migrator-hero-32__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "4rem",
+          "line-height": "1.3",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700",
+          "text-align": "left"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.6rem"
+        },
+        "_margin": {
+          "top": "0"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "qxqgzg",
+      "name": "migrator-hero-32__text-wrap",
+      "settings": {
+        "_rowGap": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "enqswc",
+      "name": "migrator-hero-32__inner-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "sqjhdm",
+      "name": "migrator-hero-32__button-wrap",
+      "settings": {
+        "_display": "flex",
+        "_columnGap:mobile_landscape": "2rem",
+        "_direction:mobile_landscape": "row",
+        "_columnGap": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "spzlzc",
+      "name": "migrator-hero-32__button",
+      "settings": {
+        "_typography": {
+          "font-size": "1.6rem",
+          "line-height": "1.1",
+          "font-family": "Inter",
+          "font-weight": "400",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_padding": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "1.6rem",
+          "right": "1.6rem"
+        },
+        "_widthMin": "12rem",
+        "_background": {
+          "color": {
+            "hex": "#202020"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_cssTransition": "all .5s"
+      },
+      "_exists": false
+    },
+    {
+      "id": "pibenn",
+      "name": "migrator-hero-32__button-outline",
+      "settings": {
+        "_typography": {
+          "font-size": "1.6rem",
+          "line-height": "1.1",
+          "font-family": "Inter",
+          "font-weight": "600",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_padding": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "1.6rem",
+          "right": "1.6rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "rgb": "rgba(32, 32, 32, 0)",
+            "hsl": "hsla(0, 0%, 13%, 0)"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_background:active": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_background:focus": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_cssTransition": "all .5s",
+        "_widthMin": "12rem"
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

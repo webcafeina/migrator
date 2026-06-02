@@ -1,0 +1,116 @@
+{
+  "content": [
+    {
+      "id": "vvjlsu",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "qctexs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sgtent"
+        ]
+      },
+      "label": "Pagination v03"
+    },
+    {
+      "id": "qctexs",
+      "name": "pagination",
+      "parent": "vvjlsu",
+      "children": [],
+      "settings": {
+        "queryId": "ldpisn",
+        "prevIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-left"
+        },
+        "nextIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-right"
+        },
+        "_cssGlobalClasses": [
+          "vqxgbn"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "sgtent",
+      "name": "migrator-pagination-v03-2",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "vqxgbn",
+      "name": "migrator-pagination-v03-2__pagination",
+      "settings": {
+        "justifyContent": "center",
+        "navigationTypography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.6rem"
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "navigationWidth": "4rem",
+        "navigationHeight": "4rem",
+        "gap": "1rem",
+        "navigationBackgroundActive": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "navigationTypographyActive": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.6rem"
+        },
+        "navigationTypography:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "navigationBorder:hover": {
+          "style": "solid",
+          "color": {
+            "hex": "#e0e0e0"
+          },
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          }
+        },
+        "navigationTypographyActive:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

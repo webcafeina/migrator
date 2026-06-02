@@ -1,0 +1,477 @@
+{
+  "content": [
+    {
+      "id": "fnwzkl",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "suivni"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ixvggj"
+        ]
+      },
+      "label": "Brands V06"
+    },
+    {
+      "id": "suivni",
+      "name": "container",
+      "parent": "fnwzkl",
+      "children": [
+        "ayjfgq",
+        "vkwyfe",
+        "tidgwp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nooaaz"
+        ]
+      }
+    },
+    {
+      "id": "ayjfgq",
+      "name": "block",
+      "parent": "suivni",
+      "children": [
+        "aetghf",
+        "uiirqy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "alvpdq"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "aetghf",
+      "name": "heading",
+      "parent": "ayjfgq",
+      "children": [],
+      "settings": {
+        "text": "Our Clients",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "yxgosm"
+        ]
+      },
+      "label": "heading"
+    },
+    {
+      "id": "uiirqy",
+      "name": "text-basic",
+      "parent": "ayjfgq",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "gjgora"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "vkwyfe",
+      "name": "slider-nested",
+      "parent": "suivni",
+      "children": [
+        "vvhfhb",
+        "bbxozu",
+        "wbyxst",
+        "yppucp",
+        "mlnlnz",
+        "iiojhf",
+        "mkohjw"
+      ],
+      "settings": {
+        "perPage": "6",
+        "perMove": "1",
+        "perPage:mobile_landscape": "3",
+        "perPage:mobile_portrait": "2",
+        "perPage:tablet_portrait": "4",
+        "_cssGlobalClasses": [
+          "rdmhni"
+        ],
+        "gap": "2rem",
+        "gap:mobile_landscape": "1rem",
+        "height": "7vh",
+        "height:tablet_portrait": "7vh"
+      },
+      "label": "logo wrap",
+      "themeStyles": {}
+    },
+    {
+      "id": "vvhfhb",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "cdgkso"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "cdgkso",
+      "name": "image",
+      "parent": "vvhfhb",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-220.svg",
+          "external": true,
+          "filename": "logoipsum-220.svg"
+        }
+      },
+      "themeStyles": {},
+      "label": "logo"
+    },
+    {
+      "id": "bbxozu",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "qqdubt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "qqdubt",
+      "name": "image",
+      "parent": "bbxozu",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-216.svg",
+          "external": true,
+          "filename": "logoipsum-216.svg"
+        }
+      },
+      "themeStyles": {},
+      "label": "logo"
+    },
+    {
+      "id": "wbyxst",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "qghyrr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "qghyrr",
+      "name": "image",
+      "parent": "wbyxst",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-218.svg",
+          "external": true,
+          "filename": "logoipsum-218.svg"
+        }
+      },
+      "themeStyles": {},
+      "label": "logo"
+    },
+    {
+      "id": "yppucp",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "pjxfoi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "pjxfoi",
+      "name": "image",
+      "parent": "yppucp",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-211.svg",
+          "external": true,
+          "filename": "logoipsum-211.svg"
+        }
+      },
+      "themeStyles": {},
+      "label": "logo"
+    },
+    {
+      "id": "mlnlnz",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "yvhfkj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "yvhfkj",
+      "name": "image",
+      "parent": "mlnlnz",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-286.svg",
+          "external": true,
+          "filename": "logoipsum-286.svg"
+        }
+      },
+      "themeStyles": [],
+      "label": "logo"
+    },
+    {
+      "id": "iiojhf",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "sljipa"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "sljipa",
+      "name": "image",
+      "parent": "iiojhf",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-220.svg",
+          "external": true,
+          "filename": "logoipsum-220.svg"
+        }
+      },
+      "themeStyles": [],
+      "label": "logo"
+    },
+    {
+      "id": "mkohjw",
+      "name": "block",
+      "parent": "vkwyfe",
+      "children": [
+        "jgazbr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xxdntj"
+        ]
+      },
+      "label": "single logo"
+    },
+    {
+      "id": "jgazbr",
+      "name": "image",
+      "parent": "mkohjw",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "bguhyw"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/logoipsum-216.svg",
+          "external": true,
+          "filename": "logoipsum-216.svg"
+        }
+      },
+      "themeStyles": [],
+      "label": "logo"
+    },
+    {
+      "id": "tidgwp",
+      "name": "code",
+      "parent": "suivni",
+      "children": [],
+      "settings": {
+        "executeCode": true,
+        "signature": "4ccb843e45c302f14c4d87725a90556c",
+        "user_id": 2,
+        "time": 1712524113,
+        "noRoot": true,
+        "_cssGlobalClasses": [
+          "iuaavm"
+        ],
+        "javascriptCode": "\n\ndocument.addEventListener('DOMContentLoaded', (event) => {\n  // Define a function to update the no-drag option for all splide instances on the page\n  const updateNoDragOption = () => {\n    for( const splideId in window.bricksData.splideInstances ) {\n      const splideInstance = window.bricksData.splideInstances['vkwyfe'] //Change this with your slider element ID, only add the second half. for example \"#brxe-vkwyfe\" you need to add only \"vkwyfe\"\n      if ( splideInstance ) {\n          splideInstance.destroy();\n         splideInstance.mount( window.splide.Extensions );\n         splideInstance.options = { autoScroll: {\n    speed: 2, // Adjust auto scroll speed here\n  }, }\n\t\tsplideInstance.options = { direction: 'ltr', } // Change slider direction to ltr left-to-right, rtl right-to-lef\n      }\n    }\n  }\n  \n  // Need some delay for Bricks to init the sliders\n  setTimeout(updateNoDragOption, 250)\n})\n"
+      },
+      "themeStyles": {}
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "ixvggj",
+      "name": "migrator-brands-v06",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "4rem",
+          "bottom": "4rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "nooaaz",
+      "name": "migrator-brands-v06__container",
+      "settings": {
+        "_rowGap": "3rem",
+        "_rowGap:tablet_portrait": "2rem"
+      }
+    },
+    {
+      "id": "alvpdq",
+      "name": "migrator-brands-v06__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_width": "80rem",
+        "_alignSelf": "center",
+        "_rowGap": "1rem",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "yxgosm",
+      "name": "migrator-brands-v06__heading",
+      "settings": []
+    },
+    {
+      "id": "gjgora",
+      "name": "migrator-brands-v06__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "rdmhni",
+      "name": "migrator-brands-v06__logo-wrap",
+      "settings": {
+        "gap": "2rem",
+        "height": "7vh",
+        "gap:mobile_landscape": "1rem"
+      }
+    },
+    {
+      "id": "xxdntj",
+      "name": "migrator-brands-v06__single-logo",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "2",
+            "blur": "4",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#636363",
+            "rgb": "rgba(99, 99, 99, 0.2)",
+            "hsl": "hsla(0, 0%, 39%, 0.2)"
+          }
+        },
+        "_margin": {
+          "top": "1rem",
+          "right": "1rem",
+          "bottom": "1rem",
+          "left": "1rem"
+        },
+        "_padding": {
+          "top": "1rem",
+          "right": "1rem",
+          "bottom": "1rem",
+          "left": "1rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "bguhyw",
+      "name": "migrator-brands-v06__logo",
+      "settings": []
+    },
+    {
+      "id": "iuaavm",
+      "name": "migrator-brands-v06__code",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

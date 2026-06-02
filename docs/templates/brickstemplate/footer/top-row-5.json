@@ -1,0 +1,953 @@
+{
+  "content": [
+    {
+      "id": "mnlyek",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "sjxmli"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kvtmzh"
+        ]
+      }
+    },
+    {
+      "id": "sjxmli",
+      "name": "container",
+      "parent": "mnlyek",
+      "children": [
+        "dbamig"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cgxypc"
+        ]
+      },
+      "label": "top row"
+    },
+    {
+      "id": "dbamig",
+      "name": "block",
+      "parent": "sjxmli",
+      "children": [
+        "nxjiih",
+        "xnbozm",
+        "prurag"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ppvvup"
+        ]
+      },
+      "label": "address wrap"
+    },
+    {
+      "id": "ubnbme",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "adlmdv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sriljd"
+        ]
+      }
+    },
+    {
+      "id": "nxjiih",
+      "name": "icon-box",
+      "parent": "dbamig",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-phone"
+        },
+        "content": "<h2>Call Us</h2><p> (225) 292-7117</p>",
+        "_cssGlobalClasses": [
+          "edekyq"
+        ]
+      }
+    },
+    {
+      "id": "prurag",
+      "name": "icon-box",
+      "parent": "dbamig",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-map-pin"
+        },
+        "content": "<h2>Location</h2><p>4277 Stonebridge Rd SW</p>",
+        "_cssGlobalClasses": [
+          "edekyq"
+        ]
+      }
+    },
+    {
+      "id": "xnbozm",
+      "name": "icon-box",
+      "parent": "dbamig",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-envelope"
+        },
+        "content": "<h2>Email</h2><p> demo@demo.com</p>",
+        "_cssGlobalClasses": [
+          "edekyq"
+        ]
+      }
+    },
+    {
+      "id": "adlmdv",
+      "name": "container",
+      "parent": "ubnbme",
+      "children": [
+        "relgul",
+        "seqvpp",
+        "qcrzhn",
+        "zprdrt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "oavltv"
+        ]
+      },
+      "label": "middle row"
+    },
+    {
+      "id": "relgul",
+      "name": "block",
+      "parent": "adlmdv",
+      "children": [
+        "zeegir",
+        "knnvvo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qmsqew"
+        ]
+      },
+      "label": "content  1"
+    },
+    {
+      "id": "zeegir",
+      "name": "image",
+      "parent": "relgul",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 1174,
+          "filename": "Web-Logo-white.png",
+          "size": "full",
+          "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/Web-Logo-white.png",
+          "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/Web-Logo-white.png"
+        },
+        "_cssGlobalClasses": [
+          "yubedo"
+        ]
+      }
+    },
+    {
+      "id": "knnvvo",
+      "name": "text-basic",
+      "parent": "relgul",
+      "children": [],
+      "settings": {
+        "text": "Lacus himenaeos interdum pede fusce ultrices sit per montes curabitur porta netus cubilia dis senectus facilisi pretium ultricies dui molestie",
+        "_cssGlobalClasses": [
+          "ilmxkx"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "seqvpp",
+      "name": "block",
+      "parent": "adlmdv",
+      "children": [
+        "wlcheh",
+        "rhutvg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "weyjoh"
+        ]
+      },
+      "label": "content  2"
+    },
+    {
+      "id": "wlcheh",
+      "name": "heading",
+      "parent": "seqvpp",
+      "children": [],
+      "settings": {
+        "text": "heading",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "hftqsl"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "rhutvg",
+      "name": "social-icons",
+      "parent": "seqvpp",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Service",
+            "icon": {
+              "library": ""
+            },
+            "id": "flqcaz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "About",
+            "icon": {
+              "library": ""
+            },
+            "id": "tfwbzj",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Pricing",
+            "icon": {
+              "library": ""
+            },
+            "id": "wbsahb",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Contact",
+            "icon": {
+              "library": ""
+            },
+            "id": "spfhqx",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "rryqqf"
+        ]
+      },
+      "themeStyles": [],
+      "label": "menu"
+    },
+    {
+      "id": "qcrzhn",
+      "name": "block",
+      "parent": "adlmdv",
+      "children": [
+        "mbtczq",
+        "xnpfje"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "concjp"
+        ]
+      },
+      "label": "content  3"
+    },
+    {
+      "id": "mbtczq",
+      "name": "heading",
+      "parent": "qcrzhn",
+      "children": [],
+      "settings": {
+        "text": "heading",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "hftqsl"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "xnpfje",
+      "name": "social-icons",
+      "parent": "qcrzhn",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Service",
+            "icon": {
+              "library": ""
+            },
+            "id": "flqcaz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "About",
+            "icon": {
+              "library": ""
+            },
+            "id": "tfwbzj",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Pricing",
+            "icon": {
+              "library": ""
+            },
+            "id": "wbsahb",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Contact",
+            "icon": {
+              "library": ""
+            },
+            "id": "spfhqx",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "rryqqf"
+        ]
+      },
+      "label": "menu"
+    },
+    {
+      "id": "zprdrt",
+      "name": "block",
+      "parent": "adlmdv",
+      "children": [
+        "wpwhda",
+        "ykeydo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uudokj"
+        ]
+      },
+      "label": "content  4"
+    },
+    {
+      "id": "wpwhda",
+      "name": "heading",
+      "parent": "zprdrt",
+      "children": [],
+      "settings": {
+        "text": "heading",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "hftqsl"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "ykeydo",
+      "name": "social-icons",
+      "parent": "zprdrt",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Service",
+            "icon": {
+              "library": ""
+            },
+            "id": "flqcaz",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "About",
+            "icon": {
+              "library": ""
+            },
+            "id": "tfwbzj",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Pricing",
+            "icon": {
+              "library": ""
+            },
+            "id": "wbsahb",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "label": "Contact",
+            "icon": {
+              "library": ""
+            },
+            "id": "spfhqx",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            },
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "rryqqf"
+        ]
+      },
+      "label": "menu"
+    },
+    {
+      "id": "wrcjik",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "eblazj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pfebol"
+        ]
+      }
+    },
+    {
+      "id": "eblazj",
+      "name": "container",
+      "parent": "wrcjik",
+      "children": [
+        "efseau"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nmllhk"
+        ]
+      },
+      "label": "bottom row"
+    },
+    {
+      "id": "efseau",
+      "name": "block",
+      "parent": "eblazj",
+      "children": [
+        "rarmie",
+        "bgbwye"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qmtxao"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "rarmie",
+      "name": "social-icons",
+      "parent": "efseau",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "background": {
+              "hex": "#3b5998"
+            },
+            "id": "ebakqa",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "background": {
+              "hex": "#4cc2ff"
+            },
+            "id": "rospdu",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "background": {
+              "hex": "#4E433C"
+            },
+            "id": "yjkffp",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "niinpb"
+        ]
+      },
+      "label": "social"
+    },
+    {
+      "id": "bgbwye",
+      "name": "text-basic",
+      "parent": "efseau",
+      "children": [],
+      "settings": {
+        "text": "Copyright © 2022 | Built With ❤️ on Bricktemplate",
+        "_cssGlobalClasses": [
+          "jwhqbz"
+        ]
+      },
+      "label": "copyright"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "kvtmzh",
+      "name": "migrator-footer-v09",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_background": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw"
+          }
+        }
+      }
+    },
+    {
+      "id": "cgxypc",
+      "name": "migrator-footer-v09__top-row",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 100,
+          "bottom": 60
+        },
+        "_padding:tablet_portrait": {
+          "top": 100,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "ppvvup",
+      "name": "migrator-footer-v09__address-wrap",
+      "settings": {
+        "_width:mobile_landscape": "100%",
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        },
+        "_typography": {
+          "font-size": "18px"
+        },
+        "_alignItems:mobile_landscape": "center",
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        },
+        "_alignItems:mobile_portrait": "center",
+        "_alignItems": "center",
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_border": {
+          "width": {
+            "top": 2,
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          },
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding": {
+          "top": 40,
+          "right": 40,
+          "bottom": 40,
+          "left": 40
+        },
+        "_justifyContent:mobile_landscape": "flex-start",
+        "_justifyContent:mobile_portrait": "center"
+      }
+    },
+    {
+      "id": "sriljd",
+      "name": "migrator-footer-v09-1",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw"
+          }
+        }
+      }
+    },
+    {
+      "id": "edekyq",
+      "name": "migrator-footer-v09__icon-box",
+      "settings": {
+        "contentAlign": "flex-start",
+        "verticalAlign": "center",
+        "direction": "row",
+        "iconSize": "40px",
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconMargin": {
+          "right": 25
+        },
+        "typographyHeading": {
+          "line-height": "62px",
+          "font-size": "28px",
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "typographyBody": {
+          "font-size": "18px",
+          "letter-spacing": "2px",
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "iconMargin:tablet_portrait": {
+          "right": 20
+        },
+        "iconSize:tablet_portrait": "30px",
+        "typographyHeading:tablet_portrait": {
+          "font-size": "24px",
+          "line-height": "48px"
+        },
+        "typographyBody:tablet_portrait": {
+          "font-size": "16px"
+        },
+        "_margin:mobile_landscape": {
+          "top": 20
+        }
+      }
+    },
+    {
+      "id": "oavltv",
+      "name": "migrator-footer-v09-1__middle-row",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 40,
+          "bottom": 40
+        },
+        "_padding:tablet_portrait": {
+          "top": 40,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "qmsqew",
+      "name": "migrator-footer-v09-1__content-1",
+      "settings": {
+        "_rowGap": "20px",
+        "_width": "40%",
+        "_padding": {
+          "right": 80
+        },
+        "_width:mobile_landscape": "100%",
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "yubedo",
+      "name": "migrator-footer-v09-1__image",
+      "settings": {
+        "_width": "220px"
+      }
+    },
+    {
+      "id": "ilmxkx",
+      "name": "migrator-footer-v09-1__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "weyjoh",
+      "name": "migrator-footer-v09-1__content-2",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_width": "20%",
+        "_width:mobile_landscape": "31%",
+        "_width:mobile_portrait": "47%",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "hftqsl",
+      "name": "migrator-footer-v09-1__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "font-weight": "300"
+        }
+      }
+    },
+    {
+      "id": "rryqqf",
+      "name": "migrator-footer-v09-1__menu",
+      "settings": {
+        "_padding": {
+          "top": 10,
+          "right": 0,
+          "bottom": 10,
+          "left": 0
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column"
+      }
+    },
+    {
+      "id": "concjp",
+      "name": "migrator-footer-v09-1__content-3",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_width": "20%",
+        "_width:mobile_landscape": "30%",
+        "_width:mobile_portrait": "47%",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "uudokj",
+      "name": "migrator-footer-v09-1__content-4",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_width": "20%",
+        "_width:mobile_landscape": "30%",
+        "_width:mobile_portrait": "50%"
+      }
+    },
+    {
+      "id": "pfebol",
+      "name": "migrator-footer-v09-2",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw"
+          }
+        }
+      }
+    },
+    {
+      "id": "nmllhk",
+      "name": "migrator-footer-v09-2__bottom-row",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_columnGap": "20px",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding": {
+          "top": 40,
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "qmtxao",
+      "name": "migrator-footer-v09-2__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_alignItems": "center",
+        "_justifyContent:mobile_portrait": "center"
+      }
+    },
+    {
+      "id": "niinpb",
+      "name": "migrator-footer-v09-2__social",
+      "settings": {
+        "_padding": {
+          "top": 10,
+          "right": 10,
+          "bottom": 10,
+          "left": 10
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "gap": "15px",
+        "_padding:mobile_portrait": {
+          "top": 8,
+          "unit": {
+            "top": "px",
+            "right": "px",
+            "bottom": "px",
+            "left": "px"
+          },
+          "right": 8,
+          "bottom": 8,
+          "left": 8
+        },
+        "gap:mobile_portrait": "8px",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "jwhqbz",
+      "name": "migrator-footer-v09-2__copyright",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

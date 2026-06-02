@@ -1,0 +1,344 @@
+{
+  "content": [
+    {
+      "id": "84dbee",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "8a82c4"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xoejeh"
+        ]
+      }
+    },
+    {
+      "id": "8a82c4",
+      "name": "container",
+      "parent": "84dbee",
+      "children": [
+        "86c78c",
+        "986a76"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pqmrae"
+        ]
+      }
+    },
+    {
+      "id": "86c78c",
+      "name": "block",
+      "parent": "8a82c4",
+      "children": [
+        "b22336",
+        "6c3055",
+        "d23e08"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jpagrm"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "b22336",
+      "name": "heading",
+      "parent": "86c78c",
+      "children": [],
+      "settings": {
+        "text": "Ligula non sem primis rhoncus in ipsum ante potenti posuere",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "pfpmvv"
+        ]
+      }
+    },
+    {
+      "id": "6c3055",
+      "name": "text",
+      "parent": "86c78c",
+      "children": [],
+      "settings": {
+        "text": "<p>Lorem sociosqu quis velit ultrices nostra class sagittis odio ultricies blandit sed integer penatibus congue pellentesque phasellus dui semper tempus laoreet nulla mauris</p>",
+        "_cssGlobalClasses": [
+          "kyoytc"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "d23e08",
+      "name": "button",
+      "parent": "86c78c",
+      "children": [],
+      "settings": {
+        "text": "Learn More",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "tisiyd"
+        ]
+      }
+    },
+    {
+      "id": "986a76",
+      "name": "block",
+      "parent": "8a82c4",
+      "children": [
+        "cb7577"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ovuian"
+        ]
+      },
+      "label": "form wrap"
+    },
+    {
+      "id": "cb7577",
+      "name": "form",
+      "parent": "986a76",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Your Name",
+            "placeholder": "Your Name",
+            "id": "0dc49f",
+            "required": true
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "bde048"
+          },
+          {
+            "type": "number",
+            "label": "Mobile ",
+            "placeholder": "Mobile",
+            "id": "wrzvde"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "showLabels": true,
+        "submitButtonText": "Grab Your Free Ebook",
+        "_cssGlobalClasses": [
+          "rusons"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "xoejeh",
+      "name": "migrator-hero-v09",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "pqmrae",
+      "name": "migrator-hero-v09__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20,
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding": {
+          "top": 100,
+          "bottom": 100
+        },
+        "_padding:mobile_portrait": {
+          "top": "60",
+          "right": "30",
+          "bottom": "60",
+          "left": "30"
+        }
+      }
+    },
+    {
+      "id": "jpagrm",
+      "name": "migrator-hero-v09__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "right": 10,
+          "unit": {
+            "right": "%"
+          }
+        },
+        "_padding:tablet_portrait": {
+          "unit": {
+            "right": "%"
+          },
+          "right": 5
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        },
+        "_padding:mobile_portrait": {
+          "unit": {
+            "right": "%"
+          },
+          "right": 0
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 30
+        },
+        "_order:mobile_portrait": "0"
+      }
+    },
+    {
+      "id": "pfpmvv",
+      "name": "migrator-hero-v09__heading",
+      "settings": []
+    },
+    {
+      "id": "kyoytc",
+      "name": "migrator-hero-v09__text",
+      "settings": []
+    },
+    {
+      "id": "tisiyd",
+      "name": "migrator-hero-v09__button",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 10,
+          "right": 35,
+          "bottom": 10,
+          "left": 35
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_margin": {
+          "top": 20
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "yedgrh",
+            "name": "White Text"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "tqbhuu",
+            "name": "primary"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#735dfd",
+            "id": "lsxfcg",
+            "name": "primary hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "ovuian",
+      "name": "migrator-hero-v09__form-wrap",
+      "settings": []
+    },
+    {
+      "id": "rusons",
+      "name": "migrator-hero-v09__form",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_padding": {
+          "top": 60,
+          "right": 60,
+          "bottom": 60,
+          "left": 60
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#636363",
+            "rgb": "rgba(99, 99, 99, 0.2)",
+            "hsl": "hsla(0, 0%, 39%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 2,
+            "blur": 8,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 10,
+            "right": 10,
+            "bottom": 10,
+            "left": 10
+          }
+        },
+        "fieldBackgroundColor": {
+          "hex": "#f1f6ff",
+          "id": "byqsjx"
+        },
+        "fieldBorder": {
+          "color": {
+            "hex": "#d5e4ff",
+            "id": "vybqbz"
+          },
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding:tablet_portrait": {
+          "top": 40,
+          "right": 40,
+          "bottom": 40,
+          "left": 40
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

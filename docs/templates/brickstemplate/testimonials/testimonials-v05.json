@@ -1,0 +1,558 @@
+{
+  "content": [
+    {
+      "id": "lsbste",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "kzfgqm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mlvuln"
+        ]
+      },
+      "label": "Testimonials v05"
+    },
+    {
+      "id": "kzfgqm",
+      "name": "container",
+      "parent": "lsbste",
+      "children": [
+        "snnjaj",
+        "jwbrvc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hixqfv"
+        ]
+      }
+    },
+    {
+      "id": "snnjaj",
+      "name": "block",
+      "parent": "kzfgqm",
+      "children": [
+        "hwnhtf",
+        "prilxz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pukbwk"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "hwnhtf",
+      "name": "heading",
+      "parent": "snnjaj",
+      "children": [],
+      "settings": {
+        "text": "Testimonials",
+        "_cssGlobalClasses": [
+          "iiewrs"
+        ]
+      }
+    },
+    {
+      "id": "prilxz",
+      "name": "text-basic",
+      "parent": "snnjaj",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "_cssGlobalClasses": [
+          "sowjgy"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "jwbrvc",
+      "name": "block",
+      "parent": "kzfgqm",
+      "children": [
+        "mmpjtm",
+        "grhnsg",
+        "srlpic"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "fksfea"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "mmpjtm",
+      "name": "block",
+      "parent": "jwbrvc",
+      "children": [
+        "wystrs",
+        "ynccka",
+        "mtemjz",
+        "uoypfu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bkhyli"
+        ]
+      },
+      "label": "testimonials"
+    },
+    {
+      "id": "wystrs",
+      "name": "image",
+      "parent": "mmpjtm",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "vcuuml"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/square.svg",
+          "external": true,
+          "filename": "square.svg"
+        }
+      }
+    },
+    {
+      "id": "ynccka",
+      "name": "text-basic",
+      "parent": "mmpjtm",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "izztrt"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "mtemjz",
+      "name": "text-basic",
+      "parent": "mmpjtm",
+      "children": [],
+      "settings": {
+        "text": "Name Here",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "oghmhz"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "uoypfu",
+      "name": "text-basic",
+      "parent": "mmpjtm",
+      "children": [],
+      "settings": {
+        "text": "Product Designer",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "dasqxq"
+        ]
+      },
+      "label": "designations"
+    },
+    {
+      "id": "grhnsg",
+      "name": "block",
+      "parent": "jwbrvc",
+      "children": [
+        "qimtku",
+        "xvycvz",
+        "fsykbl",
+        "rcwhmk"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bkhyli"
+        ]
+      },
+      "label": "testimonials"
+    },
+    {
+      "id": "qimtku",
+      "name": "image",
+      "parent": "grhnsg",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "vcuuml"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/square.svg",
+          "external": true,
+          "filename": "square.svg"
+        }
+      }
+    },
+    {
+      "id": "xvycvz",
+      "name": "text-basic",
+      "parent": "grhnsg",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. ",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "izztrt"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "fsykbl",
+      "name": "text-basic",
+      "parent": "grhnsg",
+      "children": [],
+      "settings": {
+        "text": "Name Here",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "oghmhz"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "rcwhmk",
+      "name": "text-basic",
+      "parent": "grhnsg",
+      "children": [],
+      "settings": {
+        "text": "Product Designer",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "dasqxq"
+        ]
+      },
+      "label": "designations"
+    },
+    {
+      "id": "srlpic",
+      "name": "block",
+      "parent": "jwbrvc",
+      "children": [
+        "dhcxau",
+        "cxiysj",
+        "ggcdxe",
+        "gesgql"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bkhyli"
+        ]
+      },
+      "label": "testimonials"
+    },
+    {
+      "id": "dhcxau",
+      "name": "image",
+      "parent": "srlpic",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "vcuuml"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/square.svg",
+          "external": true,
+          "filename": "square.svg"
+        }
+      }
+    },
+    {
+      "id": "cxiysj",
+      "name": "text-basic",
+      "parent": "srlpic",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "izztrt"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "ggcdxe",
+      "name": "text-basic",
+      "parent": "srlpic",
+      "children": [],
+      "settings": {
+        "text": "Name Here",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "oghmhz"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "gesgql",
+      "name": "text-basic",
+      "parent": "srlpic",
+      "children": [],
+      "settings": {
+        "text": "Product Designer",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "dasqxq"
+        ]
+      },
+      "label": "designations"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "mlvuln",
+      "name": "migrator-testimonials-v05-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "hixqfv",
+      "name": "migrator-testimonials-v05-2__container",
+      "settings": {
+        "_rowGap": "9rem"
+      }
+    },
+    {
+      "id": "pukbwk",
+      "name": "migrator-testimonials-v05-2__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "iiewrs",
+      "name": "migrator-testimonials-v05-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "sowjgy",
+      "name": "migrator-testimonials-v05-2__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "fksfea",
+      "name": "migrator-testimonials-v05-2__testimonials-wrap",
+      "settings": {
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_gridAutoColumns": "auto-fill",
+        "_direction": "row",
+        "_direction:mobile_landscape": "column",
+        "_alignItems:mobile_landscape": "center",
+        "_columnGap:tablet_portrait": "3rem",
+        "_justifyContent:tablet_portrait": "center",
+        "_columnGap": "3rem",
+        "_rowGap:mobile_landscape": "3rem",
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(3, minmax(0, 1fr))",
+        "_gridGap": "3rem",
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_gridGap:tablet_portrait": "8rem 3rem",
+        "_gridGap:mobile_landscape": "8rem 3rem",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "bkhyli",
+      "name": "migrator-testimonials-v05-2__testimonials",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_padding": {
+          "top": "0",
+          "right": "2rem",
+          "bottom": "4rem",
+          "left": "2rem"
+        }
+      }
+    },
+    {
+      "id": "vcuuml",
+      "name": "migrator-testimonials-v05-2__image",
+      "settings": {
+        "_width": "12rem",
+        "_overflow": "hidden",
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "_margin": {
+          "top": "-6rem"
+        }
+      }
+    },
+    {
+      "id": "izztrt",
+      "name": "migrator-testimonials-v05-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "line-height": "2.8rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_padding": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_flexGrow": "1"
+      }
+    },
+    {
+      "id": "oghmhz",
+      "name": "migrator-testimonials-v05-2__name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.2rem",
+          "line-height": "3.2rem",
+          "font-weight": "600",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2rem"
+        }
+      }
+    },
+    {
+      "id": "dasqxq",
+      "name": "migrator-testimonials-v05-2__designations",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

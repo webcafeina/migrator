@@ -1,0 +1,205 @@
+{
+  "content": [
+    {
+      "id": "5bf0af",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "d58cbe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nnqwme"
+        ]
+      }
+    },
+    {
+      "id": "d58cbe",
+      "name": "container",
+      "parent": "5bf0af",
+      "children": [
+        "ac8608",
+        "615c3a"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ejxegq"
+        ]
+      }
+    },
+    {
+      "id": "ac8608",
+      "name": "block",
+      "parent": "d58cbe",
+      "children": [
+        "77c7fd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hzowao"
+        ]
+      },
+      "label": "logo wrap"
+    },
+    {
+      "id": "77c7fd",
+      "name": "image",
+      "parent": "ac8608",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "bbthuc"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/Web-Logo-white.png",
+          "external": true,
+          "filename": "Web-Logo-white.png"
+        }
+      }
+    },
+    {
+      "id": "615c3a",
+      "name": "block",
+      "parent": "d58cbe",
+      "children": [
+        "19e64b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jgtlsd"
+        ]
+      },
+      "label": "menu wrap"
+    },
+    {
+      "id": "19e64b",
+      "name": "nav-menu",
+      "parent": "615c3a",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xwwgeu"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "nnqwme",
+      "name": "migrator-header-v11",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#34c174",
+            "id": "zjodvr",
+            "name": "Green"
+          }
+        }
+      }
+    },
+    {
+      "id": "ejxegq",
+      "name": "migrator-header-v11__container",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "left": "20px",
+          "right": "20px"
+        },
+        "_zIndex": "10"
+      }
+    },
+    {
+      "id": "hzowao",
+      "name": "migrator-header-v11__logo-wrap",
+      "settings": {
+        "_width": "33%",
+        "_width:mobile_portrait": "50%",
+        "_width:mobile_landscape": "50%",
+        "_width:tablet_portrait": "30%"
+      }
+    },
+    {
+      "id": "bbthuc",
+      "name": "migrator-header-v11__image",
+      "settings": {
+        "_width:tablet_portrait": "250px",
+        "_width": "220px"
+      }
+    },
+    {
+      "id": "jgtlsd",
+      "name": "migrator-header-v11__menu-wrap",
+      "settings": {
+        "_width": "67%",
+        "_alignItems": "flex-end",
+        "_padding": {
+          "right": "0"
+        },
+        "_padding:tablet_portrait": {
+          "right": "20px"
+        },
+        "_width:mobile_landscape": "40%",
+        "_width:mobile_portrait": "35%",
+        "_padding:mobile_landscape": {
+          "right": "0px"
+        },
+        "_justifyContent": "center",
+        "_justifyContent:mobile_portrait": "center",
+        "_width:tablet_portrait": "70%"
+      }
+    },
+    {
+      "id": "xwwgeu",
+      "name": "migrator-header-v11__nav-menu",
+      "settings": {
+        "_typography": {
+          "font-size": "16px",
+          "line-height": "30px",
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "menuMargin": {
+          "left": "60px"
+        },
+        "menuMargin:tablet_portrait": {
+          "left": "20px"
+        },
+        "mobileMenuBackground:mobile_landscape": {
+          "color": {
+            "hex": "#34c174",
+            "id": "zjodvr",
+            "name": "Green"
+          }
+        },
+        "mobileMenuToggleColor:mobile_landscape": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "mobileMenuPosition": "left",
+        "menuTypography:tablet_portrait": {
+          "font-size": "14px",
+          "line-height": "28px"
+        },
+        "_margin:mobile_portrait": {
+          "top": "-9px"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

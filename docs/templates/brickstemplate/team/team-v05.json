@@ -1,0 +1,770 @@
+{
+  "content": [
+    {
+      "id": "wcqnis",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "nvcsbh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pizfrc"
+        ]
+      },
+      "label": "Team v05"
+    },
+    {
+      "id": "nvcsbh",
+      "name": "container",
+      "parent": "wcqnis",
+      "children": [
+        "yyrasu",
+        "wfbwaj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ripglc"
+        ]
+      }
+    },
+    {
+      "id": "yyrasu",
+      "name": "block",
+      "parent": "nvcsbh",
+      "children": [
+        "orasho",
+        "xsrcdw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aevzdy"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "orasho",
+      "name": "heading",
+      "parent": "yyrasu",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "_cssGlobalClasses": [
+          "lcxbqa"
+        ]
+      }
+    },
+    {
+      "id": "xsrcdw",
+      "name": "text-basic",
+      "parent": "yyrasu",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "_cssGlobalClasses": [
+          "jtkesk"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "wfbwaj",
+      "name": "block",
+      "parent": "nvcsbh",
+      "children": [
+        "giyvva",
+        "wkfbps",
+        "wpctkn",
+        "wqlbtn"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "lgwzkr"
+        ]
+      },
+      "label": "team wrap"
+    },
+    {
+      "id": "giyvva",
+      "name": "block",
+      "parent": "wfbwaj",
+      "children": [
+        "femqeq",
+        "qfyvin"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "yxygkx"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "femqeq",
+      "name": "block",
+      "parent": "giyvva",
+      "children": [
+        "arbiyp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "emfgwu"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "arbiyp",
+      "name": "image",
+      "parent": "femqeq",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "dctcvm"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/avatar.jpg",
+          "external": true,
+          "filename": "avatar.jpg"
+        }
+      },
+      "label": "avatar"
+    },
+    {
+      "id": "qfyvin",
+      "name": "block",
+      "parent": "giyvva",
+      "children": [
+        "jhbwmw",
+        "baiwqi",
+        "gjbbhi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jadvwm"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "jhbwmw",
+      "name": "heading",
+      "parent": "qfyvin",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "_cssGlobalClasses": [
+          "emxicu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "baiwqi",
+      "name": "text-basic",
+      "parent": "qfyvin",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "siarvz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "gjbbhi",
+      "name": "text-basic",
+      "parent": "qfyvin",
+      "children": [],
+      "settings": {
+        "text": "Sometimes it’s nice to put in text just to get an idea of how text will fill in a space",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "rzmpee"
+        ]
+      },
+      "label": "info text"
+    },
+    {
+      "id": "wkfbps",
+      "name": "block",
+      "parent": "wfbwaj",
+      "children": [
+        "zdgrks",
+        "hosbrg"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "yxygkx"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "zdgrks",
+      "name": "block",
+      "parent": "wkfbps",
+      "children": [
+        "mbngid"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "emfgwu"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "mbngid",
+      "name": "image",
+      "parent": "zdgrks",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "dctcvm"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/avatar.jpg",
+          "external": true,
+          "filename": "avatar.jpg"
+        }
+      },
+      "label": "avatar"
+    },
+    {
+      "id": "hosbrg",
+      "name": "block",
+      "parent": "wkfbps",
+      "children": [
+        "siiayc",
+        "bbwkpv",
+        "mlhfsn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jadvwm"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "siiayc",
+      "name": "heading",
+      "parent": "hosbrg",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "_cssGlobalClasses": [
+          "emxicu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "bbwkpv",
+      "name": "text-basic",
+      "parent": "hosbrg",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "siarvz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "mlhfsn",
+      "name": "text-basic",
+      "parent": "hosbrg",
+      "children": [],
+      "settings": {
+        "text": "Sometimes it’s nice to put in text just to get an idea of how text will fill in a space",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "rzmpee"
+        ]
+      },
+      "label": "info text"
+    },
+    {
+      "id": "wpctkn",
+      "name": "block",
+      "parent": "wfbwaj",
+      "children": [
+        "jtqzdk",
+        "xdezqn"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "yxygkx"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "jtqzdk",
+      "name": "block",
+      "parent": "wpctkn",
+      "children": [
+        "onudqr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "emfgwu"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "onudqr",
+      "name": "image",
+      "parent": "jtqzdk",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "dctcvm"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/avatar.jpg",
+          "external": true,
+          "filename": "avatar.jpg"
+        }
+      },
+      "label": "avatar"
+    },
+    {
+      "id": "xdezqn",
+      "name": "block",
+      "parent": "wpctkn",
+      "children": [
+        "pfgpjb",
+        "lpelng",
+        "dlpmgc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jadvwm"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "pfgpjb",
+      "name": "heading",
+      "parent": "xdezqn",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "_cssGlobalClasses": [
+          "emxicu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "lpelng",
+      "name": "text-basic",
+      "parent": "xdezqn",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "siarvz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "dlpmgc",
+      "name": "text-basic",
+      "parent": "xdezqn",
+      "children": [],
+      "settings": {
+        "text": "Sometimes it’s nice to put in text just to get an idea of how text will fill in a space",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "rzmpee"
+        ]
+      },
+      "label": "info text"
+    },
+    {
+      "id": "wqlbtn",
+      "name": "block",
+      "parent": "wfbwaj",
+      "children": [
+        "sdfaik",
+        "asrlwb"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "yxygkx"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "sdfaik",
+      "name": "block",
+      "parent": "wqlbtn",
+      "children": [
+        "gqlicb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "emfgwu"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "gqlicb",
+      "name": "image",
+      "parent": "sdfaik",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "dctcvm"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/avatar.jpg",
+          "external": true,
+          "filename": "avatar.jpg"
+        }
+      },
+      "label": "avatar"
+    },
+    {
+      "id": "asrlwb",
+      "name": "block",
+      "parent": "wqlbtn",
+      "children": [
+        "pxfnps",
+        "yiwdmg",
+        "iiqlpj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jadvwm"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "pxfnps",
+      "name": "heading",
+      "parent": "asrlwb",
+      "children": [],
+      "settings": {
+        "text": "John Doe",
+        "_cssGlobalClasses": [
+          "emxicu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "yiwdmg",
+      "name": "text-basic",
+      "parent": "asrlwb",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "siarvz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "iiqlpj",
+      "name": "text-basic",
+      "parent": "asrlwb",
+      "children": [],
+      "settings": {
+        "text": "Sometimes it’s nice to put in text just to get an idea of how text will fill in a space",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "rzmpee"
+        ]
+      },
+      "label": "info text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "pizfrc",
+      "name": "migrator-team-v05-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "ripglc",
+      "name": "migrator-team-v05-2__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "aevzdy",
+      "name": "migrator-team-v05-2__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "lcxbqa",
+      "name": "migrator-team-v05-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "jtkesk",
+      "name": "migrator-team-v05-2__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "lgwzkr",
+      "name": "migrator-team-v05-2__team-wrap",
+      "settings": {
+        "_gridGap": "5rem 3rem",
+        "_gridTemplateColumns": "repeat(3, 1fr)",
+        "_gridTemplateColumns:mobile_landscape": "repeat(2, 1fr)",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_gridAutoColumns": "auto-fill",
+        "_flexWrap": "wrap",
+        "_direction": "row",
+        "_direction:mobile_landscape": "column",
+        "_alignItems:mobile_landscape": "center",
+        "_columnGap:tablet_portrait": "2rem",
+        "_columnGap": "3rem",
+        "_rowGap": "3rem",
+        "_justifyContent:tablet_portrait": "center",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "yxygkx",
+      "name": "migrator-team-v05-2__team",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_rowGap": "2rem",
+        "_gridItemColumnSpan": "1",
+        "_gridItemRowSpan": "1",
+        "_width": "45%",
+        "_width:mobile_portrait": "100%",
+        "_flexGrow": "1",
+        "_direction": "row",
+        "_direction:mobile_landscape": "row",
+        "_width:mobile_landscape": "100%",
+        "_width:tablet_portrait": "80%",
+        "_flexGrow:tablet_portrait": "0"
+      }
+    },
+    {
+      "id": "emfgwu",
+      "name": "migrator-team-v05-2__image-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_width:mobile_landscape": "45%",
+        "_flexGrow:mobile_landscape": "1",
+        "_flexGrow:tablet_portrait": "1",
+        "_width:tablet_portrait": "45%",
+        "_width:mobile_portrait": "100%"
+      }
+    },
+    {
+      "id": "dctcvm",
+      "name": "migrator-team-v05-2__avatar",
+      "settings": {
+        "_overflow": "hidden",
+        "_width:tablet_portrait": "100%",
+        "_width": "100%"
+      }
+    },
+    {
+      "id": "jadvwm",
+      "name": "migrator-team-v05-2__content-wrap",
+      "settings": {
+        "_padding": {
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_justifyContent": "center",
+        "_padding:mobile_landscape": {
+          "bottom": "0"
+        },
+        "_width:mobile_landscape": "45%",
+        "_flexGrow:mobile_landscape": "1",
+        "_flexGrow:tablet_portrait": "1",
+        "_width:tablet_portrait": "45%",
+        "_width:mobile_portrait": "100%",
+        "_padding:mobile_portrait": {
+          "bottom": "4rem"
+        }
+      }
+    },
+    {
+      "id": "emxicu",
+      "name": "migrator-team-v05-2__name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "2.6rem",
+          "line-height": "3.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        }
+      }
+    },
+    {
+      "id": "siarvz",
+      "name": "migrator-team-v05-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_margin": {
+          "bottom": "0"
+        }
+      }
+    },
+    {
+      "id": "rzmpee",
+      "name": "migrator-team-v05-2__info-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_padding": {
+          "top": "1.5rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,420 @@
+{
+  "content": [
+    {
+      "id": "udlepd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "taegai"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jbrxqk"
+        ]
+      }
+    },
+    {
+      "id": "taegai",
+      "name": "container",
+      "parent": "udlepd",
+      "children": [
+        "nlcnnf",
+        "aitzed"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xjpxdt"
+        ]
+      }
+    },
+    {
+      "id": "nlcnnf",
+      "name": "block",
+      "parent": "taegai",
+      "children": [
+        "zulgck",
+        "jblwri"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tibzqw"
+        ]
+      },
+      "label": "top row"
+    },
+    {
+      "id": "zulgck",
+      "name": "heading",
+      "parent": "nlcnnf",
+      "children": [],
+      "settings": {
+        "text": "Libero massa eu bibendum mauris consequat ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "abomeg"
+        ]
+      }
+    },
+    {
+      "id": "jblwri",
+      "name": "text",
+      "parent": "nlcnnf",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "wdvmyx"
+        ]
+      }
+    },
+    {
+      "id": "aitzed",
+      "name": "block",
+      "parent": "taegai",
+      "children": [
+        "iudnqy",
+        "hkdeoy",
+        "ugeyzr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bpqrul"
+        ]
+      },
+      "label": "bottom row"
+    },
+    {
+      "id": "iudnqy",
+      "name": "block",
+      "parent": "aitzed",
+      "children": [
+        "rmbaca",
+        "cidfyy",
+        "xjchzf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dhenyb"
+        ]
+      },
+      "label": "left content"
+    },
+    {
+      "id": "rmbaca",
+      "name": "icon-box",
+      "parent": "iudnqy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-forumbee"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    },
+    {
+      "id": "cidfyy",
+      "name": "icon-box",
+      "parent": "iudnqy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-galactic-republic"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    },
+    {
+      "id": "xjchzf",
+      "name": "icon-box",
+      "parent": "iudnqy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-gg-circle"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    },
+    {
+      "id": "hkdeoy",
+      "name": "block",
+      "parent": "aitzed",
+      "children": [
+        "umndpw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vaskzv"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "umndpw",
+      "name": "image",
+      "parent": "hkdeoy",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jngghh"
+        ],
+        "image": {
+          "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/mobile-image.png",
+          "external": true,
+          "filename": "mobile-image.png"
+        }
+      }
+    },
+    {
+      "id": "ugeyzr",
+      "name": "block",
+      "parent": "aitzed",
+      "children": [
+        "zlvxjt",
+        "dpksln",
+        "bzeqlb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cjydpu"
+        ]
+      },
+      "label": "right content"
+    },
+    {
+      "id": "zlvxjt",
+      "name": "icon-box",
+      "parent": "ugeyzr",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-github-alt"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    },
+    {
+      "id": "dpksln",
+      "name": "icon-box",
+      "parent": "ugeyzr",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-google-drive"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    },
+    {
+      "id": "bzeqlb",
+      "name": "icon-box",
+      "parent": "ugeyzr",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-google-play"
+        },
+        "content": "<h4 style=\"text-align: center;\">Icon box heading</h4><p style=\"text-align: center;\">Donec sociosqu aliquet dolor consequat nascetur dui phasellus laoreet habitant cubilia sem finibus</p>",
+        "_cssGlobalClasses": [
+          "avcctj"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "jbrxqk",
+      "name": "migrator-features-v16",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "xjpxdt",
+      "name": "migrator-features-v16__container",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "bottom": 60,
+          "left": 20,
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "tibzqw",
+      "name": "migrator-features-v16__top-row",
+      "settings": {
+        "_alignItems": "center",
+        "_margin": {
+          "bottom": 30
+        }
+      }
+    },
+    {
+      "id": "abomeg",
+      "name": "migrator-features-v16__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 25
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "wdvmyx",
+      "name": "migrator-features-v16__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "bpqrul",
+      "name": "migrator-features-v16__bottom-row",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "dhenyb",
+      "name": "migrator-features-v16__left-content",
+      "settings": {
+        "_rowGap": "40px"
+      }
+    },
+    {
+      "id": "avcctj",
+      "name": "migrator-features-v16__icon-box",
+      "settings": {
+        "typographyHeading": {
+          "line-height": "50px"
+        },
+        "iconBackgroundColor": {
+          "hex": "#d5e4ff",
+          "id": "vybqbz"
+        },
+        "iconColor": {
+          "hex": "#000000",
+          "id": "jfhhzf"
+        },
+        "iconWidth": "0px",
+        "iconPadding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "iconBorder": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "verticalAlign": "center",
+        "typographyHeading:tablet_portrait": {
+          "line-height": "40px"
+        },
+        "iconPadding:tablet_portrait": {
+          "top": 15,
+          "right": 15,
+          "bottom": 15,
+          "left": 15
+        }
+      }
+    },
+    {
+      "id": "vaskzv",
+      "name": "migrator-features-v16__image-wrap",
+      "settings": {
+        "_alignItems:mobile_landscape": "center",
+        "_margin:mobile_landscape": {
+          "top": 20,
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "jngghh",
+      "name": "migrator-features-v16__image",
+      "settings": {
+        "_width:mobile_landscape": "300px"
+      }
+    },
+    {
+      "id": "cjydpu",
+      "name": "migrator-features-v16__right-content",
+      "settings": {
+        "_rowGap": "40px"
+      }
+    }
+  ],
+  "globalElements": []
+}

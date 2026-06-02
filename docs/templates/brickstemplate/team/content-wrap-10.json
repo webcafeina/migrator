@@ -1,0 +1,410 @@
+{
+  "content": [
+    {
+      "id": "rjalwp",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ysjost",
+        "xjkblk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "prstay"
+        ]
+      }
+    },
+    {
+      "id": "ysjost",
+      "name": "container",
+      "parent": "rjalwp",
+      "children": [
+        "ippdxw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ngtjvl"
+        ]
+      }
+    },
+    {
+      "id": "ippdxw",
+      "name": "block",
+      "parent": "ysjost",
+      "children": [
+        "dqdinn",
+        "ylykas"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "anlyoo"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "dqdinn",
+      "name": "heading",
+      "parent": "ippdxw",
+      "children": [],
+      "settings": {
+        "text": "Our Team Style 07",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ljohum"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "ylykas",
+      "name": "text",
+      "parent": "ippdxw",
+      "children": [],
+      "settings": {
+        "text": "<p style=\"text-align: center;\">Dictumst diam letius aptent mus natoque morbi accumsan primis arcu phasellus vehicula vulputate nam luctus semper at condimentum nibh egestas</p>",
+        "_cssGlobalClasses": [
+          "enbdtq"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "xjkblk",
+      "name": "container",
+      "parent": "rjalwp",
+      "children": [
+        "kncfho",
+        "yabphl",
+        "ifluds",
+        "dbsmom"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "scgzug"
+        ]
+      },
+      "label": "team wrap"
+    },
+    {
+      "id": "kncfho",
+      "name": "block",
+      "parent": "xjkblk",
+      "children": [
+        "gbhrtf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jyramj"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "gbhrtf",
+      "name": "icon-box",
+      "parent": "kncfho",
+      "children": [],
+      "settings": {
+        "content": "<h4 style=\"text-align: center;\">Michael</h4><p style=\"text-align: center;\">Web Developer</p>",
+        "_cssGlobalClasses": [
+          "grfkvc"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "yabphl",
+      "name": "block",
+      "parent": "xjkblk",
+      "children": [
+        "bzqtyq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "edtqdx"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "bzqtyq",
+      "name": "icon-box",
+      "parent": "yabphl",
+      "children": [],
+      "settings": {
+        "content": "<h4 style=\"text-align: center;\">Thomas</h4><p style=\"text-align: center;\">Web Developer</p>",
+        "_cssGlobalClasses": [
+          "grfkvc"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "ifluds",
+      "name": "block",
+      "parent": "xjkblk",
+      "children": [
+        "offptq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dlrefk"
+        ]
+      },
+      "label": "team item"
+    },
+    {
+      "id": "offptq",
+      "name": "icon-box",
+      "parent": "ifluds",
+      "children": [],
+      "settings": {
+        "content": "<h4 style=\"text-align: center;\">Michael</h4><p style=\"text-align: center;\">Web Developer</p>",
+        "_cssGlobalClasses": [
+          "grfkvc"
+        ]
+      },
+      "label": "team"
+    },
+    {
+      "id": "dbsmom",
+      "name": "block",
+      "parent": "xjkblk",
+      "children": [
+        "xeuhgj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "laopes"
+        ],
+        "_position": "relative"
+      },
+      "label": "team item"
+    },
+    {
+      "id": "xeuhgj",
+      "name": "icon-box",
+      "parent": "dbsmom",
+      "children": [],
+      "settings": {
+        "content": "<h4 style=\"text-align: center;\">Thomas</h4><p style=\"text-align: center;\">Web Developer</p>",
+        "_cssGlobalClasses": [
+          "grfkvc"
+        ]
+      },
+      "label": "team"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.3",
+  "globalClasses": [
+    {
+      "id": "prstay",
+      "name": "migrator-team-v07",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ngtjvl",
+      "name": "migrator-team-v07__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "anlyoo",
+      "name": "migrator-team-v07__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "ljohum",
+      "name": "migrator-team-v07__top-heading",
+      "settings": []
+    },
+    {
+      "id": "enbdtq",
+      "name": "migrator-team-v07__top-text",
+      "settings": {
+        "_padding": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "scgzug",
+      "name": "migrator-team-v07__team-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_rowGap": "20px",
+        "_justifyContent:mobile_landscape": "center",
+        "_rowGap:mobile_landscape": "90px"
+      }
+    },
+    {
+      "id": "jyramj",
+      "name": "migrator-team-v07__team-item-1",
+      "settings": {
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash.jpg",
+            "external": true,
+            "filename": "hugo-delauney-hukpWOHwF1Q-unsplash.jpg"
+          }
+        },
+        "_height": "280px",
+        "_widthMax:mobile_landscape": "80%",
+        "_height:mobile_landscape": "480px",
+        "_height:mobile_portrait": "350px",
+        "_widthMax:mobile_portrait": "100%",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "grfkvc",
+      "name": "migrator-team-v07__team",
+      "settings": {
+        "_position": "absolute",
+        "_bottom": "-17%",
+        "_width": "80%",
+        "_right": "%",
+        "_left": "10%",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_padding": {
+          "top": 20,
+          "bottom": 20
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        },
+        "_bottom:mobile_landscape": "-10%",
+        "contentAlign": "center"
+      }
+    },
+    {
+      "id": "edtqdx",
+      "name": "migrator-team-v07__team-item-2",
+      "settings": {
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/midas-hofstra-tidSLv-UaNs-unsplash.jpg",
+            "external": true,
+            "filename": "midas-hofstra-tidSLv-UaNs-unsplash.jpg"
+          }
+        },
+        "_height": "280px",
+        "_widthMax:mobile_landscape": "80%",
+        "_height:mobile_landscape": "480px",
+        "_height:mobile_portrait": "350px",
+        "_widthMax:mobile_portrait": "100%",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "dlrefk",
+      "name": "migrator-team-v07__team-item-3",
+      "settings": {
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash.jpg",
+            "external": true,
+            "filename": "hugo-delauney-hukpWOHwF1Q-unsplash.jpg"
+          }
+        },
+        "_height": "280px",
+        "_widthMax:mobile_landscape": "80%",
+        "_height:mobile_landscape": "480px",
+        "_height:mobile_portrait": "350px",
+        "_widthMax:mobile_portrait": "100%",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "laopes",
+      "name": "migrator-team-v07__team-item-4",
+      "settings": {
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/midas-hofstra-tidSLv-UaNs-unsplash.jpg",
+            "external": true,
+            "filename": "midas-hofstra-tidSLv-UaNs-unsplash.jpg"
+          }
+        },
+        "_height": "280px",
+        "_widthMax:mobile_landscape": "80%",
+        "_height:mobile_landscape": "480px",
+        "_height:mobile_portrait": "350px",
+        "_widthMax:mobile_portrait": "100%"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,268 @@
+{
+  "content": [
+    {
+      "id": "wrhzwr",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "npvrva"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iqifmp"
+        ]
+      }
+    },
+    {
+      "id": "npvrva",
+      "name": "container",
+      "parent": "wrhzwr",
+      "children": [
+        "nfaiyu",
+        "dhhxmb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cskakv"
+        ]
+      }
+    },
+    {
+      "id": "nfaiyu",
+      "name": "block",
+      "parent": "npvrva",
+      "children": [
+        "onziik",
+        "oyacri"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "piozae"
+        ]
+      },
+      "label": "left content"
+    },
+    {
+      "id": "onziik",
+      "name": "heading",
+      "parent": "nfaiyu",
+      "children": [],
+      "settings": {
+        "text": "ACHIVE MORE",
+        "_cssGlobalClasses": [
+          "xjsgyp"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "oyacri",
+      "name": "heading",
+      "parent": "nfaiyu",
+      "children": [],
+      "settings": {
+        "text": "A convoy's goal is to keep your squad together.",
+        "_cssGlobalClasses": [
+          "jmjstq"
+        ]
+      }
+    },
+    {
+      "id": "dhhxmb",
+      "name": "block",
+      "parent": "npvrva",
+      "children": [
+        "ltpkoi",
+        "agnbpd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "arjihs"
+        ]
+      },
+      "label": "right content"
+    },
+    {
+      "id": "ltpkoi",
+      "name": "icon-box",
+      "parent": "dhhxmb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-layout"
+        },
+        "content": "<h4>Built for impact</h4><p>Adipiscing litora laoreet nascetur maecenas hac leo himenaeos morbi habitant conubia.</p>",
+        "_cssGlobalClasses": [
+          "chpucu"
+        ]
+      }
+    },
+    {
+      "id": "agnbpd",
+      "name": "icon-box",
+      "parent": "dhhxmb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-layout"
+        },
+        "content": "<h4>Built for impact</h4><p>Adipiscing litora laoreet nascetur maecenas hac leo himenaeos morbi habitant conubia.</p>",
+        "_cssGlobalClasses": [
+          "chpucu"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "iqifmp",
+      "name": "migrator-features-v21",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#f8f8f8"
+          }
+        }
+      }
+    },
+    {
+      "id": "cskakv",
+      "name": "migrator-features-v21__container",
+      "settings": {
+        "_padding": {
+          "right": "20px",
+          "top": "110px",
+          "bottom": "110px",
+          "left": "20px"
+        },
+        "_padding:tablet_portrait": {
+          "top": "80px",
+          "bottom": "80px"
+        },
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_alignSelf": "stretch",
+        "_width": "1440px",
+        "_padding:mobile_landscape": {
+          "top": "70px",
+          "bottom": "70px"
+        },
+        "_rowGap:mobile_landscape": "60px",
+        "_rowGap:mobile_portrait": "50px"
+      }
+    },
+    {
+      "id": "piozae",
+      "name": "migrator-features-v21__left-content",
+      "settings": {
+        "_padding": {
+          "right": "40px"
+        },
+        "_width": "30%",
+        "_width:mobile_landscape": "70%",
+        "_width:mobile_portrait": "100%"
+      }
+    },
+    {
+      "id": "xjsgyp",
+      "name": "migrator-features-v21__sub-heading",
+      "settings": {
+        "_typography": {
+          "font-size": "16px",
+          "line-height": "24px",
+          "color": {
+            "hex": "#aaaaaa"
+          },
+          "text-transform": "uppercase",
+          "font-family": "Poppins",
+          "font-weight": "600"
+        }
+      }
+    },
+    {
+      "id": "jmjstq",
+      "name": "migrator-features-v21__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#333333"
+          },
+          "font-size": "36px",
+          "line-height": "45px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "32px",
+          "line-height": "40px"
+        }
+      }
+    },
+    {
+      "id": "arjihs",
+      "name": "migrator-features-v21__right-content",
+      "settings": {
+        "_width": "70%",
+        "_direction": "row",
+        "_width:mobile_landscape": "100%",
+        "_rowGap:mobile_portrait": "45px"
+      }
+    },
+    {
+      "id": "chpucu",
+      "name": "migrator-features-v21__icon-box",
+      "settings": {
+        "verticalAlign": "flex-start",
+        "direction": "row",
+        "iconBackgroundColor": {
+          "hex": "#7c4fcf"
+        },
+        "iconColor": {
+          "hex": "#ffffff"
+        },
+        "iconPadding": {
+          "bottom": "15px",
+          "top": "15px",
+          "right": "15px",
+          "left": "15px"
+        },
+        "iconBorder": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "iconSize": "20px",
+        "typographyBody": {
+          "font-size": "16px",
+          "font-family": "Poppins",
+          "font-weight": "500",
+          "line-height": "24px",
+          "color": {
+            "hex": "#666666"
+          }
+        },
+        "iconMargin": {
+          "right": "20px"
+        },
+        "_width": "50%",
+        "_padding": {
+          "right": "40px",
+          "left": "40px"
+        },
+        "_padding:tablet_portrait": {
+          "left": "20px",
+          "right": "20px"
+        },
+        "_width:mobile_portrait": "100%"
+      }
+    }
+  ],
+  "globalElements": []
+}

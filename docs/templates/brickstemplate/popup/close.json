@@ -1,0 +1,278 @@
+{
+  "content": [
+    {
+      "id": "yvmmnt",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "sujhki"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zdimzi"
+        ]
+      }
+    },
+    {
+      "id": "sujhki",
+      "name": "container",
+      "parent": "yvmmnt",
+      "children": [
+        "clptoi",
+        "wanltu",
+        "oofzhh",
+        "chsxcv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "olzcii"
+        ]
+      }
+    },
+    {
+      "id": "clptoi",
+      "name": "image",
+      "parent": "sujhki",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 3074,
+          "filename": "telephone.png",
+          "size": "full",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/telephone.png",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/telephone.png"
+        },
+        "_cssGlobalClasses": [
+          "xxjlnw"
+        ]
+      }
+    },
+    {
+      "id": "wanltu",
+      "name": "heading",
+      "parent": "sujhki",
+      "children": [],
+      "settings": {
+        "text": "Want to explore our product? <br>request a live demo now.",
+        "_cssGlobalClasses": [
+          "xlzusy"
+        ]
+      }
+    },
+    {
+      "id": "oofzhh",
+      "name": "form",
+      "parent": "sujhki",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "44abfa",
+            "width": "70",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "0fc334",
+            "width": "70",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "required": true,
+            "id": "d9ad4b",
+            "width": "70",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "number",
+            "label": "Phone",
+            "placeholder": "Phone",
+            "id": "jszojh",
+            "width": "70",
+            "width:mobile_portrait": "100"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "PG Bricks",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "lg",
+        "submitButtonText": "Request Now",
+        "_cssGlobalClasses": [
+          "phtrku"
+        ]
+      }
+    },
+    {
+      "id": "chsxcv",
+      "name": "icon",
+      "parent": "sujhki",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-close"
+        },
+        "_interactions": [
+          {
+            "id": "yqbgvd",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2770"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "cptzxr"
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "zdimzi",
+      "name": "migrator-popup-v19",
+      "settings": []
+    },
+    {
+      "id": "olzcii",
+      "name": "migrator-popup-v19__container",
+      "settings": {
+        "_alignItems": "center",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "xxjlnw",
+      "name": "migrator-popup-v19__image",
+      "settings": {
+        "_width": "130px",
+        "_background": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_padding": {
+          "top": "10px",
+          "right": "10px",
+          "bottom": "10px",
+          "left": "10px"
+        },
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetY": "8",
+            "blur": "24",
+            "offsetX": "0"
+          },
+          "color": {
+            "hex": "#9f9da5",
+            "rgb": "rgba(159, 157, 165, 0.2)",
+            "hsl": "hsla(255, 4%, 63%, 0.2)"
+          }
+        },
+        "_width:mobile_portrait": "100px"
+      }
+    },
+    {
+      "id": "xlzusy",
+      "name": "migrator-popup-v19__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "font-size": "36px",
+          "line-height": "42px"
+        },
+        "_padding": {
+          "bottom": "30px",
+          "top": "20px"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "24px",
+          "line-height": "28px"
+        },
+        "_padding:mobile_portrait": {
+          "top": "15px"
+        }
+      }
+    },
+    {
+      "id": "phtrku",
+      "name": "migrator-popup-v19__form",
+      "settings": {
+        "submitButtonWidth": "33",
+        "submitButtonWidth:mobile_portrait": "60",
+        "horizontalAlignFields": "center",
+        "submitButtonBackgroundColor": {
+          "hex": "#8976fd",
+          "id": "ofeejs",
+          "name": "Acent"
+        }
+      }
+    },
+    {
+      "id": "cptzxr",
+      "name": "migrator-popup-v19__close",
+      "settings": {
+        "iconSize": "25px",
+        "_position": "absolute",
+        "_top": "0",
+        "_right": "0",
+        "_background": {
+          "color": {
+            "hex": "#000000"
+          }
+        },
+        "_padding": {
+          "top": "9px",
+          "right": "9px",
+          "bottom": "9px",
+          "left": "9px"
+        },
+        "iconColor": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        },
+        "_border": {
+          "radius": {
+            "top": "10",
+            "right": "10",
+            "bottom": "10",
+            "left": "10"
+          }
+        },
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "20px",
+        "iconSize:mobile_portrait": "16px"
+      }
+    }
+  ],
+  "globalElements": []
+}

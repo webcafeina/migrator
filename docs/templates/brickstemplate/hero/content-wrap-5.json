@@ -1,0 +1,319 @@
+{
+  "content": [
+    {
+      "id": "592ee7",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "4d44a4"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zndoig"
+        ]
+      }
+    },
+    {
+      "id": "4d44a4",
+      "name": "container",
+      "parent": "592ee7",
+      "children": [
+        "9a1ea5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wpqwwd"
+        ]
+      }
+    },
+    {
+      "id": "9a1ea5",
+      "name": "block",
+      "parent": "4d44a4",
+      "children": [
+        "7fa7f3",
+        "f966e2",
+        "dcc98d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "spqbck"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "7fa7f3",
+      "name": "heading",
+      "parent": "9a1ea5",
+      "children": [],
+      "settings": {
+        "text": "Add Your Heading Text Here",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "kvowhe"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "f966e2",
+      "name": "heading",
+      "parent": "9a1ea5",
+      "children": [],
+      "settings": {
+        "text": "Ways Coronavirus Changed the Books Online Industry Forever",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "bfjppw"
+        ]
+      }
+    },
+    {
+      "id": "dcc98d",
+      "name": "button",
+      "parent": "9a1ea5",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "dvxofi"
+        ]
+      }
+    },
+    {
+      "id": "0e0dc6",
+      "name": "container",
+      "parent": 0,
+      "children": [
+        "31120e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "crhifu"
+        ]
+      },
+      "label": "video wrap"
+    },
+    {
+      "id": "31120e",
+      "name": "video",
+      "parent": "0e0dc6",
+      "children": [],
+      "settings": {
+        "videoType": "youtube",
+        "youTubeId": "Rk6_hdRtJOE",
+        "youtubeControls": true,
+        "youtubeShowinfo": true,
+        "vimeoByline": true,
+        "vimeoTitle": true,
+        "vimeoPortrait": true,
+        "fileControls": true,
+        "_cssGlobalClasses": [
+          "migulf"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "zndoig",
+      "name": "migrator-hero-v04",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_height": "720px",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_background": {
+          "image": {
+            "id": 16,
+            "filename": "emmanuel-acua-f3P6xfrj2P8-unsplash.jpg",
+            "size": "large",
+            "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/emmanuel-acua-f3P6xfrj2P8-unsplash.jpg",
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/emmanuel-acua-f3P6xfrj2P8-unsplash-1024x683.jpg"
+          },
+          "position": "center center",
+          "repeat": "no-repeat"
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "whkbus",
+              "color": {
+                "hex": "#2d3749",
+                "rgb": "rgba(45, 55, 73, 0.5)",
+                "hsl": "hsla(219, 24%, 23%, 0.5)"
+              }
+            }
+          ]
+        },
+        "_height:mobile_portrait": "550px",
+        "_height:tablet_portrait": "720px",
+        "_height:mobile_landscape": "680px"
+      }
+    },
+    {
+      "id": "wpqwwd",
+      "name": "migrator-hero-v04__container",
+      "settings": []
+    },
+    {
+      "id": "spqbck",
+      "name": "migrator-hero-v04__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_zIndex": "1"
+      }
+    },
+    {
+      "id": "kvowhe",
+      "name": "migrator-hero-v04__sub-heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "font-weight": "300",
+          "letter-spacing": "1px"
+        },
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "bfjppw",
+      "name": "migrator-hero-v04__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": 40
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "dvxofi",
+      "name": "migrator-hero-v04__button",
+      "settings": {
+        "style": "primary",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "rgb": "rgba(255, 255, 255, 0)",
+            "hsl": "hsla(0, 0%, 100%, 0)"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": 3,
+            "right": 3,
+            "bottom": 3,
+            "left": 3
+          },
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          },
+          "style": "solid"
+        },
+        "_padding": {
+          "top": 10,
+          "unit": {
+            "top": "px"
+          },
+          "right": 35,
+          "bottom": 10,
+          "left": 35
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "ljynle",
+            "name": "White"
+          }
+        }
+      }
+    },
+    {
+      "id": "crhifu",
+      "name": "migrator-hero-v04-video",
+      "settings": {
+        "_width": "700px",
+        "_boxShadow": {
+          "color": {
+            "hex": "#64646f",
+            "rgb": "rgba(100, 100, 111, 0.2)",
+            "hsl": "hsla(240, 5%, 41%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 7,
+            "blur": 29,
+            "spread": 0
+          }
+        },
+        "_margin": {
+          "top": -200
+        },
+        "_width:mobile_portrait": "300px",
+        "_margin:mobile_portrait": {
+          "top": -90
+        }
+      }
+    },
+    {
+      "id": "migulf",
+      "name": "migrator-hero-v04-video__video",
+      "settings": {
+        "_border": {
+          "radius": {
+            "top": 10,
+            "right": 10,
+            "bottom": 10,
+            "left": 10
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

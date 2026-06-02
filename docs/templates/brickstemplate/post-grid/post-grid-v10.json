@@ -1,0 +1,342 @@
+{
+  "content": [
+    {
+      "id": "apnrio",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "kxeciz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nynhhp"
+        ]
+      },
+      "label": "Post Grid V10"
+    },
+    {
+      "id": "kxeciz",
+      "name": "container",
+      "parent": "apnrio",
+      "children": [
+        "qurtym"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hlwvzh"
+        ]
+      }
+    },
+    {
+      "id": "qurtym",
+      "name": "block",
+      "parent": "kxeciz",
+      "children": [
+        "bhxhwf",
+        "lyuxxr",
+        "ixznex"
+      ],
+      "settings": {
+        "hasLoop": true,
+        "query": {
+          "objectType": "post",
+          "post_type": [
+            "post"
+          ],
+          "posts_per_page": "4",
+          "tax_query": [
+            "category::55"
+          ]
+        },
+        "_cssGlobalClasses": [
+          "jebawc"
+        ],
+        "_background": {
+          "image": {
+            "useDynamicData": "{featured_image}",
+            "size": "large"
+          },
+          "position": "center center",
+          "size": "cover",
+          "repeat": "no-repeat"
+        }
+      },
+      "label": "Content Wrap"
+    },
+    {
+      "id": "bhxhwf",
+      "name": "post-taxonomy",
+      "parent": "qurtym",
+      "children": [],
+      "settings": {
+        "taxonomy": "category",
+        "_cssGlobalClasses": [
+          "lrlxxi"
+        ]
+      }
+    },
+    {
+      "id": "lyuxxr",
+      "name": "heading",
+      "parent": "qurtym",
+      "children": [],
+      "settings": {
+        "text": "{post_title}",
+        "tag": "h2",
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{post_url}"
+        },
+        "_cssGlobalClasses": [
+          "dulxcn"
+        ]
+      },
+      "label": "Title"
+    },
+    {
+      "id": "ixznex",
+      "name": "block",
+      "parent": "qurtym",
+      "children": [
+        "zawelv",
+        "xsvanz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yklobx"
+        ]
+      },
+      "label": "Author Wrap"
+    },
+    {
+      "id": "zawelv",
+      "name": "image",
+      "parent": "ixznex",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{author_avatar}",
+          "size": "thumbnail"
+        },
+        "tag": "figure",
+        "url": {
+          "type": "meta"
+        },
+        "_cssGlobalClasses": [
+          "jwatjj"
+        ]
+      },
+      "label": "Author Image"
+    },
+    {
+      "id": "xsvanz",
+      "name": "text-basic",
+      "parent": "ixznex",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{author_name:link}",
+        "_cssGlobalClasses": [
+          "fepaxo"
+        ]
+      },
+      "label": "Author Name"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "nynhhp",
+      "name": "migrator-post-grid-v10",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "hlwvzh",
+      "name": "migrator-post-grid-v10__container",
+      "settings": {
+        "_display": "grid",
+        "_gridGap": "1rem",
+        "_gridAutoRows": "20rem",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_gridTemplateColumns:mobile_landscape": "1fr 1fr",
+        "_gridTemplateColumns:tablet_portrait": "1fr 1fr 1.5fr",
+        "_gridTemplateColumns": "1fr 1fr 1.5fr",
+        "_gridAutoRows:mobile_landscape": "27rem"
+      }
+    },
+    {
+      "id": "jebawc",
+      "name": "migrator-post-grid-v10__content-wrap",
+      "settings": {
+        "_background": {
+          "image": {
+            "useDynamicData": "{featured_image}",
+            "size": "large"
+          },
+          "position": "center center",
+          "size": "cover"
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "boxixc",
+              "color": {
+                "hex": "#000000",
+                "rgb": "rgba(0, 0, 0, 0.1)",
+                "hsl": "hsla(0, 0%, 0%, 0.1)"
+              }
+            },
+            {
+              "id": "hxenxz",
+              "color": {
+                "hex": "#000000",
+                "rgb": "rgba(0, 0, 0, 0.7)",
+                "hsl": "hsla(0, 0%, 0%, 0.7)"
+              }
+            }
+          ]
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "_justifyContent": "flex-end",
+        "_rowGap": "1rem",
+        "_cssTransition": "all 0.3s ease-in-out",
+        "_cssCustom": ".migrator-post-grid-v10__content-wrap:nth-child(1){\n\tgrid-column: span 2;\n  grid-row: span 3;\n}\n.migrator-post-grid-v10__content-wrap:nth-child(1) .migrator-post-grid-v10__title {\n\tfont-size: 2.8rem;\n  line-height: 3.8rem;\n}",
+        "_cssCustom:mobile_landscape": ".migrator-post-grid-v10__content-wrap:nth-child(1){\n\tgrid-column: span 2;\n  grid-row: auto;\n}",
+        "_cssCustom:mobile_portrait": ".migrator-post-grid-v10__content-wrap:nth-child(1){\n\tgrid-column: auto;\n}\n.migrator-post-grid-v10__content-wrap:nth-child(1) .migrator-post-grid-v10__title {\n\tfont-size: 2rem;\n  line-height: 3rem;\n}"
+      }
+    },
+    {
+      "id": "lrlxxi",
+      "name": "migrator-post-grid-v10__post-taxonomy",
+      "settings": {
+        "style": "dark",
+        "_background": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          },
+          "font-size": "1.4rem",
+          "line-height": "1.8rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_padding": {
+          "left": "1rem",
+          "right": "1rem",
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#735dfd",
+            "id": "cwyawq",
+            "name": "Acent Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "dulxcn",
+      "name": "migrator-post-grid-v10__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.4rem"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_cssTransition": "all 0.3s ease-in-out",
+        "_typography:mobile_portrait": {
+          "font-size": "2rem",
+          "line-height": "3rem"
+        }
+      }
+    },
+    {
+      "id": "yklobx",
+      "name": "migrator-post-grid-v10__author-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "1rem"
+      }
+    },
+    {
+      "id": "jwatjj",
+      "name": "migrator-post-grid-v10__author-image",
+      "settings": {
+        "_width": "3rem",
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "_overflow": "hidden"
+      }
+    },
+    {
+      "id": "fepaxo",
+      "name": "migrator-post-grid-v10__author-name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          },
+          "font-size": "1.3rem"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#8976fd",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

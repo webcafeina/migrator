@@ -1,0 +1,426 @@
+{
+  "content": [
+    {
+      "id": "bvoaoo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ejexyw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rnlnln"
+        ]
+      },
+      "label": "Cart 2"
+    },
+    {
+      "id": "ejexyw",
+      "name": "container",
+      "parent": "bvoaoo",
+      "children": [
+        "bigkin",
+        "facplk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hcdjns"
+        ]
+      }
+    },
+    {
+      "id": "bigkin",
+      "name": "block",
+      "parent": "ejexyw",
+      "children": [
+        "yckjtw",
+        "nkosnf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dqzwkt"
+        ]
+      },
+      "label": "cart item wrap"
+    },
+    {
+      "id": "yckjtw",
+      "name": "heading",
+      "parent": "bigkin",
+      "children": [],
+      "settings": {
+        "text": "Your Cart",
+        "_cssGlobalClasses": [
+          "dqsmmo"
+        ]
+      }
+    },
+    {
+      "id": "nkosnf",
+      "name": "woocommerce-cart-items",
+      "parent": "bigkin",
+      "children": [],
+      "settings": {
+        "hideCoupon": true,
+        "_cssGlobalClasses": [
+          "uhhzze"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "facplk",
+      "name": "block",
+      "parent": "ejexyw",
+      "children": [
+        "bgzjmz",
+        "rzhhct"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kxqfvi"
+        ]
+      },
+      "label": "cart totals wrap"
+    },
+    {
+      "id": "bgzjmz",
+      "name": "woocommerce-cart-collaterals",
+      "parent": "facplk",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sucxrt"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "rzhhct",
+      "name": "woocommerce-cart-coupon",
+      "parent": "facplk",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "myiunz"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "rnlnln",
+      "name": "migrator-cart-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "hcdjns",
+      "name": "migrator-cart-2__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "4rem",
+        "_direction:tablet_portrait": "column",
+        "_rowGap:tablet_portrait": "3rem"
+      }
+    },
+    {
+      "id": "dqzwkt",
+      "name": "migrator-cart-2__cart-item-wrap",
+      "settings": {
+        "_width": "60%",
+        "_width:tablet_portrait": "100%"
+      }
+    },
+    {
+      "id": "dqsmmo",
+      "name": "migrator-cart-2__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "2.4rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "uhhzze",
+      "name": "migrator-cart-2__woocommerce-cart-items",
+      "settings": {
+        "width": "7rem",
+        "removeColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonsTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.2",
+          "font-weight": "400"
+        },
+        "buttonsBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonsBorder": {
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "headHide": true,
+        "bodyBorder": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "imageSize": "medium",
+        "removeSize": "2.5rem",
+        "nameTypography": {
+          "font-size": "1.5rem",
+          "line-height": "1.5",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "priceTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        },
+        "quantityTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        },
+        "subtotalTypography": {
+          "line-height": "1.5",
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_padding": {
+          "right": "2rem",
+          "left": "2rem"
+        },
+        "buttonsBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "buttonsTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      }
+    },
+    {
+      "id": "kxqfvi",
+      "name": "migrator-cart-2__cart-totals-wrap",
+      "settings": {
+        "_width": "40%",
+        "_rowGap": "4rem",
+        "_padding": {
+          "top": "3rem",
+          "right": "2rem",
+          "bottom": "3rem",
+          "left": "2rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        },
+        "_width:tablet_portrait": "100%",
+        "_rowGap:mobile_landscape": "3rem"
+      }
+    },
+    {
+      "id": "sucxrt",
+      "name": "migrator-cart-2__woocommerce-cart-collaterals",
+      "settings": {
+        "tablePadding": {
+          "bottom": "1.5rem",
+          "top": "1.5rem"
+        },
+        "buttonWidth": "100%",
+        "buttonBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonBorder": {
+          "style": "none",
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "buttonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "line-height": "2.2",
+          "font-weight": "400",
+          "font-size": "1.6rem"
+        },
+        "tableBorder": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "titleTypography": {
+          "font-size": "2.4rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "line-height": "1.5"
+        },
+        "tableMargin": {
+          "top": "1rem"
+        },
+        "buttonBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        }
+      }
+    },
+    {
+      "id": "myiunz",
+      "name": "migrator-cart-2__woocommerce-cart-coupon",
+      "settings": {
+        "buttonBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-weight": "400",
+          "line-height": "1.5"
+        },
+        "buttonBorder": {
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "buttonBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "direction:tablet_portrait": "row",
+        "_alignSelf:tablet_portrait": "stretch",
+        "inputWidth:tablet_portrait": "68%",
+        "buttonWidth:tablet_portrait": "30%",
+        "inputWidth:mobile_landscape": "67%",
+        "inputWidth:mobile_portrait": "56%",
+        "buttonWidth:mobile_portrait": "40%",
+        "_alignSelf": "stretch",
+        "inputWidth": "65%",
+        "buttonWidth": "31%",
+        "inputBorder": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "style": "solid",
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

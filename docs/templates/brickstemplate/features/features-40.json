@@ -1,0 +1,245 @@
+{
+  "content": [
+    {
+      "id": "suxceq",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ivheas"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "syxytf"
+        ]
+      },
+      "label": "Features 40"
+    },
+    {
+      "id": "ivheas",
+      "name": "container",
+      "parent": "suxceq",
+      "children": [
+        "uhpyft"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aegesf"
+        ]
+      }
+    },
+    {
+      "id": "uhpyft",
+      "name": "block",
+      "parent": "ivheas",
+      "children": [
+        "ifdhmi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jsmyve"
+        ]
+      },
+      "label": "slide wrap"
+    },
+    {
+      "id": "ifdhmi",
+      "name": "slider-nested",
+      "parent": "uhpyft",
+      "children": [
+        "yjqdlp",
+        "qwsckp",
+        "lizsgi"
+      ],
+      "settings": {
+        "_cssClasses": "custom_slider_07",
+        "arrows": true,
+        "perPage:mobile_portrait": "1",
+        "perPage": "1",
+        "_cssGlobalClasses": [
+          "fekyeh"
+        ],
+        "height": "70vh",
+        "height:mobile_landscape": "50vh"
+      },
+      "themeStyles": [],
+      "label": "slide (CSS))"
+    },
+    {
+      "id": "yjqdlp",
+      "name": "block",
+      "parent": "ifdhmi",
+      "children": [
+        "pbqntk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fekyeh"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "pbqntk",
+      "name": "heading",
+      "parent": "yjqdlp",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "yqikre"
+        ]
+      }
+    },
+    {
+      "id": "qwsckp",
+      "name": "block",
+      "parent": "ifdhmi",
+      "children": [
+        "swdelp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fekyeh"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "swdelp",
+      "name": "heading",
+      "parent": "qwsckp",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "yqikre"
+        ]
+      }
+    },
+    {
+      "id": "lizsgi",
+      "name": "block",
+      "parent": "ifdhmi",
+      "children": [
+        "ebycif"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fekyeh"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "ebycif",
+      "name": "heading",
+      "parent": "lizsgi",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "yqikre"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "syxytf",
+      "name": "migrator-features-v40",
+      "settings": {
+        "_padding": {
+          "top": "60px",
+          "right": "20px",
+          "bottom": "60px",
+          "left": "20px"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "aegesf",
+      "name": "migrator-features-v40__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_rowGap": "20px"
+      },
+      "_exists": false
+    },
+    {
+      "id": "jsmyve",
+      "name": "migrator-features-v40__slide-wrap",
+      "settings": {},
+      "_exists": false
+    },
+    {
+      "id": "fekyeh",
+      "name": "migrator-features-v40__slide",
+      "settings": {
+        "arrowHeight": "60",
+        "arrowWidth": "100",
+        "arrowBackground": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "arrowBorder": {
+          "color": {
+            "hex": "#34c174",
+            "id": "zjodvr",
+            "name": "Green"
+          }
+        },
+        "arrowBackground:hover": {
+          "hex": "#34c174",
+          "id": "zjodvr",
+          "name": "Green"
+        },
+        "height": "70vh",
+        "_cssCustom": ".custom_slider_07 .splide__arrow {\n    position: absolute;\n    bottom: -30px;\n  \ttop: auto;\n    left: auto;\n  \tpadding: 15px;\n}\n.custom_slider_07 .splide__arrow svg {\n  fill: #fff;\n}\n\n\n.custom_slider_07 .splide__arrow--prev {\n    right: 100px;\n}\n.custom_slider_07 .splide__arrow--next {\n    right: 0px;\n}\n",
+        "_background": {
+          "image": {
+            "id": 3241,
+            "filename": "portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "size": "full",
+            "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "yqikre",
+      "name": "migrator-features-v40__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_padding": {
+          "top": "15px",
+          "right": "25px",
+          "bottom": "15px",
+          "left": "25px"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

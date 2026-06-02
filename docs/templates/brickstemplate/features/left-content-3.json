@@ -1,0 +1,350 @@
+{
+  "content": [
+    {
+      "id": "nzxoni",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "horopu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "selcqc"
+        ]
+      }
+    },
+    {
+      "id": "horopu",
+      "name": "container",
+      "parent": "nzxoni",
+      "children": [
+        "kpvkpm",
+        "ycqfpx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yugzrs"
+        ]
+      }
+    },
+    {
+      "id": "kpvkpm",
+      "name": "block",
+      "parent": "horopu",
+      "children": [
+        "hwlezd",
+        "evokpp",
+        "golafh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ysjgns"
+        ]
+      },
+      "label": "left content"
+    },
+    {
+      "id": "hwlezd",
+      "name": "heading",
+      "parent": "kpvkpm",
+      "children": [],
+      "settings": {
+        "text": "Our Services",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "npkmgk"
+        ]
+      }
+    },
+    {
+      "id": "evokpp",
+      "name": "divider",
+      "parent": "kpvkpm",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-user-gear"
+        },
+        "_cssGlobalClasses": [
+          "ighacj"
+        ]
+      }
+    },
+    {
+      "id": "golafh",
+      "name": "text",
+      "parent": "kpvkpm",
+      "children": [],
+      "settings": {
+        "text": "<p>Aliquam adipiscing pede nisi scelerisque pellentesque dui malesuada dictum consectetur dictumst curabitur etiam in sociosqu proin class at ex posuere</p>",
+        "_cssGlobalClasses": [
+          "jzixyn"
+        ]
+      }
+    },
+    {
+      "id": "ycqfpx",
+      "name": "block",
+      "parent": "horopu",
+      "children": [
+        "ncqawd",
+        "dobwty"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jbqfea"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "ncqawd",
+      "name": "block",
+      "parent": "ycqfpx",
+      "children": [
+        "iibukd",
+        "thjxtv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sntfgj"
+        ]
+      },
+      "label": "box"
+    },
+    {
+      "id": "iibukd",
+      "name": "icon-box",
+      "parent": "ncqawd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-bullseye"
+        },
+        "content": "<h4>Web Development</h4><p>Viverra sit nullam sodales sem ullamcorper arcu porta suscipit justo aliquet pharetra</p>",
+        "_cssGlobalClasses": [
+          "ovfwft"
+        ]
+      }
+    },
+    {
+      "id": "thjxtv",
+      "name": "icon-box",
+      "parent": "ncqawd",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-bullseye"
+        },
+        "content": "<h4>Web Development</h4><p>Viverra sit nullam sodales sem ullamcorper arcu porta suscipit justo aliquet pharetra</p>",
+        "_cssGlobalClasses": [
+          "ovfwft"
+        ]
+      }
+    },
+    {
+      "id": "dobwty",
+      "name": "block",
+      "parent": "ycqfpx",
+      "children": [
+        "hlwzhx",
+        "aqzegy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sntfgj"
+        ]
+      },
+      "label": "box"
+    },
+    {
+      "id": "hlwzhx",
+      "name": "icon-box",
+      "parent": "dobwty",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-bullseye"
+        },
+        "content": "<h4>Web Development</h4><p>Viverra sit nullam sodales sem ullamcorper arcu porta suscipit justo aliquet pharetra</p>",
+        "_cssGlobalClasses": [
+          "ovfwft"
+        ]
+      }
+    },
+    {
+      "id": "aqzegy",
+      "name": "icon-box",
+      "parent": "dobwty",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-bullseye"
+        },
+        "content": "<h4>Web Development</h4><p>Viverra sit nullam sodales sem ullamcorper arcu porta suscipit justo aliquet pharetra</p>",
+        "_cssGlobalClasses": [
+          "ovfwft"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "selcqc",
+      "name": "migrator-features-v03",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "yugzrs",
+      "name": "migrator-features-v03__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20,
+          "top": 70,
+          "bottom": 70
+        }
+      }
+    },
+    {
+      "id": "ysjgns",
+      "name": "migrator-features-v03__left-content",
+      "settings": {
+        "_width": "30%",
+        "_width:mobile_landscape": "100%",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        },
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "npkmgk",
+      "name": "migrator-features-v03__heading",
+      "settings": {
+        "_margin": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "ighacj",
+      "name": "migrator-features-v03__divider",
+      "settings": {
+        "height": "3px",
+        "width": "20%",
+        "style": "solid",
+        "color": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "justifyContent:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "jzixyn",
+      "name": "migrator-features-v03__text",
+      "settings": {
+        "_margin": {
+          "top": 20
+        },
+        "_typography:mobile_landscape": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "jbqfea",
+      "name": "migrator-features-v03__box-wrap",
+      "settings": {
+        "_width": "70%",
+        "_rowGap": "30px",
+        "_margin": {
+          "left": 60
+        },
+        "_width:mobile_landscape": "100%",
+        "_rowGap:mobile_landscape": "30px",
+        "_margin:mobile_landscape": {
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "sntfgj",
+      "name": "migrator-features-v03__box",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "30px"
+      }
+    },
+    {
+      "id": "ovfwft",
+      "name": "migrator-features-v03__icon-box",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_padding": {
+          "top": 30,
+          "right": 30,
+          "bottom": 30,
+          "left": 30
+        },
+        "typographyHeading": {
+          "line-height": "50px"
+        },
+        "iconMargin": {
+          "bottom": 10
+        },
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconSize": "50px"
+      }
+    }
+  ],
+  "globalElements": []
+}

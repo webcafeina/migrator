@@ -1,0 +1,295 @@
+{
+  "content": [
+    {
+      "id": "d85553",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ca79a6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tmdmzt"
+        ]
+      }
+    },
+    {
+      "id": "ca79a6",
+      "name": "container",
+      "parent": "d85553",
+      "children": [
+        "c32515",
+        "bd90fe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sgqsrd"
+        ]
+      }
+    },
+    {
+      "id": "c32515",
+      "name": "block",
+      "parent": "ca79a6",
+      "children": [
+        "652c04",
+        "3d5f58",
+        "9f67ba",
+        "e2f24d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "exnjql"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "652c04",
+      "name": "heading",
+      "parent": "c32515",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "xpbjdg"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "3d5f58",
+      "name": "heading",
+      "parent": "c32515",
+      "children": [],
+      "settings": {
+        "text": "I Changed My Mind About Books Online. Here’s Why",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "jhoflf"
+        ]
+      }
+    },
+    {
+      "id": "9f67ba",
+      "name": "text",
+      "parent": "c32515",
+      "children": [],
+      "settings": {
+        "text": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>",
+        "_cssGlobalClasses": [
+          "lpbfhr"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "e2f24d",
+      "name": "button",
+      "parent": "c32515",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "zkmnby"
+        ]
+      }
+    },
+    {
+      "id": "bd90fe",
+      "name": "block",
+      "parent": "ca79a6",
+      "children": [
+        "335016"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hmieny"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "335016",
+      "name": "image",
+      "parent": "bd90fe",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "agltjl"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/portrait-attractive-cute-young-student-girl-isolated-white-wall-removebg-preview.png",
+          "external": true,
+          "filename": "portrait-attractive-cute-young-student-girl-isolated-white-wall-removebg-preview.png"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "tmdmzt",
+      "name": "migrator-hero-v02",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "flex-end",
+        "_alignItems": "center",
+        "_heightMin": "720px",
+        "_gradient": {
+          "applyTo": "background",
+          "colors": [
+            {
+              "id": "rpsmrn",
+              "color": {
+                "hex": "#8467d9",
+                "id": "ofeejs"
+              }
+            },
+            {
+              "id": "dbzfop",
+              "color": {
+                "hex": "#9767d9",
+                "id": "cwyawq"
+              }
+            }
+          ],
+          "angle": "50"
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_heightMin:tablet_portrait": "700px"
+      }
+    },
+    {
+      "id": "sgqsrd",
+      "name": "migrator-hero-v02__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_columnGap:mobile_landscape": "20px"
+      }
+    },
+    {
+      "id": "exnjql",
+      "name": "migrator-hero-v02__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_order:mobile_portrait": "1",
+        "_margin:mobile_portrait": {
+          "top": 0
+        },
+        "_padding:mobile_portrait": {
+          "top": 30,
+          "bottom": 40
+        },
+        "_rowGap:mobile_portrait": "0px",
+        "_order:mobile_landscape": "1",
+        "_padding:mobile_landscape": {
+          "top": "40",
+          "bottom": "40"
+        }
+      }
+    },
+    {
+      "id": "xpbjdg",
+      "name": "migrator-hero-v02__sub-heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "font-size": "18px",
+          "line-height": "px",
+          "font-weight": "200",
+          "letter-spacing": "2px"
+        }
+      }
+    },
+    {
+      "id": "jhoflf",
+      "name": "migrator-hero-v02__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "lpbfhr",
+      "name": "migrator-hero-v02__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "zkmnby",
+      "name": "migrator-hero-v02__button",
+      "settings": {
+        "style": "primary",
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "hmieny",
+      "name": "migrator-hero-v02__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_alignItems:mobile_landscape": "center",
+        "_margin:mobile_portrait": {
+          "right": 0
+        }
+      }
+    },
+    {
+      "id": "agltjl",
+      "name": "migrator-hero-v02__image",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

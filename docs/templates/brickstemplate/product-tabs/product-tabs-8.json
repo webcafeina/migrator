@@ -1,0 +1,96 @@
+{
+  "content": [
+    {
+      "id": "vtcqhl",
+      "name": "product-tabs",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "islymq"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Product tabs 8"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "islymq",
+      "name": "migrator-product-tabs-8",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5rem"
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#e6e6e6",
+          "id": "fdbvnf",
+          "name": "Subtile - BG"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "0.9rem",
+          "top": "0.9rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600"
+        },
+        "panelPadding": {
+          "bottom": "2rem",
+          "top": "2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_cssCustom": ".migrator-product-tabs-8 .woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}\n.migrator-product-tabs-8 .wc-tabs li {margin: 1rem;transition: all 0.5s ease-in-out;}\n.migrator-product-tabs-8 .wc-tabs .active {border-radius: 50vh;}\n.migrator-product-tabs-8 .wc-tabs li:hover {background: #e6e6e6;border-radius: 50vh;}",
+        "tabsBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "tabsBorder": {
+          "style": "none",
+          "radius": {
+            "top": "3rem",
+            "right": "3rem",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "tabsJustifyContent": "center",
+        "panelBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "tabsPadding:mobile_landscape": {
+          "left": "1.2rem",
+          "right": "1.2rem",
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        },
+        "tabsTypography:mobile_landscape": {
+          "font-size": "1.3rem"
+        },
+        "_cssCustom:mobile_landscape": "#brxe-vtcqhl .wc-tabs li {margin: 1rem 0.5rem;transition: all 0.5s ease-in-out;}"
+      }
+    }
+  ],
+  "globalElements": []
+}

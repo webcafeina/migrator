@@ -1,0 +1,216 @@
+{
+  "content": [
+    {
+      "id": "boqyhy",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "wxxwia"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fhperv"
+        ]
+      }
+    },
+    {
+      "id": "wxxwia",
+      "name": "container",
+      "parent": "boqyhy",
+      "children": [
+        "dtzlce",
+        "ecjzqq",
+        "wcrizj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wmqztp"
+        ]
+      }
+    },
+    {
+      "id": "dtzlce",
+      "name": "heading",
+      "parent": "wxxwia",
+      "children": [],
+      "settings": {
+        "text": "Conubia dui ac per dis dapibus habitant enim mus litora.",
+        "_cssGlobalClasses": [
+          "beeqhe"
+        ]
+      }
+    },
+    {
+      "id": "ecjzqq",
+      "name": "icon",
+      "parent": "wxxwia",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-circle-xmark"
+        },
+        "_interactions": [
+          {
+            "id": "lzxdcf",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2777"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "iziiit"
+        ]
+      },
+      "themeStyles": [],
+      "label": "close"
+    },
+    {
+      "id": "wcrizj",
+      "name": "button",
+      "parent": "wxxwia",
+      "children": [],
+      "settings": {
+        "text": "Download Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "dpxkyh"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "fhperv",
+      "name": "migrator-popup-v07",
+      "settings": {
+        "_padding": {
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0"
+        },
+        "_margin": {
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0"
+        },
+        "_alignSelf": "center",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "wmqztp",
+      "name": "migrator-popup-v07__container",
+      "settings": {
+        "_direction": "row",
+        "_padding": {
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0"
+        },
+        "_margin": {
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0"
+        },
+        "_justifyContent": "space-between",
+        "_alignItems:mobile_landscape": "center",
+        "_alignItems": "center",
+        "_justifyContent:tablet_portrait": "space-between",
+        "_alignItems:tablet_portrait": "center",
+        "_position": "static"
+      }
+    },
+    {
+      "id": "beeqhe",
+      "name": "migrator-popup-v07__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "left",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          }
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "18px"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "15px"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "20px"
+        },
+        "_width:tablet_portrait": "70%"
+      }
+    },
+    {
+      "id": "iziiit",
+      "name": "migrator-popup-v07__close",
+      "settings": {
+        "_position": "absolute",
+        "_top": "0",
+        "_right": "21",
+        "iconColor": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        },
+        "iconSize": "30px",
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "25px",
+        "iconSize:mobile_portrait": "20px",
+        "_top:tablet_portrait": "-28px",
+        "_right:tablet_portrait": "20px",
+        "_top:mobile_portrait": "-21"
+      }
+    },
+    {
+      "id": "dpxkyh",
+      "name": "migrator-popup-v07__button",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "left": "35px",
+          "top": "10px",
+          "right": "35px",
+          "bottom": "10px"
+        },
+        "_border": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "font-size": "16px"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

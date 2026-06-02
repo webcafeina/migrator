@@ -1,0 +1,414 @@
+{
+  "content": [
+    {
+      "id": "ad168d",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "d08b58"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uyjmgs"
+        ]
+      }
+    },
+    {
+      "id": "d08b58",
+      "name": "container",
+      "parent": "ad168d",
+      "children": [
+        "0f08c7",
+        "zxruyd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "olobvy"
+        ]
+      },
+      "label": ""
+    },
+    {
+      "id": "0f08c7",
+      "name": "block",
+      "parent": "d08b58",
+      "children": [
+        "39c75e",
+        "190512"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ovuyhs"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "39c75e",
+      "name": "heading",
+      "parent": "0f08c7",
+      "children": [],
+      "settings": {
+        "text": "Libero massa eu bibendum mauris consequat ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "lhqnrh"
+        ]
+      }
+    },
+    {
+      "id": "190512",
+      "name": "text",
+      "parent": "0f08c7",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "hgglju"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "zxruyd",
+      "name": "block",
+      "parent": "d08b58",
+      "children": [
+        "kmuqru",
+        "hootwg",
+        "dgotja"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ayzzvi"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "kmuqru",
+      "name": "block",
+      "parent": "zxruyd",
+      "children": [
+        "kihgye"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "otaaxv"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "kihgye",
+      "name": "icon-box",
+      "parent": "kmuqru",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-500px"
+        },
+        "content": "<h3>Bricks Designer</h3><p>Convallis ad ut pharetra finibus vivamus ac adipiscing tellus dictumst ullamcorper letius pellentesque scelerisque rhoncus orci hendrerit et blandit felis</p>",
+        "_cssClasses": "bb-box6",
+        "_cssGlobalClasses": [
+          "lhismf"
+        ]
+      }
+    },
+    {
+      "id": "hootwg",
+      "name": "block",
+      "parent": "zxruyd",
+      "children": [
+        "dmyyke"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "otaaxv"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "dmyyke",
+      "name": "icon-box",
+      "parent": "hootwg",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-airbnb"
+        },
+        "content": "<h3>Bricks Designer</h3><p>Convallis ad ut pharetra finibus vivamus ac adipiscing tellus dictumst ullamcorper letius pellentesque scelerisque rhoncus orci hendrerit et blandit felis</p>",
+        "_cssClasses": "bb-box6",
+        "_cssGlobalClasses": [
+          "lhismf"
+        ]
+      }
+    },
+    {
+      "id": "dgotja",
+      "name": "block",
+      "parent": "zxruyd",
+      "children": [
+        "cwyuoz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "otaaxv"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "cwyuoz",
+      "name": "icon-box",
+      "parent": "dgotja",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-500px"
+        },
+        "content": "<h3>Bricks Designer</h3><p>Convallis ad ut pharetra finibus vivamus ac adipiscing tellus dictumst ullamcorper letius pellentesque scelerisque rhoncus orci hendrerit et blandit felis</p>",
+        "_cssClasses": "bb-box6",
+        "_cssGlobalClasses": [
+          "lhismf"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.4",
+  "globalClasses": [
+    {
+      "id": "uyjmgs",
+      "name": "migrator-features-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "olobvy",
+      "name": "migrator-features-v06__",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "bottom": 60,
+          "left": 20,
+          "top": 60
+        },
+        "_cssCustom": "\n    .bb-box6 {\n        transition: 1s ease;\n    }\n    .bb-box6:hover {\n        transform: translateY(-50px);\n    }\n"
+      }
+    },
+    {
+      "id": "ovuyhs",
+      "name": "migrator-features-v06__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_margin": {
+          "bottom": 30
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 50
+        }
+      }
+    },
+    {
+      "id": "lhqnrh",
+      "name": "migrator-features-v06__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 25
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "hgglju",
+      "name": "migrator-features-v06__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_padding:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "ayzzvi",
+      "name": "migrator-features-v06__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_columnGap:tablet_portrait": "20px",
+        "_margin": {
+          "top": 40
+        }
+      }
+    },
+    {
+      "id": "otaaxv",
+      "name": "migrator-features-v06__box-item",
+      "settings": []
+    },
+    {
+      "id": "lhismf",
+      "name": "migrator-features-v06__icon-box",
+      "settings": {
+        "typographyHeading": {
+          "line-height": "50px",
+          "text-align": "center"
+        },
+        "_padding": {
+          "top": 25,
+          "right": 25,
+          "bottom": 25,
+          "left": 25
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "width": {
+            "top": 2,
+            "unit": {
+              "top": "px",
+              "right": "px",
+              "bottom": "px",
+              "left": "px"
+            },
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "iconColor": {
+          "hex": "#000000",
+          "id": "jfhhzf"
+        },
+        "iconSize": "50px",
+        "iconMargin": {
+          "bottom": 10
+        },
+        "iconMargin:mobile_portrait": {
+          "bottom": 10
+        },
+        "iconSize:mobile_portrait": "40px",
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        },
+        "verticalAlign": "center",
+        "contentAlign": "center",
+        "_cssTransition": "all 0.5s",
+        "_border:hover": {
+          "radius": {
+            "top": 25,
+            "right": 25,
+            "bottom": 0,
+            "left": 0
+          },
+          "width": {
+            "top": 2,
+            "unit": {
+              "top": "px",
+              "right": "px",
+              "bottom": "px",
+              "left": "px"
+            },
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

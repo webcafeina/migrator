@@ -1,0 +1,408 @@
+{
+  "content": [
+    {
+      "id": "uqnjfz",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "oiyzux"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gboscc"
+        ]
+      },
+      "label": "Footer 2"
+    },
+    {
+      "id": "oiyzux",
+      "name": "container",
+      "parent": "uqnjfz",
+      "children": [
+        "wkkoap",
+        "oljhyj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dezjia"
+        ]
+      }
+    },
+    {
+      "id": "wkkoap",
+      "name": "block",
+      "parent": "oiyzux",
+      "children": [
+        "mpprhg",
+        "liqvng",
+        "cystsb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "whmcih"
+        ]
+      },
+      "label": "top menu"
+    },
+    {
+      "id": "mpprhg",
+      "name": "logo",
+      "parent": "wkkoap",
+      "children": [],
+      "settings": {
+        "logoText": "Wireframe For Bricks Builder",
+        "logo": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2025/08/logoipsum-325.png",
+          "external": true,
+          "filename": "logoipsum-325.png"
+        },
+        "_cssGlobalClasses": [
+          "ccezaq"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "liqvng",
+      "name": "nav-menu",
+      "parent": "wkkoap",
+      "children": [],
+      "settings": {
+        "menu": "255",
+        "mobileMenu": "never",
+        "_cssGlobalClasses": [
+          "vqujie"
+        ]
+      },
+      "themeStyles": [],
+      "label": "menu"
+    },
+    {
+      "id": "cystsb",
+      "name": "social-icons",
+      "parent": "wkkoap",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "id": "bkevsg",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "id": "svfuzw",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-linkedin-in"
+            },
+            "id": "biinrd",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-x-twitter"
+            },
+            "id": "qiqmre",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-youtube"
+            },
+            "id": "lmlztw",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "hkspmx"
+        ]
+      },
+      "label": "social links",
+      "themeStyles": []
+    },
+    {
+      "id": "oljhyj",
+      "name": "block",
+      "parent": "oiyzux",
+      "children": [
+        "ecspjv",
+        "kdjszm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vhbiuz"
+        ]
+      },
+      "label": "bottom menu"
+    },
+    {
+      "id": "ecspjv",
+      "name": "text-basic",
+      "parent": "oljhyj",
+      "children": [],
+      "settings": {
+        "text": "© 2026  BricksTemplate. All rights reserved.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "zwsgrv"
+        ]
+      },
+      "label": "copyright text"
+    },
+    {
+      "id": "kdjszm",
+      "name": "nav-menu",
+      "parent": "oljhyj",
+      "children": [],
+      "settings": {
+        "menu": "256",
+        "mobileMenu": "never",
+        "_cssGlobalClasses": [
+          "fusqpc"
+        ]
+      },
+      "themeStyles": [],
+      "label": "legal links"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "2.0.2",
+  "globalClasses": [
+    {
+      "id": "gboscc",
+      "name": "migrator-footer-2",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "4rem",
+          "top": "4rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "dezjia",
+      "name": "migrator-footer-2__container",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_justifyContent": "space-between"
+      },
+      "_exists": false
+    },
+    {
+      "id": "whmcih",
+      "name": "migrator-footer-2__top-menu",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_alignItems": "center",
+        "_direction:tablet_portrait": "column",
+        "_rowGap:tablet_portrait": "3rem",
+        "_padding": {
+          "top": "4rem",
+          "bottom": "4rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "3rem",
+          "bottom": "3rem"
+        },
+        "_alignItems:mobile_landscape": "flex-start"
+      },
+      "_exists": false
+    },
+    {
+      "id": "ccezaq",
+      "name": "migrator-footer-2__logo",
+      "settings": {
+        "logoWidth": "20rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "vqujie",
+      "name": "migrator-footer-2__menu",
+      "settings": {
+        "menuTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "600",
+          "line-height": "1.6"
+        },
+        "menuMargin": {
+          "left": "0"
+        },
+        "menuPadding": {
+          "left": "1.5rem",
+          "right": "1.5rem"
+        },
+        "menuAlignment:mobile_landscape": "row",
+        "menuJustifyContent": "center",
+        "menuPadding:mobile_landscape": {
+          "top": "1rem",
+          "bottom": "1rem",
+          "left": "1rem",
+          "right": "1rem"
+        },
+        "menuTypography:mobile_landscape": {
+          "font-size": "1.4rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "hkspmx",
+      "name": "migrator-footer-2__social-links",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "mlnzir",
+          "name": "White"
+        },
+        "_border": {
+          "radius": {
+            "top": "50",
+            "right": "50",
+            "bottom": "50",
+            "left": "50"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_padding": {
+          "bottom": "0.7rem",
+          "top": "0.7rem",
+          "left": "0.7rem",
+          "right": "0.7rem"
+        },
+        "iconSize": "1.2rem",
+        "gapItem": "0",
+        "gap": "1rem",
+        "_typography": {
+          "line-height": "1"
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "vhbiuz",
+      "name": "migrator-footer-2__bottom-menu",
+      "settings": {
+        "_direction": "row",
+        "_padding": {
+          "top": "4rem"
+        },
+        "_justifyContent": "space-between",
+        "_columnGap": "3rem",
+        "_border": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          },
+          "style": "solid",
+          "width": {
+            "top": "0.1rem",
+            "right": "0",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "_direction:mobile_landscape": "column",
+        "_padding:mobile_landscape": {
+          "top": "3rem"
+        },
+        "_rowGap:mobile_landscape": "1.5rem",
+        "_alignItems:mobile_landscape": "flex-start"
+      },
+      "_exists": false
+    },
+    {
+      "id": "zwsgrv",
+      "name": "migrator-footer-2__copyright-text",
+      "settings": {},
+      "_exists": false
+    },
+    {
+      "id": "fusqpc",
+      "name": "migrator-footer-2__legal-links",
+      "settings": {
+        "menuTypography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.4rem",
+          "font-weight": "400",
+          "line-height": "1.6",
+          "text-decoration": "underline"
+        },
+        "menuMargin": {
+          "left": "0"
+        },
+        "menuPadding": {
+          "left": "1rem",
+          "right": "1rem"
+        },
+        "menuAlignment:mobile_landscape": "row",
+        "menuJustifyContent": "center",
+        "menuPadding:mobile_landscape": {
+          "top": "0.6rem",
+          "bottom": "0.6rem"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

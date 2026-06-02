@@ -1,0 +1,76 @@
+{
+  "content": [
+    {
+      "id": "sqkxzg",
+      "name": "button",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "cbxuzo"
+        ]
+      },
+      "label": "Button V02"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.7.1",
+  "globalClasses": [
+    {
+      "id": "cbxuzo",
+      "name": "migrator-btn-v02",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "1.6rem",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "line-height": "1.6rem",
+          "text-align": "left"
+        },
+        "_padding": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          },
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid"
+        },
+        "_cssTransition": "all 0.5s ease",
+        "_background": {
+          "color": {
+            "hex": "#00d1b2"
+          },
+          "blendMode": "normal",
+          "repeat": "no-repeat"
+        },
+        "_display": "inline-block",
+        "_width": "19rem",
+        "_cssCustom": ".migrator-btn-v02 {\n        background-image: url(https://preview.brickstemplate.com/wp-content/uploads/2024/04/arrow.webp);\n        background-repeat: no-repeat;\n        background-position: right 50%; /* Adjusted background position */\n    }\n.migrator-btn-v02:hover {\n        background-color: #3e454c;\n        background-position: left 50%; /* Adjusted background position on hover */\n        text-align: center;\n    }"
+      }
+    }
+  ],
+  "globalElements": []
+}

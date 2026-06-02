@@ -1,0 +1,410 @@
+{
+  "content": [
+    {
+      "id": "lhergn",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "fugrxc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "woeoxw"
+        ]
+      },
+      "label": "cta 18"
+    },
+    {
+      "id": "fugrxc",
+      "name": "container",
+      "parent": "lhergn",
+      "children": [
+        "viprlt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bzvadh"
+        ]
+      }
+    },
+    {
+      "id": "viprlt",
+      "name": "block",
+      "parent": "fugrxc",
+      "children": [
+        "dwgftg",
+        "dkfxlf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "unikhn"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "dwgftg",
+      "name": "block",
+      "parent": "viprlt",
+      "children": [
+        "yuzhzt",
+        "apvxus"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "immptb"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "yuzhzt",
+      "name": "heading",
+      "parent": "dwgftg",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet vulputate commodo nostra inceptos",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "zcpdnp"
+        ]
+      },
+      "label": "heading"
+    },
+    {
+      "id": "apvxus",
+      "name": "social-icons",
+      "parent": "dwgftg",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "150+ UI Block",
+            "icon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "id": "mpmsqw"
+          },
+          {
+            "label": "150+ UI Block",
+            "icon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "id": "motdfq"
+          },
+          {
+            "label": "150+ UI Block",
+            "icon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "id": "efswaj"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "jkffii"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "dkfxlf",
+      "name": "block",
+      "parent": "viprlt",
+      "children": [
+        "totzmp",
+        "npccnk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "skyhnr"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "totzmp",
+      "name": "button",
+      "parent": "dkfxlf",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "pgured"
+        ]
+      }
+    },
+    {
+      "id": "npccnk",
+      "name": "text-basic",
+      "parent": "dkfxlf",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor ",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "yenozm"
+        ]
+      },
+      "label": "button text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "woeoxw",
+      "name": "migrator-cta-18",
+      "settings": {
+        "_padding": {
+          "bottom": "8rem",
+          "top": "8rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "6rem",
+          "top": "6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "bzvadh",
+      "name": "migrator-cta-18__container",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#f1f0ee",
+            "id": "nohmnw",
+            "name": "Lighter - BG"
+          }
+        },
+        "_padding": {
+          "bottom": "5rem",
+          "top": "5rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "2rem",
+            "right": "2rem",
+            "bottom": "2rem",
+            "left": "2rem"
+          }
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "4rem",
+          "top": "4rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "unikhn",
+      "name": "migrator-cta-18__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "4rem",
+        "_width": "80rem",
+        "_rowGap:mobile_landscape": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "immptb",
+      "name": "migrator-cta-18__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "zcpdnp",
+      "name": "migrator-cta-18__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "4.2rem",
+          "line-height": "1.3",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700",
+          "text-align": "center"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "jkffii",
+      "name": "migrator-cta-18__social-icons",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "600",
+          "font-family": "Inter",
+          "line-height": "1.3"
+        },
+        "gap": "2rem",
+        "gapItem": "1rem",
+        "iconColor": {
+          "hex": "#161616",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "iconSize": "2rem",
+        "direction:mobile_portrait": "column",
+        "gap:mobile_portrait": "1.5rem",
+        "direction:mobile_landscape": "column"
+      },
+      "_exists": false
+    },
+    {
+      "id": "skyhnr",
+      "name": "migrator-cta-18__button-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "1rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "pgured",
+      "name": "migrator-cta-18__button",
+      "settings": {
+        "_typography": {
+          "font-size": "1.6rem",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "font-weight": "400",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_padding": {
+          "bottom": "1.4rem",
+          "top": "1.4rem",
+          "left": "2.4rem",
+          "right": "2.4rem"
+        },
+        "_widthMin": "14rem",
+        "_background": {
+          "color": {
+            "hex": "#202020"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_background:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:active": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_border:focus": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_cssTransition": "all .5s",
+        "_width:mobile_portrait": "100%"
+      },
+      "_exists": false
+    },
+    {
+      "id": "yenozm",
+      "name": "migrator-cta-18__button-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

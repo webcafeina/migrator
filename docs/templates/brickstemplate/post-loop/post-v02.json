@@ -1,0 +1,316 @@
+{
+  "content": [
+    {
+      "id": "zrdlkz",
+      "name": "container",
+      "parent": 0,
+      "children": [
+        "cnaoti"
+      ],
+      "settings": {
+        "hasLoop": true,
+        "query": {
+          "posts_per_page": "6"
+        },
+        "_cssGlobalClasses": [
+          "audacb"
+        ]
+      },
+      "label": "Post v02"
+    },
+    {
+      "id": "cnaoti",
+      "name": "block",
+      "parent": "zrdlkz",
+      "children": [
+        "hxjlpm",
+        "ckeplb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cjjsbh"
+        ]
+      }
+    },
+    {
+      "id": "hxjlpm",
+      "name": "block",
+      "parent": "cnaoti",
+      "children": [
+        "zxuwjx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mrtkba"
+        ],
+        "_background": {
+          "image": {
+            "useDynamicData": "{featured_image}",
+            "size": "large",
+            "id": 1482,
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/Post-Style-01-1024x471.png"
+          }
+        }
+      },
+      "label": "Featured Image"
+    },
+    {
+      "id": "zxuwjx",
+      "name": "button",
+      "parent": "hxjlpm",
+      "children": [],
+      "settings": {
+        "text": "{post_terms_category}",
+        "_cssGlobalClasses": [
+          "aiqlnv"
+        ],
+        "style": "primary"
+      },
+      "label": "Category"
+    },
+    {
+      "id": "ckeplb",
+      "name": "block",
+      "parent": "cnaoti",
+      "children": [
+        "rofcra",
+        "xszvlg",
+        "ipzpbu",
+        "zrtawb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wfkgwt"
+        ]
+      },
+      "label": "Post Content"
+    },
+    {
+      "id": "rofcra",
+      "name": "heading",
+      "parent": "ckeplb",
+      "children": [],
+      "settings": {
+        "tag": "h3",
+        "text": "{post_title}",
+        "link": {
+          "type": "meta",
+          "url": "{post_url}",
+          "useDynamicData": "{post_url}"
+        },
+        "_cssGlobalClasses": [
+          "utajzl"
+        ]
+      },
+      "label": "Post Title"
+    },
+    {
+      "id": "xszvlg",
+      "name": "text-basic",
+      "parent": "ckeplb",
+      "children": [],
+      "settings": {
+        "text": "Author: {author_name} | Publish On: {post_date}",
+        "_cssGlobalClasses": [
+          "qyqphu"
+        ]
+      },
+      "label": "Author date"
+    },
+    {
+      "id": "ipzpbu",
+      "name": "post-excerpt",
+      "parent": "ckeplb",
+      "children": [],
+      "settings": {
+        "length": "20",
+        "_cssGlobalClasses": [
+          "vuxpry"
+        ]
+      }
+    },
+    {
+      "id": "zrtawb",
+      "name": "button",
+      "parent": "ckeplb",
+      "children": [],
+      "settings": {
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{post_url}"
+        },
+        "text": "Read More",
+        "_cssGlobalClasses": [
+          "kfvndn"
+        ],
+        "style": "primary"
+      },
+      "label": "Read More"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "audacb",
+      "name": "migrator-post-loop-v02",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "right": 25,
+          "left": 25
+        },
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "cjjsbh",
+      "name": "migrator-post-loop-v02__block",
+      "settings": {
+        "_direction": "row",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        },
+        "_margin": {
+          "bottom": 30
+        },
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "mrtkba",
+      "name": "migrator-post-loop-v02__featured-image",
+      "settings": {
+        "_height": "350px",
+        "_background": {
+          "image": {
+            "useDynamicData": "{featured_image}",
+            "size": "large",
+            "filename": "",
+            "id": 1482,
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/Post-Style-01-1024x471.png"
+          }
+        }
+      }
+    },
+    {
+      "id": "aiqlnv",
+      "name": "migrator-post-loop-v02__category",
+      "settings": {
+        "style": "primary"
+      }
+    },
+    {
+      "id": "wfkgwt",
+      "name": "migrator-post-loop-v02__post-content",
+      "settings": {
+        "_rowGap": "10px",
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 40
+        },
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "top": 20,
+          "right": 20,
+          "bottom": 40,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "utajzl",
+      "name": "migrator-post-loop-v02__post-title",
+      "settings": []
+    },
+    {
+      "id": "qyqphu",
+      "name": "migrator-post-loop-v02__author-date",
+      "settings": {
+        "_margin": {
+          "bottom": 10
+        },
+        "_typography": {
+          "color": {
+            "hex": "#959da5",
+            "id": "hbhfaf"
+          }
+        },
+        "_margin:tablet_portrait": {
+          "bottom": 0
+        }
+      }
+    },
+    {
+      "id": "vuxpry",
+      "name": "migrator-post-loop-v02__post-excerpt",
+      "settings": {
+        "_padding": {
+          "bottom": 20
+        },
+        "_padding:tablet_portrait": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "kfvndn",
+      "name": "migrator-post-loop-v02__read-more",
+      "settings": {
+        "style": "primary",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding": {
+          "top": 8,
+          "right": 15,
+          "bottom": 8,
+          "left": 15
+        },
+        "_padding:mobile_landscape": {
+          "top": 5,
+          "right": 12,
+          "bottom": 5,
+          "left": 12
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "15px"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,254 @@
+{
+  "content": [
+    {
+      "id": "4b864e",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "c1ff86"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ljjzsz"
+        ]
+      }
+    },
+    {
+      "id": "c1ff86",
+      "name": "container",
+      "parent": "4b864e",
+      "children": [
+        "832e88",
+        "fbbf2b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uujcky"
+        ]
+      }
+    },
+    {
+      "id": "832e88",
+      "name": "block",
+      "parent": "c1ff86",
+      "children": [
+        "5fb0c4"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mscjyy"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "5fb0c4",
+      "name": "image",
+      "parent": "832e88",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ejmhra"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/7451863.jpg",
+          "external": true,
+          "filename": "7451863.jpg"
+        }
+      }
+    },
+    {
+      "id": "fbbf2b",
+      "name": "block",
+      "parent": "c1ff86",
+      "children": [
+        "58d5ed",
+        "ff2c1f",
+        "9ed311"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "npuval"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "58d5ed",
+      "name": "heading",
+      "parent": "fbbf2b",
+      "children": [],
+      "settings": {
+        "text": "Scelerisque ullamcorper curabitur morbi tortor justo tempor.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cftjcq"
+        ]
+      }
+    },
+    {
+      "id": "ff2c1f",
+      "name": "text",
+      "parent": "fbbf2b",
+      "children": [],
+      "settings": {
+        "text": "<p>Erat consequat malesuada cubilia efficitur commodo velit non quis si semper facilisis euismod aenean sollicitudin elementum nascetur suscipit ac nam</p>",
+        "_cssGlobalClasses": [
+          "unyago"
+        ]
+      }
+    },
+    {
+      "id": "9ed311",
+      "name": "button",
+      "parent": "fbbf2b",
+      "children": [],
+      "settings": {
+        "text": "Show Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "yxwmhq"
+        ],
+        "style": "primary",
+        "circle": true
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ljjzsz",
+      "name": "migrator-features-v19",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "uujcky",
+      "name": "migrator-features-v19__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "mscjyy",
+      "name": "migrator-features-v19__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_background": {
+          "position": "bottom left",
+          "repeat": "no-repeat",
+          "color": {
+            "hex": "#9767d9",
+            "id": "cwyawq"
+          }
+        },
+        "_widthMax": "40%",
+        "_widthMax:mobile_landscape": "100%",
+        "_width:mobile_landscape": "%",
+        "_alignItems:mobile_landscape": "center",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "ejmhra",
+      "name": "migrator-features-v19__image",
+      "settings": {
+        "_width:mobile_landscape": "600px",
+        "_margin:mobile_landscape": {
+          "bottom": 0,
+          "right": 0
+        },
+        "_padding": {
+          "top": 60,
+          "bottom": 60
+        },
+        "_margin": {
+          "right": -120,
+          "left": ""
+        }
+      }
+    },
+    {
+      "id": "npuval",
+      "name": "migrator-features-v19__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_padding": {
+          "right": 0,
+          "unit": {
+            "right": "%"
+          }
+        },
+        "_order:mobile_landscape": "1",
+        "_widthMax": "60%",
+        "_margin": {
+          "left": 15,
+          "unit": {
+            "left": "%"
+          }
+        },
+        "_widthMax:mobile_landscape": "100%",
+        "_margin:mobile_landscape": {
+          "unit": {
+            "left": "%"
+          },
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "cftjcq",
+      "name": "migrator-features-v19__heading",
+      "settings": []
+    },
+    {
+      "id": "unyago",
+      "name": "migrator-features-v19__text",
+      "settings": []
+    },
+    {
+      "id": "yxwmhq",
+      "name": "migrator-features-v19__button",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 10,
+          "right": 35,
+          "bottom": 10,
+          "left": 35
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

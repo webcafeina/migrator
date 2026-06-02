@@ -1,0 +1,565 @@
+{
+  "content": [
+    {
+      "id": "415375",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "2e2b67"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zklwah"
+        ]
+      },
+      "label": "Product 16"
+    },
+    {
+      "id": "2e2b67",
+      "name": "container",
+      "parent": "415375",
+      "children": [
+        "ab2b8c",
+        "331c3c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qgjmso"
+        ]
+      }
+    },
+    {
+      "id": "ab2b8c",
+      "name": "block",
+      "parent": "2e2b67",
+      "children": [
+        "e967c9",
+        "d4ff6b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mnpbor"
+        ]
+      },
+      "label": "Content wrap"
+    },
+    {
+      "id": "e967c9",
+      "name": "heading",
+      "parent": "ab2b8c",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet molestie malesuada etiam mollis.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "thdnth"
+        ]
+      }
+    },
+    {
+      "id": "d4ff6b",
+      "name": "text-basic",
+      "parent": "ab2b8c",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet porttitor eget augue sapien et pharetra vulputate rhoncus pretium interdum ultricies eleifend mauris cras finibus placerat elementum laoreet.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "hreuup"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "331c3c",
+      "name": "block",
+      "parent": "2e2b67",
+      "children": [
+        "6cca0f"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "teuqns"
+        ]
+      },
+      "label": "Product wrap"
+    },
+    {
+      "id": "6cca0f",
+      "name": "block",
+      "parent": "331c3c",
+      "children": [
+        "342664"
+      ],
+      "settings": {
+        "tag": "li",
+        "hasLoop": true,
+        "query": {
+          "objectType": "post",
+          "post_type": [
+            "product"
+          ],
+          "posts_per_page": "6"
+        },
+        "_cssGlobalClasses": [
+          "rlruow"
+        ]
+      },
+      "label": "Product content"
+    },
+    {
+      "id": "342664",
+      "name": "block",
+      "parent": "6cca0f",
+      "children": [
+        "dde9a2",
+        "cfbebe"
+      ],
+      "settings": {
+        "query": {
+          "objectType": "post",
+          "post_type": [
+            "product"
+          ],
+          "posts_per_page": "6"
+        },
+        "_cssGlobalClasses": [
+          "imdhvb"
+        ]
+      },
+      "label": "Product card"
+    },
+    {
+      "id": "dde9a2",
+      "name": "block",
+      "parent": "342664",
+      "children": [
+        "080ac6",
+        "7d4920"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "svjxyi"
+        ]
+      },
+      "label": "Image wrap"
+    },
+    {
+      "id": "080ac6",
+      "name": "image",
+      "parent": "dde9a2",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{woo_product_images}",
+          "size": "large"
+        },
+        "tag": "figure",
+        "caption": "none",
+        "url": {
+          "type": "meta",
+          "useDynamicData": "{post_url}"
+        },
+        "link": "url",
+        "_cssGlobalClasses": [
+          "bpowal"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "7d4920",
+      "name": "text-basic",
+      "parent": "dde9a2",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{woo_product_on_sale}",
+        "_conditions": [
+          [
+            {
+              "id": "klwjzn",
+              "key": "woo_product_sale",
+              "compare": "==",
+              "value": "1"
+            }
+          ]
+        ],
+        "_cssGlobalClasses": [
+          "bleami"
+        ]
+      },
+      "label": "on sale"
+    },
+    {
+      "id": "cfbebe",
+      "name": "block",
+      "parent": "342664",
+      "children": [
+        "4fbf37",
+        "316932",
+        "05e231"
+      ],
+      "settings": {
+        "link": {
+          "type": "meta"
+        },
+        "_cssGlobalClasses": [
+          "badyzx"
+        ]
+      },
+      "label": "Product meta"
+    },
+    {
+      "id": "4fbf37",
+      "name": "text-basic",
+      "parent": "cfbebe",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{post_terms_product_cat}",
+        "_cssGlobalClasses": [
+          "uerrzf"
+        ]
+      },
+      "label": "product cat"
+    },
+    {
+      "id": "316932",
+      "name": "product-title",
+      "parent": "cfbebe",
+      "children": [],
+      "settings": {
+        "tag": "h2",
+        "linkToProduct": true,
+        "_cssGlobalClasses": [
+          "lylmzp"
+        ]
+      },
+      "label": "title",
+      "themeStyles": []
+    },
+    {
+      "id": "05e231",
+      "name": "product-price",
+      "parent": "cfbebe",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zekjaj"
+        ]
+      },
+      "label": "price",
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "zklwah",
+      "name": "migrator-product-16",
+      "settings": {
+        "_padding": {
+          "bottom": "8rem",
+          "top": "8rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "6rem",
+          "top": "6rem"
+        }
+      }
+    },
+    {
+      "id": "qgjmso",
+      "name": "migrator-product-16__container",
+      "settings": {
+        "_rowGap": "6rem",
+        "_rowGap:mobile_landscape": "4rem"
+      }
+    },
+    {
+      "id": "mnpbor",
+      "name": "migrator-product-16__content-wrap",
+      "settings": {
+        "_width": "80rem",
+        "_alignItems": "center",
+        "_alignSelf": "center",
+        "_rowGap": "2rem",
+        "_width:mobile_landscape": "100%",
+        "_rowGap:mobile_landscape": "1rem"
+      }
+    },
+    {
+      "id": "thdnth",
+      "name": "migrator-product-16__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "clamp(2.600rem, 1.591vw + 1.964rem, 4.000rem);",
+          "line-height": "1.3",
+          "font-weight": "700",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "hreuup",
+      "name": "migrator-product-16__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "text-align": "center",
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "teuqns",
+      "name": "migrator-product-16__product-wrap",
+      "settings": {
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        },
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(3, minmax(0, 1fr))",
+        "_gridGap": "3rem 2rem",
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_gridGap:tablet_portrait": "2rem",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_gridTemplateColumns:mobile_portrait": "1fr"
+      }
+    },
+    {
+      "id": "rlruow",
+      "name": "migrator-product-16__product-content",
+      "settings": {
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_gridGap:tablet_portrait": "3rem 2rem",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "imdhvb",
+      "name": "migrator-product-16__product-card",
+      "settings": {}
+    },
+    {
+      "id": "svjxyi",
+      "name": "migrator-product-16__image-wrap",
+      "settings": {
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "bpowal",
+      "name": "migrator-product-16__image",
+      "settings": {
+        "_transform": {
+          "scaleX": "1",
+          "scaleY": "1"
+        },
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "bleami",
+      "name": "migrator-product-16__on-sale",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.4rem",
+          "line-height": "1.3"
+        },
+        "_position": "absolute",
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": "100",
+            "right": "100",
+            "bottom": "100",
+            "left": "100"
+          }
+        },
+        "_top": "1rem",
+        "_left": "1rem",
+        "_padding": {
+          "bottom": "0.5rem",
+          "top": "0.5rem",
+          "left": "1rem",
+          "right": "1rem"
+        }
+      }
+    },
+    {
+      "id": "badyzx",
+      "name": "migrator-product-16__product-meta",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_rowGap": "0.5rem",
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_width": "90%",
+        "_alignSelf": "center",
+        "_margin": {
+          "top": "-5rem",
+          "bottom": "1rem"
+        },
+        "_zIndex": "2",
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "2",
+            "blur": "8",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#636363",
+            "rgb": "rgba(99, 99, 99, 0.3)",
+            "hsl": "hsla(0, 0%, 39%, 0.3)"
+          }
+        }
+      }
+    },
+    {
+      "id": "uerrzf",
+      "name": "migrator-product-16__product-cat",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.5rem",
+          "line-height": "1.3"
+        }
+      }
+    },
+    {
+      "id": "lylmzp",
+      "name": "migrator-product-16__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.8rem",
+          "font-weight": "700",
+          "line-height": "1.5"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      }
+    },
+    {
+      "id": "zekjaj",
+      "name": "migrator-product-16__price",
+      "settings": {
+        "regularPriceTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.3",
+          "font-weight": "600"
+        },
+        "salePriceTypography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.3",
+          "font-weight": "600"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

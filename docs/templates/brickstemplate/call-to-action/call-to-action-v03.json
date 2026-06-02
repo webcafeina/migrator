@@ -1,0 +1,446 @@
+{
+  "content": [
+    {
+      "id": "gqhbda",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "xgbzuy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vrqoin"
+        ]
+      },
+      "label": "Call To Action v03"
+    },
+    {
+      "id": "xgbzuy",
+      "name": "container",
+      "parent": "gqhbda",
+      "children": [
+        "kxdbfu",
+        "ioaqbf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ssavdt"
+        ]
+      }
+    },
+    {
+      "id": "kxdbfu",
+      "name": "block",
+      "parent": "xgbzuy",
+      "children": [
+        "swyfql",
+        "jfjgmu",
+        "kdavmc",
+        "ejdhan"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "eqvgwn"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "swyfql",
+      "name": "text-basic",
+      "parent": "kxdbfu",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder  text.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "zbmjcu"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "jfjgmu",
+      "name": "heading",
+      "parent": "kxdbfu",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder headline, we will replace it",
+        "_cssGlobalClasses": [
+          "bvspck"
+        ]
+      }
+    },
+    {
+      "id": "kdavmc",
+      "name": "text-basic",
+      "parent": "kxdbfu",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "orpiww"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "ejdhan",
+      "name": "block",
+      "parent": "kxdbfu",
+      "children": [
+        "rmytap",
+        "gwaszh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vrlcqj"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "rmytap",
+      "name": "button",
+      "parent": "ejdhan",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "ajytjf"
+        ]
+      },
+      "label": "cta"
+    },
+    {
+      "id": "gwaszh",
+      "name": "button",
+      "parent": "ejdhan",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "ebpnsw",
+          "jiajhi"
+        ]
+      },
+      "label": "cta 2"
+    },
+    {
+      "id": "ioaqbf",
+      "name": "block",
+      "parent": "xgbzuy",
+      "children": [
+        "bjawsc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ttiyxw"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "bjawsc",
+      "name": "image",
+      "parent": "ioaqbf",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "acanfs"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/iPhones.svg",
+          "external": true,
+          "filename": "iPhones.svg"
+        }
+      },
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "vrqoin",
+      "name": "migrator-cta-v03-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "ssavdt",
+      "name": "migrator-cta-v03-2__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "3rem",
+        "_alignItems": "stretch",
+        "_direction:tablet_portrait": "column",
+        "_rowGap:tablet_portrait": "6rem"
+      }
+    },
+    {
+      "id": "eqvgwn",
+      "name": "migrator-cta-v03-2__content-wrap",
+      "settings": {
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "zbmjcu",
+      "name": "migrator-cta-v03-2__sub-heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_margin": {
+          "bottom": "0"
+        }
+      }
+    },
+    {
+      "id": "bvspck",
+      "name": "migrator-cta-v03-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "orpiww",
+      "name": "migrator-cta-v03-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_padding": {
+          "top": "1.5rem",
+          "bottom": "3rem"
+        }
+      }
+    },
+    {
+      "id": "vrlcqj",
+      "name": "migrator-cta-v03-2__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "3rem",
+        "_rowGap:mobile_portrait": "2rem"
+      }
+    },
+    {
+      "id": "drxoco",
+      "name": "wf-btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.6rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "enohqp",
+      "name": "wf-btn--primary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "ajytjf",
+      "name": "migrator-cta-v03-2__cta",
+      "settings": {
+        "style": "primary"
+      }
+    },
+    {
+      "id": "ebpnsw",
+      "name": "wf-btn--secondary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ff0000",
+            "rgb": "rgba(255, 0, 0, 0)",
+            "hsl": "hsla(0, 100%, 50%, 0)"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "jiajhi",
+      "name": "migrator-cta-v03-2__cta-2",
+      "settings": {
+        "style": "secondary"
+      }
+    },
+    {
+      "id": "ttiyxw",
+      "name": "migrator-cta-v03-2__image-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_overflow": "hidden"
+      }
+    },
+    {
+      "id": "acanfs",
+      "name": "migrator-cta-v03-2__image",
+      "settings": {
+        "_width": "60%",
+        "_margin": {
+          "bottom": "-20rem"
+        },
+        "_width:tablet_portrait": "40%",
+        "_width:mobile_landscape": "60%",
+        "_width:mobile_portrait": "80%"
+      }
+    }
+  ],
+  "globalElements": []
+}

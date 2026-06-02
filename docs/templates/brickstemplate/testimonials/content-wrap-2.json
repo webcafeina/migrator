@@ -1,0 +1,631 @@
+{
+  "content": [
+    {
+      "id": "e31939",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "bcd3c8"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vovcsp"
+        ]
+      }
+    },
+    {
+      "id": "bcd3c8",
+      "name": "container",
+      "parent": "e31939",
+      "children": [
+        "f721e6",
+        "454b1f"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxefeg"
+        ]
+      }
+    },
+    {
+      "id": "f721e6",
+      "name": "block",
+      "parent": "bcd3c8",
+      "children": [
+        "ccb22e",
+        "5e4b3a"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bppfri"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "ccb22e",
+      "name": "heading",
+      "parent": "f721e6",
+      "children": [],
+      "settings": {
+        "text": "Testimonials Style 1",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "lsizzz"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "5e4b3a",
+      "name": "text-basic",
+      "parent": "f721e6",
+      "children": [],
+      "settings": {
+        "text": "Habitant mollis ut non velit hendrerit litora bibendum rhoncus eros montes torquent pellentesque aliquet inceptos nisi magnis at molestie euismod",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "gwrxcz"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "454b1f",
+      "name": "block",
+      "parent": "bcd3c8",
+      "children": [
+        "24f3f3",
+        "a44ea6",
+        "6bbcc6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ivwuqb"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "24f3f3",
+      "name": "block",
+      "parent": "454b1f",
+      "children": [
+        "3f87ed",
+        "c324b4"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ahacjo"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "3f87ed",
+      "name": "text-basic",
+      "parent": "24f3f3",
+      "children": [],
+      "settings": {
+        "text": "Primis parturient sapien quis purus orci aptent sed pharetra mollis dui penatibus quam elementum pulvinar praesent nam commodo etiam fames",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "aduhed"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "c324b4",
+      "name": "block",
+      "parent": "24f3f3",
+      "children": [
+        "ae32a8",
+        "b050d6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "thocgl"
+        ]
+      },
+      "label": "user wrap"
+    },
+    {
+      "id": "ae32a8",
+      "name": "block",
+      "parent": "c324b4",
+      "children": [
+        "a80776"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jbiynw"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "a80776",
+      "name": "image",
+      "parent": "ae32a8",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gefvik"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "b050d6",
+      "name": "block",
+      "parent": "c324b4",
+      "children": [
+        "5b0dc7",
+        "7bb812"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nttpso"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "5b0dc7",
+      "name": "heading",
+      "parent": "b050d6",
+      "children": [],
+      "settings": {
+        "text": "Isabella",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "szckgn"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "7bb812",
+      "name": "text-basic",
+      "parent": "b050d6",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "lwpnwr"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "a44ea6",
+      "name": "block",
+      "parent": "454b1f",
+      "children": [
+        "282a78",
+        "eeee83"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ahacjo"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "282a78",
+      "name": "text-basic",
+      "parent": "a44ea6",
+      "children": [],
+      "settings": {
+        "text": "Primis parturient sapien quis purus orci aptent sed pharetra mollis dui penatibus quam elementum pulvinar praesent nam commodo etiam fames",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "aduhed"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "eeee83",
+      "name": "block",
+      "parent": "a44ea6",
+      "children": [
+        "f0dbe0",
+        "9abbcb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "thocgl"
+        ]
+      },
+      "label": "user wrap"
+    },
+    {
+      "id": "f0dbe0",
+      "name": "block",
+      "parent": "eeee83",
+      "children": [
+        "61e6a3"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jbiynw"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "61e6a3",
+      "name": "image",
+      "parent": "f0dbe0",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gefvik"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "9abbcb",
+      "name": "block",
+      "parent": "eeee83",
+      "children": [
+        "b5be60",
+        "6c12f8"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nttpso"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "b5be60",
+      "name": "heading",
+      "parent": "9abbcb",
+      "children": [],
+      "settings": {
+        "text": "Isabella",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "szckgn"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "6c12f8",
+      "name": "text-basic",
+      "parent": "9abbcb",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "lwpnwr"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "6bbcc6",
+      "name": "block",
+      "parent": "454b1f",
+      "children": [
+        "be1c0c",
+        "3effd3"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ahacjo"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "be1c0c",
+      "name": "text-basic",
+      "parent": "6bbcc6",
+      "children": [],
+      "settings": {
+        "text": "Primis parturient sapien quis purus orci aptent sed pharetra mollis dui penatibus quam elementum pulvinar praesent nam commodo etiam fames",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "aduhed"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "3effd3",
+      "name": "block",
+      "parent": "6bbcc6",
+      "children": [
+        "af6cf2",
+        "454a69"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "thocgl"
+        ]
+      },
+      "label": "user wrap"
+    },
+    {
+      "id": "af6cf2",
+      "name": "block",
+      "parent": "3effd3",
+      "children": [
+        "dbd65e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jbiynw"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "dbd65e",
+      "name": "image",
+      "parent": "af6cf2",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gefvik"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "454a69",
+      "name": "block",
+      "parent": "3effd3",
+      "children": [
+        "7cf5d7",
+        "6fc45d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nttpso"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "7cf5d7",
+      "name": "heading",
+      "parent": "454a69",
+      "children": [],
+      "settings": {
+        "text": "Isabella",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "szckgn"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "6fc45d",
+      "name": "text-basic",
+      "parent": "454a69",
+      "children": [],
+      "settings": {
+        "text": "Designer",
+        "_cssGlobalClasses": [
+          "lwpnwr"
+        ]
+      },
+      "label": "designation"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "vovcsp",
+      "name": "migrator-testimonials-v01",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "sxefeg",
+      "name": "migrator-testimonials-v01__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "bppfri",
+      "name": "migrator-testimonials-v01__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 40
+        },
+        "_alignItems": "center",
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "lsizzz",
+      "name": "migrator-testimonials-v01__top-heading",
+      "settings": []
+    },
+    {
+      "id": "gwrxcz",
+      "name": "migrator-testimonials-v01__top-text",
+      "settings": {
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": ""
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "ivwuqb",
+      "name": "migrator-testimonials-v01__testimonials-wrap",
+      "settings": {
+        "_margin": {
+          "top": 40
+        },
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_rowGap:mobile_landscape": "30px"
+      }
+    },
+    {
+      "id": "ahacjo",
+      "name": "migrator-testimonials-v01__testimonials-item",
+      "settings": {
+        "_padding": {
+          "top": 30,
+          "right": 20,
+          "bottom": 30,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "aduhed",
+      "name": "migrator-testimonials-v01__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "thocgl",
+      "name": "migrator-testimonials-v01__user-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "25px",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "jbiynw",
+      "name": "migrator-testimonials-v01__image-wrap",
+      "settings": {
+        "_width": "%",
+        "_alignItems": "flex-end",
+        "_width:mobile_portrait": "45%",
+        "_width:mobile_landscape": "46%"
+      }
+    },
+    {
+      "id": "gefvik",
+      "name": "migrator-testimonials-v01__image",
+      "settings": {
+        "_widthMax": "80px",
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "_widthMax:mobile_portrait": "60px"
+      }
+    },
+    {
+      "id": "nttpso",
+      "name": "migrator-testimonials-v01__name-wrap",
+      "settings": {
+        "_width:mobile_portrait": "45%",
+        "_width:mobile_landscape": "46%"
+      }
+    },
+    {
+      "id": "szckgn",
+      "name": "migrator-testimonials-v01__name",
+      "settings": []
+    },
+    {
+      "id": "lwpnwr",
+      "name": "migrator-testimonials-v01__designation",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

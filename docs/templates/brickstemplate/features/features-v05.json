@@ -1,0 +1,327 @@
+{
+  "content": [
+    {
+      "id": "mwuoqx",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "abrfyp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "utplbw"
+        ]
+      },
+      "label": "Features v05"
+    },
+    {
+      "id": "abrfyp",
+      "name": "container",
+      "parent": "mwuoqx",
+      "children": [
+        "apcuhn",
+        "kwirat",
+        "hsspqt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bxfwuu"
+        ]
+      }
+    },
+    {
+      "id": "apcuhn",
+      "name": "block",
+      "parent": "abrfyp",
+      "children": [
+        "hfvktz",
+        "zizrie"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kelzfg"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "hfvktz",
+      "name": "heading",
+      "parent": "apcuhn",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder ",
+        "_cssGlobalClasses": [
+          "nyvegn"
+        ]
+      }
+    },
+    {
+      "id": "zizrie",
+      "name": "text",
+      "parent": "apcuhn",
+      "children": [],
+      "settings": {
+        "text": "<p>This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.</p>",
+        "_cssGlobalClasses": [
+          "kmwyfq"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "kwirat",
+      "name": "block",
+      "parent": "abrfyp",
+      "children": [
+        "rezere",
+        "ovodef"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xizele"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "rezere",
+      "name": "icon-box",
+      "parent": "kwirat",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "content": "<h4>Icon box heading</h4><p>This is just placeholder text. Don’t be alarmed, this is just here to fill up space.</p>",
+        "_cssGlobalClasses": [
+          "osyvrm"
+        ]
+      }
+    },
+    {
+      "id": "ovodef",
+      "name": "icon-box",
+      "parent": "kwirat",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "content": "<h4>Icon box heading</h4><p>This is just placeholder text. Don’t be alarmed, this is just here to fill up space.</p>",
+        "_cssGlobalClasses": [
+          "osyvrm"
+        ]
+      }
+    },
+    {
+      "id": "hsspqt",
+      "name": "block",
+      "parent": "abrfyp",
+      "children": [
+        "pwpgci",
+        "hqilpt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xizele"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "pwpgci",
+      "name": "icon-box",
+      "parent": "hsspqt",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "content": "<h4>Icon box heading</h4><p>This is just placeholder text. Don’t be alarmed, this is just here to fill up space.</p>",
+        "_cssGlobalClasses": [
+          "osyvrm"
+        ]
+      }
+    },
+    {
+      "id": "hqilpt",
+      "name": "icon-box",
+      "parent": "hsspqt",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "content": "<h4>Icon box heading</h4><p>This is just placeholder text. Don’t be alarmed, this is just here to fill up space.</p>",
+        "_cssGlobalClasses": [
+          "osyvrm"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "utplbw",
+      "name": "migrator-features-v05-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "bxfwuu",
+      "name": "migrator-features-v05-2__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "5rem",
+        "_alignItems": "center",
+        "_flexWrap:tablet_portrait": "wrap",
+        "_direction:tablet_portrait": "row",
+        "_justifyContent:mobile_landscape": "center",
+        "_justifyContent:tablet_portrait": "center"
+      }
+    },
+    {
+      "id": "kelzfg",
+      "name": "migrator-features-v05-2__content-wrap",
+      "settings": {
+        "_rowGap": "2rem",
+        "_width:tablet_portrait": "70%",
+        "_padding:tablet_portrait": {
+          "bottom": "3rem"
+        },
+        "_alignItems:mobile_landscape": "center",
+        "_width:mobile_portrait": "100%",
+        "_width:mobile_landscape": "90%",
+        "_rowGap:mobile_landscape": "1rem",
+        "_alignItems:tablet_portrait": "center"
+      }
+    },
+    {
+      "id": "nyvegn",
+      "name": "migrator-features-v05-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "kmwyfq",
+      "name": "migrator-features-v05-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_typography:mobile_landscape": {
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "xizele",
+      "name": "migrator-features-v05-2__box-wrap",
+      "settings": {
+        "_rowGap": "4rem",
+        "_width:tablet_portrait": "35%",
+        "_flexGrow:tablet_portrait": "1",
+        "_width:mobile_landscape": "80%",
+        "_flexGrow:mobile_landscape": "0",
+        "_width:mobile_portrait": "100%",
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "osyvrm",
+      "name": "migrator-features-v05-2__icon-box",
+      "settings": {
+        "direction": "row",
+        "verticalAlign": "center",
+        "iconPadding": {
+          "right": "3rem"
+        },
+        "typographyBody": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.8rem"
+        },
+        "typographyHeading": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.2rem",
+          "line-height": "4.2rem",
+          "font-weight": "700"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

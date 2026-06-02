@@ -1,0 +1,341 @@
+{
+  "content": [
+    {
+      "id": "qjijhl",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "cyezpc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lbquvx"
+        ]
+      }
+    },
+    {
+      "id": "cyezpc",
+      "name": "container",
+      "parent": "qjijhl",
+      "children": [
+        "nzlwro",
+        "prgvuw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ofgsel"
+        ]
+      }
+    },
+    {
+      "id": "nzlwro",
+      "name": "block",
+      "parent": "cyezpc",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cglzdr"
+        ]
+      },
+      "label": "Image"
+    },
+    {
+      "id": "prgvuw",
+      "name": "block",
+      "parent": "cyezpc",
+      "children": [
+        "kqozfz",
+        "rdfpat",
+        "cgijfi",
+        "alsmkd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "odctes"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "kqozfz",
+      "name": "text-basic",
+      "parent": "prgvuw",
+      "children": [],
+      "settings": {
+        "text": "looking for a discount?",
+        "_cssGlobalClasses": [
+          "objvtl"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "rdfpat",
+      "name": "heading",
+      "parent": "prgvuw",
+      "children": [],
+      "settings": {
+        "text": "Shop Now And Get a 30% Discount",
+        "_cssGlobalClasses": [
+          "sngkea"
+        ]
+      }
+    },
+    {
+      "id": "cgijfi",
+      "name": "form",
+      "parent": "prgvuw",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "tnykwu"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "6a0677",
+            "width": "100",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "checkbox",
+            "label": "Name",
+            "id": "bmuaja",
+            "options": "Men \nWomen",
+            "required": true
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "PG Bricks",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "xl",
+        "submitButtonText": "SUBSCRIBE NOW",
+        "_cssGlobalClasses": [
+          "tyaofu"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "alsmkd",
+      "name": "icon",
+      "parent": "prgvuw",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-circle-xmark"
+        },
+        "_interactions": [
+          {
+            "id": "lzxdcf",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2768"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "ijdbku"
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "lbquvx",
+      "name": "migrator-popup-v17",
+      "settings": []
+    },
+    {
+      "id": "ofgsel",
+      "name": "migrator-popup-v17__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "cglzdr",
+      "name": "migrator-popup-v17__image",
+      "settings": {
+        "_height": "600px",
+        "_height:mobile_landscape": "400px",
+        "_background:mobile_landscape": {
+          "position": "top center"
+        },
+        "_height:mobile_portrait": "250px",
+        "_background": {
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/08/young-adult-wearing-blank-shirt-683x1024.jpg",
+            "external": true,
+            "filename": "young-adult-wearing-blank-shirt-683x1024.jpg"
+          }
+        }
+      }
+    },
+    {
+      "id": "odctes",
+      "name": "migrator-popup-v17__content-wrap",
+      "settings": {
+        "_padding": {
+          "left": "20px",
+          "right": "20px"
+        },
+        "_rowGap": "20px",
+        "_rowGap:mobile_landscape": "5px",
+        "_padding:mobile_landscape": {
+          "top": "20px",
+          "bottom": "20px"
+        },
+        "_position": "static"
+      }
+    },
+    {
+      "id": "objvtl",
+      "name": "migrator-popup-v17__sub-heading",
+      "settings": {
+        "_typography:tablet_portrait": {
+          "text-align": "center"
+        },
+        "_typography": {
+          "font-size": "20px",
+          "text-align": "left",
+          "color": {
+            "hex": "#000000"
+          },
+          "text-transform": "uppercase"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "sngkea",
+      "name": "migrator-popup-v17__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "36px",
+          "color": {
+            "hex": "#000000"
+          },
+          "text-align": "left",
+          "line-height": "40px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "26px",
+          "line-height": "32px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "left",
+          "font-size": "26px",
+          "line-height": "32px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "32px",
+          "line-height": "38px"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "10px"
+        }
+      }
+    },
+    {
+      "id": "tyaofu",
+      "name": "migrator-popup-v17__form",
+      "settings": {
+        "submitButtonWidth": "100",
+        "_width": "100%",
+        "horizontalAlignFields": "center",
+        "fieldMargin": {
+          "bottom": "15px",
+          "right": "0"
+        },
+        "fieldPadding": {
+          "top": "5px",
+          "bottom": "5px"
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#8467d9"
+        },
+        "submitButtonTypography": {
+          "font-size": "18px",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "line-height": "22px"
+        },
+        "_width:mobile_landscape": "100%",
+        "submitButtonWidth:mobile_portrait": "100",
+        "fieldMargin:mobile_portrait": {
+          "bottom": "15px",
+          "right": "0"
+        },
+        "fieldBorder:mobile_portrait": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        }
+      }
+    },
+    {
+      "id": "ijdbku",
+      "name": "migrator-popup-v17__close",
+      "settings": {
+        "_position": "absolute",
+        "_top": "15px",
+        "_right": "15px",
+        "iconColor": {
+          "hex": "#000000"
+        },
+        "iconSize": "30px",
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "25px",
+        "iconSize:mobile_portrait": "20px",
+        "iconColor:mobile_portrait": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        },
+        "iconColor:mobile_landscape": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

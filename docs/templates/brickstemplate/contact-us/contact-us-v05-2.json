@@ -1,0 +1,532 @@
+{
+  "content": [
+    {
+      "id": "mdaneb",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "dvygha"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kwrneb"
+        ]
+      },
+      "label": "Contact Us v05"
+    },
+    {
+      "id": "dvygha",
+      "name": "container",
+      "parent": "mdaneb",
+      "children": [
+        "jafuzu",
+        "bsfefu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jrxvuh"
+        ]
+      }
+    },
+    {
+      "id": "jafuzu",
+      "name": "block",
+      "parent": "dvygha",
+      "children": [
+        "ucozun",
+        "fhuugd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cwcybv"
+        ]
+      },
+      "label": "top content"
+    },
+    {
+      "id": "ucozun",
+      "name": "heading",
+      "parent": "jafuzu",
+      "children": [],
+      "settings": {
+        "text": "Contact Us",
+        "_cssGlobalClasses": [
+          "tknxmq"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "fhuugd",
+      "name": "text-basic",
+      "parent": "jafuzu",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "lfdpcq"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "bsfefu",
+      "name": "block",
+      "parent": "dvygha",
+      "children": [
+        "ffqejs",
+        "cjouwk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bnlkqq"
+        ]
+      },
+      "label": "bottom content"
+    },
+    {
+      "id": "ffqejs",
+      "name": "block",
+      "parent": "bsfefu",
+      "children": [
+        "zarayz",
+        "rgdqmi",
+        "johoeh"
+      ],
+      "settings": {
+        "tag": "address",
+        "_cssGlobalClasses": [
+          "xznnvo"
+        ]
+      },
+      "label": "Address wrap"
+    },
+    {
+      "id": "zarayz",
+      "name": "block",
+      "parent": "ffqejs",
+      "children": [
+        "vifudv",
+        "zcojyi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmbwii"
+        ]
+      },
+      "label": "Address item"
+    },
+    {
+      "id": "vifudv",
+      "name": "heading",
+      "parent": "zarayz",
+      "children": [],
+      "settings": {
+        "text": "Address",
+        "_cssGlobalClasses": [
+          "qmeqda"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "zcojyi",
+      "name": "text-basic",
+      "parent": "zarayz",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "khhtzd"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "rgdqmi",
+      "name": "block",
+      "parent": "ffqejs",
+      "children": [
+        "fonzdf",
+        "ugjsuc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmbwii"
+        ]
+      },
+      "label": "Address item"
+    },
+    {
+      "id": "fonzdf",
+      "name": "heading",
+      "parent": "rgdqmi",
+      "children": [],
+      "settings": {
+        "text": "Mobile",
+        "_cssGlobalClasses": [
+          "qmeqda"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "ugjsuc",
+      "name": "text-basic",
+      "parent": "rgdqmi",
+      "children": [],
+      "settings": {
+        "text": "917-462-5971",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "khhtzd"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "johoeh",
+      "name": "block",
+      "parent": "ffqejs",
+      "children": [
+        "kdjssh",
+        "tzqivb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zmbwii"
+        ]
+      },
+      "label": "Address item"
+    },
+    {
+      "id": "kdjssh",
+      "name": "heading",
+      "parent": "johoeh",
+      "children": [],
+      "settings": {
+        "text": "Email",
+        "_cssGlobalClasses": [
+          "qmeqda"
+        ]
+      },
+      "label": "sub heading"
+    },
+    {
+      "id": "tzqivb",
+      "name": "text-basic",
+      "parent": "johoeh",
+      "children": [],
+      "settings": {
+        "text": "demo@example.com",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "khhtzd"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "cjouwk",
+      "name": "block",
+      "parent": "bsfefu",
+      "children": [
+        "urmqoa"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "emzrvl"
+        ]
+      },
+      "label": "from wrap"
+    },
+    {
+      "id": "urmqoa",
+      "name": "form",
+      "parent": "cjouwk",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "First Name",
+            "placeholder": "First Name",
+            "id": "f74cf7",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "text",
+            "label": "Last Name",
+            "placeholder": "Last Name",
+            "id": "iruovv",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "14f288"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "required": true,
+            "id": "899300"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonText": "Send Now",
+        "submitButtonSize": "xl",
+        "_cssGlobalClasses": [
+          "usjptt"
+        ]
+      },
+      "themeStyles": [],
+      "label": "form"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "kwrneb",
+      "name": "migrator-contact-us-v05-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "5rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "5rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "jrxvuh",
+      "name": "migrator-contact-us-v05-2__container",
+      "settings": {
+        "_direction": "column",
+        "_columnGap": "2rem",
+        "_alignItems": "center",
+        "_rowGap:mobile_landscape": "3rem",
+        "_width:mobile_landscape": "85%",
+        "_width:mobile_portrait": "100%",
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "cwcybv",
+      "name": "migrator-contact-us-v05-2__top-content",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "20%",
+          "right": "20%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "tknxmq",
+      "name": "migrator-contact-us-v05-2__top-heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "lfdpcq",
+      "name": "migrator-contact-us-v05-2__top-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "bnlkqq",
+      "name": "migrator-contact-us-v05-2__bottom-content",
+      "settings": {
+        "_direction": "row",
+        "_rowGap:mobile_landscape": "4rem"
+      }
+    },
+    {
+      "id": "xznnvo",
+      "name": "migrator-contact-us-v05-2__address-wrap",
+      "settings": {
+        "_rowGap": "3rem",
+        "_typography": {
+          "font-style": "normal"
+        }
+      }
+    },
+    {
+      "id": "zmbwii",
+      "name": "migrator-contact-us-v05-2__address-item",
+      "settings": {
+        "_alignItems": "flex-start",
+        "_rowGap": "1rem",
+        "_alignItems:tablet_portrait": "flex-start"
+      }
+    },
+    {
+      "id": "qmeqda",
+      "name": "migrator-contact-us-v05-2__sub-heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.8rem",
+          "line-height": "3.6rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "2.7rem",
+          "line-height": "3.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.6rem",
+          "line-height": "3.6rem"
+        }
+      }
+    },
+    {
+      "id": "khhtzd",
+      "name": "migrator-contact-us-v05-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "emzrvl",
+      "name": "migrator-contact-us-v05-2__from-wrap",
+      "settings": []
+    },
+    {
+      "id": "usjptt",
+      "name": "migrator-contact-us-v05-2__form",
+      "settings": {
+        "fieldMargin": {
+          "bottom": "2rem"
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#2b3546",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "submitButtonTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "submitButtonWidth": "40",
+        "fieldPadding": {
+          "top": "1rem",
+          "bottom": "1rem",
+          "left": "1.5rem",
+          "right": "1.5rem"
+        },
+        "submitButtonWidth:mobile_portrait": "50",
+        "submitButtonBorder": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

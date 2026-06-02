@@ -1,0 +1,86 @@
+{
+  "content": [
+    {
+      "id": "jiptrg",
+      "name": "product-tabs",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ycvlca"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Product tabs 9"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "ycvlca",
+      "name": "migrator-product-tabs-9",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5rem"
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#e6e6e6",
+          "id": "fdbvnf",
+          "name": "Subtile - BG"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "0.9rem",
+          "top": "0.9rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600"
+        },
+        "panelPadding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "0",
+          "right": "0"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_cssCustom": ".migrator-product-tabs-9 .woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}\n.migrator-product-tabs-9 .wc-tabs li {margin: 0 1rem;transition: all 0.5s ease-in-out;}\n.migrator-product-tabs-9 .wc-tabs .active {border-radius: 50vh;}\n.migrator-product-tabs-9 .wc-tabs li:hover {background: #e6e6e6;border-radius: 50vh;}",
+        "tabsBorder": {
+          "style": "none",
+          "radius": {
+            "top": "3rem",
+            "right": "3rem",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "tabsJustifyContent": "center",
+        "_cssCustom:mobile_landscape": "#brxe-jiptrg .wc-tabs li {margin: 0 0.5rem;transition: all 0.5s ease-in-out;}",
+        "tabsPadding:mobile_landscape": {
+          "left": "1.2rem",
+          "right": "1.2rem",
+          "bottom": "0.5rem",
+          "top": "0.5rem"
+        },
+        "tabsTypography:mobile_landscape": {
+          "font-size": "1.3rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

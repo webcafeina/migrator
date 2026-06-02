@@ -1,0 +1,84 @@
+{
+  "content": [
+    {
+      "id": "aekswn",
+      "name": "product-tabs",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qzvyhw"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Product tabs 4"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "qzvyhw",
+      "name": "migrator-product-tabs-4",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5"
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "1.5rem",
+          "top": "1rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabsPadding:mobile_landscape": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.5"
+        },
+        "panelPadding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "0",
+          "right": "0"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_cssCustom": ".migrator-product-tabs-4 .woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}\n.migrator-product-tabs-4 .wc-tabs li {\n    transition: all 0.5s ease-in-out;\n}\n.migrator-product-tabs-4 .wc-tabs li:hover {\n    background: #202020;\n}\n.migrator-product-tabs-4 .wc-tabs li:hover a {\n    color: #fff;\n}",
+        "tabsBorder": {
+          "style": "none"
+        }
+      },
+      "modified": 1736628272,
+      "user_id": 2
+    }
+  ],
+  "globalElements": []
+}

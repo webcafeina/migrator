@@ -1,0 +1,489 @@
+{
+  "content": [
+    {
+      "id": "udznuo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "iqwgpe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vftgij"
+        ]
+      },
+      "label": "Counter v04"
+    },
+    {
+      "id": "iqwgpe",
+      "name": "container",
+      "parent": "udznuo",
+      "children": [
+        "vypuvs",
+        "ygwzel"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cgnwgc"
+        ]
+      }
+    },
+    {
+      "id": "vypuvs",
+      "name": "block",
+      "parent": "iqwgpe",
+      "children": [
+        "jpeexl",
+        "dkaalf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zalcwk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "jpeexl",
+      "name": "heading",
+      "parent": "vypuvs",
+      "children": [],
+      "settings": {
+        "text": "Fusce rutrum eros mi netus cursus ac cras nulla.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hglmfj"
+        ]
+      }
+    },
+    {
+      "id": "dkaalf",
+      "name": "text-basic",
+      "parent": "vypuvs",
+      "children": [],
+      "settings": {
+        "text": "Fusce at cras dui sapien mollis massa congue consequat mi et scelerisque dictumst etiam consectetur fermentum eu curabitur himenaeos ipsum",
+        "_cssGlobalClasses": [
+          "clbhhr"
+        ]
+      },
+      "label": "heading text"
+    },
+    {
+      "id": "ygwzel",
+      "name": "block",
+      "parent": "iqwgpe",
+      "children": [
+        "fdjsjx",
+        "wozjod"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lcdgfv"
+        ]
+      },
+      "label": "counter box"
+    },
+    {
+      "id": "fdjsjx",
+      "name": "block",
+      "parent": "ygwzel",
+      "children": [
+        "pxntve",
+        "iechwg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aojeie"
+        ]
+      },
+      "label": "coounter wrap"
+    },
+    {
+      "id": "pxntve",
+      "name": "block",
+      "parent": "fdjsjx",
+      "children": [
+        "zdyxnk",
+        "twusbq",
+        "kmlvur"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xacvky"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "zdyxnk",
+      "name": "icon",
+      "parent": "pxntve",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-file-word"
+        },
+        "_cssGlobalClasses": [
+          "satsdb"
+        ]
+      }
+    },
+    {
+      "id": "twusbq",
+      "name": "counter",
+      "parent": "pxntve",
+      "children": [],
+      "settings": {
+        "countTo": "25",
+        "suffix": "K",
+        "thousandSeparator": true,
+        "_cssGlobalClasses": [
+          "kkrxst"
+        ]
+      }
+    },
+    {
+      "id": "kmlvur",
+      "name": "text-basic",
+      "parent": "pxntve",
+      "children": [],
+      "settings": {
+        "text": "SUB TEXT",
+        "_cssGlobalClasses": [
+          "qwgotv"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "iechwg",
+      "name": "block",
+      "parent": "fdjsjx",
+      "children": [
+        "owiqmw",
+        "wbilcb",
+        "ckwnei"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xacvky"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "owiqmw",
+      "name": "icon",
+      "parent": "iechwg",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-file-powerpoint"
+        },
+        "_cssGlobalClasses": [
+          "satsdb"
+        ]
+      }
+    },
+    {
+      "id": "wbilcb",
+      "name": "counter",
+      "parent": "iechwg",
+      "children": [],
+      "settings": {
+        "countTo": "35",
+        "suffix": "K",
+        "thousandSeparator": true,
+        "_cssGlobalClasses": [
+          "kkrxst"
+        ]
+      }
+    },
+    {
+      "id": "ckwnei",
+      "name": "text-basic",
+      "parent": "iechwg",
+      "children": [],
+      "settings": {
+        "text": "SUB TEXT",
+        "_cssGlobalClasses": [
+          "qwgotv"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "wozjod",
+      "name": "block",
+      "parent": "ygwzel",
+      "children": [
+        "jhyora",
+        "qznrcs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yxolcb"
+        ]
+      },
+      "label": "counter wrap"
+    },
+    {
+      "id": "jhyora",
+      "name": "block",
+      "parent": "wozjod",
+      "children": [
+        "pafjcj",
+        "ujsrng",
+        "oylkpl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xacvky"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "pafjcj",
+      "name": "icon",
+      "parent": "jhyora",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-file-excel"
+        },
+        "_cssGlobalClasses": [
+          "satsdb"
+        ]
+      }
+    },
+    {
+      "id": "ujsrng",
+      "name": "counter",
+      "parent": "jhyora",
+      "children": [],
+      "settings": {
+        "countTo": "45",
+        "suffix": "K",
+        "thousandSeparator": true,
+        "_cssGlobalClasses": [
+          "kkrxst"
+        ]
+      }
+    },
+    {
+      "id": "oylkpl",
+      "name": "text-basic",
+      "parent": "jhyora",
+      "children": [],
+      "settings": {
+        "text": "SUB TEXT",
+        "_cssGlobalClasses": [
+          "qwgotv"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "qznrcs",
+      "name": "block",
+      "parent": "wozjod",
+      "children": [
+        "zasvve",
+        "pdgzhy",
+        "yvjxne"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xacvky"
+        ]
+      },
+      "label": "counter item"
+    },
+    {
+      "id": "zasvve",
+      "name": "icon",
+      "parent": "qznrcs",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-file-csv"
+        },
+        "_cssGlobalClasses": [
+          "satsdb"
+        ]
+      }
+    },
+    {
+      "id": "pdgzhy",
+      "name": "counter",
+      "parent": "qznrcs",
+      "children": [],
+      "settings": {
+        "countTo": "55",
+        "suffix": "K",
+        "thousandSeparator": true,
+        "_cssGlobalClasses": [
+          "kkrxst"
+        ]
+      }
+    },
+    {
+      "id": "yvjxne",
+      "name": "text-basic",
+      "parent": "qznrcs",
+      "children": [],
+      "settings": {
+        "text": "SUB TEXT",
+        "_cssGlobalClasses": [
+          "qwgotv"
+        ]
+      },
+      "label": "text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "vftgij",
+      "name": "migrator-counter-v04",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "cgnwgc",
+      "name": "migrator-counter-v04__container",
+      "settings": {
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "zalcwk",
+      "name": "migrator-counter-v04__content-wrap",
+      "settings": {
+        "_justifyContent": "center",
+        "_alignItems": "flex-start",
+        "_rowGap": "20px",
+        "_width": "35%",
+        "_width:mobile_landscape": "100%",
+        "_padding:mobile_landscape": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "hglmfj",
+      "name": "migrator-counter-v04__heading",
+      "settings": []
+    },
+    {
+      "id": "clbhhr",
+      "name": "migrator-counter-v04__heading-text",
+      "settings": []
+    },
+    {
+      "id": "lcdgfv",
+      "name": "migrator-counter-v04__counter-box",
+      "settings": {
+        "_width": "65%",
+        "_alignItems": "flex-end",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "aojeie",
+      "name": "migrator-counter-v04__coounter-wrap",
+      "settings": {
+        "_direction": "row"
+      }
+    },
+    {
+      "id": "xacvky",
+      "name": "migrator-counter-v04__counter-item",
+      "settings": {
+        "_alignSelf": "center",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 40,
+          "bottom": 30,
+          "right": 20,
+          "left": 20
+        },
+        "_width": "50%"
+      }
+    },
+    {
+      "id": "satsdb",
+      "name": "migrator-counter-v04__icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "_padding": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "kkrxst",
+      "name": "migrator-counter-v04__counter",
+      "settings": {
+        "_typography": {
+          "font-size": "45px",
+          "font-weight": "800",
+          "color": {
+            "hex": "#000000",
+            "id": "jfhhzf"
+          },
+          "line-height": "48px"
+        },
+        "_padding": {
+          "bottom": 5
+        }
+      }
+    },
+    {
+      "id": "qwgotv",
+      "name": "migrator-counter-v04__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#000000",
+            "id": "jfhhzf"
+          }
+        }
+      }
+    },
+    {
+      "id": "yxolcb",
+      "name": "migrator-counter-v04__counter-wrap",
+      "settings": {
+        "_direction": "row"
+      }
+    }
+  ],
+  "globalElements": []
+}

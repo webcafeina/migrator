@@ -1,0 +1,272 @@
+{
+  "content": [
+    {
+      "id": "uopfyi",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "myxwoq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vsavgs"
+        ]
+      },
+      "label": "Contact Us v04"
+    },
+    {
+      "id": "myxwoq",
+      "name": "container",
+      "parent": "uopfyi",
+      "children": [
+        "takjds",
+        "iamgja"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xbrrcy"
+        ]
+      }
+    },
+    {
+      "id": "takjds",
+      "name": "block",
+      "parent": "myxwoq",
+      "children": [
+        "qahkvx",
+        "lwaewt",
+        "qothur"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fnkvga"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "qahkvx",
+      "name": "heading",
+      "parent": "takjds",
+      "children": [],
+      "settings": {
+        "text": "Contact Us",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "camkgx"
+        ]
+      }
+    },
+    {
+      "id": "lwaewt",
+      "name": "text-basic",
+      "parent": "takjds",
+      "children": [],
+      "settings": {
+        "text": "Senectus facilisi pretium turpis fringilla efficitur dis vehicula metus ipsum potenti aenean integer sollicitudin phasellus",
+        "_cssGlobalClasses": [
+          "yyxvlu"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "qothur",
+      "name": "form",
+      "parent": "takjds",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "0b2c52"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "c80a33"
+          },
+          {
+            "type": "tel",
+            "label": "Mobile",
+            "placeholder": "Mobile Number",
+            "required": true,
+            "id": "cdjmsj"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "required": true,
+            "id": "ff3f55"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "custom",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "_cssGlobalClasses": [
+          "yhjwbk"
+        ]
+      }
+    },
+    {
+      "id": "iamgja",
+      "name": "block",
+      "parent": "myxwoq",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aawklb"
+        ]
+      },
+      "label": "map"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "vsavgs",
+      "name": "migrator-contact-us-v04",
+      "settings": {
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_alignSelf": "stretch"
+      }
+    },
+    {
+      "id": "xbrrcy",
+      "name": "migrator-contact-us-v04__container",
+      "settings": {
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_direction": "row",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_columnGap": "20px",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_portrait": {
+          "right": 0,
+          "left": 0,
+          "top": 0
+        },
+        "_padding:mobile_landscape": {
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "fnkvga",
+      "name": "migrator-contact-us-v04__content-wrap",
+      "settings": {
+        "_padding": {
+          "right": 80
+        },
+        "_rowGap": "20px",
+        "_order:mobile_landscape": "1",
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "camkgx",
+      "name": "migrator-contact-us-v04__heading",
+      "settings": []
+    },
+    {
+      "id": "yyxvlu",
+      "name": "migrator-contact-us-v04__text",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "yhjwbk",
+      "name": "migrator-contact-us-v04__form",
+      "settings": {
+        "fieldBackgroundColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct"
+        },
+        "fieldBorder": {
+          "width": {
+            "top": 1,
+            "right": 1,
+            "bottom": 1,
+            "left": 1
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#d5e4ff",
+            "id": "vybqbz"
+          },
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "fieldPadding": {
+          "top": 5,
+          "bottom": 5
+        },
+        "submitButtonWidth": "50",
+        "_width:mobile_portrait": "100%",
+        "submitButtonMargin": {
+          "top": 20
+        }
+      }
+    },
+    {
+      "id": "aawklb",
+      "name": "migrator-contact-us-v04__map",
+      "settings": {
+        "_height": "600px",
+        "_background": {
+          "image": {
+            "id": 961,
+            "filename": "5653190_2967129.jpg",
+            "size": "large",
+            "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/5653190_2967129.jpg",
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/08/5653190_2967129-1024x683.jpg"
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        },
+        "_height:mobile_portrait": "400px"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,76 @@
+{
+  "content": [
+    {
+      "id": "shqexw",
+      "name": "button",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "jiftuf"
+        ]
+      },
+      "label": "Button V06"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.7.1",
+  "globalClasses": [
+    {
+      "id": "jiftuf",
+      "name": "migrator-btn-v06",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#6ab04c"
+          },
+          "font-size": "1.6rem",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "line-height": "1.6rem"
+        },
+        "_padding": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          },
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#6ab04c"
+          }
+        },
+        "_cssTransition": "all 0.5s ease",
+        "_background": {
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0)",
+            "hsl": "hsla(0, 0%, 0%, 0)"
+          }
+        },
+        "_cssCustom": ".migrator-btn-v06:hover {\n    animation: glow 1.5s infinite alternate;\n}\n\n@keyframes glow {\n    from {\n        box-shadow: 0 0 5px #6ab04c;\n    }\n    to {\n        box-shadow: 0 0 20px #6ab04c;\n    }\n}"
+      }
+    }
+  ],
+  "globalElements": []
+}

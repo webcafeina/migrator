@@ -1,0 +1,147 @@
+{
+  "content": [
+    {
+      "id": "xcdblj",
+      "name": "container",
+      "parent": 0,
+      "children": [
+        "dzscfe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aeqwav"
+        ]
+      },
+      "label": "Post v01"
+    },
+    {
+      "id": "dzscfe",
+      "name": "posts",
+      "parent": "xcdblj",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "tag": "p",
+            "id": "xyeihf",
+            "dynamicData": "Author: {author_name} | Date: {post_time}",
+            "dynamicMargin": {
+              "bottom": "1rem"
+            }
+          },
+          {
+            "dynamicData": "{post_title:link}",
+            "tag": "h3",
+            "id": "220a8c",
+            "dynamicMargin": {
+              "bottom": "1rem"
+            }
+          },
+          {
+            "dynamicData": "{post_excerpt:20}",
+            "id": "663e0b",
+            "dynamicMargin": {
+              "bottom": "1rem"
+            }
+          },
+          {
+            "dynamicData": "{read_more}",
+            "tag": "p",
+            "id": "yvrjsr",
+            "dynamicBackground": {
+              "hex": "#8467d9",
+              "id": "ofeejs",
+              "name": "Acent"
+            },
+            "dynamicTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "dynamicPadding": {
+              "top": "0.8rem",
+              "right": "1rem",
+              "bottom": "0.8rem",
+              "left": "1rem"
+            },
+            "dynamicBorder": {
+              "radius": {
+                "top": 4,
+                "right": 4,
+                "bottom": 4,
+                "left": 4
+              }
+            },
+            "dynamicMargin": {
+              "bottom": "1rem"
+            }
+          }
+        ],
+        "imageLink": true,
+        "query": {
+          "posts_per_page": "6",
+          "tax_query": [
+            "category::55"
+          ]
+        },
+        "_cssGlobalClasses": [
+          "mitdfy"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "aeqwav",
+      "name": "migrator-post-loop-v01",
+      "settings": []
+    },
+    {
+      "id": "mitdfy",
+      "name": "migrator-post-loop-v01__posts",
+      "settings": {
+        "gutter": "3rem",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        },
+        "columns:mobile_portrait": "1",
+        "contentPadding": {
+          "left": "2rem",
+          "right": "2rem",
+          "top": "2rem",
+          "bottom": "2rem"
+        },
+        "columns": "2"
+      }
+    }
+  ],
+  "globalElements": []
+}

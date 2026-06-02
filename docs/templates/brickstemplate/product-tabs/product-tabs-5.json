@@ -1,0 +1,74 @@
+{
+  "content": [
+    {
+      "id": "vtcqhl",
+      "name": "product-tabs",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pyqcoi"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Product tabs 5"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "pyqcoi",
+      "name": "migrator-product-tabs-5",
+      "settings": {
+        "direction": "column",
+        "tabsTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5rem"
+        },
+        "tabActiveBackgroundColor": {
+          "hex": "#e6e6e6",
+          "id": "fdbvnf",
+          "name": "Subtile - BG"
+        },
+        "direction:mobile_portrait": "column",
+        "tabsDirection:mobile_portrait": "row",
+        "tabsPadding": {
+          "bottom": "0.9rem",
+          "top": "0.9rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "tabActiveTypography": {
+          "font-weight": "600"
+        },
+        "panelPadding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "0",
+          "right": "0"
+        },
+        "panelPadding:mobile_landscape": {
+          "bottom": "2rem",
+          "top": "2rem"
+        },
+        "_cssCustom": ".migrator-product-tabs-5 .woocommerce-tabs.wc-tabs-wrapper {\n    border: none;\n}\n.migrator-product-tabs-5 .wc-tabs li {margin:1rem;}",
+        "tabsBackgroundColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "tabsBorder": {
+          "style": "none"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,393 @@
+{
+  "content": [
+    {
+      "id": "dlhyjl",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "wzfpoz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wwokei"
+        ]
+      },
+      "label": "Product Categories 10"
+    },
+    {
+      "id": "wzfpoz",
+      "name": "container",
+      "parent": "dlhyjl",
+      "children": [
+        "vcirng",
+        "ytccaf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cqubol"
+        ]
+      }
+    },
+    {
+      "id": "vcirng",
+      "name": "block",
+      "parent": "wzfpoz",
+      "children": [
+        "jabtxg",
+        "lmbyav"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jrfnti"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "jabtxg",
+      "name": "heading",
+      "parent": "vcirng",
+      "children": [],
+      "settings": {
+        "text": "Popular Categories",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "pgrhxi"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "lmbyav",
+      "name": "text-basic",
+      "parent": "vcirng",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet sem netus suscipit torquent sollicitudin augue litora nibh aenean himenaeos tempus ultricies sapien viverra gravida dis commodo senectus aptent magnis interdum elementum urna dolor leo",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "hlpxva"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "ytccaf",
+      "name": "block",
+      "parent": "wzfpoz",
+      "children": [
+        "tpfusu"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "ufecoi"
+        ]
+      },
+      "label": "term wrap"
+    },
+    {
+      "id": "tpfusu",
+      "name": "block",
+      "parent": "ytccaf",
+      "children": [
+        "nevwbc",
+        "qltium",
+        "oncjct"
+      ],
+      "settings": {
+        "hasLoop": true,
+        "query": {
+          "objectType": "term",
+          "taxonomy": [
+            "product_cat"
+          ],
+          "number": "4"
+        },
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "mprhyr"
+        ]
+      },
+      "label": "term content"
+    },
+    {
+      "id": "nevwbc",
+      "name": "image",
+      "parent": "tpfusu",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{woo_product_cat_image}",
+          "size": "large"
+        },
+        "caption": "none",
+        "_cssGlobalClasses": [
+          "otqodw"
+        ]
+      },
+      "label": "cat img"
+    },
+    {
+      "id": "qltium",
+      "name": "block",
+      "parent": "tpfusu",
+      "children": [
+        "guntjb",
+        "lrqjvb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tjctin"
+        ]
+      },
+      "label": "meta wrap"
+    },
+    {
+      "id": "guntjb",
+      "name": "heading",
+      "parent": "qltium",
+      "children": [],
+      "settings": {
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "text": "{term_name}",
+        "_cssGlobalClasses": [
+          "ilfrax"
+        ]
+      },
+      "label": "term name"
+    },
+    {
+      "id": "lrqjvb",
+      "name": "text-basic",
+      "parent": "qltium",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{term_count} Products",
+        "_cssGlobalClasses": [
+          "cqtrxh"
+        ]
+      },
+      "label": "term count"
+    },
+    {
+      "id": "oncjct",
+      "name": "button",
+      "parent": "tpfusu",
+      "children": [],
+      "settings": {
+        "text": "Shop Now",
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "_cssGlobalClasses": [
+          "vbyfby"
+        ]
+      },
+      "label": "shop btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "wwokei",
+      "name": "migrator-product-categories-10",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "5rem",
+          "top": "5rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "4rem",
+          "bottom": "4rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        }
+      }
+    },
+    {
+      "id": "cqubol",
+      "name": "migrator-product-categories-10__container",
+      "settings": {
+        "_rowGap": "4rem",
+        "_rowGap:mobile_landscape": "6rem"
+      }
+    },
+    {
+      "id": "jrfnti",
+      "name": "migrator-product-categories-10__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_width": "60rem",
+        "_alignSelf": "center",
+        "_rowGap": "1rem"
+      }
+    },
+    {
+      "id": "pgrhxi",
+      "name": "migrator-product-categories-10__title",
+      "settings": {
+        "_typography": {
+          "font-size": "clamp(2.400rem, 1.364vw + 1.855rem, 3.600rem);",
+          "font-weight": "700",
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "hlpxva",
+      "name": "migrator-product-categories-10__sub-text",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "ufecoi",
+      "name": "migrator-product-categories-10__term-wrap",
+      "settings": {
+        "_display": "grid",
+        "_gridTemplateColumns": "repeat(4, minmax(0, 1fr))",
+        "_gridGap": "2.5rem",
+        "_gridTemplateColumns:tablet_portrait": "repeat(2, minmax(0, 1fr))",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "mprhyr",
+      "name": "migrator-product-categories-10__term-content",
+      "settings": {
+        "_position": "relative",
+        "_overflow": "hidden"
+      }
+    },
+    {
+      "id": "otqodw",
+      "name": "migrator-product-categories-10__cat-img",
+      "settings": {
+        "_transform:hover": {
+          "scaleX": "1.2",
+          "scaleY": "1.2"
+        },
+        "_cssTransition": "all .3s",
+        "_gradient:hover": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "huedsp",
+              "color": {
+                "hex": "#636363",
+                "rgb": "rgba(99, 99, 99, 0.3)",
+                "hsl": "hsla(0, 0%, 39%, 0.3)"
+              }
+            }
+          ]
+        },
+        "_gradient": {
+          "applyTo": "overlay"
+        }
+      }
+    },
+    {
+      "id": "tjctin",
+      "name": "migrator-product-categories-10__meta-wrap",
+      "settings": {
+        "_position": "absolute",
+        "_left": "2rem",
+        "_top": "2rem"
+      }
+    },
+    {
+      "id": "ilfrax",
+      "name": "migrator-product-categories-10__term-name",
+      "settings": {
+        "_typography": {
+          "font-weight": "600",
+          "line-height": "1.5",
+          "font-size": "clamp(1.800rem, 1.136vw + 1.345rem, 2.800rem);"
+        },
+        "_padding:mobile_landscape": {
+          "top": "2rem"
+        }
+      }
+    },
+    {
+      "id": "cqtrxh",
+      "name": "migrator-product-categories-10__term-count",
+      "settings": []
+    },
+    {
+      "id": "vbyfby",
+      "name": "migrator-product-categories-10__shop-btn",
+      "settings": {
+        "style": "primary",
+        "_position": "absolute",
+        "_bottom": "2rem",
+        "_left": "2rem",
+        "_typography": {
+          "font-size": "1.4rem",
+          "line-height": "1.3",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_padding": {
+          "bottom": "0.7rem",
+          "top": "0.7rem",
+          "left": "1.2rem",
+          "right": "1.2rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

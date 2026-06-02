@@ -1,0 +1,194 @@
+{
+  "content": [
+    {
+      "id": "rebsle",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "wdgdkz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jokqvi"
+        ]
+      },
+      "label": "Error 13"
+    },
+    {
+      "id": "wdgdkz",
+      "name": "container",
+      "parent": "rebsle",
+      "children": [
+        "tulafb",
+        "plvzde",
+        "mjqtvu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pcmule"
+        ]
+      }
+    },
+    {
+      "id": "tulafb",
+      "name": "heading",
+      "parent": "wdgdkz",
+      "children": [],
+      "settings": {
+        "text": "This page does not exist",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "goxbbj"
+        ]
+      },
+      "label": "main title"
+    },
+    {
+      "id": "plvzde",
+      "name": "text-basic",
+      "parent": "wdgdkz",
+      "children": [],
+      "settings": {
+        "text": "404",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "slfecg"
+        ]
+      },
+      "label": "404"
+    },
+    {
+      "id": "mjqtvu",
+      "name": "text-basic",
+      "parent": "wdgdkz",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for either does not exist or has been moved to a new location.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "gqozef"
+        ]
+      },
+      "label": "text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "jokqvi",
+      "name": "migrator-error-13",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_justifyContent": "center",
+        "_height": "100vh",
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "image": {
+            "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/1440x1040-1024x740.jpg",
+            "external": true,
+            "filename": "1440x1040-1024x740.jpg"
+          }
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "llvtdz",
+              "color": {
+                "hex": "#000000",
+                "rgb": "rgba(0, 0, 0, 0.3)",
+                "hsl": "hsla(0, 0%, 0%, 0.3)"
+              }
+            }
+          ]
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "pcmule",
+      "name": "migrator-error-13__container",
+      "settings": {
+        "_alignItems": "center",
+        "_direction": "column",
+        "_rowGap": "1rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "goxbbj",
+      "name": "migrator-error-13__main-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "5rem",
+          "line-height": "1.2",
+          "font-weight": "700",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "slfecg",
+      "name": "migrator-error-13__404",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "10rem",
+          "font-weight": "700",
+          "line-height": "1",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_order": "-1"
+      },
+      "_exists": false
+    },
+    {
+      "id": "gqozef",
+      "name": "migrator-error-13__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.8rem",
+          "font-weight": "400",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "2rem"
+        },
+        "_width": "40ch"
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

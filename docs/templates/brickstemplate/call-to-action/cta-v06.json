@@ -1,0 +1,352 @@
+{
+  "content": [
+    {
+      "id": "cgmcda",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "mcmvnt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lcszgq"
+        ]
+      },
+      "label": "CTA v06"
+    },
+    {
+      "id": "mcmvnt",
+      "name": "container",
+      "parent": "cgmcda",
+      "children": [
+        "ibiekq",
+        "hfafig",
+        "vdpknc",
+        "dwpjdk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "laxqty"
+        ]
+      }
+    },
+    {
+      "id": "ibiekq",
+      "name": "heading",
+      "parent": "mcmvnt",
+      "children": [],
+      "settings": {
+        "text": "How To Start A Business With WORKOUT",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "edqopa"
+        ]
+      }
+    },
+    {
+      "id": "hfafig",
+      "name": "divider",
+      "parent": "mcmvnt",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjtyql"
+        ]
+      }
+    },
+    {
+      "id": "vdpknc",
+      "name": "text-basic",
+      "parent": "mcmvnt",
+      "children": [],
+      "settings": {
+        "text": "Elit tempor mauris neque metus quisque vel habitant mattis ad integer porta torquent sapien sociosqu pede facilisis nascetur dignissim aenean",
+        "_cssGlobalClasses": [
+          "ezexzk"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "dwpjdk",
+      "name": "block",
+      "parent": "mcmvnt",
+      "children": [
+        "tmcrba",
+        "nqrjby",
+        "plnzxz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "efptej"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "tmcrba",
+      "name": "button",
+      "parent": "dwpjdk",
+      "children": [],
+      "settings": {
+        "text": "Make An Appointment",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "okbrjf"
+        ],
+        "style": "primary"
+      },
+      "label": "btn 1"
+    },
+    {
+      "id": "nqrjby",
+      "name": "heading",
+      "parent": "dwpjdk",
+      "children": [],
+      "settings": {
+        "text": "OR",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "qgxtow"
+        ]
+      },
+      "label": "btn text"
+    },
+    {
+      "id": "plnzxz",
+      "name": "button",
+      "parent": "dwpjdk",
+      "children": [],
+      "settings": {
+        "text": "Schedule A Call",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "uwbtoj"
+        ]
+      },
+      "label": "btn 2"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "lcszgq",
+      "name": "migrator-cta-v06",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "laxqty",
+      "name": "migrator-cta-v06__container",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80,
+          "left": "",
+          "bottom": 80
+        },
+        "_justifyContent": "center",
+        "_padding:mobile_portrait": {
+          "top": 60,
+          "right": 20,
+          "bottom": 60,
+          "left": 20
+        },
+        "_rowGap:mobile_portrait": "15px"
+      }
+    },
+    {
+      "id": "edqopa",
+      "name": "migrator-cta-v06__heading",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "mjtyql",
+      "name": "migrator-cta-v06__divider",
+      "settings": {
+        "height": "4px",
+        "width": "200px",
+        "justifyContent": "center",
+        "color": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        }
+      }
+    },
+    {
+      "id": "ezexzk",
+      "name": "migrator-cta-v06__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "right": 20,
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "left": 20
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "efptej",
+      "name": "migrator-cta-v06__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_justifyContent": "center",
+        "_padding": {
+          "top": 30
+        },
+        "_direction:mobile_portrait": "column",
+        "_rowGap:mobile_portrait": "20px",
+        "_justifyContent:mobile_portrait": "center"
+      }
+    },
+    {
+      "id": "okbrjf",
+      "name": "migrator-cta-v06__btn-1",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 25,
+          "bottom": 15,
+          "left": 25
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          },
+          "width": {
+            "top": 2,
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          },
+          "style": "solid"
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "qgxtow",
+      "name": "migrator-cta-v06__btn-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#63728c",
+            "rgb": "rgba(99, 114, 140, 0.47)",
+            "hsl": "hsla(219, 17%, 47%, 0.47)"
+          },
+          "font-size": "24px"
+        }
+      }
+    },
+    {
+      "id": "uwbtoj",
+      "name": "migrator-cta-v06__btn-2",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 25,
+          "bottom": 15,
+          "left": 25
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          },
+          "width": {
+            "top": 2,
+            "right": 2,
+            "bottom": 2,
+            "left": 2
+          },
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          },
+          "style": "solid"
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,220 @@
+{
+  "content": [
+    {
+      "id": "tnrpar",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "vkkeha"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ifyikr"
+        ]
+      },
+      "label": "CTA v09"
+    },
+    {
+      "id": "vkkeha",
+      "name": "container",
+      "parent": "tnrpar",
+      "children": [
+        "phyvsw",
+        "rawogc",
+        "hvsgzt",
+        "mcqwyd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "myufpk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "phyvsw",
+      "name": "icon",
+      "parent": "vkkeha",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-chrome"
+        },
+        "_cssGlobalClasses": [
+          "iqulli"
+        ]
+      }
+    },
+    {
+      "id": "rawogc",
+      "name": "heading",
+      "parent": "vkkeha",
+      "children": [],
+      "settings": {
+        "text": "Etiam penatibus posuere donec himenaeos ex.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "meaeyn"
+        ]
+      }
+    },
+    {
+      "id": "hvsgzt",
+      "name": "text-basic",
+      "parent": "vkkeha",
+      "children": [],
+      "settings": {
+        "text": "Laoreet cursus quam tincidunt mollis lectus ad platea nascetur pulvinar sem commodo et libero aptent posuere mus pharetra aliquam netus sodales amet magnis cubilia lobortis parturient litora montes eu convallis",
+        "_cssGlobalClasses": [
+          "fpxaki"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "mcqwyd",
+      "name": "button",
+      "parent": "vkkeha",
+      "children": [],
+      "settings": {
+        "text": "Call To Action",
+        "circle": true,
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "suestv"
+        ],
+        "style": "primary"
+      },
+      "label": "btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ifyikr",
+      "name": "migrator-cta-v09",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "myufpk",
+      "name": "migrator-cta-v09__content-wrap",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_columnGap": "80px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_justifyContent": "center",
+        "_rowGap": "20px",
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "iqulli",
+      "name": "migrator-cta-v09__icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        }
+      }
+    },
+    {
+      "id": "meaeyn",
+      "name": "migrator-cta-v09__heading",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "fpxaki",
+      "name": "migrator-cta-v09__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "right": 15,
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "left": 15
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "suestv",
+      "name": "migrator-cta-v09__btn",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 45,
+          "bottom": 15,
+          "left": 45
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

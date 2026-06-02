@@ -1,0 +1,720 @@
+{
+  "content": [
+    {
+      "id": "054f7d",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "54d99c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nxsmwu"
+        ]
+      }
+    },
+    {
+      "id": "54d99c",
+      "name": "container",
+      "parent": "054f7d",
+      "children": [
+        "b6bd25",
+        "46d15e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zitlba"
+        ]
+      }
+    },
+    {
+      "id": "b6bd25",
+      "name": "block",
+      "parent": "54d99c",
+      "children": [
+        "7e80a2",
+        "af754d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xnzqpo"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "7e80a2",
+      "name": "heading",
+      "parent": "b6bd25",
+      "children": [],
+      "settings": {
+        "text": "What our satisfied clients say",
+        "_cssGlobalClasses": [
+          "ppxtff"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "af754d",
+      "name": "text-basic",
+      "parent": "b6bd25",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet sem fermentum augue litora malesuada finibus",
+        "_cssGlobalClasses": [
+          "mtvbgf"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "46d15e",
+      "name": "block",
+      "parent": "54d99c",
+      "children": [
+        "cf1837"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fkwusw"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "cf1837",
+      "name": "slider-nested",
+      "parent": "46d15e",
+      "children": [
+        "b6168e",
+        "f07776",
+        "1b100a",
+        "1cf19d"
+      ],
+      "settings": {
+        "arrows": true,
+        "perPage": "3",
+        "_cssClasses": "custom_slider",
+        "_cssCustom": ".custom_slider .splide__arrow {\n    position: absolute;\n    bottom: -90px;\n    top: auto;\n  left: 500px;\n    border-radius: 5px;\n    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;\n    padding: 15px;\n  text-algin: center;\n}\n.custom_slider .splide__arrow:hover svg {\n    fill: #fff;\n}\n.custom_slider .splide__arrow:hover svg {\n    fill: #fff;\n}\n\n.custom_slider .splide__arrow--prev {\n    left: 0px;\n}\n.custom_slider .splide__arrow--next {\n    left: 60px;\n}\n",
+        "perPage:mobile_portrait": "1",
+        "perPage:mobile_landscape": "1",
+        "perPage:tablet_portrait": "2",
+        "_cssGlobalClasses": [
+          "aounez"
+        ],
+        "height": "auto",
+        "gap": "20"
+      },
+      "themeStyles": [],
+      "label": "Slider"
+    },
+    {
+      "id": "b6168e",
+      "name": "block",
+      "parent": "cf1837",
+      "children": [
+        "ac8b68",
+        "d92d09",
+        "a4fa5f",
+        "7dc395",
+        "a255e4"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dafvon"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "ac8b68",
+      "name": "image",
+      "parent": "b6168e",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dekkls"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "d92d09",
+      "name": "image",
+      "parent": "b6168e",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 3539,
+          "filename": "stars-rating.png",
+          "size": "full",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png"
+        },
+        "_cssGlobalClasses": [
+          "xkfqxn"
+        ]
+      },
+      "themeStyles": [],
+      "label": "star"
+    },
+    {
+      "id": "a4fa5f",
+      "name": "icon",
+      "parent": "b6168e",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-quote-left"
+        },
+        "_cssGlobalClasses": [
+          "jmwzye"
+        ]
+      },
+      "themeStyles": [],
+      "label": "quote"
+    },
+    {
+      "id": "7dc395",
+      "name": "heading",
+      "parent": "b6168e",
+      "children": [],
+      "settings": {
+        "text": "Robert ",
+        "_cssGlobalClasses": [
+          "gskcfu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "a255e4",
+      "name": "text-basic",
+      "parent": "b6168e",
+      "children": [],
+      "settings": {
+        "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+        "_cssGlobalClasses": [
+          "rwojnk"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "f07776",
+      "name": "block",
+      "parent": "cf1837",
+      "children": [
+        "bb742a",
+        "341a13",
+        "c7dd5d",
+        "cc4a8f",
+        "014d5c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dafvon"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "bb742a",
+      "name": "image",
+      "parent": "f07776",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dekkls"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "341a13",
+      "name": "image",
+      "parent": "f07776",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 3539,
+          "filename": "stars-rating.png",
+          "size": "full",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png"
+        },
+        "_cssGlobalClasses": [
+          "xkfqxn"
+        ]
+      },
+      "themeStyles": [],
+      "label": "star"
+    },
+    {
+      "id": "c7dd5d",
+      "name": "icon",
+      "parent": "f07776",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-quote-left"
+        },
+        "_cssGlobalClasses": [
+          "jmwzye"
+        ]
+      },
+      "themeStyles": [],
+      "label": "quote"
+    },
+    {
+      "id": "cc4a8f",
+      "name": "heading",
+      "parent": "f07776",
+      "children": [],
+      "settings": {
+        "text": "Robert ",
+        "_cssGlobalClasses": [
+          "gskcfu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "014d5c",
+      "name": "text-basic",
+      "parent": "f07776",
+      "children": [],
+      "settings": {
+        "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+        "_cssGlobalClasses": [
+          "rwojnk"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "1b100a",
+      "name": "block",
+      "parent": "cf1837",
+      "children": [
+        "7c36e1",
+        "c403e5",
+        "8b5145",
+        "9afa83",
+        "4082c7"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dafvon"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "7c36e1",
+      "name": "image",
+      "parent": "1b100a",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dekkls"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "c403e5",
+      "name": "image",
+      "parent": "1b100a",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 3539,
+          "filename": "stars-rating.png",
+          "size": "full",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png"
+        },
+        "_cssGlobalClasses": [
+          "xkfqxn"
+        ]
+      },
+      "themeStyles": [],
+      "label": "star"
+    },
+    {
+      "id": "8b5145",
+      "name": "icon",
+      "parent": "1b100a",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-quote-left"
+        },
+        "_cssGlobalClasses": [
+          "jmwzye"
+        ]
+      },
+      "themeStyles": [],
+      "label": "quote"
+    },
+    {
+      "id": "9afa83",
+      "name": "heading",
+      "parent": "1b100a",
+      "children": [],
+      "settings": {
+        "text": "Robert ",
+        "_cssGlobalClasses": [
+          "gskcfu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "4082c7",
+      "name": "text-basic",
+      "parent": "1b100a",
+      "children": [],
+      "settings": {
+        "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+        "_cssGlobalClasses": [
+          "rwojnk"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "1cf19d",
+      "name": "block",
+      "parent": "cf1837",
+      "children": [
+        "6292aa",
+        "58be56",
+        "5f844c",
+        "411007",
+        "41769c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dafvon"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "6292aa",
+      "name": "image",
+      "parent": "1cf19d",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dekkls"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash-150x150.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "58be56",
+      "name": "image",
+      "parent": "1cf19d",
+      "children": [],
+      "settings": {
+        "image": {
+          "id": 3539,
+          "filename": "stars-rating.png",
+          "size": "full",
+          "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png",
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/stars-rating.png"
+        },
+        "_cssGlobalClasses": [
+          "xkfqxn"
+        ]
+      },
+      "themeStyles": [],
+      "label": "star"
+    },
+    {
+      "id": "5f844c",
+      "name": "icon",
+      "parent": "1cf19d",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-quote-left"
+        },
+        "_cssGlobalClasses": [
+          "jmwzye"
+        ]
+      },
+      "themeStyles": [],
+      "label": "quote"
+    },
+    {
+      "id": "411007",
+      "name": "heading",
+      "parent": "1cf19d",
+      "children": [],
+      "settings": {
+        "text": "Robert ",
+        "_cssGlobalClasses": [
+          "gskcfu"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "41769c",
+      "name": "text-basic",
+      "parent": "1cf19d",
+      "children": [],
+      "settings": {
+        "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+        "_cssGlobalClasses": [
+          "rwojnk"
+        ]
+      },
+      "label": "text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "nxsmwu",
+      "name": "migrator-testimonials-v11",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#f8f8f8"
+          }
+        }
+      }
+    },
+    {
+      "id": "zitlba",
+      "name": "migrator-testimonials-v11__container",
+      "settings": {
+        "_direction": "column",
+        "_alignItems": "center",
+        "_padding": {
+          "top": "110px",
+          "right": "20px",
+          "bottom": "110px",
+          "left": "20px"
+        },
+        "_alignSelf": "stretch",
+        "_width": "1440px",
+        "_rowGap": "60px",
+        "_padding:tablet_portrait": {
+          "top": "80px",
+          "bottom": "80px"
+        },
+        "_padding:mobile_landscape": {
+          "top": "70px",
+          "bottom": "70px"
+        }
+      }
+    },
+    {
+      "id": "xnzqpo",
+      "name": "migrator-testimonials-v11__content-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "ppxtff",
+      "name": "migrator-testimonials-v11__top-heading",
+      "settings": {
+        "_typography": {
+          "font-size": "40px",
+          "line-height": "60px",
+          "text-align": "center",
+          "color": {
+            "hex": "#333333"
+          }
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "35px",
+          "line-height": "50px"
+        },
+        "_padding": {
+          "bottom": "20px"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "10px"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "32px",
+          "line-height": "40px"
+        }
+      }
+    },
+    {
+      "id": "mtvbgf",
+      "name": "migrator-testimonials-v11__top-text",
+      "settings": {
+        "_typography": {
+          "font-size": "16px",
+          "line-height": "24px",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "color": {
+            "hex": "#666666"
+          },
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "fkwusw",
+      "name": "migrator-testimonials-v11__testimonials-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "30px",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "aounez",
+      "name": "migrator-testimonials-v11__slider",
+      "settings": {
+        "height": "400px",
+        "gap": "30px",
+        "_cssCustom": ".custom_slider .splide__arrow {\n    position: absolute;\n    bottom: -90px;\n    top: auto;\n  left: 500px;\n    border-radius: 5px;\n    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;\n    padding: 15px;\n  text-algin: center;\n}\n.custom_slider .splide__arrow:hover svg {\n    fill: #fff;\n}\n.custom_slider .splide__arrow:hover svg {\n    fill: #fff;\n}\n\n.custom_slider .splide__arrow--prev {\n    left: 0px;\n}\n.custom_slider .splide__arrow--next {\n    left: 60px;\n}\n",
+        "arrowBackground:hover": {
+          "hex": "#010ae9"
+        },
+        "height:mobile_portrait": "400px",
+        "arrowBorder": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "height:tablet_portrait": "400px"
+      }
+    },
+    {
+      "id": "dafvon",
+      "name": "migrator-testimonials-v11__testimonials-item",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_padding": {
+          "left": "20px",
+          "right": "20px",
+          "top": "20px",
+          "bottom": "20px"
+        },
+        "_border": {
+          "radius": {
+            "top": "10px",
+            "right": "10px",
+            "bottom": "10px",
+            "left": "10px"
+          }
+        },
+        "_top": "0"
+      }
+    },
+    {
+      "id": "dekkls",
+      "name": "migrator-testimonials-v11__image",
+      "settings": {
+        "_width": "80px",
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        }
+      }
+    },
+    {
+      "id": "xkfqxn",
+      "name": "migrator-testimonials-v11__star",
+      "settings": {
+        "_padding": {
+          "bottom": "10px",
+          "top": "15px"
+        },
+        "_width": "120px"
+      }
+    },
+    {
+      "id": "jmwzye",
+      "name": "migrator-testimonials-v11__quote",
+      "settings": {
+        "_position": "absolute",
+        "_top": "140px",
+        "_left": "20px",
+        "iconSize": "50px",
+        "_top:mobile_portrait": "130px"
+      }
+    },
+    {
+      "id": "gskcfu",
+      "name": "migrator-testimonials-v11__name",
+      "settings": {
+        "_typography": {
+          "font-size": "24px",
+          "line-height": "44px"
+        },
+        "_padding": {
+          "bottom": "10px"
+        }
+      }
+    },
+    {
+      "id": "rwojnk",
+      "name": "migrator-testimonials-v11__text",
+      "settings": {
+        "_typography": {
+          "font-size": "16px",
+          "font-weight": "400",
+          "line-height": "24px",
+          "color": {
+            "hex": "#666666"
+          },
+          "text-align": "center"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

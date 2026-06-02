@@ -1,0 +1,221 @@
+{
+  "content": [
+    {
+      "id": "tnrpar",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "vkkeha"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hulhdz"
+        ]
+      },
+      "label": "CTA v08"
+    },
+    {
+      "id": "vkkeha",
+      "name": "container",
+      "parent": "tnrpar",
+      "children": [
+        "azqemg",
+        "seswtj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "blulwk"
+        ]
+      }
+    },
+    {
+      "id": "azqemg",
+      "name": "block",
+      "parent": "vkkeha",
+      "children": [
+        "mvnxts",
+        "dmsyfw",
+        "augajc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxrafn"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "mvnxts",
+      "name": "heading",
+      "parent": "azqemg",
+      "children": [],
+      "settings": {
+        "text": "Get Important Updates",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "pentlp"
+        ]
+      }
+    },
+    {
+      "id": "dmsyfw",
+      "name": "text-basic",
+      "parent": "azqemg",
+      "children": [],
+      "settings": {
+        "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.",
+        "_cssGlobalClasses": [
+          "pdrdmb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "augajc",
+      "name": "form",
+      "parent": "azqemg",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "e31a70",
+            "width": "60",
+            "width:mobile_portrait": "100"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "custom",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "requiredAsterisk": true,
+        "submitButtonText": "Subscribe Now",
+        "submitButtonSize": "lg",
+        "_cssGlobalClasses": [
+          "sfdiyn"
+        ]
+      }
+    },
+    {
+      "id": "seswtj",
+      "name": "block",
+      "parent": "vkkeha",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "onnset"
+        ]
+      },
+      "label": "image"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "hulhdz",
+      "name": "migrator-cta-v08-2",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "blulwk",
+      "name": "migrator-cta-v08-2__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "80px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_rowGap:mobile_landscape": "30px"
+      }
+    },
+    {
+      "id": "sxrafn",
+      "name": "migrator-cta-v08-2__content-wrap",
+      "settings": {
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "pentlp",
+      "name": "migrator-cta-v08-2__heading",
+      "settings": []
+    },
+    {
+      "id": "pdrdmb",
+      "name": "migrator-cta-v08-2__text",
+      "settings": []
+    },
+    {
+      "id": "sfdiyn",
+      "name": "migrator-cta-v08-2__form",
+      "settings": {
+        "submitButtonWidth": "40",
+        "fieldMargin": {
+          "bottom": 0,
+          "left": 0,
+          "right": 30
+        },
+        "fieldPadding": {
+          "top": 5,
+          "bottom": 1
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "submitButtonWidth:mobile_portrait": "100",
+        "fieldMargin:mobile_portrait": {
+          "right": "0",
+          "bottom": "20"
+        }
+      }
+    },
+    {
+      "id": "onnset",
+      "name": "migrator-cta-v08-2__image",
+      "settings": {
+        "_background": {
+          "image": {
+            "id": 853,
+            "filename": "pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg",
+            "size": "full",
+            "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg",
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-posture.jpg"
+          },
+          "position": "center center",
+          "repeat": "no-repeat"
+        },
+        "_heightMin": "480px"
+      }
+    }
+  ],
+  "globalElements": []
+}

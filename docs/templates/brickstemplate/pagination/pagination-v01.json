@@ -1,0 +1,111 @@
+{
+  "content": [
+    {
+      "id": "vvjlsu",
+      "name": "block",
+      "parent": 0,
+      "children": [
+        "pqufix"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "acimzp"
+        ]
+      },
+      "label": "Pagination v01"
+    },
+    {
+      "id": "pqufix",
+      "name": "pagination",
+      "parent": "vvjlsu",
+      "children": [],
+      "settings": {
+        "prevIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-left"
+        },
+        "nextIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-angle-right"
+        },
+        "queryId": "sgqmoc",
+        "_cssGlobalClasses": [
+          "kcvsyv"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "acimzp",
+      "name": "migrator-pagination-v10",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "kcvsyv",
+      "name": "migrator-pagination-v10__pagination",
+      "settings": {
+        "justifyContent": "center",
+        "navigationWidth": "7rem",
+        "navigationHeight": "5rem",
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "gap": "0",
+        "navigationBorderActive": {
+          "width": {
+            "top": "0.1rem",
+            "bottom": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "navigationBorder:hover": {
+          "style": "solid",
+          "width": {
+            "top": "0.1rem",
+            "bottom": "0.1rem"
+          },
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "navigationHeight:mobile_landscape": "4rem",
+        "navigationWidth:mobile_landscape": "5rem",
+        "navigationTypography": {
+          "font-size": "1.6rem",
+          "line-height": "2.8rem",
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "navigationTypographyActive": {
+          "font-size": "1.6rem",
+          "line-height": "2.8rem",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,553 @@
+{
+  "content": [
+    {
+      "id": "evlcrg",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ekuetb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qqoggy"
+        ]
+      },
+      "label": "Single Product 1"
+    },
+    {
+      "id": "ekuetb",
+      "name": "container",
+      "parent": "evlcrg",
+      "children": [
+        "bhgwtc",
+        "jyjsta"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zgpuke"
+        ]
+      }
+    },
+    {
+      "id": "bhgwtc",
+      "name": "block",
+      "parent": "ekuetb",
+      "children": [
+        "bzsfeo",
+        "glqccl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xqkeus"
+        ]
+      },
+      "label": "gallery wrap"
+    },
+    {
+      "id": "bzsfeo",
+      "name": "woocommerce-breadcrumbs",
+      "parent": "bhgwtc",
+      "children": [],
+      "settings": {
+        "separatorText": "/",
+        "separatorType": "text",
+        "_cssGlobalClasses": [
+          "ijvwur"
+        ]
+      },
+      "label": "Breadcrumbs"
+    },
+    {
+      "id": "glqccl",
+      "name": "product-gallery",
+      "parent": "bhgwtc",
+      "children": [],
+      "settings": {
+        "thumbnailPosition": "bottom",
+        "thumbnailSlider": true,
+        "_cssGlobalClasses": [
+          "vuwxps"
+        ],
+        "prevArrow": {
+          "library": "themify",
+          "icon": "ti-angle-left"
+        },
+        "nextArrow": {
+          "library": "themify",
+          "icon": "ti-angle-right"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "jyjsta",
+      "name": "block",
+      "parent": "ekuetb",
+      "children": [
+        "strmgs",
+        "jufwco",
+        "zaznck",
+        "pvhaby",
+        "hwluxv",
+        "dnrtlp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mhezqo"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "strmgs",
+      "name": "product-title",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qxdnvm"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "jufwco",
+      "name": "product-price",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dqepmw"
+        ]
+      }
+    },
+    {
+      "id": "zaznck",
+      "name": "product-rating",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "katkqp"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "pvhaby",
+      "name": "product-short-description",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rehgze"
+        ]
+      }
+    },
+    {
+      "id": "hwluxv",
+      "name": "product-add-to-cart",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tnxlob"
+        ]
+      },
+      "themeStyles": [],
+      "label": "Add to cart (CSS)"
+    },
+    {
+      "id": "dnrtlp",
+      "name": "product-meta",
+      "parent": "jyjsta",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "dynamicData": "{woo_product_sku}",
+            "id": "1abccb",
+            "prefix": "SKU: "
+          },
+          {
+            "dynamicData": "{post_terms_product_cat}",
+            "id": "11b929",
+            "prefix": "Categories: "
+          },
+          {
+            "dynamicData": "{post_terms_product_tag}",
+            "id": "f0e799",
+            "prefix": "Tags: "
+          }
+        ],
+        "_cssGlobalClasses": [
+          "bjwdbu"
+        ]
+      },
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "qqoggy",
+      "name": "migrator-single-product-1",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "4rem",
+          "top": "4rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "zgpuke",
+      "name": "migrator-single-product-1__container",
+      "settings": {
+        "_direction": "row",
+        "_rowGap:mobile_landscape": "4rem",
+        "_columnGap": "4rem",
+        "_columnGap:tablet_portrait": "3rem"
+      }
+    },
+    {
+      "id": "xqkeus",
+      "name": "migrator-single-product-1__gallery-wrap",
+      "settings": {
+        "_rowGap": "2rem",
+        "_width": "50%",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "ijvwur",
+      "name": "migrator-single-product-1__breadcrumbs",
+      "settings": {
+        "separatorMargin": {
+          "right": "1rem",
+          "left": "1rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.5"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "1.4rem"
+        },
+        "separatorMargin:mobile_landscape": {
+          "right": "0.6rem",
+          "left": "0.6rem"
+        }
+      }
+    },
+    {
+      "id": "vuwxps",
+      "name": "migrator-single-product-1__product-gallery",
+      "settings": {
+        "thumbnailBorder": {
+          "style": "solid",
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "thumbnailActiveBorder": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.8rem",
+            "right": "0.8rem",
+            "bottom": "0.8rem",
+            "left": "0.8rem"
+          }
+        },
+        "itemWidth:mobile_landscape": "8rem",
+        "gap:mobile_landscape": "2rem",
+        "itemWidth:mobile_portrait": "6rem",
+        "prevArrow": {
+          "library": "themify",
+          "icon": "ti-angle-left"
+        },
+        "nextArrow": {
+          "library": "themify",
+          "icon": "ti-angle-right"
+        },
+        "arrowBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "arrowColor": {
+          "hex": "#ffffff",
+          "id": "mlnzir",
+          "name": "White"
+        },
+        "arrowSize": "2rem",
+        "arrowHeight": "3rem",
+        "arrowWidth": "3rem",
+        "arrowBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "arrowWidth:mobile_landscape": "2rem",
+        "arrowSize:mobile_landscape": "1.2rem",
+        "arrowHeight:mobile_landscape": "2rem"
+      }
+    },
+    {
+      "id": "mhezqo",
+      "name": "migrator-single-product-1__content-wrap",
+      "settings": {
+        "_rowGap": "1.5rem",
+        "_width": "50%",
+        "_width:mobile_landscape": "100%"
+      }
+    },
+    {
+      "id": "qxdnvm",
+      "name": "migrator-single-product-1__product-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "1.4"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.2rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "2.8rem"
+        }
+      }
+    },
+    {
+      "id": "dqepmw",
+      "name": "migrator-single-product-1__product-price",
+      "settings": {
+        "regularPriceTypography": {
+          "font-size": "2.4rem",
+          "font-weight": "700",
+          "line-height": "1.5"
+        },
+        "salePriceTypography": {
+          "font-size": "2.8rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700",
+          "line-height": "1.5"
+        },
+        "regularPriceTypography:mobile_landscape": {
+          "font-size": "2.2rem"
+        },
+        "salePriceTypography:mobile_landscape": {
+          "font-size": "2.4rem"
+        }
+      }
+    },
+    {
+      "id": "katkqp",
+      "name": "migrator-single-product-1__product-rating",
+      "settings": {
+        "starColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "emptyStarColor": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.6"
+        }
+      }
+    },
+    {
+      "id": "rehgze",
+      "name": "migrator-single-product-1__product-short-description",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.5"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        }
+      }
+    },
+    {
+      "id": "tnxlob",
+      "name": "migrator-single-product-1__product-add-to-cart",
+      "settings": {
+        "buttonBackgroundColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonBorder": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "buttonTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "line-height": "1.5"
+        },
+        "buttonPadding": {
+          "bottom": "1rem",
+          "top": "1rem"
+        },
+        "quantityWidth": "13rem",
+        "quantityBorder": {
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "variationsBorder": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_padding": {
+          "bottom": "2rem"
+        },
+        "buttonBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "buttonTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_cssCustom": ".migrator-single-product-1__product-add-to-cart .woocommerce-variation-add-to-cart {\n    display: flex;\n}\n.migrator-single-product-1__product-add-to-cart form.cart .quantity+button, form.woocommerce-cart-form .quantity+button {\n    margin-top: 0;\n  \tmargin-left: 2rem\n}"
+      },
+      "modified": 1737064830,
+      "user_id": 2
+    },
+    {
+      "id": "bjwdbu",
+      "name": "migrator-single-product-1__product-meta",
+      "settings": {
+        "prefixTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5"
+        },
+        "suffixTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "1.5"
+        },
+        "linkTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "600",
+          "line-height": "1.5"
+        },
+        "gutter": "1rem",
+        "direction": "column",
+        "linkTypography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

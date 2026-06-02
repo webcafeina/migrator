@@ -1,0 +1,338 @@
+{
+  "content": [
+    {
+      "id": "5ae225",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "a6f555"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "udvikf"
+        ]
+      }
+    },
+    {
+      "id": "a6f555",
+      "name": "container",
+      "parent": "5ae225",
+      "children": [
+        "f6e3ec",
+        "4f168e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "agtryw"
+        ]
+      }
+    },
+    {
+      "id": "f6e3ec",
+      "name": "block",
+      "parent": "a6f555",
+      "children": [
+        "3f34d5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dzgkyr"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "3f34d5",
+      "name": "heading",
+      "parent": "f6e3ec",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 1",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "beveog"
+        ]
+      }
+    },
+    {
+      "id": "4f168e",
+      "name": "block",
+      "parent": "a6f555",
+      "children": [
+        "1ffe73"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qgyryo"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "1ffe73",
+      "name": "pricing-tables",
+      "parent": "4f168e",
+      "children": [],
+      "settings": {
+        "pricingTables": [
+          {
+            "title": "Plan 01",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "29",
+            "priceSuffix": "90",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "njeuob",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD"
+          },
+          {
+            "title": "Plan 02",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "69",
+            "priceSuffix": "90",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "wmjslx",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD",
+            "ribbonText": "Popular",
+            "ribbonBackgroundColor": {
+              "hex": "#34c174",
+              "id": "zjodvr"
+            }
+          },
+          {
+            "title": "Plan 03",
+            "subtitle": "Subtitle goes here",
+            "pricePrefix": "$",
+            "price": "99",
+            "priceSuffix": "90",
+            "priceMeta": "per month",
+            "features": "Unlimited websites\n20GB web space\nSSL certificate\nUnlimited email",
+            "featuresIcon": {
+              "library": "ionicons",
+              "icon": "ion-ios-checkmark-circle-outline"
+            },
+            "buttonText": "GET STARTED",
+            "buttonStyle": "primary",
+            "id": "ahxuah",
+            "headerBackgroundColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "headerTitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              },
+              "font-size": "36px",
+              "line-height": "50px"
+            },
+            "headerSubtitleTypography": {
+              "color": {
+                "hex": "#ffffff",
+                "id": "rdwpct"
+              }
+            },
+            "headerPadding": {
+              "top": 60,
+              "bottom": 60,
+              "right": 0,
+              "left": 0
+            },
+            "pricePadding": {
+              "top": 40,
+              "bottom": 40
+            },
+            "priceTypography": {
+              "font-weight": "800"
+            },
+            "featuresAlignment": "center",
+            "featuresIconColor": {
+              "hex": "#8467d9",
+              "id": "ofeejs"
+            },
+            "featuresIconSize": "18px",
+            "buttonLink": {
+              "type": "external",
+              "url": "#"
+            },
+            "additionalInfo": "All Pricing is in USD"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "taiqzs"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "udvikf",
+      "name": "migrator-pricing-v01",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "agtryw",
+      "name": "migrator-pricing-v01__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "dzgkyr",
+      "name": "migrator-pricing-v01__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        },
+        "_padding:mobile_landscape": {
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "beveog",
+      "name": "migrator-pricing-v01__heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "qgyryo",
+      "name": "migrator-pricing-v01__pricing-wrap",
+      "settings": []
+    },
+    {
+      "id": "taiqzs",
+      "name": "migrator-pricing-v01__pricing-tables",
+      "settings": {
+        "_boxShadow": {
+          "values": {
+            "offsetX": 5,
+            "offsetY": 10,
+            "blur": 30,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#212121",
+            "hsl": "hsla(0, 0, 13%, 0.1)",
+            "rgb": "rgba(33, 33, 33, 0.1)"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

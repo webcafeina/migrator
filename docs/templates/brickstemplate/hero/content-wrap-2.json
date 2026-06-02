@@ -1,0 +1,269 @@
+{
+  "content": [
+    {
+      "id": "4c2cc5",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "4c120a"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cysfor"
+        ]
+      }
+    },
+    {
+      "id": "4c120a",
+      "name": "container",
+      "parent": "4c2cc5",
+      "children": [
+        "32def2",
+        "9a66d6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ohaxih"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "32def2",
+      "name": "heading",
+      "parent": "4c120a",
+      "children": [],
+      "settings": {
+        "text": "Metus aliquet porta commodo imperdiet gravida pretium arcu ex mus",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ztucrc"
+        ]
+      }
+    },
+    {
+      "id": "9a66d6",
+      "name": "text",
+      "parent": "4c120a",
+      "children": [],
+      "settings": {
+        "text": "<p>Proin suscipit nullam tempor eget dictum lorem ad mus neque hac et maximus tortor ultrices lacinia netus egestas himenaeos integer hendrerit aliquam dignissim</p>",
+        "_cssGlobalClasses": [
+          "zkxbsl"
+        ]
+      }
+    },
+    {
+      "id": "269eb7",
+      "name": "container",
+      "parent": 0,
+      "children": [
+        "035dd2",
+        "a6a350",
+        "529777"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qojuph"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "035dd2",
+      "name": "icon-box",
+      "parent": "269eb7",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-sketch"
+        },
+        "content": "<h4>Icon box heading</h4><p>Aenean commodo ligula egget dolor. Aenean massa. </p>",
+        "_cssGlobalClasses": [
+          "gdtmvy"
+        ]
+      }
+    },
+    {
+      "id": "529777",
+      "name": "icon-box",
+      "parent": "269eb7",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-unity"
+        },
+        "content": "<h4>Icon box heading</h4><p>Aenean commodo ligula egget dolor. Aenean massa. </p>",
+        "_cssGlobalClasses": [
+          "gdtmvy"
+        ]
+      }
+    },
+    {
+      "id": "a6a350",
+      "name": "icon-box",
+      "parent": "269eb7",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-swift"
+        },
+        "content": "<h4>Icon box heading</h4><p>Aenean commodo ligula egget dolor. Aenean massa. </p>",
+        "_cssGlobalClasses": [
+          "gdtmvy"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "cysfor",
+      "name": "migrator-hero-v10",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_justifyContent": "center",
+        "_alignItems": "center",
+        "_height": "720px",
+        "_background": {
+          "image": {
+            "id": 16,
+            "filename": "emmanuel-acua-f3P6xfrj2P8-unsplash.jpg",
+            "size": "large",
+            "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/emmanuel-acua-f3P6xfrj2P8-unsplash.jpg",
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/emmanuel-acua-f3P6xfrj2P8-unsplash-1024x683.jpg"
+          },
+          "position": "center center",
+          "repeat": "no-repeat"
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "gvffht",
+              "color": {
+                "hex": "#000000",
+                "rgb": "rgba(0, 0, 0, 0.5)",
+                "hsl": "hsla(0, 0%, 0%, 0.5)"
+              }
+            }
+          ]
+        },
+        "_height:tablet_portrait": "620px",
+        "_height:mobile_portrait": "600px",
+        "_zIndex": "-1"
+      }
+    },
+    {
+      "id": "ohaxih",
+      "name": "migrator-hero-v10__content-wrap",
+      "settings": {
+        "_padding": {
+          "right": "30%"
+        },
+        "_rowGap": "30px",
+        "_padding:tablet_portrait": {
+          "left": 20
+        },
+        "_padding:mobile_portrait": {
+          "right": 20
+        },
+        "_zIndex": "1"
+      }
+    },
+    {
+      "id": "ztucrc",
+      "name": "migrator-hero-v10__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "zkxbsl",
+      "name": "migrator-hero-v10__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "qojuph",
+      "name": "migrator-hero-v10-2",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_padding": {
+          "top": 40,
+          "bottom": 40,
+          "right": 40,
+          "left": 40
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 20,
+            "right": 20,
+            "bottom": 20,
+            "left": 20
+          }
+        },
+        "_margin": {
+          "top": -100
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_width:tablet_portrait": "85%",
+        "_justifyContent:mobile_landscape": "center",
+        "_columnGap:mobile_landscape": "20px",
+        "_margin:mobile_portrait": {
+          "bottom": 40
+        },
+        "_zIndex": "3"
+      }
+    },
+    {
+      "id": "gdtmvy",
+      "name": "migrator-hero-v10-2__icon-box",
+      "settings": {
+        "iconColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconMargin": {
+          "bottom": 12
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

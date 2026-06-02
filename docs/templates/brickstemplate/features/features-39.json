@@ -1,0 +1,251 @@
+{
+  "content": [
+    {
+      "id": "dinhbv",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "mdixpn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ruolbv"
+        ]
+      },
+      "label": "Features 39"
+    },
+    {
+      "id": "mdixpn",
+      "name": "container",
+      "parent": "dinhbv",
+      "children": [
+        "hdckqp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hpmkhw"
+        ]
+      }
+    },
+    {
+      "id": "hdckqp",
+      "name": "block",
+      "parent": "mdixpn",
+      "children": [
+        "curhze"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "shstzu"
+        ]
+      },
+      "label": "slider wrap"
+    },
+    {
+      "id": "curhze",
+      "name": "slider-nested",
+      "parent": "hdckqp",
+      "children": [
+        "lhshsi",
+        "xuuuni",
+        "huabiy"
+      ],
+      "settings": {
+        "_cssClasses": "custom_slider_08",
+        "arrows": true,
+        "perPage:mobile_portrait": "1",
+        "perPage": "1",
+        "_cssGlobalClasses": [
+          "jcopsh"
+        ],
+        "height": "70vh",
+        "height:mobile_landscape": "50vh"
+      },
+      "label": "slider (CSS)"
+    },
+    {
+      "id": "lhshsi",
+      "name": "block",
+      "parent": "curhze",
+      "children": [
+        "nfpfhz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mfdapi"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "nfpfhz",
+      "name": "heading",
+      "parent": "lhshsi",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "jicmqj"
+        ]
+      }
+    },
+    {
+      "id": "xuuuni",
+      "name": "block",
+      "parent": "curhze",
+      "children": [
+        "miavjn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mfdapi"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "miavjn",
+      "name": "heading",
+      "parent": "xuuuni",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "jicmqj"
+        ]
+      }
+    },
+    {
+      "id": "huabiy",
+      "name": "block",
+      "parent": "curhze",
+      "children": [
+        "oxijrp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mfdapi"
+        ]
+      },
+      "label": "Slide"
+    },
+    {
+      "id": "oxijrp",
+      "name": "heading",
+      "parent": "huabiy",
+      "children": [],
+      "settings": {
+        "text": "Slide 1",
+        "_cssGlobalClasses": [
+          "jicmqj"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "ruolbv",
+      "name": "migrator-features-v39",
+      "settings": {
+        "_padding": {
+          "top": "60px",
+          "right": "20px",
+          "bottom": "60px",
+          "left": "20px"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "hpmkhw",
+      "name": "migrator-features-v39__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_rowGap": "20px"
+      },
+      "_exists": false
+    },
+    {
+      "id": "shstzu",
+      "name": "migrator-features-v39__slider-wrap",
+      "settings": {},
+      "_exists": false
+    },
+    {
+      "id": "jcopsh",
+      "name": "migrator-features-v39__slider",
+      "settings": {
+        "arrowHeight": "60",
+        "arrowWidth": "100",
+        "arrowBackground": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "arrowBorder": {
+          "color": {
+            "hex": "#34c174",
+            "id": "zjodvr",
+            "name": "Green"
+          }
+        },
+        "arrowBackground:hover": {
+          "hex": "#34c174",
+          "id": "zjodvr",
+          "name": "Green"
+        },
+        "height": "70vh",
+        "_cssCustom": ".custom_slider_08 .splide__arrow {\n    position: absolute;\n    bottom: -30px;\n    top: auto;\n    left: auto;\n    padding: 15px;\n    opacity: 0;\n    transition: 0.5s;\n}\n.custom_slider_08:hover .splide__arrow {\n    opacity: 1;\n}\n.custom_slider_08 .splide__arrow svg {\n    fill: #fff;\n}\n.custom_slider_08 .splide__arrow--prev {\n    left: 0px;\n}\n.custom_slider_08 .splide__arrow--next {\n    left: 100px;\n}"
+      },
+      "_exists": false
+    },
+    {
+      "id": "mfdapi",
+      "name": "migrator-features-v39__slide",
+      "settings": {
+        "_background": {
+          "image": {
+            "id": 3241,
+            "filename": "portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "size": "full",
+            "full": "https://preview.brickstemplate.com/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg",
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/05/portrait-handsome-confident-stylish-hipster-lambersexual-modelman-dressed-green-sweater-jeans-fashion-male-posing-studio-near-blue-wall.jpg"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "jicmqj",
+      "name": "migrator-features-v39__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_padding": {
+          "top": "15px",
+          "right": "25px",
+          "bottom": "15px",
+          "left": "25px"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

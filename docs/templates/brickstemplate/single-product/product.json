@@ -1,0 +1,500 @@
+{
+  "content": [
+    {
+      "id": "ltpole",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "zrunym"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kfayos"
+        ]
+      },
+      "label": "Product"
+    },
+    {
+      "id": "zrunym",
+      "name": "container",
+      "parent": "ltpole",
+      "children": [
+        "fizncj",
+        "pnzmhf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pykbsb"
+        ]
+      }
+    },
+    {
+      "id": "fizncj",
+      "name": "block",
+      "parent": "zrunym",
+      "children": [
+        "tvnnjw",
+        "rgexde"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zekbjc"
+        ]
+      },
+      "label": "Product gallery wrap"
+    },
+    {
+      "id": "pnzmhf",
+      "name": "block",
+      "parent": "zrunym",
+      "children": [
+        "iyvfpk",
+        "czgmsz",
+        "nkpjgz",
+        "kanaed",
+        "drlbmc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "plbxbq"
+        ]
+      },
+      "label": "Product Info"
+    },
+    {
+      "id": "rgexde",
+      "name": "product-gallery",
+      "parent": "fizncj",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gswift"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "iyvfpk",
+      "name": "product-title",
+      "parent": "pnzmhf",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wtvamt"
+        ]
+      }
+    },
+    {
+      "id": "czgmsz",
+      "name": "product-short-description",
+      "parent": "pnzmhf",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "libuzt"
+        ]
+      },
+      "label": "short description"
+    },
+    {
+      "id": "nkpjgz",
+      "name": "product-price",
+      "parent": "pnzmhf",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ziyhwy"
+        ]
+      }
+    },
+    {
+      "id": "kanaed",
+      "name": "product-add-to-cart",
+      "parent": "pnzmhf",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "ionicons",
+          "icon": "ion-md-cart"
+        },
+        "_cssGlobalClasses": [
+          "kccbwf"
+        ]
+      }
+    },
+    {
+      "id": "dtuqlj",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "huospy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vwewuw"
+        ]
+      },
+      "label": "Product tabs wrap"
+    },
+    {
+      "id": "huospy",
+      "name": "container",
+      "parent": "dtuqlj",
+      "children": [
+        "dhpsof"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vknnrf"
+        ]
+      }
+    },
+    {
+      "id": "dhpsof",
+      "name": "product-tabs",
+      "parent": "huospy",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "krznar"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "drlbmc",
+      "name": "product-meta",
+      "parent": "pnzmhf",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "dynamicData": "{woo_product_sku}",
+            "id": "04b7c2",
+            "prefix": "SKU: "
+          },
+          {
+            "dynamicData": "{post_terms_product_cat}",
+            "id": "67ee86",
+            "prefix": "Categories: "
+          },
+          {
+            "dynamicData": "{post_terms_product_tag}",
+            "id": "102a0c",
+            "prefix": "Tags: "
+          }
+        ],
+        "_cssGlobalClasses": [
+          "cuxvpn"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "soejin",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ddzeaq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qcbqrb"
+        ]
+      },
+      "label": "Related Products wrap"
+    },
+    {
+      "id": "ddzeaq",
+      "name": "container",
+      "parent": "soejin",
+      "children": [
+        "cnbfwz",
+        "qhqutc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "aehaig"
+        ]
+      }
+    },
+    {
+      "id": "qhqutc",
+      "name": "product-related",
+      "parent": "ddzeaq",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ditpum"
+        ]
+      }
+    },
+    {
+      "id": "cnbfwz",
+      "name": "heading",
+      "parent": "ddzeaq",
+      "children": [],
+      "settings": {
+        "text": "Related Products",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "uughne"
+        ]
+      }
+    },
+    {
+      "id": "tvnnjw",
+      "name": "woocommerce-breadcrumbs",
+      "parent": "fizncj",
+      "children": [],
+      "settings": {
+        "separatorText": "/",
+        "separatorType": "text",
+        "_cssGlobalClasses": [
+          "eqkbty"
+        ]
+      },
+      "label": "Breadcrumbs"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "kfayos",
+      "name": "migrator-single-product-v01-2",
+      "settings": {
+        "_padding": {
+          "top": 100,
+          "bottom": 100
+        },
+        "_background": {
+          "color": {
+            "hex": "#f1f6ff",
+            "id": "byqsjx",
+            "name": "Scection"
+          }
+        }
+      }
+    },
+    {
+      "id": "pykbsb",
+      "name": "migrator-single-product-v01-2__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "30px",
+        "_rowGap": "30px",
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "zekbjc",
+      "name": "migrator-single-product-v01-2__product-gallery-wrap",
+      "settings": {
+        "_columnGap": "30px",
+        "_rowGap": "30px",
+        "_columnGap:mobile_landscape": "20px",
+        "_rowGap:mobile_landscape": "20px"
+      }
+    },
+    {
+      "id": "plbxbq",
+      "name": "migrator-single-product-v01-2__product-info",
+      "settings": {
+        "_columnGap": "20px",
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 30,
+          "right": 30,
+          "bottom": 30,
+          "left": 30
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          },
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_margin": {
+          "left": 50,
+          "bottom": ""
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_margin:tablet_portrait": {
+          "left": 30
+        },
+        "_margin:mobile_landscape": {
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "gswift",
+      "name": "migrator-single-product-v01-2__product-gallery",
+      "settings": {
+        "columns": "5",
+        "gap:tablet_portrait": "20px"
+      }
+    },
+    {
+      "id": "wtvamt",
+      "name": "migrator-single-product-v01-2__product-title",
+      "settings": []
+    },
+    {
+      "id": "libuzt",
+      "name": "migrator-single-product-v01-2__short-description",
+      "settings": []
+    },
+    {
+      "id": "ziyhwy",
+      "name": "migrator-single-product-v01-2__product-price",
+      "settings": {
+        "regularPriceTypography": {
+          "font-size": "20px"
+        },
+        "salePriceTypography": {
+          "font-size": "32px",
+          "font-weight": "600"
+        }
+      }
+    },
+    {
+      "id": "kccbwf",
+      "name": "migrator-single-product-v01-2__product-add-to-cart",
+      "settings": {
+        "buttonBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "buttonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        }
+      }
+    },
+    {
+      "id": "vwewuw",
+      "name": "migrator-single-product-v01-2-tab",
+      "settings": []
+    },
+    {
+      "id": "vknnrf",
+      "name": "migrator-single-product-v01-2-tab__container",
+      "settings": {
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "krznar",
+      "name": "migrator-single-product-v01-2-tab__product-tabs",
+      "settings": []
+    },
+    {
+      "id": "cuxvpn",
+      "name": "migrator-single-product-v01-2__product-meta",
+      "settings": {
+        "_margin": {
+          "top": 20
+        }
+      }
+    },
+    {
+      "id": "qcbqrb",
+      "name": "migrator-single-product-v01-2-related",
+      "settings": {
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding": {
+          "top": 40,
+          "bottom": 80
+        }
+      }
+    },
+    {
+      "id": "aehaig",
+      "name": "migrator-single-product-v01-2-related__container",
+      "settings": {
+        "_columnGap": "30px",
+        "_rowGap": "30px"
+      }
+    },
+    {
+      "id": "ditpum",
+      "name": "migrator-single-product-v01-2-related__product-related",
+      "settings": {
+        "gap:tablet_portrait": "30px",
+        "buttonBackgroundColor:tablet_portrait": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "buttonTypography:tablet_portrait": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "buttonBackgroundColor": {
+          "hex": "#8467d9",
+          "id": "ofeejs",
+          "name": "Acent"
+        },
+        "buttonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        }
+      }
+    },
+    {
+      "id": "uughne",
+      "name": "migrator-single-product-v01-2-related__heading",
+      "settings": []
+    },
+    {
+      "id": "eqkbty",
+      "name": "migrator-single-product-v01-2__breadcrumbs",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

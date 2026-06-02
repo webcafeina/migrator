@@ -1,0 +1,674 @@
+{
+  "content": [
+    {
+      "id": "kbdyvm",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ucjblp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bedppk"
+        ]
+      }
+    },
+    {
+      "id": "ucjblp",
+      "name": "container",
+      "parent": "kbdyvm",
+      "children": [
+        "shocxb",
+        "xrilgv"
+      ],
+      "settings": {
+        "_cssCustom": "\n    .bb-offer7 {\n        transform: translateY(90px);\n          opacity: 0;\n    }\n    \n    .bb-box7:hover .bb-offer7 {\n        opacity: 1;\n        transform: translateX(0px)\n    }\n",
+        "_cssGlobalClasses": [
+          "ullwds"
+        ]
+      },
+      "label": ""
+    },
+    {
+      "id": "shocxb",
+      "name": "block",
+      "parent": "ucjblp",
+      "children": [
+        "yiaplo",
+        "lbrfwo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "myxnys"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "yiaplo",
+      "name": "heading",
+      "parent": "shocxb",
+      "children": [],
+      "settings": {
+        "text": "Libero massa eu bibendum mauris consequat ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hzaqbn"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "lbrfwo",
+      "name": "text",
+      "parent": "shocxb",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "wicsgm"
+        ]
+      },
+      "label": "heading text"
+    },
+    {
+      "id": "xrilgv",
+      "name": "block",
+      "parent": "ucjblp",
+      "children": [
+        "wxedfa",
+        "stjgpc",
+        "fejzuq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "viyurz"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "wxedfa",
+      "name": "block",
+      "parent": "xrilgv",
+      "children": [
+        "yevgnx",
+        "damvms",
+        "ndwlcg"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box7",
+        "_cssGlobalClasses": [
+          "emfksh"
+        ]
+      },
+      "label": "box 1"
+    },
+    {
+      "id": "yevgnx",
+      "name": "block",
+      "parent": "wxedfa",
+      "children": [
+        "yqiehr",
+        "msumtb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hdlpjs"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "yqiehr",
+      "name": "image",
+      "parent": "yevgnx",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxatgz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/shirt.png",
+          "external": true,
+          "filename": "shirt.png"
+        }
+      }
+    },
+    {
+      "id": "msumtb",
+      "name": "image",
+      "parent": "yevgnx",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-offer7",
+        "_cssGlobalClasses": [
+          "vpoqxk"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/discount.png",
+          "external": true,
+          "filename": "discount.png"
+        }
+      },
+      "label": "offer"
+    },
+    {
+      "id": "damvms",
+      "name": "heading",
+      "parent": "wxedfa",
+      "children": [],
+      "settings": {
+        "text": "Shirt",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hbrdsd"
+        ]
+      },
+      "label": "box heading"
+    },
+    {
+      "id": "ndwlcg",
+      "name": "text",
+      "parent": "wxedfa",
+      "children": [],
+      "settings": {
+        "text": "<p>Velit non magnis tristique nulla sociosqu quam libero natoque sagittis ridiculus conubia laoreet gravida est</p>",
+        "_cssGlobalClasses": [
+          "kkczoh"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "stjgpc",
+      "name": "block",
+      "parent": "xrilgv",
+      "children": [
+        "xqtgny",
+        "kxxynl",
+        "mpoqer"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box7",
+        "_cssGlobalClasses": [
+          "hvdkdq"
+        ]
+      },
+      "label": "box 2"
+    },
+    {
+      "id": "xqtgny",
+      "name": "block",
+      "parent": "stjgpc",
+      "children": [
+        "stimxp",
+        "ojsslu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hdlpjs"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "stimxp",
+      "name": "image",
+      "parent": "xqtgny",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxatgz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hoodie.png",
+          "external": true,
+          "filename": "hoodie.png"
+        }
+      }
+    },
+    {
+      "id": "ojsslu",
+      "name": "image",
+      "parent": "xqtgny",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-offer7",
+        "_cssGlobalClasses": [
+          "vpoqxk"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/discount.png",
+          "external": true,
+          "filename": "discount.png"
+        }
+      },
+      "label": "offer"
+    },
+    {
+      "id": "kxxynl",
+      "name": "heading",
+      "parent": "stjgpc",
+      "children": [],
+      "settings": {
+        "text": "Hoodie",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hbrdsd"
+        ]
+      },
+      "label": "box heading"
+    },
+    {
+      "id": "mpoqer",
+      "name": "text",
+      "parent": "stjgpc",
+      "children": [],
+      "settings": {
+        "text": "<p>Velit non magnis tristique nulla sociosqu quam libero natoque sagittis ridiculus conubia laoreet gravida est</p>",
+        "_cssGlobalClasses": [
+          "kkczoh"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "fejzuq",
+      "name": "block",
+      "parent": "xrilgv",
+      "children": [
+        "agythm",
+        "vygpma",
+        "gxzgxr"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box7",
+        "_cssGlobalClasses": [
+          "cgxeoc"
+        ]
+      },
+      "label": "box 3"
+    },
+    {
+      "id": "agythm",
+      "name": "block",
+      "parent": "fejzuq",
+      "children": [
+        "danvbv",
+        "vejlvh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hdlpjs"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "danvbv",
+      "name": "image",
+      "parent": "agythm",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sxatgz"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/dress.png",
+          "external": true,
+          "filename": "dress.png"
+        }
+      }
+    },
+    {
+      "id": "vejlvh",
+      "name": "image",
+      "parent": "agythm",
+      "children": [],
+      "settings": {
+        "link": "url",
+        "url": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-offer7",
+        "_cssGlobalClasses": [
+          "vpoqxk"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/discount.png",
+          "external": true,
+          "filename": "discount.png"
+        }
+      },
+      "label": "offer"
+    },
+    {
+      "id": "vygpma",
+      "name": "heading",
+      "parent": "fejzuq",
+      "children": [],
+      "settings": {
+        "text": "Dress",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "hbrdsd"
+        ]
+      },
+      "label": "box heading"
+    },
+    {
+      "id": "gxzgxr",
+      "name": "text",
+      "parent": "fejzuq",
+      "children": [],
+      "settings": {
+        "text": "<p>Velit non magnis tristique nulla sociosqu quam libero natoque sagittis ridiculus conubia laoreet gravida est</p>",
+        "_cssGlobalClasses": [
+          "kkczoh"
+        ]
+      },
+      "label": "box text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "bedppk",
+      "name": "migrator-features-v07",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "ullwds",
+      "name": "migrator-features-v07__",
+      "settings": {
+        "_cssCustom": "\n    .bb-offer7 {\n        transform: translateY(90px);\n          opacity: 0;\n    }\n    \n    .bb-box7:hover .bb-offer7 {\n        opacity: 1;\n        transform: translateX(0px)\n    }\n",
+        "_rowGap": "20px",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "bottom": 60,
+          "left": 20,
+          "top": 60
+        }
+      }
+    },
+    {
+      "id": "myxnys",
+      "name": "migrator-features-v07__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_margin": {
+          "bottom": 30
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 50
+        }
+      }
+    },
+    {
+      "id": "hzaqbn",
+      "name": "migrator-features-v07__top-heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 25
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "wicsgm",
+      "name": "migrator-features-v07__heading-text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_padding:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "viyurz",
+      "name": "migrator-features-v07__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_columnGap:tablet_portrait": "20px",
+        "_margin": {
+          "top": 40
+        }
+      }
+    },
+    {
+      "id": "emfksh",
+      "name": "migrator-features-v07__box-1",
+      "settings": {
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "hdlpjs",
+      "name": "migrator-features-v07__image-wrap",
+      "settings": {
+        "_direction": "row",
+        "_justifyContent": "space-between",
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "sxatgz",
+      "name": "migrator-features-v07__image",
+      "settings": {
+        "_width:tablet_portrait": "120px",
+        "_width": "150px"
+      }
+    },
+    {
+      "id": "vpoqxk",
+      "name": "migrator-features-v07__offer",
+      "settings": {
+        "_width": "100px",
+        "_cssTransition": "all .5s",
+        "_width:tablet_portrait": "80px"
+      }
+    },
+    {
+      "id": "hbrdsd",
+      "name": "migrator-features-v07__box-heading",
+      "settings": {
+        "_margin": {
+          "bottom": 10
+        }
+      }
+    },
+    {
+      "id": "kkczoh",
+      "name": "migrator-features-v07__box-text",
+      "settings": []
+    },
+    {
+      "id": "hvdkdq",
+      "name": "migrator-features-v07__box-2",
+      "settings": {
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "cgxeoc",
+      "name": "migrator-features-v07__box-3",
+      "settings": {
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

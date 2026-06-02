@@ -1,0 +1,1408 @@
+{
+  "content": [
+    {
+      "id": "xjgomz",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "bwcbrx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bcfbxm"
+        ]
+      },
+      "label": "Pro and Cons V01"
+    },
+    {
+      "id": "bwcbrx",
+      "name": "container",
+      "parent": "xjgomz",
+      "children": [
+        "rntxxi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uuagsr"
+        ]
+      }
+    },
+    {
+      "id": "rntxxi",
+      "name": "block",
+      "parent": "bwcbrx",
+      "children": [
+        "mzkvdo",
+        "jbwvfs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "smsxut"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "mzkvdo",
+      "name": "block",
+      "parent": "rntxxi",
+      "children": [
+        "avpokf",
+        "lkzwrg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jlrzgs"
+        ]
+      },
+      "label": "pros wrap"
+    },
+    {
+      "id": "avpokf",
+      "name": "block",
+      "parent": "mzkvdo",
+      "children": [
+        "howmbo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xnrzbh"
+        ]
+      },
+      "label": "Pros title wrap"
+    },
+    {
+      "id": "howmbo",
+      "name": "heading",
+      "parent": "avpokf",
+      "children": [],
+      "settings": {
+        "text": "Pros",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "jncbse"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "lkzwrg",
+      "name": "block",
+      "parent": "mzkvdo",
+      "children": [
+        "tdrdzk",
+        "mhhavn",
+        "dssdui",
+        "ztfpgb",
+        "pbtsmg",
+        "owdbjd"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "sbvaha"
+        ]
+      },
+      "label": "pros list wrap"
+    },
+    {
+      "id": "tdrdzk",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "oamhdt",
+        "iigwll"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "oamhdt",
+      "name": "block",
+      "parent": "tdrdzk",
+      "children": [
+        "pfsgbv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "pfsgbv",
+      "name": "icon",
+      "parent": "oamhdt",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "iigwll",
+      "name": "block",
+      "parent": "tdrdzk",
+      "children": [
+        "jllqfx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "jllqfx",
+      "name": "heading",
+      "parent": "iigwll",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "mhhavn",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "ybhrwq",
+        "chxidb"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc",
+          "rrnagu"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "ybhrwq",
+      "name": "block",
+      "parent": "mhhavn",
+      "children": [
+        "qcobrw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "qcobrw",
+      "name": "icon",
+      "parent": "ybhrwq",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "chxidb",
+      "name": "block",
+      "parent": "mhhavn",
+      "children": [
+        "wcmpbv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "wcmpbv",
+      "name": "heading",
+      "parent": "chxidb",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "dssdui",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "pvvhri",
+        "pcyetn"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "pvvhri",
+      "name": "block",
+      "parent": "dssdui",
+      "children": [
+        "ehckqz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "ehckqz",
+      "name": "icon",
+      "parent": "pvvhri",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "pcyetn",
+      "name": "block",
+      "parent": "dssdui",
+      "children": [
+        "uxsufl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "uxsufl",
+      "name": "heading",
+      "parent": "pcyetn",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "ztfpgb",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "wdedub",
+        "ylyrak"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc",
+          "rrnagu"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "wdedub",
+      "name": "block",
+      "parent": "ztfpgb",
+      "children": [
+        "dqdvup"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "dqdvup",
+      "name": "icon",
+      "parent": "wdedub",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "ylyrak",
+      "name": "block",
+      "parent": "ztfpgb",
+      "children": [
+        "ljwgaz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "ljwgaz",
+      "name": "heading",
+      "parent": "ylyrak",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "pbtsmg",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "wgljdw",
+        "vsqzid"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "wgljdw",
+      "name": "block",
+      "parent": "pbtsmg",
+      "children": [
+        "jmlgvu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "jmlgvu",
+      "name": "icon",
+      "parent": "wgljdw",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "vsqzid",
+      "name": "block",
+      "parent": "pbtsmg",
+      "children": [
+        "cvipln"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "cvipln",
+      "name": "heading",
+      "parent": "vsqzid",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "owdbjd",
+      "name": "block",
+      "parent": "lkzwrg",
+      "children": [
+        "mjnkkr",
+        "nvwzau"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "olthlc",
+          "rrnagu"
+        ]
+      },
+      "label": "pros list"
+    },
+    {
+      "id": "mjnkkr",
+      "name": "block",
+      "parent": "owdbjd",
+      "children": [
+        "gqdmcr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lxcxds"
+        ]
+      },
+      "label": "pros icon wrap"
+    },
+    {
+      "id": "gqdmcr",
+      "name": "icon",
+      "parent": "mjnkkr",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "vgbioe"
+        ]
+      },
+      "label": "pros icon"
+    },
+    {
+      "id": "nvwzau",
+      "name": "block",
+      "parent": "owdbjd",
+      "children": [
+        "gvwpwg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "akltjq"
+        ]
+      },
+      "label": "pros text wrap"
+    },
+    {
+      "id": "gvwpwg",
+      "name": "heading",
+      "parent": "nvwzau",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "kdjbgm"
+        ]
+      },
+      "label": "pros text"
+    },
+    {
+      "id": "jbwvfs",
+      "name": "block",
+      "parent": "rntxxi",
+      "children": [
+        "reznok",
+        "pfaifw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "acxzxt"
+        ]
+      },
+      "label": "cons wrap"
+    },
+    {
+      "id": "reznok",
+      "name": "block",
+      "parent": "jbwvfs",
+      "children": [
+        "bafkib"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vankhe"
+        ]
+      },
+      "label": "cons title wrap"
+    },
+    {
+      "id": "bafkib",
+      "name": "heading",
+      "parent": "reznok",
+      "children": [],
+      "settings": {
+        "text": "Cons",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "jncbse"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "pfaifw",
+      "name": "block",
+      "parent": "jbwvfs",
+      "children": [
+        "hfvbes",
+        "hmbway",
+        "jwzfga",
+        "eyfjsy",
+        "tifert",
+        "esgzti"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "ilidxv"
+        ]
+      },
+      "label": "cons list wrap"
+    },
+    {
+      "id": "hfvbes",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "rbexws",
+        "jfsyxa"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "rbexws",
+      "name": "block",
+      "parent": "hfvbes",
+      "children": [
+        "firjlu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "firjlu",
+      "name": "icon",
+      "parent": "rbexws",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "jfsyxa",
+      "name": "block",
+      "parent": "hfvbes",
+      "children": [
+        "gcspln"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "gcspln",
+      "name": "heading",
+      "parent": "jfsyxa",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    },
+    {
+      "id": "hmbway",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "epavnn",
+        "knzanw"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg",
+          "xaiodt"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "epavnn",
+      "name": "block",
+      "parent": "hmbway",
+      "children": [
+        "enlxos"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "enlxos",
+      "name": "icon",
+      "parent": "epavnn",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "knzanw",
+      "name": "block",
+      "parent": "hmbway",
+      "children": [
+        "aexqmw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "aexqmw",
+      "name": "heading",
+      "parent": "knzanw",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    },
+    {
+      "id": "jwzfga",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "eerwji",
+        "uzpnrn"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "eerwji",
+      "name": "block",
+      "parent": "jwzfga",
+      "children": [
+        "ldykte"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "ldykte",
+      "name": "icon",
+      "parent": "eerwji",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "uzpnrn",
+      "name": "block",
+      "parent": "jwzfga",
+      "children": [
+        "mgflpj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "mgflpj",
+      "name": "heading",
+      "parent": "uzpnrn",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    },
+    {
+      "id": "eyfjsy",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "eciohe",
+        "xyewsc"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg",
+          "xaiodt"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "eciohe",
+      "name": "block",
+      "parent": "eyfjsy",
+      "children": [
+        "rlwglv"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "rlwglv",
+      "name": "icon",
+      "parent": "eciohe",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "xyewsc",
+      "name": "block",
+      "parent": "eyfjsy",
+      "children": [
+        "lxlisr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "lxlisr",
+      "name": "heading",
+      "parent": "xyewsc",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    },
+    {
+      "id": "tifert",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "vypcsc",
+        "pfjoty"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "vypcsc",
+      "name": "block",
+      "parent": "tifert",
+      "children": [
+        "yfmsmb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "yfmsmb",
+      "name": "icon",
+      "parent": "vypcsc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "pfjoty",
+      "name": "block",
+      "parent": "tifert",
+      "children": [
+        "ezeosa"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "ezeosa",
+      "name": "heading",
+      "parent": "pfjoty",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    },
+    {
+      "id": "esgzti",
+      "name": "block",
+      "parent": "pfaifw",
+      "children": [
+        "tceuxy",
+        "ntolsx"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "fsarhg",
+          "xaiodt"
+        ]
+      },
+      "label": "cons list"
+    },
+    {
+      "id": "tceuxy",
+      "name": "block",
+      "parent": "esgzti",
+      "children": [
+        "vxmbxk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mjglqo"
+        ]
+      },
+      "label": "cons icon wrap"
+    },
+    {
+      "id": "vxmbxk",
+      "name": "icon",
+      "parent": "tceuxy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "cqoihr"
+        ]
+      },
+      "label": "cons icon"
+    },
+    {
+      "id": "ntolsx",
+      "name": "block",
+      "parent": "esgzti",
+      "children": [
+        "cweulx"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "knmjqn"
+        ]
+      },
+      "label": "cons text wrap"
+    },
+    {
+      "id": "cweulx",
+      "name": "heading",
+      "parent": "ntolsx",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "rcclyf"
+        ]
+      },
+      "label": "cons text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.4",
+  "globalClasses": [
+    {
+      "id": "bcfbxm",
+      "name": "migrator-pc-v01",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "uuagsr",
+      "name": "migrator-pc-v01__container",
+      "settings": []
+    },
+    {
+      "id": "smsxut",
+      "name": "migrator-pc-v01__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "6rem",
+        "_rowGap:mobile_landscape": "4rem"
+      }
+    },
+    {
+      "id": "jlrzgs",
+      "name": "migrator-pc-v01__pros-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "xnrzbh",
+      "name": "migrator-pc-v01__pros-title-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#2ecc71"
+          }
+        },
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem"
+        }
+      }
+    },
+    {
+      "id": "jncbse",
+      "name": "migrator-pc-v01__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "5rem",
+          "line-height": "6rem",
+          "font-family": "Poppins",
+          "font-weight": "600"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "4rem",
+          "line-height": "5rem"
+        }
+      }
+    },
+    {
+      "id": "sbvaha",
+      "name": "migrator-pc-v01__pros-list-wrap",
+      "settings": {
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "olthlc",
+      "name": "migrator-pc-v01__pros-list",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "1.5rem",
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_direction:mobile_landscape": "row",
+        "_background": {
+          "color": {
+            "hex": "#d5f5e3"
+          }
+        },
+        "_padding:tablet_portrait": {
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "lxcxds",
+      "name": "migrator-pc-v01__pros-icon-wrap",
+      "settings": {
+        "_width": "auto"
+      }
+    },
+    {
+      "id": "vgbioe",
+      "name": "migrator-pc-v01__pros-icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "_background": {
+          "color": {
+            "hex": "#2ecc71"
+          }
+        },
+        "iconSize": "1.5rem",
+        "_padding": {
+          "top": "1rem",
+          "right": "1rem",
+          "bottom": "1rem",
+          "left": "1rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "iconSize:mobile_portrait": "1.2rem",
+        "_padding:mobile_portrait": {
+          "top": "0.8rem",
+          "right": "0.8rem",
+          "bottom": "0.8rem",
+          "left": "0.8rem"
+        }
+      }
+    },
+    {
+      "id": "akltjq",
+      "name": "migrator-pc-v01__pros-text-wrap",
+      "settings": {
+        "_width": "70%",
+        "_flexGrow": "1"
+      }
+    },
+    {
+      "id": "kdjbgm",
+      "name": "migrator-pc-v01__pros-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw",
+            "name": "Heading Color"
+          },
+          "font-size": "1.8rem",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "line-height": "2.8rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "1.6rem"
+        }
+      }
+    },
+    {
+      "id": "rrnagu",
+      "name": "migrator-pc-v01__pros-list--bg",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#eafaf1"
+          }
+        }
+      }
+    },
+    {
+      "id": "acxzxt",
+      "name": "migrator-pc-v01__cons-wrap",
+      "settings": {
+        "_alignItems": "center"
+      }
+    },
+    {
+      "id": "vankhe",
+      "name": "migrator-pc-v01__cons-title-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#e74c3c"
+          }
+        },
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem"
+        }
+      }
+    },
+    {
+      "id": "ilidxv",
+      "name": "migrator-pc-v01__cons-list-wrap",
+      "settings": {
+        "_display": "flex",
+        "_padding": {
+          "left": "0"
+        },
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        }
+      }
+    },
+    {
+      "id": "fsarhg",
+      "name": "migrator-pc-v01__cons-list",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "1.5rem",
+        "_padding": {
+          "bottom": "1rem",
+          "top": "1rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_direction:mobile_landscape": "row",
+        "_background": {
+          "color": {
+            "hex": "#f8c9c5"
+          }
+        },
+        "_padding:tablet_portrait": {
+          "left": "2rem",
+          "right": "2rem"
+        }
+      }
+    },
+    {
+      "id": "mjglqo",
+      "name": "migrator-pc-v01__cons-icon-wrap",
+      "settings": {
+        "_width": "auto"
+      }
+    },
+    {
+      "id": "cqoihr",
+      "name": "migrator-pc-v01__cons-icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "_background": {
+          "color": {
+            "hex": "#e74c3c"
+          }
+        },
+        "iconSize": "1.5rem",
+        "_padding": {
+          "top": "1rem",
+          "right": "1rem",
+          "bottom": "1rem",
+          "left": "1rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "100%",
+            "right": "100%",
+            "bottom": "100%",
+            "left": "100%"
+          }
+        },
+        "iconSize:mobile_portrait": "1.2rem",
+        "_padding:mobile_portrait": {
+          "top": "0.8rem",
+          "right": "0.8rem",
+          "bottom": "0.8rem",
+          "left": "0.8rem"
+        }
+      }
+    },
+    {
+      "id": "knmjqn",
+      "name": "migrator-pc-v01__cons-text-wrap",
+      "settings": {
+        "_width": "70%",
+        "_flexGrow": "1"
+      }
+    },
+    {
+      "id": "rcclyf",
+      "name": "migrator-pc-v01__cons-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "jqwjcw",
+            "name": "Heading Color"
+          },
+          "font-size": "1.8rem",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "line-height": "2.8rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "1.6rem"
+        }
+      }
+    },
+    {
+      "id": "xaiodt",
+      "name": "migrator-pc-v01__cons-list--bg",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#fadbd8"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,293 @@
+{
+  "content": [
+    {
+      "id": "rbieay",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "qrvsds"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "flghwj"
+        ]
+      },
+      "label": "Error 14"
+    },
+    {
+      "id": "qrvsds",
+      "name": "container",
+      "parent": "rbieay",
+      "children": [
+        "mqzjzy",
+        "wtdnic",
+        "mtabrq",
+        "lojvmc",
+        "iykikz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "blgwje"
+        ]
+      }
+    },
+    {
+      "id": "mqzjzy",
+      "name": "heading",
+      "parent": "qrvsds",
+      "children": [],
+      "settings": {
+        "text": "This page does not exist",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "kkfiok"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "wtdnic",
+      "name": "text-basic",
+      "parent": "qrvsds",
+      "children": [],
+      "settings": {
+        "text": "404",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "grcmwq"
+        ]
+      },
+      "label": "404"
+    },
+    {
+      "id": "mtabrq",
+      "name": "text-basic",
+      "parent": "qrvsds",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for either does not exist or has been moved to a new location.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "wcjvok"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "lojvmc",
+      "name": "search",
+      "parent": "qrvsds",
+      "children": [],
+      "settings": {
+        "searchOverlayTitle": "Search site",
+        "icon": {
+          "library": "themify",
+          "icon": "ti-search"
+        },
+        "buttonAriaLabel": "search",
+        "searchType": "input",
+        "_cssGlobalClasses": [
+          "bgoilb"
+        ]
+      }
+    },
+    {
+      "id": "iykikz",
+      "name": "text-basic",
+      "parent": "qrvsds",
+      "children": [],
+      "settings": {
+        "text": "Back To <a><u>Homepage</u></a>",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "cnxoak"
+        ]
+      },
+      "label": "home link"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "flghwj",
+      "name": "migrator-error-14",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_justifyContent": "center",
+        "_height": "100vh"
+      },
+      "_exists": false
+    },
+    {
+      "id": "blgwje",
+      "name": "migrator-error-14__container",
+      "settings": {
+        "_alignItems": "center",
+        "_direction": "column",
+        "_rowGap": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "kkfiok",
+      "name": "migrator-error-14__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "1.2",
+          "font-weight": "700",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "grcmwq",
+      "name": "migrator-error-14__404",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "6rem",
+          "font-weight": "700",
+          "line-height": "1",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": "0"
+        },
+        "_order": "-1"
+      },
+      "_exists": false
+    },
+    {
+      "id": "wcjvok",
+      "name": "migrator-error-14__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.8rem",
+          "font-weight": "400",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_width": "40ch",
+        "_margin": {
+          "bottom": "0"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "bgoilb",
+      "name": "migrator-error-14__search",
+      "settings": {
+        "iconTypography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.6rem"
+        },
+        "iconBackgroundColor": {
+          "hex": "#ebebeb",
+          "id": "zyakgx",
+          "name": "BG Hover"
+        },
+        "inputWidth": "30rem",
+        "placeholderColor": {
+          "hex": "#62708a",
+          "id": "qatgpn",
+          "name": "Text"
+        },
+        "inputBackgroundColor": {
+          "hex": "#ebebeb",
+          "id": "zyakgx",
+          "name": "BG Hover"
+        },
+        "iconBorder": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "inputBorder": {
+          "style": "solid",
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "iconHeight": "5rem",
+        "inputHeight": "5rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "cnxoak",
+      "name": "migrator-error-14__home-link",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.8rem",
+          "font-weight": "400",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_cssTransition": ".5s",
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

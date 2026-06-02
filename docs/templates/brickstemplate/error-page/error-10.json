@@ -1,0 +1,289 @@
+{
+  "content": [
+    {
+      "id": "deowgk",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "abcwld"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pkcchc"
+        ]
+      },
+      "label": "Error 10"
+    },
+    {
+      "id": "abcwld",
+      "name": "container",
+      "parent": "deowgk",
+      "children": [
+        "sozpgm",
+        "fdiiuk",
+        "vwcosn",
+        "qebhbh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rmuhyd"
+        ]
+      }
+    },
+    {
+      "id": "sozpgm",
+      "name": "heading",
+      "parent": "abcwld",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for was not found.",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "pfvdxe"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "fdiiuk",
+      "name": "heading",
+      "parent": "abcwld",
+      "children": [],
+      "settings": {
+        "text": "404",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "nstrlq"
+        ]
+      },
+      "label": "404"
+    },
+    {
+      "id": "vwcosn",
+      "name": "text-basic",
+      "parent": "abcwld",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for either does not exist or has been moved to a new location.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "gfcdbz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "qebhbh",
+      "name": "button",
+      "parent": "abcwld",
+      "children": [],
+      "settings": {
+        "text": "Back To HomePage",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "gnkhtc"
+        ]
+      },
+      "label": "btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "pkcchc",
+      "name": "migrator-error-10",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_height": "100vh",
+        "_justifyContent": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "rmuhyd",
+      "name": "migrator-error-10__container",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "bottom": "4rem",
+          "top": "4rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "4",
+            "blur": "12",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0.1)",
+            "hsl": "hsla(0, 0%, 0%, 0.1)"
+          }
+        },
+        "_direction": "column",
+        "_width": "70rem",
+        "_rowGap": "2rem",
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "pfvdxe",
+      "name": "migrator-error-10__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "1.2",
+          "font-weight": "700",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "nstrlq",
+      "name": "migrator-error-10__404",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "10rem",
+          "line-height": "1.2",
+          "font-weight": "700",
+          "font-family": "Inter",
+          "text-align": "center"
+        },
+        "_order": "-1",
+        "_typography:mobile_landscape": {
+          "font-size": "7rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "gfcdbz",
+      "name": "migrator-error-10__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.8rem",
+          "font-weight": "400",
+          "line-height": "1.6",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "gnkhtc",
+      "name": "migrator-error-10__btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "1.6"
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_cssTransition": "0.5s"
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,298 @@
+{
+  "content": [
+    {
+      "id": "pcphxw",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "jgbgyy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rceiap"
+        ]
+      },
+      "label": "Email Opt-in V01"
+    },
+    {
+      "id": "jgbgyy",
+      "name": "container",
+      "parent": "pcphxw",
+      "children": [
+        "nxpabx",
+        "ytrqha"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zinoqa"
+        ]
+      }
+    },
+    {
+      "id": "nxpabx",
+      "name": "block",
+      "parent": "jgbgyy",
+      "children": [
+        "ravcle",
+        "mxrzuw",
+        "blzqjp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "etzbct"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "ravcle",
+      "name": "heading",
+      "parent": "nxpabx",
+      "children": [],
+      "settings": {
+        "text": "Subscribe Newsletter",
+        "_cssGlobalClasses": [
+          "ducmbj"
+        ]
+      }
+    },
+    {
+      "id": "mxrzuw",
+      "name": "text-basic",
+      "parent": "nxpabx",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet sem fermentum augue litora malesuada finibus",
+        "_cssGlobalClasses": [
+          "hezsfw"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "blzqjp",
+      "name": "form",
+      "parent": "nxpabx",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "d8801d",
+            "width": "100"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "xl",
+        "submitButtonIcon": {
+          "library": "fontawesomeSolid",
+          "icon": "fas fa-arrow-right-long"
+        },
+        "_cssCustom": "input#form-field-823830 {\n\tbox-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);\n}",
+        "_cssGlobalClasses": [
+          "jpcdbw"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "ytrqha",
+      "name": "block",
+      "parent": "jgbgyy",
+      "children": [
+        "uctwfd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zjksrz"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "uctwfd",
+      "name": "image",
+      "parent": "ytrqha",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ulmmds"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/06/van-tay-media-auRYODyMGOE-unsplash.jpg",
+          "external": true,
+          "filename": "van-tay-media-auRYODyMGOE-unsplash.jpg"
+        }
+      },
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "rceiap",
+      "name": "migrator-email-optin-v01",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_padding": {
+          "top": "110px",
+          "right": "20px",
+          "bottom": "110px",
+          "left": "20px"
+        },
+        "_padding:tablet_portrait": {
+          "top": "80px",
+          "bottom": "80px"
+        },
+        "_padding:mobile_landscape": {
+          "top": "70px",
+          "bottom": "70px"
+        }
+      }
+    },
+    {
+      "id": "zinoqa",
+      "name": "migrator-email-optin-v01__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_alignSelf": "stretch",
+        "_width": "940px",
+        "_background": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "0",
+            "blur": "35"
+          },
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0.1)",
+            "hsl": "hsla(0, 0%, 0%, 0.1)"
+          }
+        },
+        "_width:mobile_landscape": "600px"
+      }
+    },
+    {
+      "id": "etzbct",
+      "name": "migrator-email-optin-v01__content-wrap",
+      "settings": {
+        "_padding": {
+          "top": "40px",
+          "right": "20px",
+          "bottom": "40px",
+          "left": "20px"
+        },
+        "_order:mobile_landscape": "1",
+        "_padding:mobile_landscape": {
+          "top": "20px"
+        }
+      }
+    },
+    {
+      "id": "ducmbj",
+      "name": "migrator-email-optin-v01__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "36px",
+          "line-height": "54px",
+          "color": {
+            "hex": "#333333"
+          }
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "28px",
+          "line-height": "40px"
+        },
+        "_margin:mobile_portrait": {
+          "bottom": "10px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "28px"
+        }
+      }
+    },
+    {
+      "id": "hezsfw",
+      "name": "migrator-email-optin-v01__text",
+      "settings": {
+        "_typography": {
+          "font-size": "16px",
+          "font-weight": "400",
+          "line-height": "24px",
+          "color": {
+            "hex": "#666666"
+          }
+        },
+        "_padding": {
+          "bottom": "20px"
+        }
+      }
+    },
+    {
+      "id": "jpcdbw",
+      "name": "migrator-email-optin-v01__form",
+      "settings": {
+        "fieldBorder": {
+          "color": {
+            "hex": "#eeeeee"
+          },
+          "width": {
+            "top": "1px",
+            "right": "1px",
+            "bottom": "1px",
+            "left": "1px"
+          },
+          "radius": {
+            "top": "7px",
+            "right": "7px",
+            "bottom": "7px",
+            "left": "7px"
+          }
+        },
+        "fieldMargin": {
+          "bottom": "0"
+        },
+        "fieldPadding": {
+          "top": "7px",
+          "bottom": "7px"
+        },
+        "_cssCustom": "input#form-field-823830 {\n\tbox-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);\n}",
+        "submitButtonMargin": {
+          "left": "-60",
+          "top": "7"
+        }
+      }
+    },
+    {
+      "id": "zjksrz",
+      "name": "migrator-email-optin-v01__image-wrap",
+      "settings": {
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "ulmmds",
+      "name": "migrator-email-optin-v01__image",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

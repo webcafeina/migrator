@@ -1,0 +1,84 @@
+{
+  "content": [
+    {
+      "id": "iaaohf",
+      "name": "button",
+      "parent": 0,
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "zpbtcr"
+        ]
+      },
+      "label": "Button V05"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.7.1",
+  "globalClasses": [
+    {
+      "id": "zpbtcr",
+      "name": "migrator-btn-v05",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "font-size": "1.6rem",
+          "font-family": "Poppins",
+          "font-weight": "400",
+          "line-height": "1.6rem"
+        },
+        "_padding": {
+          "bottom": "1.2rem",
+          "top": "1.2rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_cssTransition": "all 0.7s ease",
+        "_overflow": "hidden",
+        "_background": {
+          "color": {
+            "hex": "#673ab7"
+          }
+        },
+        "_content:before": "\"\"",
+        "_position:before": "absolute",
+        "_width:before": "100%",
+        "_height:before": "100%",
+        "_top:before": "0",
+        "_left:before": "0",
+        "_background:before": {
+          "color": {
+            "hex": "#ffffff",
+            "rgb": "rgba(255, 255, 255, 0.5)",
+            "hsl": "hsla(0, 0%, 100%, 0.5)"
+          }
+        },
+        "_opacity:before": "0",
+        "_transform:before": {
+          "scaleX": "0",
+          "scaleY": "0"
+        },
+        "_cssTransition:before": "transform 0.5s, opacity 0.5s",
+        "_cssCustom": ".migrator-btn-v05:hover::before {\n    opacity: 1;\n    transform: scale(2.5);\n}"
+      }
+    }
+  ],
+  "globalElements": []
+}

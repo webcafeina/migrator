@@ -1,0 +1,586 @@
+{
+  "content": [
+    {
+      "id": "ad168d",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "d08b58"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fgznzd"
+        ]
+      }
+    },
+    {
+      "id": "d08b58",
+      "name": "container",
+      "parent": "ad168d",
+      "children": [
+        "0f08c7",
+        "dbfe2f"
+      ],
+      "settings": {
+        "_cssCustom": ".bb-icon4,\n.bb-show4 {\n    transition: all 0.5s;\n    opacity: 0;\n}\n.bb-box4 .bb-icon4 {\n    transition: all 0.5s;\n    opacity: 0;\n}\n\n.bb-box4:hover .bb-icon4 {\n    transform: translateY(-50px);\n}\n.bb-btn4 {\n    transform: translateY(50px);\n    transition: all 0.5s;\n    opacity: 0;\n}\n\n.bb-box4:hover .bb-btn4 {\n    transform: translateY(0px);\n}\n.bb-box4:hover .bb-show4 {\n    opacity: 1;\n}",
+        "_cssGlobalClasses": [
+          "yxvakj"
+        ]
+      },
+      "label": ""
+    },
+    {
+      "id": "0f08c7",
+      "name": "block",
+      "parent": "d08b58",
+      "children": [
+        "39c75e",
+        "190512"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "yawney"
+        ]
+      },
+      "label": "ccontent wrap"
+    },
+    {
+      "id": "39c75e",
+      "name": "heading",
+      "parent": "0f08c7",
+      "children": [],
+      "settings": {
+        "text": "Libero massa eu bibendum mauris consequat ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "okkumt"
+        ]
+      }
+    },
+    {
+      "id": "190512",
+      "name": "text",
+      "parent": "0f08c7",
+      "children": [],
+      "settings": {
+        "text": "<p>Dictumst amet nibh ante purus torquent vivamus consectetur adipiscing nulla nostra est justo egestas in quisque nullam metus natoque vel si sem facilisi mauris ornare</p>",
+        "_cssGlobalClasses": [
+          "yxvakj"
+        ]
+      },
+      "label": ""
+    },
+    {
+      "id": "dbfe2f",
+      "name": "block",
+      "parent": "d08b58",
+      "children": [
+        "dkxoqp",
+        "hwlvnc",
+        "qcgius"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bgoizd"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "dkxoqp",
+      "name": "block",
+      "parent": "dbfe2f",
+      "children": [
+        "otltel",
+        "rvpiea",
+        "scgvoo",
+        "dndvlv"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box4",
+        "_cssGlobalClasses": [
+          "cxgeyx"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "otltel",
+      "name": "icon",
+      "parent": "dkxoqp",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-app-store"
+        },
+        "_cssClasses": "bb-icon4 bb-show4",
+        "_cssGlobalClasses": [
+          "fzvtbd"
+        ]
+      },
+      "label": "box icon"
+    },
+    {
+      "id": "rvpiea",
+      "name": "heading",
+      "parent": "dkxoqp",
+      "children": [],
+      "settings": {
+        "text": "Bricks Designer",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "zawdja"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "scgvoo",
+      "name": "text",
+      "parent": "dkxoqp",
+      "children": [],
+      "settings": {
+        "text": "<p>Inceptos elementum quis sagittis hendrerit condimentum netus ligula nec ad facilisis curabitur purus</p>",
+        "_cssGlobalClasses": [
+          "tozqiw"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "dndvlv",
+      "name": "button",
+      "parent": "dkxoqp",
+      "children": [],
+      "settings": {
+        "text": "Learn More",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-btn4 bb-show4",
+        "_cssGlobalClasses": [
+          "kkdvik"
+        ]
+      }
+    },
+    {
+      "id": "hwlvnc",
+      "name": "block",
+      "parent": "dbfe2f",
+      "children": [
+        "umqkhj",
+        "xwoffn",
+        "earqwm",
+        "qkwfgz"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box4",
+        "_cssGlobalClasses": [
+          "cxgeyx"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "umqkhj",
+      "name": "icon",
+      "parent": "hwlvnc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-bity"
+        },
+        "_cssClasses": "bb-icon4 bb-show4",
+        "_cssGlobalClasses": [
+          "fzvtbd"
+        ]
+      },
+      "label": "box icon"
+    },
+    {
+      "id": "xwoffn",
+      "name": "heading",
+      "parent": "hwlvnc",
+      "children": [],
+      "settings": {
+        "text": "Bricks Designer",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "zawdja"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "earqwm",
+      "name": "text",
+      "parent": "hwlvnc",
+      "children": [],
+      "settings": {
+        "text": "<p>Inceptos elementum quis sagittis hendrerit condimentum netus ligula nec ad facilisis curabitur purus</p>",
+        "_cssGlobalClasses": [
+          "tozqiw"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "qkwfgz",
+      "name": "button",
+      "parent": "hwlvnc",
+      "children": [],
+      "settings": {
+        "text": "Learn More",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-btn4 bb-show4",
+        "_cssGlobalClasses": [
+          "kkdvik"
+        ]
+      }
+    },
+    {
+      "id": "qcgius",
+      "name": "block",
+      "parent": "dbfe2f",
+      "children": [
+        "byxqtl",
+        "gjvrrg",
+        "cwfmrs",
+        "esbmxh"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box4",
+        "_cssGlobalClasses": [
+          "cxgeyx"
+        ]
+      },
+      "label": "box item"
+    },
+    {
+      "id": "byxqtl",
+      "name": "icon",
+      "parent": "qcgius",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-bitcoin"
+        },
+        "_cssClasses": "bb-icon4 bb-show4",
+        "_cssGlobalClasses": [
+          "fzvtbd"
+        ]
+      },
+      "label": "box icon"
+    },
+    {
+      "id": "gjvrrg",
+      "name": "heading",
+      "parent": "qcgius",
+      "children": [],
+      "settings": {
+        "text": "Bricks Designer",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "zawdja"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "cwfmrs",
+      "name": "text",
+      "parent": "qcgius",
+      "children": [],
+      "settings": {
+        "text": "<p>Inceptos elementum quis sagittis hendrerit condimentum netus ligula nec ad facilisis curabitur purus</p>",
+        "_cssGlobalClasses": [
+          "tozqiw"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "esbmxh",
+      "name": "button",
+      "parent": "qcgius",
+      "children": [],
+      "settings": {
+        "text": "Learn More",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssClasses": "bb-btn4 bb-show4",
+        "_cssGlobalClasses": [
+          "kkdvik"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "fgznzd",
+      "name": "migrator-features-v04",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_padding": {
+          "bottom": "80",
+          "top": "80",
+          "left": "20",
+          "right": "20"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "70",
+          "top": "70",
+          "left": "20",
+          "right": "20"
+        },
+        "_padding:mobile_landscape": {
+          "bottom": "60",
+          "top": "60",
+          "left": "20",
+          "right": "20"
+        }
+      }
+    },
+    {
+      "id": "yxvakj",
+      "name": "migrator-features-v04__",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_padding:mobile_portrait": {
+          "right": "0%",
+          "left": "0%"
+        },
+        "_padding:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "yawney",
+      "name": "migrator-features-v04__ccontent-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_margin": {
+          "bottom": "60"
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 50
+        },
+        "_padding": {
+          "left": "20%",
+          "right": "20%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "20",
+          "right": "20"
+        },
+        "_padding:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "okkumt",
+      "name": "migrator-features-v04__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 10,
+          "left": 10,
+          "bottom": 25
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        },
+        "_margin:mobile_landscape": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "bgoizd",
+      "name": "migrator-features-v04__box-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_margin:mobile_landscape": {
+          "bottom": 0
+        },
+        "_rowGap:mobile_landscape": "70"
+      }
+    },
+    {
+      "id": "cxgeyx",
+      "name": "migrator-features-v04__box-item",
+      "settings": {
+        "_padding": {
+          "top": 0,
+          "right": 20,
+          "bottom": 30,
+          "left": 20
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_rowGap": "20px",
+        "_alignItems": "center",
+        "_padding:mobile_portrait": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "fzvtbd",
+      "name": "migrator-features-v04__box-icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#ffffff",
+          "id": "rdwpct",
+          "name": "Text White"
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        },
+        "_padding": {
+          "top": 20,
+          "right": 20,
+          "bottom": 20,
+          "left": 20
+        },
+        "_border": {
+          "radius": {
+            "unit": {
+              "top": "%",
+              "right": "%",
+              "bottom": "%",
+              "left": "%"
+            },
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        }
+      }
+    },
+    {
+      "id": "zawdja",
+      "name": "migrator-features-v04__box-title",
+      "settings": []
+    },
+    {
+      "id": "tozqiw",
+      "name": "migrator-features-v04__box-text",
+      "settings": {
+        "_typography": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "kkdvik",
+      "name": "migrator-features-v04__button",
+      "settings": {
+        "style": "primary",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding": {
+          "top": 10,
+          "right": 25,
+          "bottom": 10,
+          "left": 25
+        },
+        "_background": {
+          "color": {
+            "hex": "#ff0000",
+            "rgb": "rgba(255, 0, 0, 0)",
+            "hsl": "hsla(0, 100%, 50%, 0)"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          },
+          "text-decoration": "underline"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

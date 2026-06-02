@@ -1,0 +1,689 @@
+{
+  "content": [
+    {
+      "id": "988bbd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ae3717"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ftaylo"
+        ]
+      }
+    },
+    {
+      "id": "ae3717",
+      "name": "container",
+      "parent": "988bbd",
+      "children": [
+        "881d41",
+        "cf381a"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ednhek"
+        ]
+      }
+    },
+    {
+      "id": "881d41",
+      "name": "block",
+      "parent": "ae3717",
+      "children": [
+        "bfbe61",
+        "edb378"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kecfaz"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "bfbe61",
+      "name": "heading",
+      "parent": "881d41",
+      "children": [],
+      "settings": {
+        "text": "Testimonials Style 10",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "gkvdbi"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "edb378",
+      "name": "text-basic",
+      "parent": "881d41",
+      "children": [],
+      "settings": {
+        "text": "Habitant mollis ut non velit hendrerit litora bibendum rhoncus eros montes torquent pellentesque aliquet inceptos nisi magnis at molestie euismod",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ahnhxg"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "cf381a",
+      "name": "block",
+      "parent": "ae3717",
+      "children": [
+        "10fe58",
+        "95b434",
+        "d612f3",
+        "b84394"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ijjfkb"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "10fe58",
+      "name": "block",
+      "parent": "cf381a",
+      "children": [
+        "982f3d",
+        "e3aee0"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "avocgt"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "982f3d",
+      "name": "block",
+      "parent": "10fe58",
+      "children": [
+        "c100da"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ystglr"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "c100da",
+      "name": "image",
+      "parent": "982f3d",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "irbshb"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "e3aee0",
+      "name": "block",
+      "parent": "10fe58",
+      "children": [
+        "23921a",
+        "44f881",
+        "c3f16f"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jwxuob"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "23921a",
+      "name": "text-basic",
+      "parent": "e3aee0",
+      "children": [],
+      "settings": {
+        "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.",
+        "_cssGlobalClasses": [
+          "snsuwi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "44f881",
+      "name": "heading",
+      "parent": "e3aee0",
+      "children": [],
+      "settings": {
+        "text": "Michael",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "onhwlj"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "c3f16f",
+      "name": "text-basic",
+      "parent": "e3aee0",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "_cssGlobalClasses": [
+          "orxyil"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "95b434",
+      "name": "block",
+      "parent": "cf381a",
+      "children": [
+        "d717dc",
+        "622c13"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "avocgt"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "d717dc",
+      "name": "block",
+      "parent": "95b434",
+      "children": [
+        "c9f6a6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ystglr"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "c9f6a6",
+      "name": "image",
+      "parent": "d717dc",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "irbshb"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "622c13",
+      "name": "block",
+      "parent": "95b434",
+      "children": [
+        "1de48d",
+        "68ff9e",
+        "7a7a3f"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jwxuob"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "1de48d",
+      "name": "text-basic",
+      "parent": "622c13",
+      "children": [],
+      "settings": {
+        "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.",
+        "_cssGlobalClasses": [
+          "snsuwi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "68ff9e",
+      "name": "heading",
+      "parent": "622c13",
+      "children": [],
+      "settings": {
+        "text": "Emily",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "onhwlj"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "7a7a3f",
+      "name": "text-basic",
+      "parent": "622c13",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "_cssGlobalClasses": [
+          "orxyil"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "d612f3",
+      "name": "block",
+      "parent": "cf381a",
+      "children": [
+        "fbf8c9",
+        "ad525e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "avocgt"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "fbf8c9",
+      "name": "block",
+      "parent": "d612f3",
+      "children": [
+        "c72de5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ystglr"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "c72de5",
+      "name": "image",
+      "parent": "fbf8c9",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "irbshb"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg",
+          "external": true,
+          "filename": "joanna-nix-walkup-h2pnXHMz8YM-unsplash.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "ad525e",
+      "name": "block",
+      "parent": "d612f3",
+      "children": [
+        "b39b93",
+        "17ccaa",
+        "49c49c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jwxuob"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "b39b93",
+      "name": "text-basic",
+      "parent": "ad525e",
+      "children": [],
+      "settings": {
+        "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.",
+        "_cssGlobalClasses": [
+          "snsuwi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "17ccaa",
+      "name": "heading",
+      "parent": "ad525e",
+      "children": [],
+      "settings": {
+        "text": "Emily",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "onhwlj"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "49c49c",
+      "name": "text-basic",
+      "parent": "ad525e",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "_cssGlobalClasses": [
+          "orxyil"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "b84394",
+      "name": "block",
+      "parent": "cf381a",
+      "children": [
+        "42620f",
+        "94be34"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "avocgt"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "42620f",
+      "name": "block",
+      "parent": "b84394",
+      "children": [
+        "226e4c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ystglr"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "226e4c",
+      "name": "image",
+      "parent": "42620f",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "irbshb"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/hugo-delauney-hukpWOHwF1Q-unsplash.jpg",
+          "external": true,
+          "filename": "hugo-delauney-hukpWOHwF1Q-unsplash.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "94be34",
+      "name": "block",
+      "parent": "b84394",
+      "children": [
+        "3a8d9a",
+        "c6763f",
+        "72a8b5"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jwxuob"
+        ]
+      },
+      "label": "name wrap"
+    },
+    {
+      "id": "3a8d9a",
+      "name": "text-basic",
+      "parent": "94be34",
+      "children": [],
+      "settings": {
+        "text": "Here goes your text ... Select any part of your text to access the formatting toolbar.",
+        "_cssGlobalClasses": [
+          "snsuwi"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "c6763f",
+      "name": "heading",
+      "parent": "94be34",
+      "children": [],
+      "settings": {
+        "text": "Michael",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "onhwlj"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "72a8b5",
+      "name": "text-basic",
+      "parent": "94be34",
+      "children": [],
+      "settings": {
+        "text": "Founder",
+        "_cssGlobalClasses": [
+          "orxyil"
+        ]
+      },
+      "label": "designation"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ftaylo",
+      "name": "migrator-testimonials-v10",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ednhek",
+      "name": "migrator-testimonials-v10__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "kecfaz",
+      "name": "migrator-testimonials-v10__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 40
+        },
+        "_alignItems": "center",
+        "_rowGap": "20px"
+      }
+    },
+    {
+      "id": "gkvdbi",
+      "name": "migrator-testimonials-v10__top-heading",
+      "settings": []
+    },
+    {
+      "id": "ahnhxg",
+      "name": "migrator-testimonials-v10__top-text",
+      "settings": {
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": ""
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "ijjfkb",
+      "name": "migrator-testimonials-v10__testimonials-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_widthMax:mobile_portrait": "100%",
+        "_display": "grid",
+        "_gridGap": "20",
+        "_gridTemplateColumns": "repeat(2, minmax(0, 1fr))",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_width:mobile_landscape": "90%"
+      }
+    },
+    {
+      "id": "avocgt",
+      "name": "migrator-testimonials-v10__testimonials-item",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": "0"
+        },
+        "_direction:mobile_landscape": "row"
+      }
+    },
+    {
+      "id": "ystglr",
+      "name": "migrator-testimonials-v10__image-wrap",
+      "settings": {
+        "_alignItems:mobile_landscape": "flex-start",
+        "_width:mobile_portrait": "100%",
+        "_direction:mobile_landscape": "column",
+        "_width:mobile_landscape": "35%"
+      }
+    },
+    {
+      "id": "irbshb",
+      "name": "migrator-testimonials-v10__image",
+      "settings": {
+        "_width:mobile_landscape": "200"
+      }
+    },
+    {
+      "id": "jwxuob",
+      "name": "migrator-testimonials-v10__name-wrap",
+      "settings": {
+        "_padding": {
+          "left": "",
+          "right": 20
+        },
+        "_padding:mobile_landscape": {
+          "left": 20,
+          "bottom": 20,
+          "top": "20"
+        },
+        "_padding:mobile_portrait": {
+          "right": 20,
+          "bottom": 20
+        },
+        "_width:mobile_landscape": "50%",
+        "_flexGrow:mobile_landscape": "1",
+        "_width:mobile_portrait": "100%",
+        "_justifyContent:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "snsuwi",
+      "name": "migrator-testimonials-v10__text",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        },
+        "_margin:mobile_portrait": {
+          "bottom": 15
+        }
+      }
+    },
+    {
+      "id": "onhwlj",
+      "name": "migrator-testimonials-v10__name",
+      "settings": []
+    },
+    {
+      "id": "orxyil",
+      "name": "migrator-testimonials-v10__designation",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

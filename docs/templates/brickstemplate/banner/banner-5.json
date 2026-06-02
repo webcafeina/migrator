@@ -1,0 +1,286 @@
+{
+  "content": [
+    {
+      "id": "409c93",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "0bf105"
+      ],
+      "settings": {
+        "_cssClasses": "close",
+        "_cssGlobalClasses": [
+          "wyongc"
+        ]
+      },
+      "label": "Banner 5"
+    },
+    {
+      "id": "0bf105",
+      "name": "container",
+      "parent": "409c93",
+      "children": [
+        "e7a882",
+        "ff119d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "bsdyds"
+        ]
+      }
+    },
+    {
+      "id": "e7a882",
+      "name": "block",
+      "parent": "0bf105",
+      "children": [
+        "ztrchi",
+        "olgxrb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vtibcj"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "ztrchi",
+      "name": "icon-box",
+      "parent": "e7a882",
+      "children": [],
+      "settings": {
+        "content": "<h2>Lorem ipsum dolor sit amet malesuada quam </h2><p>Lorem ipsum dolor sit amet fermentum aenean nec</p>",
+        "_cssGlobalClasses": [
+          "hpeklz"
+        ],
+        "icon": {
+          "library": "themify",
+          "icon": "ti-world"
+        }
+      }
+    },
+    {
+      "id": "olgxrb",
+      "name": "social-icons",
+      "parent": "e7a882",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-x-twitter"
+            },
+            "id": "kljxiq",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "id": "axmkup",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "id": "swmxie",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "id": "qyfrpz",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "ohjwzi"
+        ]
+      }
+    },
+    {
+      "id": "ff119d",
+      "name": "icon",
+      "parent": "0bf105",
+      "children": [],
+      "settings": {
+        "_interactions": [
+          {
+            "id": "nvltdz",
+            "trigger": "click",
+            "action": "hide",
+            "target": "custom",
+            "targetSelector": ".close"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "buldpl"
+        ],
+        "icon": {
+          "library": "themify",
+          "icon": "ti-close"
+        }
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "wyongc",
+      "name": "migrator-banner-5",
+      "settings": {
+        "_padding": {
+          "bottom": "0.8rem",
+          "top": "0.8rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    },
+    {
+      "id": "bsdyds",
+      "name": "migrator-banner-5__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "3rem",
+        "_direction:mobile_landscape": "row",
+        "_flexWrap:mobile_landscape": "nowrap",
+        "_alignItems:mobile_portrait": "flex-start",
+        "_direction:mobile_portrait": "row",
+        "_columnGap:mobile_landscape": "2rem",
+        "_alignItems:mobile_landscape": "flex-start"
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    },
+    {
+      "id": "vtibcj",
+      "name": "migrator-banner-5__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_direction:mobile_portrait": "column",
+        "_alignItems:mobile_portrait": "flex-start",
+        "_direction:mobile_landscape": "row",
+        "_rowGap:mobile_portrait": "1rem",
+        "_justifyContent": "space-between"
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    },
+    {
+      "id": "hpeklz",
+      "name": "migrator-banner-5__icon-box",
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-world"
+        },
+        "direction": "row",
+        "verticalAlign": "center",
+        "typographyHeading": {
+          "font-size": "1.8rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "line-height": "1.5"
+        },
+        "typographyBody": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        },
+        "gap": "1rem",
+        "iconSize": "3rem",
+        "iconSize:mobile_landscape": "2rem",
+        "typographyHeading:mobile_landscape": {
+          "font-size": "1.6rem"
+        }
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    },
+    {
+      "id": "ohjwzi",
+      "name": "migrator-banner-5__social-icons",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "1.3"
+        },
+        "iconColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "iconSize": "2.2rem",
+        "gap": "1.5rem"
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    },
+    {
+      "id": "buldpl",
+      "name": "migrator-banner-5__close",
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-close"
+        },
+        "iconColor": {
+          "hex": "#161616",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "iconSize": "1.5rem",
+        "_cursor": "pointer",
+        "_typography": {
+          "font-weight": "700"
+        }
+      },
+      "modified": 1735848133,
+      "user_id": 2
+    }
+  ],
+  "globalElements": []
+}

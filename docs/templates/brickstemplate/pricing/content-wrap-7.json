@@ -1,0 +1,909 @@
+{
+  "content": [
+    {
+      "id": "ef120d",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "c2d06d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fglkji"
+        ]
+      }
+    },
+    {
+      "id": "c2d06d",
+      "name": "container",
+      "parent": "ef120d",
+      "children": [
+        "b95554",
+        "583103"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "foybvm"
+        ]
+      }
+    },
+    {
+      "id": "b95554",
+      "name": "block",
+      "parent": "c2d06d",
+      "children": [
+        "3a304e"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fkoaqt"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "3a304e",
+      "name": "heading",
+      "parent": "b95554",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 3",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "varhgo"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "583103",
+      "name": "block",
+      "parent": "c2d06d",
+      "children": [
+        "ab121e",
+        "14ce05",
+        "88d958"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vwgwhm"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "ab121e",
+      "name": "block",
+      "parent": "583103",
+      "children": [
+        "455232",
+        "25a2a2",
+        "f21333",
+        "f9fac1",
+        "e49d9d",
+        "6a31cc",
+        "09fdf9",
+        "285336"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rqibyn"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "455232",
+      "name": "heading",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "Plan 01",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "mamlbr"
+        ]
+      },
+      "label": "plan"
+    },
+    {
+      "id": "25a2a2",
+      "name": "text-basic",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "Add your subtitle ",
+        "_cssGlobalClasses": [
+          "ozaemr"
+        ]
+      },
+      "label": "plan sub text"
+    },
+    {
+      "id": "f21333",
+      "name": "divider",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-angular"
+        },
+        "_cssGlobalClasses": [
+          "kpfmep"
+        ]
+      }
+    },
+    {
+      "id": "f9fac1",
+      "name": "text-basic",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "Consequat netus ut hac penatibus suscipit litora",
+        "_cssGlobalClasses": [
+          "rpocox"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "e49d9d",
+      "name": "social-icons",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "osorhk",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "chhpxu",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "uvalns",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bqdfwv",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "cizmau",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "glcrpv"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "6a31cc",
+      "name": "heading",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "$20.99",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ngaoaj"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "09fdf9",
+      "name": "text-basic",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "per month",
+        "_cssGlobalClasses": [
+          "nhoqxo"
+        ]
+      },
+      "label": "per month"
+    },
+    {
+      "id": "285336",
+      "name": "button",
+      "parent": "ab121e",
+      "children": [],
+      "settings": {
+        "text": "Buy Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "tztjtv"
+        ]
+      }
+    },
+    {
+      "id": "14ce05",
+      "name": "block",
+      "parent": "583103",
+      "children": [
+        "b9c9c5",
+        "e0dbb1",
+        "8482e0",
+        "5c5dc3",
+        "c508ad",
+        "d886b0",
+        "287877",
+        "aec40b"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rqibyn"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "b9c9c5",
+      "name": "heading",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "Plan 02",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "mamlbr"
+        ]
+      },
+      "label": "plan"
+    },
+    {
+      "id": "e0dbb1",
+      "name": "text-basic",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "Add your subtitle ",
+        "_cssGlobalClasses": [
+          "ozaemr"
+        ]
+      },
+      "label": "plan sub text"
+    },
+    {
+      "id": "8482e0",
+      "name": "divider",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-angular"
+        },
+        "_cssGlobalClasses": [
+          "kpfmep"
+        ]
+      }
+    },
+    {
+      "id": "5c5dc3",
+      "name": "text-basic",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "Consequat netus ut hac penatibus suscipit litora",
+        "_cssGlobalClasses": [
+          "rpocox"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "c508ad",
+      "name": "social-icons",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "osorhk",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "chhpxu",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "uvalns",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bqdfwv",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "cizmau",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "glcrpv"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "d886b0",
+      "name": "heading",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "$40.99",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ngaoaj"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "287877",
+      "name": "text-basic",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "per month",
+        "_cssGlobalClasses": [
+          "nhoqxo"
+        ]
+      },
+      "label": "per month"
+    },
+    {
+      "id": "aec40b",
+      "name": "button",
+      "parent": "14ce05",
+      "children": [],
+      "settings": {
+        "text": "Buy Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "tztjtv"
+        ]
+      }
+    },
+    {
+      "id": "88d958",
+      "name": "block",
+      "parent": "583103",
+      "children": [
+        "152d0d",
+        "274780",
+        "2844a9",
+        "29d392",
+        "d3349d",
+        "caca95",
+        "a1fdfc",
+        "113c71"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rqibyn"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "152d0d",
+      "name": "heading",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "Plan 03",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "mamlbr"
+        ]
+      },
+      "label": "plan"
+    },
+    {
+      "id": "274780",
+      "name": "text-basic",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "Add your subtitle ",
+        "_cssGlobalClasses": [
+          "ozaemr"
+        ]
+      },
+      "label": "plan sub text"
+    },
+    {
+      "id": "2844a9",
+      "name": "divider",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeBrands",
+          "icon": "fab fa-angular"
+        },
+        "_cssGlobalClasses": [
+          "kpfmep"
+        ]
+      }
+    },
+    {
+      "id": "29d392",
+      "name": "text-basic",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "Consequat netus ut hac penatibus suscipit litora",
+        "_cssGlobalClasses": [
+          "rpocox"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "d3349d",
+      "name": "social-icons",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "osorhk",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "chhpxu",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "uvalns",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "bqdfwv",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "cizmau",
+            "color": {
+              "hex": "#62708a",
+              "id": "wzdtoc"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "glcrpv"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "caca95",
+      "name": "heading",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "$60.99",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ngaoaj"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "a1fdfc",
+      "name": "text-basic",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "per month",
+        "_cssGlobalClasses": [
+          "nhoqxo"
+        ]
+      },
+      "label": "per month"
+    },
+    {
+      "id": "113c71",
+      "name": "button",
+      "parent": "88d958",
+      "children": [],
+      "settings": {
+        "text": "Buy Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "tztjtv"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "fglkji",
+      "name": "migrator-pricing-v03",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "foybvm",
+      "name": "migrator-pricing-v03__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "fkoaqt",
+      "name": "migrator-pricing-v03__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        },
+        "_padding:mobile_landscape": {
+          "bottom": 60
+        }
+      }
+    },
+    {
+      "id": "varhgo",
+      "name": "migrator-pricing-v03__top-heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "vwgwhm",
+      "name": "migrator-pricing-v03__pricing-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_rowGap:mobile_landscape": "40px"
+      }
+    },
+    {
+      "id": "rqibyn",
+      "name": "migrator-pricing-v03__pricing-item",
+      "settings": {
+        "_alignItems": "center",
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_padding": {
+          "top": 50,
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "mamlbr",
+      "name": "migrator-pricing-v03__plan",
+      "settings": {
+        "_typography": {
+          "font-size": "45px"
+        }
+      }
+    },
+    {
+      "id": "ozaemr",
+      "name": "migrator-pricing-v03__plan-sub-text",
+      "settings": []
+    },
+    {
+      "id": "kpfmep",
+      "name": "migrator-pricing-v03__divider",
+      "settings": {
+        "_padding": {
+          "top": 50,
+          "bottom": 50
+        },
+        "height": "2px",
+        "color": {
+          "hex": "#8467d9",
+          "id": "ofeejs"
+        },
+        "iconSpacing": "20px",
+        "iconTypography": {
+          "font-size": "60px"
+        }
+      }
+    },
+    {
+      "id": "rpocox",
+      "name": "migrator-pricing-v03__text",
+      "settings": {
+        "_padding": {
+          "right": 20,
+          "left": 20
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin": {
+          "bottom": 30
+        }
+      }
+    },
+    {
+      "id": "glcrpv",
+      "name": "migrator-pricing-v03__list",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px"
+      }
+    },
+    {
+      "id": "ngaoaj",
+      "name": "migrator-pricing-v03__price",
+      "settings": {
+        "_typography": {
+          "font-size": "45px",
+          "font-weight": "800"
+        },
+        "_padding": {
+          "top": 0
+        },
+        "_margin": {
+          "top": 40
+        }
+      }
+    },
+    {
+      "id": "nhoqxo",
+      "name": "migrator-pricing-v03__per-month",
+      "settings": []
+    },
+    {
+      "id": "tztjtv",
+      "name": "migrator-pricing-v03__button",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 45,
+          "bottom": 15,
+          "left": 45
+        },
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "_margin": {
+          "bottom": 0,
+          "top": 25
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs",
+            "name": "Acent"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct",
+            "name": "Text White"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#9767d9",
+            "id": "cwyawq",
+            "name": "Acent Hover"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

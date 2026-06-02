@@ -1,0 +1,647 @@
+{
+  "content": [
+    {
+      "id": "825395",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "d944bc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "oczbor"
+        ]
+      }
+    },
+    {
+      "id": "d944bc",
+      "name": "container",
+      "parent": "825395",
+      "children": [
+        "183a01",
+        "ee0ff8"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ehrnfl"
+        ]
+      }
+    },
+    {
+      "id": "183a01",
+      "name": "block",
+      "parent": "d944bc",
+      "children": [
+        "d58577"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ctmhqh"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "d58577",
+      "name": "heading",
+      "parent": "183a01",
+      "children": [],
+      "settings": {
+        "text": "Pricing Style 4",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "cprlgi"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "ee0ff8",
+      "name": "block",
+      "parent": "d944bc",
+      "children": [
+        "ad72fa",
+        "4b57fe"
+      ],
+      "settings": {
+        "_cssCustom": ".bb-box4 {\n    position: relative;\n    overflow: hidden;\n}\n.showp4 {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    display: flex;\n    justify-content: center;\n    height: 100%;\n    background-color: #8467d9;\n    opacity: 0;\n    transition: all ease 0.5s;\n}\n.bb-box4:hover .showp4 {\n    opacity: 1;\n}\n",
+        "_cssGlobalClasses": [
+          "cvqefa"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "ad72fa",
+      "name": "block",
+      "parent": "ee0ff8",
+      "children": [
+        "7c7327",
+        "b2b42a",
+        "7e143e",
+        "31774e",
+        "e626de"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box4",
+        "_cssGlobalClasses": [
+          "ansphg"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "7c7327",
+      "name": "heading",
+      "parent": "ad72fa",
+      "children": [],
+      "settings": {
+        "text": "Plan 01",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "yzrewe"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "b2b42a",
+      "name": "text-basic",
+      "parent": "ad72fa",
+      "children": [],
+      "settings": {
+        "text": "Add your subtitle ",
+        "_cssGlobalClasses": [
+          "srelqg"
+        ]
+      },
+      "label": "plan sub text"
+    },
+    {
+      "id": "7e143e",
+      "name": "heading",
+      "parent": "ad72fa",
+      "children": [],
+      "settings": {
+        "text": "$20.99 <span>/month</span>",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "fmzrda"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "31774e",
+      "name": "image",
+      "parent": "ad72fa",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gcgaru"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/New-entries-amico.svg",
+          "external": true,
+          "filename": "New-entries-amico.svg"
+        }
+      }
+    },
+    {
+      "id": "e626de",
+      "name": "block",
+      "parent": "ad72fa",
+      "children": [
+        "685626",
+        "ddb3fa"
+      ],
+      "settings": {
+        "_cssClasses": "showp4",
+        "_cssGlobalClasses": [
+          "ufbbbk"
+        ]
+      },
+      "label": "hover box"
+    },
+    {
+      "id": "685626",
+      "name": "social-icons",
+      "parent": "e626de",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "wkwacd",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "fmjavg",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "cvphif",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "mpfhxw",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "oonbyf",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "hxltly"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "ddb3fa",
+      "name": "button",
+      "parent": "e626de",
+      "children": [],
+      "settings": {
+        "text": "Buy Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "kekbfq"
+        ]
+      }
+    },
+    {
+      "id": "4b57fe",
+      "name": "block",
+      "parent": "ee0ff8",
+      "children": [
+        "e849f8",
+        "72bde1",
+        "6dad97",
+        "3c92cd",
+        "2babb1"
+      ],
+      "settings": {
+        "_cssClasses": "bb-box4",
+        "_cssGlobalClasses": [
+          "ansphg"
+        ]
+      },
+      "label": "pricing item"
+    },
+    {
+      "id": "e849f8",
+      "name": "heading",
+      "parent": "4b57fe",
+      "children": [],
+      "settings": {
+        "text": "Plan 02",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "yzrewe"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "72bde1",
+      "name": "text-basic",
+      "parent": "4b57fe",
+      "children": [],
+      "settings": {
+        "text": "Add your subtitle ",
+        "_cssGlobalClasses": [
+          "srelqg"
+        ]
+      },
+      "label": "plan sub text"
+    },
+    {
+      "id": "6dad97",
+      "name": "heading",
+      "parent": "4b57fe",
+      "children": [],
+      "settings": {
+        "text": "$50.99 <span>/month</span>",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "fmzrda"
+        ]
+      },
+      "label": "price"
+    },
+    {
+      "id": "3c92cd",
+      "name": "image",
+      "parent": "4b57fe",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gcgaru"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/Setup-Wizard-amico.svg",
+          "external": true,
+          "filename": "Setup-Wizard-amico.svg"
+        }
+      }
+    },
+    {
+      "id": "2babb1",
+      "name": "block",
+      "parent": "4b57fe",
+      "children": [
+        "e81417",
+        "36c478"
+      ],
+      "settings": {
+        "_cssClasses": "showp4",
+        "_cssGlobalClasses": [
+          "ufbbbk"
+        ]
+      },
+      "label": "hover box"
+    },
+    {
+      "id": "e81417",
+      "name": "social-icons",
+      "parent": "2babb1",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "sccldr",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "wkwacd",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "fmjavg",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "cvphif",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "mpfhxw",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          },
+          {
+            "label": "Maecenas faucibus  lectus",
+            "icon": {
+              "library": "fontawesomeRegular",
+              "icon": "fa fa-circle-check"
+            },
+            "id": "oonbyf",
+            "color": {
+              "hex": "#ffffff",
+              "id": "rdwpct"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "hxltly"
+        ]
+      },
+      "label": "list"
+    },
+    {
+      "id": "36c478",
+      "name": "button",
+      "parent": "2babb1",
+      "children": [],
+      "settings": {
+        "text": "Buy Now",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "kekbfq"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "oczbor",
+      "name": "migrator-pricing-v04",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ehrnfl",
+      "name": "migrator-pricing-v04__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "ctmhqh",
+      "name": "migrator-pricing-v04__content-wrap",
+      "settings": {
+        "_padding": {
+          "bottom": 80
+        }
+      }
+    },
+    {
+      "id": "cprlgi",
+      "name": "migrator-pricing-v04__top-heading",
+      "settings": {
+        "_alignSelf": "center"
+      }
+    },
+    {
+      "id": "cvqefa",
+      "name": "migrator-pricing-v04__pricing-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "40px",
+        "_cssCustom": ".bb-box4 {\n    position: relative;\n    overflow: hidden;\n}\n.showp4 {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    display: flex;\n    justify-content: center;\n    height: 100%;\n    background-color: #8467d9;\n    opacity: 0;\n    transition: all ease 0.5s;\n}\n.bb-box4:hover .showp4 {\n    opacity: 1;\n}\n",
+        "_rowGap:mobile_landscape": "40px"
+      }
+    },
+    {
+      "id": "ansphg",
+      "name": "migrator-pricing-v04__pricing-item",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "top": 50,
+          "bottom": 50
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "yzrewe",
+      "name": "migrator-pricing-v04__plan-name",
+      "settings": {
+        "_typography": {
+          "font-size": "45px"
+        }
+      }
+    },
+    {
+      "id": "srelqg",
+      "name": "migrator-pricing-v04__plan-sub-text",
+      "settings": []
+    },
+    {
+      "id": "fmzrda",
+      "name": "migrator-pricing-v04__price",
+      "settings": {
+        "_typography": {
+          "font-size": "45px",
+          "font-weight": "800"
+        },
+        "_padding": {
+          "top": 0
+        },
+        "_margin": {
+          "top": 40,
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "gcgaru",
+      "name": "migrator-pricing-v04__image",
+      "settings": {
+        "_width": "350px"
+      }
+    },
+    {
+      "id": "ufbbbk",
+      "name": "migrator-pricing-v04__hover-box",
+      "settings": {
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "hxltly",
+      "name": "migrator-pricing-v04__list",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "direction": "column",
+        "gap": "15px",
+        "gapItem": "20px"
+      }
+    },
+    {
+      "id": "kekbfq",
+      "name": "migrator-pricing-v04__button",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 45,
+          "bottom": 15,
+          "left": 45
+        },
+        "_border": {
+          "radius": {
+            "top": 50,
+            "right": 50,
+            "bottom": 50,
+            "left": 50
+          }
+        },
+        "_margin": {
+          "bottom": 0,
+          "top": 40
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_typography": {
+          "color": {
+            "hex": "#8467d9",
+            "id": "ofeejs"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

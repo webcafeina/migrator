@@ -1,0 +1,219 @@
+{
+  "content": [
+    {
+      "id": "spthkh",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "tusjmp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dhiqjc"
+        ]
+      },
+      "label": "CTA v03"
+    },
+    {
+      "id": "tusjmp",
+      "name": "container",
+      "parent": "spthkh",
+      "children": [
+        "oxmxsz",
+        "tplerh"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dckdrk"
+        ]
+      }
+    },
+    {
+      "id": "oxmxsz",
+      "name": "block",
+      "parent": "tusjmp",
+      "children": [
+        "sasioy",
+        "lukzkq",
+        "uneuol"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mxqzxe"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "sasioy",
+      "name": "heading",
+      "parent": "oxmxsz",
+      "children": [],
+      "settings": {
+        "text": "Mattis ultricies rutrum consectetur sodales aptent lacinia leo vivamus auctor magna. ",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "bjpbzf"
+        ]
+      }
+    },
+    {
+      "id": "lukzkq",
+      "name": "text-basic",
+      "parent": "oxmxsz",
+      "children": [],
+      "settings": {
+        "text": "Curabitur fames magna efficitur platea sodales ipsum egestas cubilia erat diam aliquam purus blandit cursus nulla scelerisque est enim primis",
+        "_cssGlobalClasses": [
+          "ixybwj"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "uneuol",
+      "name": "button",
+      "parent": "oxmxsz",
+      "children": [],
+      "settings": {
+        "text": "Talk To Our Expert",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "honhgt"
+        ],
+        "style": "primary"
+      },
+      "label": "btn"
+    },
+    {
+      "id": "tplerh",
+      "name": "block",
+      "parent": "tusjmp",
+      "children": [
+        "ghalgr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xfcyvk"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "ghalgr",
+      "name": "image",
+      "parent": "tplerh",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xhzfxy"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/gril-standing.png",
+          "external": true,
+          "filename": "gril-standing.png"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "dhiqjc",
+      "name": "migrator-cta-v03",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "dckdrk",
+      "name": "migrator-cta-v03__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_heightMin": "450px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 70,
+          "bottom": ""
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_padding:mobile_landscape": {
+          "top": 70
+        }
+      }
+    },
+    {
+      "id": "mxqzxe",
+      "name": "migrator-cta-v03__content-wrap",
+      "settings": {
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "bjpbzf",
+      "name": "migrator-cta-v03__heading",
+      "settings": {
+        "_margin": {
+          "bottom": 15
+        }
+      }
+    },
+    {
+      "id": "ixybwj",
+      "name": "migrator-cta-v03__text",
+      "settings": {
+        "_margin": {
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "honhgt",
+      "name": "migrator-cta-v03__btn",
+      "settings": {
+        "style": "primary",
+        "_padding": {
+          "top": 15,
+          "right": 25,
+          "bottom": 15,
+          "left": 25
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "xfcyvk",
+      "name": "migrator-cta-v03__image-wrap",
+      "settings": {
+        "_justifyContent": "flex-end",
+        "_alignItems": "flex-end"
+      }
+    },
+    {
+      "id": "xhzfxy",
+      "name": "migrator-cta-v03__image",
+      "settings": []
+    }
+  ],
+  "globalElements": []
+}

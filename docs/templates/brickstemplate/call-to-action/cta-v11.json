@@ -1,0 +1,261 @@
+{
+  "content": [
+    {
+      "id": "qmgvhj",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "uozrrp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "enfbgo"
+        ]
+      },
+      "label": "CTA v11"
+    },
+    {
+      "id": "uozrrp",
+      "name": "container",
+      "parent": "qmgvhj",
+      "children": [
+        "hkuwed",
+        "lvxhfr"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ohqojt"
+        ]
+      }
+    },
+    {
+      "id": "hkuwed",
+      "name": "block",
+      "parent": "uozrrp",
+      "children": [
+        "olixmg",
+        "rmnpre",
+        "zjrhge"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qteywb"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "olixmg",
+      "name": "heading",
+      "parent": "hkuwed",
+      "children": [],
+      "settings": {
+        "text": "Subscribe Now To Receive A Discount",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "ceqboj"
+        ]
+      }
+    },
+    {
+      "id": "rmnpre",
+      "name": "text-basic",
+      "parent": "hkuwed",
+      "children": [],
+      "settings": {
+        "text": "Risus bibendum aliquet ut venenatis consectetuer massa ac elementum lectus litora nibh iaculis proin viverra tempus consectetur duis habitasse inceptos",
+        "_cssGlobalClasses": [
+          "jysmnt"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "zjrhge",
+      "name": "form",
+      "parent": "hkuwed",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "1a9992"
+          },
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "0f1ba9"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "BB Template Packs",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonText": "Get Discount",
+        "_cssGlobalClasses": [
+          "fzcvrf"
+        ]
+      }
+    },
+    {
+      "id": "lvxhfr",
+      "name": "block",
+      "parent": "uozrrp",
+      "children": [
+        "yzwzrn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pcrtpz"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "yzwzrn",
+      "name": "image",
+      "parent": "lvxhfr",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dvblvq"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/medium-shot-young-woman-holding-smartphone.jpg",
+          "external": true,
+          "filename": "medium-shot-young-woman-holding-smartphone.jpg"
+        }
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "enfbgo",
+      "name": "migrator-cta-v11",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "ohqojt",
+      "name": "migrator-cta-v11__container",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "20px",
+        "_alignItems": "center",
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "qteywb",
+      "name": "migrator-cta-v11__content-wrap",
+      "settings": {
+        "_rowGap": "20px",
+        "_margin:mobile_portrait": {
+          "bottom": 20
+        },
+        "_order:mobile_landscape": "1",
+        "_margin:mobile_landscape": {
+          "bottom": 0
+        }
+      }
+    },
+    {
+      "id": "ceqboj",
+      "name": "migrator-cta-v11__heading",
+      "settings": {
+        "_typography": {
+          "line-height": "50px"
+        },
+        "_typography:tablet_portrait": {
+          "line-height": "32px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "jysmnt",
+      "name": "migrator-cta-v11__text",
+      "settings": {
+        "_typography:mobile_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "fzcvrf",
+      "name": "migrator-cta-v11__form",
+      "settings": {
+        "fieldBorder": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "fieldMargin": {
+          "bottom": 20
+        },
+        "submitButtonWidth": "30",
+        "submitButtonMargin": {
+          "top": 20
+        },
+        "submitButtonWidth:mobile_portrait": "50",
+        "submitButtonWidth:mobile_landscape": "50",
+        "fieldPadding": {
+          "top": 8,
+          "bottom": 8
+        },
+        "submitButtonWidth:tablet_portrait": "50"
+      }
+    },
+    {
+      "id": "pcrtpz",
+      "name": "migrator-cta-v11__image-wrap",
+      "settings": {
+        "_alignItems": "flex-end",
+        "_alignItems:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "dvblvq",
+      "name": "migrator-cta-v11__image",
+      "settings": {
+        "_width": "500px",
+        "_width:mobile_landscape": "400px",
+        "_margin:mobile_landscape": {
+          "bottom": 40
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

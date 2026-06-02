@@ -1,0 +1,1355 @@
+{
+  "content": [
+    {
+      "id": "jtgaar",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "lfjwpf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ojtmhs"
+        ]
+      },
+      "label": "Pricing v01"
+    },
+    {
+      "id": "lfjwpf",
+      "name": "container",
+      "parent": "jtgaar",
+      "children": [
+        "ofrxnz",
+        "drfqmt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xhdywo"
+        ]
+      }
+    },
+    {
+      "id": "ofrxnz",
+      "name": "block",
+      "parent": "lfjwpf",
+      "children": [
+        "guowsi",
+        "oarwwj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wizkfo"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "guowsi",
+      "name": "heading",
+      "parent": "ofrxnz",
+      "children": [],
+      "settings": {
+        "text": "Our Pricing",
+        "_cssGlobalClasses": [
+          "uhsseo"
+        ]
+      }
+    },
+    {
+      "id": "oarwwj",
+      "name": "text-basic",
+      "parent": "ofrxnz",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized",
+        "_cssGlobalClasses": [
+          "tixjzy"
+        ]
+      },
+      "label": "sub text"
+    },
+    {
+      "id": "drfqmt",
+      "name": "block",
+      "parent": "lfjwpf",
+      "children": [
+        "zgobqo",
+        "uufyns",
+        "achogy"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "rsxigy"
+        ]
+      },
+      "label": "pricing wrap"
+    },
+    {
+      "id": "zgobqo",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "axwhnt",
+        "yknhfr",
+        "iodfsy",
+        "zrkgti"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lprebm"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "axwhnt",
+      "name": "heading",
+      "parent": "zgobqo",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "negpfn"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "yknhfr",
+      "name": "heading",
+      "parent": "zgobqo",
+      "children": [],
+      "settings": {
+        "text": "$29",
+        "_cssGlobalClasses": [
+          "ifihdp"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "iodfsy",
+      "name": "block",
+      "parent": "zgobqo",
+      "children": [
+        "rljzso",
+        "cucboj",
+        "ujgbmr",
+        "ylkjpn",
+        "loldgl"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "cfnfuk"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "rljzso",
+      "name": "block",
+      "parent": "iodfsy",
+      "children": [
+        "ygrhms",
+        "rhagoc"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "ygrhms",
+      "name": "icon",
+      "parent": "rljzso",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "rhagoc",
+      "name": "text-basic",
+      "parent": "rljzso",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "cucboj",
+      "name": "block",
+      "parent": "iodfsy",
+      "children": [
+        "cpjjrp",
+        "uwrtut"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "cpjjrp",
+      "name": "icon",
+      "parent": "cucboj",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "uwrtut",
+      "name": "text-basic",
+      "parent": "cucboj",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "ujgbmr",
+      "name": "block",
+      "parent": "iodfsy",
+      "children": [
+        "auszmf",
+        "omypeq"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "auszmf",
+      "name": "icon",
+      "parent": "ujgbmr",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "omypeq",
+      "name": "text-basic",
+      "parent": "ujgbmr",
+      "children": [],
+      "settings": {
+        "text": "We’re using Website Ipsum\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "ylkjpn",
+      "name": "block",
+      "parent": "iodfsy",
+      "children": [
+        "mrxcqi",
+        "uvenhu"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "mrxcqi",
+      "name": "icon",
+      "parent": "ylkjpn",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "uvenhu",
+      "name": "text-basic",
+      "parent": "ylkjpn",
+      "children": [],
+      "settings": {
+        "text": "It’s just meant to fill space\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "loldgl",
+      "name": "block",
+      "parent": "iodfsy",
+      "children": [
+        "odjiti",
+        "wmmtai"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "odjiti",
+      "name": "icon",
+      "parent": "loldgl",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "wmmtai",
+      "name": "text-basic",
+      "parent": "loldgl",
+      "children": [],
+      "settings": {
+        "text": "Until your content is ready\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "zrkgti",
+      "name": "button",
+      "parent": "zgobqo",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "fosmkd"
+        ]
+      },
+      "label": "pricing btn"
+    },
+    {
+      "id": "uufyns",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "ammxnp",
+        "tkuqkb",
+        "luxtjx",
+        "vpwdew"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lprebm"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "ammxnp",
+      "name": "heading",
+      "parent": "uufyns",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "negpfn"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "tkuqkb",
+      "name": "heading",
+      "parent": "uufyns",
+      "children": [],
+      "settings": {
+        "text": "$49",
+        "_cssGlobalClasses": [
+          "ifihdp"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "luxtjx",
+      "name": "block",
+      "parent": "uufyns",
+      "children": [
+        "mrdilh",
+        "unrzed",
+        "lzsbwb",
+        "bpsxnl",
+        "mtqhda"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "cfnfuk"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "mrdilh",
+      "name": "block",
+      "parent": "luxtjx",
+      "children": [
+        "nnczee",
+        "dflmok"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "nnczee",
+      "name": "icon",
+      "parent": "mrdilh",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "dflmok",
+      "name": "text-basic",
+      "parent": "mrdilh",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "unrzed",
+      "name": "block",
+      "parent": "luxtjx",
+      "children": [
+        "icnatk",
+        "gormsx"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "icnatk",
+      "name": "icon",
+      "parent": "unrzed",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "gormsx",
+      "name": "text-basic",
+      "parent": "unrzed",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "lzsbwb",
+      "name": "block",
+      "parent": "luxtjx",
+      "children": [
+        "yrgpxt",
+        "gbckza"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "yrgpxt",
+      "name": "icon",
+      "parent": "lzsbwb",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "gbckza",
+      "name": "text-basic",
+      "parent": "lzsbwb",
+      "children": [],
+      "settings": {
+        "text": "We’re using Website Ipsum\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "bpsxnl",
+      "name": "block",
+      "parent": "luxtjx",
+      "children": [
+        "rclcun",
+        "qxzlwg"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "rclcun",
+      "name": "icon",
+      "parent": "bpsxnl",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "qxzlwg",
+      "name": "text-basic",
+      "parent": "bpsxnl",
+      "children": [],
+      "settings": {
+        "text": "It’s just meant to fill space\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "mtqhda",
+      "name": "block",
+      "parent": "luxtjx",
+      "children": [
+        "wbxoux",
+        "cwryuq"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "wbxoux",
+      "name": "icon",
+      "parent": "mtqhda",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "cwryuq",
+      "name": "text-basic",
+      "parent": "mtqhda",
+      "children": [],
+      "settings": {
+        "text": "Until your content is ready\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "vpwdew",
+      "name": "button",
+      "parent": "uufyns",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "fosmkd"
+        ]
+      },
+      "label": "pricing btn"
+    },
+    {
+      "id": "achogy",
+      "name": "block",
+      "parent": "drfqmt",
+      "children": [
+        "xcxwcu",
+        "myftkr",
+        "bjgilw",
+        "yqsxcm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "lprebm"
+        ]
+      },
+      "label": "pricing"
+    },
+    {
+      "id": "xcxwcu",
+      "name": "heading",
+      "parent": "achogy",
+      "children": [],
+      "settings": {
+        "text": "Plan Name",
+        "_cssGlobalClasses": [
+          "negpfn"
+        ]
+      },
+      "label": "plan name"
+    },
+    {
+      "id": "myftkr",
+      "name": "heading",
+      "parent": "achogy",
+      "children": [],
+      "settings": {
+        "text": "$99",
+        "_cssGlobalClasses": [
+          "ifihdp"
+        ]
+      },
+      "label": "plan price"
+    },
+    {
+      "id": "bjgilw",
+      "name": "block",
+      "parent": "achogy",
+      "children": [
+        "ywooje",
+        "xbhyyu",
+        "uphgom",
+        "svsgjo",
+        "lhruxi"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "cfnfuk"
+        ]
+      },
+      "label": "pricing text wrap"
+    },
+    {
+      "id": "ywooje",
+      "name": "block",
+      "parent": "bjgilw",
+      "children": [
+        "pyudoo",
+        "ugmlva"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "pyudoo",
+      "name": "icon",
+      "parent": "ywooje",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "ugmlva",
+      "name": "text-basic",
+      "parent": "ywooje",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "xbhyyu",
+      "name": "block",
+      "parent": "bjgilw",
+      "children": [
+        "zqzmzk",
+        "pkghsy"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "zqzmzk",
+      "name": "icon",
+      "parent": "xbhyyu",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "pkghsy",
+      "name": "text-basic",
+      "parent": "xbhyyu",
+      "children": [],
+      "settings": {
+        "text": "We will change this out later\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "uphgom",
+      "name": "block",
+      "parent": "bjgilw",
+      "children": [
+        "rbwcix",
+        "zqqecb"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "rbwcix",
+      "name": "icon",
+      "parent": "uphgom",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "zqqecb",
+      "name": "text-basic",
+      "parent": "uphgom",
+      "children": [],
+      "settings": {
+        "text": "We’re using Website Ipsum\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "svsgjo",
+      "name": "block",
+      "parent": "bjgilw",
+      "children": [
+        "hxdocm",
+        "zchpec"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "hxdocm",
+      "name": "icon",
+      "parent": "svsgjo",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "zchpec",
+      "name": "text-basic",
+      "parent": "svsgjo",
+      "children": [],
+      "settings": {
+        "text": "It’s just meant to fill space\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "lhruxi",
+      "name": "block",
+      "parent": "bjgilw",
+      "children": [
+        "uogshp",
+        "mpcvtz"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "wkpwui"
+        ]
+      },
+      "label": "pricing text"
+    },
+    {
+      "id": "uogshp",
+      "name": "icon",
+      "parent": "lhruxi",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-check"
+        },
+        "_cssGlobalClasses": [
+          "baugke"
+        ]
+      },
+      "label": "list icon"
+    },
+    {
+      "id": "mpcvtz",
+      "name": "text-basic",
+      "parent": "lhruxi",
+      "children": [],
+      "settings": {
+        "text": "Until your content is ready\n",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ihcinr"
+        ]
+      },
+      "label": "list text"
+    },
+    {
+      "id": "yqsxcm",
+      "name": "button",
+      "parent": "achogy",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "fosmkd"
+        ]
+      },
+      "label": "pricing btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "ojtmhs",
+      "name": "migrator-pricing-v01-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "xhdywo",
+      "name": "migrator-pricing-v01-2__container",
+      "settings": {
+        "_rowGap": "5rem"
+      }
+    },
+    {
+      "id": "wizkfo",
+      "name": "migrator-pricing-v01-2__heading-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_padding": {
+          "left": "15%",
+          "right": "15%"
+        },
+        "_padding:tablet_portrait": {
+          "left": "10%",
+          "right": "10%"
+        },
+        "_padding:mobile_landscape": {
+          "left": "0",
+          "right": "0"
+        }
+      }
+    },
+    {
+      "id": "uhsseo",
+      "name": "migrator-pricing-v01-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "line-height": "5.2rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        }
+      }
+    },
+    {
+      "id": "tixjzy",
+      "name": "migrator-pricing-v01-2__sub-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "rsxigy",
+      "name": "migrator-pricing-v01-2__pricing-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "2rem",
+        "_alignItems": "stretch",
+        "_flexWrap:tablet_portrait": "wrap",
+        "_display": "grid",
+        "_gridGap": "2rem",
+        "_gridTemplateColumns": "1fr 1fr 1fr",
+        "_gridTemplateColumns:tablet_portrait": "2fr 2fr",
+        "_gridTemplateColumns:mobile_landscape": "1fr",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_justifyItemsGrid:mobile_landscape": "center"
+      }
+    },
+    {
+      "id": "lprebm",
+      "name": "migrator-pricing-v01-2__pricing",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "top": "4rem",
+          "right": "2rem",
+          "bottom": "4rem",
+          "left": "2rem"
+        },
+        "_rowGap": "2rem",
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          },
+          "radius": {
+            "top": "0.8rem",
+            "right": "0.8rem",
+            "bottom": "0.8rem",
+            "left": "0.8rem"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_flexGrow:tablet_portrait": "1",
+        "_width:mobile_landscape": "70%",
+        "_width:mobile_portrait": "100%"
+      }
+    },
+    {
+      "id": "negpfn",
+      "name": "migrator-pricing-v01-2__plan-name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.8rem",
+          "line-height": "4.8rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.4rem",
+          "line-height": "4.4rem"
+        }
+      }
+    },
+    {
+      "id": "ifihdp",
+      "name": "migrator-pricing-v01-2__plan-price",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "5rem",
+          "line-height": "5.2rem"
+        }
+      }
+    },
+    {
+      "id": "cfnfuk",
+      "name": "migrator-pricing-v01-2__pricing-text-wrap",
+      "settings": {
+        "_margin": {
+          "top": "0",
+          "bottom": "0"
+        },
+        "_rowGap": "0.8rem",
+        "_padding": {
+          "left": "0",
+          "bottom": "3rem",
+          "top": "2rem"
+        },
+        "_flexGrow": "1"
+      }
+    },
+    {
+      "id": "wkpwui",
+      "name": "migrator-pricing-v01-2__pricing-text",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "1rem",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "baugke",
+      "name": "migrator-pricing-v01-2__list-icon",
+      "settings": {
+        "iconSize": "2.3rem"
+      }
+    },
+    {
+      "id": "ihcinr",
+      "name": "migrator-pricing-v01-2__list-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    },
+    {
+      "id": "drxoco",
+      "name": "wf-btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.6rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "enohqp",
+      "name": "wf-btn--primary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "fosmkd",
+      "name": "migrator-pricing-v01-2__pricing-btn",
+      "settings": {
+        "style": "secondary"
+      }
+    }
+  ],
+  "globalElements": []
+}

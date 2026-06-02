@@ -1,0 +1,325 @@
+{
+  "content": [
+    {
+      "id": "vmgtju",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "jtahsd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "abnqis"
+        ]
+      },
+      "label": "Error 15"
+    },
+    {
+      "id": "jtahsd",
+      "name": "container",
+      "parent": "vmgtju",
+      "children": [
+        "cvlbfb",
+        "wmatwv",
+        "exmjsg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "osxgaa"
+        ]
+      }
+    },
+    {
+      "id": "cvlbfb",
+      "name": "heading",
+      "parent": "jtahsd",
+      "children": [],
+      "settings": {
+        "text": "Sorry, the page you are looking for either does not exist or moved to a new location.",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "rygvfw"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "wmatwv",
+      "name": "image",
+      "parent": "jtahsd",
+      "children": [],
+      "settings": {
+        "tag": "figure",
+        "_cssGlobalClasses": [
+          "pcnahn"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/image-placeholder-2560x1600-1-1024x640.jpg",
+          "external": true,
+          "filename": "image-placeholder-2560x1600-1-1024x640.jpg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "exmjsg",
+      "name": "block",
+      "parent": "jtahsd",
+      "children": [
+        "zhrccj",
+        "pqsghc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pxobhi"
+        ]
+      },
+      "label": "button wrap"
+    },
+    {
+      "id": "zhrccj",
+      "name": "button",
+      "parent": "exmjsg",
+      "children": [],
+      "settings": {
+        "text": "Back To HomePage",
+        "style": "primary",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "icon": {
+          "library": "themify",
+          "icon": "ti-home"
+        },
+        "_cssGlobalClasses": [
+          "cyhhbi"
+        ]
+      },
+      "label": "btn"
+    },
+    {
+      "id": "pqsghc",
+      "name": "button",
+      "parent": "exmjsg",
+      "children": [],
+      "settings": {
+        "text": "Contact Support",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "icon": {
+          "library": "themify",
+          "icon": "ti-arrow-right"
+        },
+        "_cssGlobalClasses": [
+          "xgvmil"
+        ]
+      },
+      "label": "secondary btn"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "abnqis",
+      "name": "migrator-error-15",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_height": "100vh",
+        "_justifyContent": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "osxgaa",
+      "name": "migrator-error-15__container",
+      "settings": {
+        "_alignItems": "center",
+        "_direction": "column",
+        "_rowGap": "3rem",
+        "_width": "70rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "rygvfw",
+      "name": "migrator-error-15__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.2rem",
+          "line-height": "1.3",
+          "font-weight": "700",
+          "font-family": "Inter",
+          "text-align": "center",
+          "text-transform": "capitalize"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "2.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "pcnahn",
+      "name": "migrator-error-15__image",
+      "settings": [],
+      "_exists": false
+    },
+    {
+      "id": "pxobhi",
+      "name": "migrator-error-15__button-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "3rem",
+        "_justifyContent": "center",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "cyhhbi",
+      "name": "migrator-error-15__btn",
+      "settings": {
+        "_padding": {
+          "top": "1rem",
+          "left": "1.7rem",
+          "right": "1.7rem",
+          "bottom": "1rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "1.6"
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_cssTransition": "0.5s"
+      },
+      "_exists": false
+    },
+    {
+      "id": "xgvmil",
+      "name": "migrator-error-15__secondary-btn",
+      "settings": {
+        "_padding": {
+          "top": "1rem",
+          "left": "1.7rem",
+          "right": "1.7rem",
+          "bottom": "1rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "1.6"
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#ebebeb",
+            "id": "zyakgx",
+            "name": "BG Hover"
+          },
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "_background": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#ebebeb",
+            "id": "zyakgx",
+            "name": "BG Hover"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#ebebeb",
+            "id": "zyakgx",
+            "name": "BG Hover"
+          }
+        },
+        "_cssTransition": "0.5s"
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

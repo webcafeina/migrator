@@ -1,0 +1,583 @@
+{
+  "content": [
+    {
+      "id": "xiwwwu",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "iyuheq"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qxvhyt"
+        ]
+      },
+      "label": "Error 4"
+    },
+    {
+      "id": "iyuheq",
+      "name": "container",
+      "parent": "xiwwwu",
+      "children": [
+        "nzbshf",
+        "ngmsje",
+        "lueeay",
+        "dklxbw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "sqfvyw"
+        ]
+      }
+    },
+    {
+      "id": "nzbshf",
+      "name": "heading",
+      "parent": "iyuheq",
+      "children": [],
+      "settings": {
+        "text": "404 Not Found",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "gtrxah"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "ngmsje",
+      "name": "heading",
+      "parent": "iyuheq",
+      "children": [],
+      "settings": {
+        "text": "That page cannot be found.",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "aptclq"
+        ]
+      },
+      "label": "sub title"
+    },
+    {
+      "id": "lueeay",
+      "name": "block",
+      "parent": "iyuheq",
+      "children": [
+        "qzjjej"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ejdioz"
+        ]
+      },
+      "label": "search wrap"
+    },
+    {
+      "id": "qzjjej",
+      "name": "search",
+      "parent": "lueeay",
+      "children": [],
+      "settings": {
+        "searchOverlayTitle": "Search site",
+        "searchType": "input",
+        "buttonText": "Submit",
+        "icon": {
+          "library": "themify",
+          "icon": "ti-search"
+        },
+        "_cssGlobalClasses": [
+          "uvyrcl"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "dklxbw",
+      "name": "block",
+      "parent": "iyuheq",
+      "children": [
+        "jmitrj",
+        "tyrhae",
+        "riruyy",
+        "epxqqo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "vzrshf"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "jmitrj",
+      "name": "block",
+      "parent": "dklxbw",
+      "children": [
+        "wliiyi",
+        "esyfpu"
+      ],
+      "settings": {
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "giiyjx"
+        ]
+      },
+      "label": "content"
+    },
+    {
+      "id": "wliiyi",
+      "name": "icon",
+      "parent": "jmitrj",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-home"
+        },
+        "_cssGlobalClasses": [
+          "icpvog"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "esyfpu",
+      "name": "text-basic",
+      "parent": "jmitrj",
+      "children": [],
+      "settings": {
+        "text": "Homepage",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "iitgid"
+        ]
+      },
+      "label": "link text"
+    },
+    {
+      "id": "tyrhae",
+      "name": "block",
+      "parent": "dklxbw",
+      "children": [
+        "khjzre",
+        "xquvyh"
+      ],
+      "settings": {
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "giiyjx"
+        ]
+      },
+      "label": "content"
+    },
+    {
+      "id": "khjzre",
+      "name": "icon",
+      "parent": "tyrhae",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-home"
+        },
+        "_cssGlobalClasses": [
+          "icpvog"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "xquvyh",
+      "name": "text-basic",
+      "parent": "tyrhae",
+      "children": [],
+      "settings": {
+        "text": "Homepage",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "iitgid"
+        ]
+      },
+      "label": "link text"
+    },
+    {
+      "id": "riruyy",
+      "name": "block",
+      "parent": "dklxbw",
+      "children": [
+        "aqtvsa",
+        "xykdni"
+      ],
+      "settings": {
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "giiyjx"
+        ]
+      },
+      "label": "content"
+    },
+    {
+      "id": "aqtvsa",
+      "name": "icon",
+      "parent": "riruyy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-home"
+        },
+        "_cssGlobalClasses": [
+          "icpvog"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "xykdni",
+      "name": "text-basic",
+      "parent": "riruyy",
+      "children": [],
+      "settings": {
+        "text": "Homepage",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "iitgid"
+        ]
+      },
+      "label": "link text"
+    },
+    {
+      "id": "epxqqo",
+      "name": "block",
+      "parent": "dklxbw",
+      "children": [
+        "fendcc",
+        "rmrjue"
+      ],
+      "settings": {
+        "tag": "a",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "giiyjx"
+        ]
+      },
+      "label": "content"
+    },
+    {
+      "id": "fendcc",
+      "name": "icon",
+      "parent": "epxqqo",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-home"
+        },
+        "_cssGlobalClasses": [
+          "icpvog"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "rmrjue",
+      "name": "text-basic",
+      "parent": "epxqqo",
+      "children": [],
+      "settings": {
+        "text": "Homepage",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "iitgid"
+        ]
+      },
+      "label": "link text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "qxvhyt",
+      "name": "migrator-error-4",
+      "settings": {
+        "_padding": {
+          "bottom": "10rem",
+          "top": "10rem",
+          "left": "2rem",
+          "right": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "sqfvyw",
+      "name": "migrator-error-4__container",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "gtrxah",
+      "name": "migrator-error-4__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "4rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "aptclq",
+      "name": "migrator-error-4__sub-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "ejdioz",
+      "name": "migrator-error-4__search-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "bottom": "4rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "uvyrcl",
+      "name": "migrator-error-4__search",
+      "settings": {
+        "iconBackgroundColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "iconTypography": {
+          "font-size": "1.6rem",
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-family": "Inter",
+          "font-weight": "500",
+          "line-height": "1.6"
+        },
+        "buttonPadding": {
+          "right": "1.2rem",
+          "left": "1.2rem"
+        },
+        "placeholderColor": {
+          "hex": "#ebebeb",
+          "id": "zyakgx",
+          "name": "BG Hover"
+        },
+        "inputBorder": {
+          "style": "solid",
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "radius": {
+            "left": "0.5rem",
+            "top": "0.5rem"
+          }
+        },
+        "inputTypography": {
+          "font-size": "1.6rem",
+          "font-family": "Inter",
+          "font-weight": "500",
+          "line-height": "1.6"
+        },
+        "iconWidth": "15rem",
+        "iconBorder": {
+          "style": "solid",
+          "radius": {
+            "right": "0.5rem",
+            "bottom": "0.5rem"
+          },
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "iconBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "inputWidth": "50rem",
+        "inputWidth:mobile_landscape": "100%"
+      },
+      "_exists": false
+    },
+    {
+      "id": "vzrshf",
+      "name": "migrator-error-4__content-wrap",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "3rem",
+        "_rowGap:mobile_landscape": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "giiyjx",
+      "name": "migrator-error-4__content",
+      "settings": {
+        "_alignItems": "center",
+        "_padding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          },
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        },
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "3",
+            "blur": "8",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0.2)",
+            "hsl": "hsla(0, 0%, 0%, 0.2)"
+          }
+        },
+        "_boxShadow:hover": {
+          "color": {
+            "hex": "#000000",
+            "rgb": "rgba(0, 0, 0, 0.3)",
+            "hsl": "hsla(0, 0%, 0%, 0.3)"
+          },
+          "values": {
+            "offsetX": "0",
+            "offsetY": "3",
+            "blur": "8"
+          }
+        },
+        "_rowGap": "2rem",
+        "_padding:tablet_portrait": {
+          "right": "1rem",
+          "left": "1rem",
+          "top": "2rem",
+          "bottom": "2rem"
+        },
+        "_rowGap:tablet_portrait": "1.5rem",
+        "_cssTransition": ".5s"
+      },
+      "_exists": false
+    },
+    {
+      "id": "icpvog",
+      "name": "migrator-error-4__icon",
+      "settings": {
+        "iconColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "iconSize": "4rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "iitgid",
+      "name": "migrator-error-4__link-text",
+      "settings": {
+        "_typography": {
+          "font-size": "2rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "font-family": "Inter",
+          "font-weight": "600",
+          "line-height": "1.6"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,270 @@
+{
+  "content": [
+    {
+      "id": "rshswc",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "mkgpnm",
+        "kzbjzo"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "puopsg"
+        ]
+      }
+    },
+    {
+      "id": "mkgpnm",
+      "name": "icon",
+      "parent": "rshswc",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-close"
+        },
+        "_interactions": [
+          {
+            "id": "sehghu",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2762"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "gtguhx"
+        ]
+      },
+      "label": "close"
+    },
+    {
+      "id": "kzbjzo",
+      "name": "container",
+      "parent": "rshswc",
+      "children": [
+        "pygnor",
+        "pbloxh",
+        "mbreyy",
+        "mdogdw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "whdiru"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "pygnor",
+      "name": "heading",
+      "parent": "kzbjzo",
+      "children": [],
+      "settings": {
+        "text": "Get an exclusive discount on men's clothes",
+        "_cssGlobalClasses": [
+          "clfjqz"
+        ]
+      }
+    },
+    {
+      "id": "pbloxh",
+      "name": "text-basic",
+      "parent": "kzbjzo",
+      "children": [],
+      "settings": {
+        "text": "Habitasse iaculis sem maximus dignissim nunc porttitor ornare pulvinar class",
+        "_cssGlobalClasses": [
+          "vquaum"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "mbreyy",
+      "name": "heading",
+      "parent": "kzbjzo",
+      "children": [],
+      "settings": {
+        "text": "Use Code: dkf-dkf-kl",
+        "_cssGlobalClasses": [
+          "jllqyj"
+        ]
+      },
+      "label": "coupon"
+    },
+    {
+      "id": "mdogdw",
+      "name": "button",
+      "parent": "kzbjzo",
+      "children": [],
+      "settings": {
+        "text": "SHOP NOW",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "msrajg"
+        ]
+      }
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "puopsg",
+      "name": "migrator-popup-v11",
+      "settings": {
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "gtguhx",
+      "name": "migrator-popup-v11__close",
+      "settings": {
+        "iconColor": {
+          "hex": "#f5f5f5",
+          "id": "0e70ea",
+          "name": "Color #1"
+        },
+        "iconSize": "30px",
+        "_position": "absolute",
+        "_top": "0",
+        "_right": "5px",
+        "_cursor": "pointer"
+      }
+    },
+    {
+      "id": "whdiru",
+      "name": "migrator-popup-v11__content-wrap",
+      "settings": {
+        "_gradient": {
+          "colors": [
+            {
+              "id": "xrwdca",
+              "color": {
+                "hex": "#34495e"
+              }
+            }
+          ]
+        },
+        "_rowGap": "10px",
+        "_padding": {
+          "top": "80px",
+          "bottom": "80px",
+          "left": "25px",
+          "right": "25px"
+        },
+        "_alignItems": "center",
+        "_position": "static",
+        "_padding:mobile_portrait": {
+          "top": "40px",
+          "bottom": "40px"
+        },
+        "_padding:mobile_landscape": {
+          "top": "60px",
+          "bottom": "60px"
+        }
+      }
+    },
+    {
+      "id": "clfjqz",
+      "name": "migrator-popup-v11__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "42px",
+          "line-height": "52px",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "text-align": "center"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "28px",
+          "line-height": "38px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "36px",
+          "line-height": "46px"
+        }
+      }
+    },
+    {
+      "id": "vquaum",
+      "name": "migrator-popup-v11__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "jllqyj",
+      "name": "migrator-popup-v11__coupon",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "font-size": "20px",
+          "font-weight": "500",
+          "text-align": "center"
+        },
+        "_padding": {
+          "bottom": "20px"
+        },
+        "_padding:mobile_portrait": {
+          "bottom": "10px"
+        }
+      }
+    },
+    {
+      "id": "msrajg",
+      "name": "migrator-popup-v11__button",
+      "settings": {
+        "style": "primary",
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "font-size": "18PX"
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "_padding": {
+          "left": "35px",
+          "right": "35px",
+          "top": "10px",
+          "bottom": "10px"
+        },
+        "_border": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

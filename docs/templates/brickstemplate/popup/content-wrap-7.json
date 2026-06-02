@@ -1,0 +1,295 @@
+{
+  "content": [
+    {
+      "id": "cpztio",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "xmkqzi"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "kthkci"
+        ]
+      }
+    },
+    {
+      "id": "xmkqzi",
+      "name": "container",
+      "parent": "cpztio",
+      "children": [
+        "adyhem",
+        "cpwzkf",
+        "ydpuid",
+        "fkjcmz"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zzmkoe"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "adyhem",
+      "name": "heading",
+      "parent": "xmkqzi",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "nvygjc"
+        ],
+        "text": "Subscribe now and get 30% discounts"
+      }
+    },
+    {
+      "id": "cpwzkf",
+      "name": "text-basic",
+      "parent": "xmkqzi",
+      "children": [],
+      "settings": {
+        "text": "Dictum mollis aliquet posuere mus montes ornare dolor magna litora consectetur dictumst sollicitudin porttitor lacus faucibus",
+        "_cssGlobalClasses": [
+          "ixqstk"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "ydpuid",
+      "name": "form",
+      "parent": "xmkqzi",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "f9dfc7",
+            "width": "60",
+            "width:mobile_portrait": "80",
+            "width:mobile_landscape": "60",
+            "width:tablet_portrait": "60"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "PG Bricks",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "xl",
+        "submitButtonText": "Subscribe Now",
+        "_cssGlobalClasses": [
+          "nittyr"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "fkjcmz",
+      "name": "text-basic",
+      "parent": "xmkqzi",
+      "children": [],
+      "settings": {
+        "text": "No Thanks",
+        "_cssGlobalClasses": [
+          "qaxrzs"
+        ],
+        "_interactions": [
+          {
+            "id": "qqfvdc",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2763"
+          }
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.10.3",
+  "globalClasses": [
+    {
+      "id": "kthkci",
+      "name": "migrator-popup-v12",
+      "settings": {
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "zzmkoe",
+      "name": "migrator-popup-v12__content-wrap",
+      "settings": {
+        "_padding": {
+          "top": "60px",
+          "right": "30px",
+          "bottom": "60px",
+          "left": "30px"
+        },
+        "_background": {
+          "position": "center center",
+          "repeat": "no-repeat",
+          "image": {
+            "url": "https://preview.brickstemplate.com/wp-content/uploads/2023/01/high-angle-delicious-food-plate.jpg",
+            "external": true,
+            "filename": "high-angle-delicious-food-plate.jpg"
+          }
+        },
+        "_gradient": {
+          "colors": [
+            {
+              "id": "wgrsfw",
+              "color": {
+                "hex": "#000000",
+                "rgb": "rgba(0, 0, 0, 0.5)",
+                "hsl": "hsla(0, 0%, 0%, 0.5)"
+              }
+            }
+          ],
+          "applyTo": "overlay"
+        },
+        "_alignItems": "center",
+        "_rowGap": "15px",
+        "_rowGap:mobile_landscape": "10px"
+      }
+    },
+    {
+      "id": "nvygjc",
+      "name": "migrator-popup-v12__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "46px",
+          "line-height": "52px",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "text-align": "center"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "28px",
+          "line-height": "32px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "32px",
+          "line-height": "36px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "36px",
+          "line-height": "42px"
+        }
+      }
+    },
+    {
+      "id": "ixqstk",
+      "name": "migrator-popup-v12__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "text-align": "center"
+        },
+        "_padding": {
+          "top": "20px",
+          "bottom": "20px"
+        },
+        "_padding:tablet_portrait": {
+          "top": "10px",
+          "bottom": "10px"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5px",
+          "bottom": "5px"
+        }
+      }
+    },
+    {
+      "id": "nittyr",
+      "name": "migrator-popup-v12__form",
+      "settings": {
+        "submitButtonWidth": "60",
+        "_width": "100%",
+        "fieldMargin": {
+          "right": "0",
+          "left": "0",
+          "bottom": "15px"
+        },
+        "horizontalAlignFields": "center",
+        "fieldPadding": {
+          "top": "5px",
+          "bottom": "5px"
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#8467d9"
+        },
+        "submitButtonTypography": {
+          "font-size": "18px",
+          "color": {
+            "hex": "#ffffff"
+          },
+          "line-height": "22px"
+        },
+        "_width:mobile_landscape": "100%",
+        "submitButtonWidth:mobile_portrait": "80",
+        "fieldMargin:mobile_portrait": {
+          "bottom": "10px",
+          "right": "0",
+          "left": "0"
+        },
+        "fieldBorder:mobile_portrait": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldMargin:mobile_landscape": {
+          "bottom": "10px"
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "submitButtonWidth:mobile_landscape": "60",
+        "submitButtonWidth:tablet_portrait": "60"
+      }
+    },
+    {
+      "id": "qaxrzs",
+      "name": "migrator-popup-v12__close",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          }
+        },
+        "_cursor": "pointer"
+      }
+    }
+  ],
+  "globalElements": []
+}

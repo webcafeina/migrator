@@ -1,0 +1,357 @@
+{
+  "content": [
+    {
+      "id": "bvoaoo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "ejexyw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "luqsju"
+        ]
+      },
+      "label": "Cart 4"
+    },
+    {
+      "id": "ejexyw",
+      "name": "container",
+      "parent": "bvoaoo",
+      "children": [
+        "yckjtw",
+        "bigkin"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "apmfqc"
+        ]
+      }
+    },
+    {
+      "id": "yckjtw",
+      "name": "heading",
+      "parent": "ejexyw",
+      "children": [],
+      "settings": {
+        "text": "Shopping Cart",
+        "_cssGlobalClasses": [
+          "mnykqw"
+        ]
+      }
+    },
+    {
+      "id": "bigkin",
+      "name": "block",
+      "parent": "ejexyw",
+      "children": [
+        "nkosnf",
+        "bgzjmz",
+        "uiskjw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gcvljs"
+        ]
+      },
+      "label": "cart item wrap"
+    },
+    {
+      "id": "nkosnf",
+      "name": "woocommerce-cart-items",
+      "parent": "bigkin",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mxjznx"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "bgzjmz",
+      "name": "woocommerce-cart-collaterals",
+      "parent": "bigkin",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xjmmsk"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "uiskjw",
+      "name": "text-basic",
+      "parent": "bigkin",
+      "children": [],
+      "settings": {
+        "text": "Lorem ipsum dolor sit amet tempor odio tincidunt feugiat dictumst penatibus",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "hwanqr"
+        ]
+      },
+      "label": "Text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "luqsju",
+      "name": "migrator-cart-4",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "apmfqc",
+      "name": "migrator-cart-4__container",
+      "settings": {
+        "_direction:tablet_portrait": "column",
+        "_rowGap:tablet_portrait": "3rem",
+        "_direction": "column",
+        "_width": "80rem",
+        "_alignItems": "center",
+        "_rowGap": "4rem"
+      }
+    },
+    {
+      "id": "mnykqw",
+      "name": "migrator-cart-4__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "2.4rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "gcvljs",
+      "name": "migrator-cart-4__cart-item-wrap",
+      "settings": {
+        "_width:tablet_portrait": "100%",
+        "_background": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        },
+        "_padding": {
+          "bottom": "3rem",
+          "top": "3rem",
+          "left": "3rem",
+          "right": "3rem"
+        },
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_border": {
+          "radius": {
+            "top": "2rem",
+            "right": "2rem",
+            "bottom": "2rem",
+            "left": "2rem"
+          }
+        },
+        "_padding:mobile_landscape": {
+          "left": "2rem"
+        }
+      }
+    },
+    {
+      "id": "mxjznx",
+      "name": "migrator-cart-4__woocommerce-cart-items",
+      "settings": {
+        "width": "7rem",
+        "removeColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonsTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.2",
+          "font-weight": "400"
+        },
+        "buttonsBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonsBorder": {
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "headHide": true,
+        "bodyBorder": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "imageSize": "medium",
+        "removeSize": "2.5rem",
+        "nameTypography": {
+          "font-size": "1.5rem",
+          "line-height": "1.5",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "priceTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        },
+        "quantityTypography": {
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "line-height": "1.5"
+        },
+        "subtotalTypography": {
+          "line-height": "1.5",
+          "font-size": "1.5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "buttonsBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "buttonsTypography:hover": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        }
+      }
+    },
+    {
+      "id": "xjmmsk",
+      "name": "migrator-cart-4__woocommerce-cart-collaterals",
+      "settings": {
+        "buttonWidth": "100%",
+        "buttonBackground": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "buttonBorder": {
+          "style": "none",
+          "radius": {
+            "top": "0.6rem",
+            "right": "0.6rem",
+            "bottom": "0.6rem",
+            "left": "0.6rem"
+          }
+        },
+        "buttonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "line-height": "2.2",
+          "font-weight": "400"
+        },
+        "titleTypography": {
+          "font-size": "2.4rem",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "line-height": "1.5"
+        },
+        "buttonBackground:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "hideTitle": true,
+        "totalTypography": {
+          "line-height": "0"
+        },
+        "tablePadding": {
+          "bottom": "1.5rem",
+          "top": "1.5rem"
+        },
+        "tableBorder": {
+          "style": "none"
+        },
+        "subtotalTypography": {
+          "line-height": "0"
+        }
+      }
+    },
+    {
+      "id": "hwanqr",
+      "name": "migrator-cart-4__text",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "font-size": "1.4rem",
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          }
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

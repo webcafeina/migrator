@@ -1,0 +1,401 @@
+{
+  "content": [
+    {
+      "id": "vxufiw",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "arcddt"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "mthlmd"
+        ]
+      }
+    },
+    {
+      "id": "arcddt",
+      "name": "container",
+      "parent": "vxufiw",
+      "children": [
+        "ffrqoj"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fevkld"
+        ]
+      }
+    },
+    {
+      "id": "ffrqoj",
+      "name": "block",
+      "parent": "arcddt",
+      "children": [
+        "wdknjw",
+        "teoqzo",
+        "fwajjv",
+        "ejoyaq",
+        "zavdil",
+        "jtoafw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "epomsv"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "wdknjw",
+      "name": "heading",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "text": "Registard For Our Free Course ",
+        "_cssGlobalClasses": [
+          "oeocad"
+        ]
+      }
+    },
+    {
+      "id": "teoqzo",
+      "name": "text-basic",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "text": "Consectetuer dolor dapibus pede dictumst aliquam felis proin phasellus letius augue facilisis curabitur",
+        "_cssGlobalClasses": [
+          "vcigqx"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "fwajjv",
+      "name": "heading",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "text": "Free Registration End In",
+        "_cssGlobalClasses": [
+          "oeocad"
+        ]
+      }
+    },
+    {
+      "id": "ejoyaq",
+      "name": "countdown",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "date": "2024-01-01 12:00",
+        "fields": [
+          {
+            "format": "%D",
+            "id": "imosfz",
+            "suffix": "days"
+          },
+          {
+            "format": "%H",
+            "id": "vxdwyv",
+            "suffix": "hours"
+          },
+          {
+            "format": "%M",
+            "id": "czywpn",
+            "suffix": "minutes"
+          },
+          {
+            "format": "%S",
+            "id": "rzkhsf",
+            "suffix": "seconds"
+          }
+        ],
+        "action": "countdown",
+        "_cssGlobalClasses": [
+          "iptomd"
+        ]
+      }
+    },
+    {
+      "id": "zavdil",
+      "name": "form",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "6a0677",
+            "width": "60",
+            "width:mobile_portrait": "100"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "actions": [
+          "email"
+        ],
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "PG Bricks",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "xl",
+        "submitButtonText": "Enroll Now",
+        "_cssGlobalClasses": [
+          "bticji"
+        ]
+      }
+    },
+    {
+      "id": "jtoafw",
+      "name": "icon",
+      "parent": "ffrqoj",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-circle-xmark"
+        },
+        "_interactions": [
+          {
+            "id": "lzxdcf",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2730"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "lukbro"
+        ]
+      },
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "mthlmd",
+      "name": "migrator-popup-v01",
+      "settings": []
+    },
+    {
+      "id": "fevkld",
+      "name": "migrator-popup-v01__container",
+      "settings": {
+        "_position": "relative"
+      }
+    },
+    {
+      "id": "epomsv",
+      "name": "migrator-popup-v01__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_rowGap": "20px",
+        "_columnGap:tablet_portrait": "10px",
+        "_rowGap:tablet_portrait": "10px"
+      }
+    },
+    {
+      "id": "oeocad",
+      "name": "migrator-popup-v01__heading",
+      "settings": {
+        "_typography": {
+          "font-size": "36px",
+          "line-height": "46px",
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "26px",
+          "line-height": "36px"
+        },
+        "_typography:mobile_portrait": {
+          "text-align": "center",
+          "font-size": "22px",
+          "line-height": "30px"
+        }
+      }
+    },
+    {
+      "id": "vcigqx",
+      "name": "migrator-popup-v01__text",
+      "settings": {
+        "_typography:tablet_portrait": {
+          "text-align": "center"
+        },
+        "_typography": {
+          "font-size": "16px",
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "iptomd",
+      "name": "migrator-popup-v01__countdown",
+      "settings": {
+        "gutter": {
+          "top": 0,
+          "right": "9",
+          "bottom": 0,
+          "left": 0
+        },
+        "flexDirectionFields": "row",
+        "_padding": {
+          "right": "20px",
+          "bottom": "15px",
+          "left": "20px",
+          "top": "15px"
+        },
+        "_background": {
+          "color": {
+            "hex": "#8467d9"
+          }
+        },
+        "typography": {
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "font-size": "20px",
+          "font-family": "Poppins"
+        },
+        "_border": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "_padding:tablet_portrait": {
+          "top": "10px",
+          "right": "20px",
+          "bottom": "10px",
+          "left": "20px"
+        },
+        "typography:tablet_portrait": {
+          "font-size": "18"
+        },
+        "_padding:mobile_portrait": {
+          "top": "10px",
+          "right": "10px",
+          "left": "10px",
+          "bottom": "10px"
+        },
+        "typography:mobile_portrait": {
+          "font-size": "16px"
+        },
+        "gutter:mobile_portrait": {
+          "bottom": "10px",
+          "right": "5px"
+        },
+        "typographySuffix": {
+          "font-size": "18px"
+        },
+        "typographySuffix:tablet_portrait": {
+          "font-size": "16px"
+        },
+        "typography:mobile_landscape": {
+          "font-size": "22px"
+        },
+        "typographySuffix:mobile_landscape": {
+          "font-size": "16px"
+        },
+        "gutter:mobile_landscape": {
+          "right": "9px"
+        },
+        "typographySuffix:mobile_portrait": {
+          "font-size": "14"
+        }
+      }
+    },
+    {
+      "id": "bticji",
+      "name": "migrator-popup-v01__form",
+      "settings": {
+        "submitButtonWidth": "40",
+        "_width": "80%",
+        "horizontalAlignFields": "center",
+        "fieldMargin": {
+          "bottom": "0",
+          "right": "10px"
+        },
+        "fieldPadding": {
+          "top": "5px",
+          "bottom": "5px"
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#8467d9"
+        },
+        "submitButtonTypography": {
+          "font-size": "18px",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "line-height": "22px"
+        },
+        "_padding": {
+          "top": "30px"
+        },
+        "_width:mobile_landscape": "100%",
+        "submitButtonWidth:mobile_portrait": "60",
+        "fieldMargin:mobile_portrait": {
+          "bottom": "20px",
+          "right": "0"
+        },
+        "fieldBorder:mobile_portrait": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "_padding:mobile_portrait": {
+          "top": "10px"
+        }
+      }
+    },
+    {
+      "id": "lukbro",
+      "name": "migrator-popup-v01__close",
+      "settings": {
+        "_position": "absolute",
+        "_top": "-20px",
+        "_right": "-20px",
+        "iconColor": {
+          "hex": "#000000"
+        },
+        "iconSize": "30px",
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "25px",
+        "iconSize:mobile_portrait": "20px"
+      }
+    }
+  ],
+  "globalElements": []
+}

@@ -1,0 +1,396 @@
+{
+  "content": [
+    {
+      "id": "vomvac",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "xqticg"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jenvsi"
+        ]
+      },
+      "label": "Coming Soon 4"
+    },
+    {
+      "id": "xqticg",
+      "name": "container",
+      "parent": "vomvac",
+      "children": [
+        "ncowtl",
+        "qelapv",
+        "zueqve",
+        "oactpb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "xeyilf"
+        ]
+      }
+    },
+    {
+      "id": "ncowtl",
+      "name": "countdown",
+      "parent": "xqticg",
+      "children": [],
+      "settings": {
+        "date": "2025-09-30 12:00",
+        "fields": [
+          {
+            "id": "ilmsxz",
+            "format": "%D",
+            "suffix": "Days"
+          },
+          {
+            "format": "%H",
+            "id": "gvdceb",
+            "suffix": "Hours"
+          },
+          {
+            "format": "%M",
+            "id": "zptiso",
+            "suffix": "Minutes"
+          },
+          {
+            "format": "%S",
+            "id": "glpmju",
+            "suffix": "seconds"
+          }
+        ],
+        "action": "countdown",
+        "timezone": "UTC+06:00",
+        "_cssGlobalClasses": [
+          "aucqdg"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "qelapv",
+      "name": "heading",
+      "parent": "xqticg",
+      "children": [],
+      "settings": {
+        "text": "Website Is coming Soon",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "jvxjgj"
+        ]
+      }
+    },
+    {
+      "id": "zueqve",
+      "name": "text-basic",
+      "parent": "xqticg",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ozxcrv"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "oactpb",
+      "name": "form",
+      "parent": "xqticg",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "id": "bdwqgu",
+            "width": "70",
+            "width:mobile_portrait": "100%",
+            "width:mobile_landscape": "70"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonText": "Subscribe",
+        "submitButtonSize": "lg",
+        "_cssGlobalClasses": [
+          "uuhwux"
+        ]
+      },
+      "label": "form",
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "jenvsi",
+      "name": "migrator-coming-soon-4",
+      "settings": {
+        "_height": "100vh",
+        "_justifyContent": "center",
+        "_background": {
+          "image": {
+            "id": 3414,
+            "filename": "woo-6.jpg",
+            "size": "large",
+            "full": "https://wireframe.brickstemplate.com/wp-content/uploads/2025/01/woo-6.jpg",
+            "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2025/01/woo-6-1024x1024.jpg"
+          },
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover"
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "wclaas",
+              "color": {
+                "hex": "#e8e8e8",
+                "rgb": "rgba(232, 232, 232, 0.5)",
+                "hsl": "hsla(0, 0%, 91%, 0.5)"
+              }
+            }
+          ]
+        },
+        "_padding": {
+          "right": "2rem",
+          "left": "2rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "xeyilf",
+      "name": "migrator-coming-soon-4__container",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "3rem",
+        "_width": "70rem",
+        "_rowGap:mobile_landscape": "2rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "aucqdg",
+      "name": "migrator-coming-soon-4__countdown",
+      "settings": {
+        "flexDirectionFields": "row",
+        "flexDirection": "column",
+        "typographySuffix": {
+          "font-size": "2rem",
+          "line-height": "1.1"
+        },
+        "typography": {
+          "font-size": "5rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700",
+          "font-family": "Inter",
+          "line-height": "1.1"
+        },
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          }
+        },
+        "_padding": {
+          "top": "2rem",
+          "right": "2rem",
+          "bottom": "2rem",
+          "left": "2rem"
+        },
+        "gutter": {
+          "right": "2rem",
+          "left": "2rem"
+        },
+        "justifyContent": "center",
+        "_border": {
+          "radius": {
+            "top": "2rem",
+            "right": "2rem",
+            "bottom": "2rem",
+            "left": "2rem"
+          },
+          "width": {
+            "top": "0.1rem",
+            "right": "0.1rem",
+            "bottom": "0.1rem",
+            "left": "0.1rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_alignSelf": "center",
+        "gutter:mobile_landscape": {
+          "right": "1rem",
+          "left": "1rem",
+          "bottom": "1rem"
+        },
+        "typography:mobile_landscape": {
+          "font-size": "4rem"
+        },
+        "typographySuffix:mobile_landscape": {
+          "font-size": "1.6rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "1.5rem",
+          "right": "1.5rem",
+          "bottom": "1.5rem",
+          "left": "1.5rem"
+        },
+        "typography:mobile_portrait": {
+          "font-size": "2.6rem"
+        },
+        "gutter:mobile_portrait": {
+          "left": "0.5rem",
+          "right": "0.5rem"
+        },
+        "typographySuffix:mobile_portrait": {
+          "font-size": "1.4rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "jvxjgj",
+      "name": "migrator-coming-soon-4__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "5rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "text-transform": "capitalize",
+          "line-height": "1.3",
+          "text-align": "center"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "ozxcrv",
+      "name": "migrator-coming-soon-4__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "center"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "uuhwux",
+      "name": "migrator-coming-soon-4__form",
+      "settings": {
+        "submitButtonBackgroundColor": {
+          "hex": "#161616",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "submitButtonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.3"
+        },
+        "submitButtonWidth": "30",
+        "fieldMargin:mobile_portrait": {
+          "left": "0",
+          "right": "0",
+          "bottom": "2rem"
+        },
+        "submitButtonMargin:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        },
+        "fieldMargin": {
+          "bottom": "0"
+        },
+        "fieldPadding": {
+          "left": "2rem",
+          "right": "2rem",
+          "top": "0.2rem",
+          "bottom": "0.2rem"
+        },
+        "submitButtonBorder": {
+          "radius": {
+            "top": "0",
+            "right": "0",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "0",
+            "right": "0",
+            "bottom": "0",
+            "left": "0"
+          }
+        },
+        "fieldMargin:tablet_portrait": {
+          "left": "0",
+          "right": "0"
+        },
+        "submitButtonWidth:mobile_portrait": "100",
+        "submitButtonWidth:mobile_landscape": "30",
+        "submitButtonBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "submitButtonBackgroundColor:active": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        },
+        "submitButtonBackgroundColor:focus": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

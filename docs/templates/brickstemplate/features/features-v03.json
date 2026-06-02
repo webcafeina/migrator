@@ -1,0 +1,700 @@
+{
+  "content": [
+    {
+      "id": "myqbzo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "dgnrkl"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "zkdntt"
+        ]
+      },
+      "label": "Features v03"
+    },
+    {
+      "id": "dgnrkl",
+      "name": "container",
+      "parent": "myqbzo",
+      "children": [
+        "evgmmz",
+        "qerdij"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pdrnnd"
+        ]
+      }
+    },
+    {
+      "id": "evgmmz",
+      "name": "block",
+      "parent": "dgnrkl",
+      "children": [
+        "azvczv",
+        "szvxrc"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "epuwsm"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "azvczv",
+      "name": "block",
+      "parent": "evgmmz",
+      "children": [
+        "qqlwnt",
+        "odeyou"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ujsslt"
+        ]
+      },
+      "label": "heading wrap"
+    },
+    {
+      "id": "qqlwnt",
+      "name": "text-basic",
+      "parent": "azvczv",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "Services",
+        "_cssGlobalClasses": [
+          "hfhwup"
+        ]
+      },
+      "label": "sub title"
+    },
+    {
+      "id": "odeyou",
+      "name": "heading",
+      "parent": "azvczv",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder",
+        "_cssGlobalClasses": [
+          "lygsip"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "szvxrc",
+      "name": "block",
+      "parent": "evgmmz",
+      "children": [
+        "bdkvsf"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wqnwpf"
+        ]
+      },
+      "label": "text wrap"
+    },
+    {
+      "id": "bdkvsf",
+      "name": "text-basic",
+      "parent": "szvxrc",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "vookef"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "qerdij",
+      "name": "block",
+      "parent": "dgnrkl",
+      "children": [
+        "fxtqlk",
+        "delvat",
+        "ekexqs",
+        "eevlcz",
+        "oflygy",
+        "mowcvm"
+      ],
+      "settings": {
+        "tag": "ul",
+        "_cssGlobalClasses": [
+          "tzewmj"
+        ]
+      },
+      "label": "box wrap"
+    },
+    {
+      "id": "fxtqlk",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "vmjkfc",
+        "xgjaqd",
+        "quegwy"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "vmjkfc",
+      "name": "icon",
+      "parent": "fxtqlk",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "xgjaqd",
+      "name": "heading",
+      "parent": "fxtqlk",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "quegwy",
+      "name": "text-basic",
+      "parent": "fxtqlk",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "delvat",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "nocuim",
+        "infpxq",
+        "pfzexh"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "nocuim",
+      "name": "icon",
+      "parent": "delvat",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "infpxq",
+      "name": "heading",
+      "parent": "delvat",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "pfzexh",
+      "name": "text-basic",
+      "parent": "delvat",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "ekexqs",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "zkbygq",
+        "yybpgu",
+        "wocmtb"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "zkbygq",
+      "name": "icon",
+      "parent": "ekexqs",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "yybpgu",
+      "name": "heading",
+      "parent": "ekexqs",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "wocmtb",
+      "name": "text-basic",
+      "parent": "ekexqs",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "eevlcz",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "bjdfcv",
+        "loxuzu",
+        "ofmelc"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "bjdfcv",
+      "name": "icon",
+      "parent": "eevlcz",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "loxuzu",
+      "name": "heading",
+      "parent": "eevlcz",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "ofmelc",
+      "name": "text-basic",
+      "parent": "eevlcz",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "oflygy",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "edqxel",
+        "cnfnbl",
+        "qrptda"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "edqxel",
+      "name": "icon",
+      "parent": "oflygy",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "cnfnbl",
+      "name": "heading",
+      "parent": "oflygy",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "qrptda",
+      "name": "text-basic",
+      "parent": "oflygy",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    },
+    {
+      "id": "mowcvm",
+      "name": "block",
+      "parent": "qerdij",
+      "children": [
+        "znalig",
+        "dwzvmb",
+        "pbwtqd"
+      ],
+      "settings": {
+        "tag": "li",
+        "_cssGlobalClasses": [
+          "bnpske"
+        ]
+      },
+      "label": "icon box"
+    },
+    {
+      "id": "znalig",
+      "name": "icon",
+      "parent": "mowcvm",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "themify",
+          "icon": "ti-image"
+        },
+        "_cssGlobalClasses": [
+          "ywvwqh"
+        ]
+      },
+      "themeStyles": [],
+      "label": "box Icon"
+    },
+    {
+      "id": "dwzvmb",
+      "name": "heading",
+      "parent": "mowcvm",
+      "children": [],
+      "settings": {
+        "text": "I am a heading",
+        "_cssGlobalClasses": [
+          "erubbg"
+        ]
+      },
+      "label": "box title"
+    },
+    {
+      "id": "pbwtqd",
+      "name": "text-basic",
+      "parent": "mowcvm",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "iuazmx"
+        ]
+      },
+      "label": "box text"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "zkdntt",
+      "name": "migrator-features-v03-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "pdrnnd",
+      "name": "migrator-features-v03-2__container",
+      "settings": {
+        "_rowGap": "7rem"
+      }
+    },
+    {
+      "id": "epuwsm",
+      "name": "migrator-features-v03-2__top-heading",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "2rem",
+        "_direction": "row"
+      }
+    },
+    {
+      "id": "ujsslt",
+      "name": "migrator-features-v03-2__heading-wrap",
+      "settings": []
+    },
+    {
+      "id": "hfhwup",
+      "name": "migrator-features-v03-2__sub-title",
+      "settings": []
+    },
+    {
+      "id": "lygsip",
+      "name": "migrator-features-v03-2__title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "3.2rem",
+          "line-height": "4.2rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "3.1rem",
+          "line-height": "4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.8rem",
+          "line-height": "3.8rem"
+        },
+        "_margin": {
+          "top": "0"
+        }
+      }
+    },
+    {
+      "id": "wqnwpf",
+      "name": "migrator-features-v03-2__text-wrap",
+      "settings": []
+    },
+    {
+      "id": "vookef",
+      "name": "migrator-features-v03-2__top-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    },
+    {
+      "id": "tzewmj",
+      "name": "migrator-features-v03-2__box-wrap",
+      "settings": {
+        "_display": "grid",
+        "_gridTemplateColumns": "1fr 1fr 1fr",
+        "_gridGap": "2rem",
+        "_gridTemplateColumns:mobile_portrait": "1fr",
+        "_gridTemplateColumns:tablet_portrait": "1fr 1fr",
+        "_margin": {
+          "bottom": "0",
+          "top": "0"
+        },
+        "_padding": {
+          "left": "0"
+        }
+      }
+    },
+    {
+      "id": "bnpske",
+      "name": "migrator-features-v03-2__icon-box",
+      "settings": {
+        "_padding": {
+          "top": "4.8rem",
+          "right": "3.2rem",
+          "bottom": "4.8rem",
+          "left": "3.2rem"
+        },
+        "_rowGap": "1rem",
+        "_padding:tablet_portrait": {
+          "right": "2rem",
+          "bottom": "3.8rem",
+          "left": "2rem",
+          "top": "3.8rem"
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#f7f7f7",
+            "id": "wuzbbq",
+            "name": "Background"
+          }
+        }
+      }
+    },
+    {
+      "id": "ywvwqh",
+      "name": "migrator-features-v03-2__box-icon",
+      "settings": []
+    },
+    {
+      "id": "erubbg",
+      "name": "migrator-features-v03-2__box-title",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "2.4rem",
+          "line-height": "3.4rem",
+          "text-align": "center"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "2.4rem",
+          "line-height": "3.4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "2.2rem",
+          "line-height": "3.2rem"
+        },
+        "_padding": {
+          "top": "1rem"
+        }
+      }
+    },
+    {
+      "id": "iuazmx",
+      "name": "migrator-features-v03-2__box-text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

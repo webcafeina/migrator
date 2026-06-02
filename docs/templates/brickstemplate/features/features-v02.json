@@ -1,0 +1,510 @@
+{
+  "content": [
+    {
+      "id": "mijsjb",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "hminwu"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uvsnnq"
+        ]
+      },
+      "label": "Features v02"
+    },
+    {
+      "id": "hminwu",
+      "name": "container",
+      "parent": "mijsjb",
+      "children": [
+        "xcldwu",
+        "cjpmjm"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wwnkkp"
+        ]
+      }
+    },
+    {
+      "id": "xcldwu",
+      "name": "block",
+      "parent": "hminwu",
+      "children": [
+        "aczrow",
+        "ffgmmp"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cjaeor"
+        ]
+      },
+      "label": "box left image"
+    },
+    {
+      "id": "aczrow",
+      "name": "block",
+      "parent": "xcldwu",
+      "children": [
+        "njcqfw"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uxqkzg"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "njcqfw",
+      "name": "image",
+      "parent": "aczrow",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dffggb"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/square.svg",
+          "external": true,
+          "filename": "square.svg"
+        }
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "ffgmmp",
+      "name": "block",
+      "parent": "xcldwu",
+      "children": [
+        "innimc",
+        "qteqkl",
+        "stubdn",
+        "lrdaau"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ifkhvr"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "innimc",
+      "name": "heading",
+      "parent": "ffgmmp",
+      "children": [],
+      "settings": {
+        "text": "01",
+        "tag": "custom",
+        "_cssGlobalClasses": [
+          "slfzji"
+        ]
+      },
+      "label": "number"
+    },
+    {
+      "id": "qteqkl",
+      "name": "heading",
+      "parent": "ffgmmp",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder headline",
+        "_cssGlobalClasses": [
+          "pnojrr"
+        ]
+      }
+    },
+    {
+      "id": "stubdn",
+      "name": "text-basic",
+      "parent": "ffgmmp",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content. This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "ljmwzb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "lrdaau",
+      "name": "button",
+      "parent": "ffgmmp",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "vmstvy"
+        ]
+      },
+      "label": "cta"
+    },
+    {
+      "id": "cjpmjm",
+      "name": "block",
+      "parent": "hminwu",
+      "children": [
+        "kwjnxg",
+        "ugvmni"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "wzwanh"
+        ]
+      },
+      "label": "box right image"
+    },
+    {
+      "id": "kwjnxg",
+      "name": "block",
+      "parent": "cjpmjm",
+      "children": [
+        "syajvx",
+        "vgdmob",
+        "tyntqn",
+        "yyylwd"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ifkhvr"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "syajvx",
+      "name": "heading",
+      "parent": "kwjnxg",
+      "children": [],
+      "settings": {
+        "text": "02",
+        "tag": "custom",
+        "_cssGlobalClasses": [
+          "slfzji"
+        ]
+      },
+      "label": "number"
+    },
+    {
+      "id": "vgdmob",
+      "name": "heading",
+      "parent": "kwjnxg",
+      "children": [],
+      "settings": {
+        "text": "This is just a placeholder headline",
+        "_cssGlobalClasses": [
+          "pnojrr"
+        ]
+      }
+    },
+    {
+      "id": "tyntqn",
+      "name": "text-basic",
+      "parent": "kwjnxg",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content. This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet.",
+        "_cssGlobalClasses": [
+          "ljmwzb"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "yyylwd",
+      "name": "button",
+      "parent": "kwjnxg",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "drxoco",
+          "enohqp",
+          "vmstvy"
+        ]
+      },
+      "label": "cta"
+    },
+    {
+      "id": "ugvmni",
+      "name": "block",
+      "parent": "cjpmjm",
+      "children": [
+        "efeeed"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "uxqkzg"
+        ]
+      },
+      "label": "image wrap"
+    },
+    {
+      "id": "efeeed",
+      "name": "image",
+      "parent": "ugvmni",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "dffggb"
+        ],
+        "image": {
+          "url": "https://wireframe.brickstemplate.com/wp-content/uploads/2023/07/square.svg",
+          "external": true,
+          "filename": "square.svg"
+        }
+      },
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.9.2",
+  "globalClasses": [
+    {
+      "id": "uvsnnq",
+      "name": "migrator-features-v02-2",
+      "settings": {
+        "_padding": {
+          "top": "8rem",
+          "right": "2rem",
+          "bottom": "8rem",
+          "left": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "top": "7rem",
+          "bottom": "7rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "6rem",
+          "bottom": "6rem"
+        },
+        "_padding:mobile_portrait": {
+          "top": "5rem",
+          "bottom": "5rem"
+        }
+      }
+    },
+    {
+      "id": "wwnkkp",
+      "name": "migrator-features-v02-2__container",
+      "settings": {
+        "_rowGap": "8rem",
+        "_rowGap:tablet_portrait": "7rem",
+        "_rowGap:mobile_portrait": "5rem"
+      }
+    },
+    {
+      "id": "cjaeor",
+      "name": "migrator-features-v02-2__box-left-image",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "7rem",
+        "_alignItems": "center",
+        "_direction:tablet_portrait": "column",
+        "_rowGap:tablet_portrait": "5rem",
+        "_rowGap:mobile_landscape": "4rem"
+      }
+    },
+    {
+      "id": "uxqkzg",
+      "name": "migrator-features-v02-2__image-wrap",
+      "settings": {
+        "_width:tablet_portrait": "70%",
+        "_width:mobile_portrait": "100%",
+        "_width:mobile_landscape": "80%"
+      }
+    },
+    {
+      "id": "dffggb",
+      "name": "migrator-features-v02-2__image",
+      "settings": []
+    },
+    {
+      "id": "ifkhvr",
+      "name": "migrator-features-v02-2__content-wrap",
+      "settings": {
+        "_rowGap": "2rem",
+        "_rowGap:mobile_portrait": "1.5rem"
+      }
+    },
+    {
+      "id": "slfzji",
+      "name": "migrator-features-v02-2__number",
+      "settings": {
+        "_typography": {
+          "font-size": "7.2rem",
+          "line-height": "7.2rem",
+          "font-weight": "700",
+          "color": {
+            "hex": "#2d3749",
+            "rgb": "rgba(45, 55, 73, 0.34)",
+            "hsl": "hsla(218, 24%, 23%, 0.34)"
+          }
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "6.2rem",
+          "line-height": "6.2rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "5.2rem",
+          "line-height": "5.2rem"
+        }
+      }
+    },
+    {
+      "id": "pnojrr",
+      "name": "migrator-features-v02-2__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "line-height": "5.8rem",
+          "font-size": "4.8rem"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "4.2rem",
+          "line-height": "5.2rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.6rem",
+          "line-height": "4.6rem"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "3.8rem",
+          "line-height": "4.8rem"
+        }
+      }
+    },
+    {
+      "id": "ljmwzb",
+      "name": "migrator-features-v02-2__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "3.2rem",
+          "font-weight": "400",
+          "font-family": "Inter"
+        },
+        "_padding": {
+          "bottom": "2rem"
+        }
+      }
+    },
+    {
+      "id": "drxoco",
+      "name": "wf-btn",
+      "settings": {
+        "_padding": {
+          "top": "1.3rem",
+          "left": "2.6rem",
+          "right": "2.6rem",
+          "bottom": "1.3rem"
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.6rem",
+          "font-weight": "400",
+          "line-height": "2.6rem"
+        },
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        }
+      }
+    },
+    {
+      "id": "enohqp",
+      "name": "wf-btn--primary",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "solid",
+          "color": {
+            "hex": "#222222",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          }
+        },
+        "_background:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        },
+        "_border:hover": {
+          "color": {
+            "hex": "#2b3546",
+            "id": "gktedp",
+            "name": "Heading"
+          }
+        }
+      }
+    },
+    {
+      "id": "vmstvy",
+      "name": "migrator-features-v02-2__cta",
+      "settings": {
+        "style": "primary"
+      }
+    },
+    {
+      "id": "wzwanh",
+      "name": "migrator-features-v02-2__box-right-image",
+      "settings": {
+        "_direction": "row",
+        "_columnGap": "7rem",
+        "_alignItems": "center",
+        "_direction:tablet_portrait": "column-reverse",
+        "_rowGap:tablet_portrait": "5rem",
+        "_rowGap:mobile_landscape": "4rem",
+        "_direction:mobile_portrait": "Column-reverse",
+        "_direction:mobile_landscape": "Column-reverse"
+      }
+    }
+  ],
+  "globalElements": []
+}

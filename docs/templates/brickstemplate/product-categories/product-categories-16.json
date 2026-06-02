@@ -1,0 +1,367 @@
+{
+  "content": [
+    {
+      "id": "vwdexf",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "sqloih"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cbyzkc"
+        ]
+      },
+      "label": "Product Categories 16"
+    },
+    {
+      "id": "sqloih",
+      "name": "container",
+      "parent": "vwdexf",
+      "children": [
+        "jnnoim",
+        "qzheqs"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gcpgyx"
+        ]
+      }
+    },
+    {
+      "id": "jnnoim",
+      "name": "block",
+      "parent": "sqloih",
+      "children": [
+        "jpkobe"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "pixmvy"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "jpkobe",
+      "name": "heading",
+      "parent": "jnnoim",
+      "children": [],
+      "settings": {
+        "text": "Shop by Categories",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "fujvxp"
+        ]
+      },
+      "label": "title"
+    },
+    {
+      "id": "qzheqs",
+      "name": "block",
+      "parent": "sqloih",
+      "children": [
+        "gldxnl"
+      ],
+      "settings": {
+        "_cssClasses": "test",
+        "_cssGlobalClasses": [
+          "vrfnoq"
+        ]
+      },
+      "label": "term wrap"
+    },
+    {
+      "id": "gldxnl",
+      "name": "slider-nested",
+      "parent": "qzheqs",
+      "children": [
+        "ngmlbw"
+      ],
+      "settings": {
+        "perPage": "7",
+        "arrows": true,
+        "perPage:tablet_portrait": "5",
+        "perPage:mobile_landscape": "3",
+        "_cssGlobalClasses": [
+          "mdaquv"
+        ],
+        "height": "auto",
+        "gap": "2rem",
+        "gap:mobile_landscape": "1rem",
+        "prevArrow": {
+          "library": "themify",
+          "icon": "ti-angle-left"
+        },
+        "nextArrow": {
+          "library": "themify",
+          "icon": "ti-angle-right"
+        }
+      },
+      "label": "term block (CSS)"
+    },
+    {
+      "id": "ngmlbw",
+      "name": "block",
+      "parent": "gldxnl",
+      "children": [
+        "byoyrf",
+        "eftjzw",
+        "znwiut"
+      ],
+      "settings": {
+        "hasLoop": true,
+        "query": {
+          "objectType": "term",
+          "taxonomy": [
+            "product_cat"
+          ]
+        },
+        "_cssGlobalClasses": [
+          "rhdiwl"
+        ]
+      },
+      "label": "term content"
+    },
+    {
+      "id": "byoyrf",
+      "name": "image",
+      "parent": "ngmlbw",
+      "children": [],
+      "settings": {
+        "image": {
+          "useDynamicData": "{woo_product_cat_image}",
+          "size": "large"
+        },
+        "tag": "figure",
+        "caption": "none",
+        "link": "url",
+        "url": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "_cssGlobalClasses": [
+          "wmwfjx"
+        ]
+      },
+      "themeStyles": [],
+      "label": "term image"
+    },
+    {
+      "id": "eftjzw",
+      "name": "heading",
+      "parent": "ngmlbw",
+      "children": [],
+      "settings": {
+        "link": {
+          "type": "meta",
+          "useDynamicData": "{term_url}"
+        },
+        "text": "{term_name}",
+        "_cssGlobalClasses": [
+          "xrvnkb"
+        ]
+      },
+      "label": "term name"
+    },
+    {
+      "id": "znwiut",
+      "name": "text-basic",
+      "parent": "ngmlbw",
+      "children": [],
+      "settings": {
+        "tag": "p",
+        "text": "{term_count} Products",
+        "_cssGlobalClasses": [
+          "crcheu"
+        ]
+      },
+      "label": "term qty"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.11.1.1",
+  "globalClasses": [
+    {
+      "id": "cbyzkc",
+      "name": "migrator-product-categories-16",
+      "settings": {
+        "_padding": {
+          "bottom": "6rem",
+          "top": "6rem",
+          "left": "2rem",
+          "right": "2rem"
+        },
+        "_padding:tablet_portrait": {
+          "bottom": "5rem",
+          "top": "5rem"
+        },
+        "_padding:mobile_landscape": {
+          "top": "4rem",
+          "bottom": "4rem"
+        }
+      }
+    },
+    {
+      "id": "gcpgyx",
+      "name": "migrator-product-categories-16__container",
+      "settings": {
+        "_rowGap": "4rem",
+        "_rowGap:mobile_landscape": "3rem"
+      }
+    },
+    {
+      "id": "pixmvy",
+      "name": "migrator-product-categories-16__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_width": "60rem",
+        "_alignSelf": "center",
+        "_rowGap": "1rem"
+      }
+    },
+    {
+      "id": "fujvxp",
+      "name": "migrator-product-categories-16__title",
+      "settings": {
+        "_typography": {
+          "font-size": "clamp(2.400rem, 1.364vw + 1.855rem, 3.600rem);",
+          "font-weight": "700",
+          "line-height": "1.5"
+        }
+      }
+    },
+    {
+      "id": "vrfnoq",
+      "name": "migrator-product-categories-16__term-wrap",
+      "settings": []
+    },
+    {
+      "id": "mdaquv",
+      "name": "migrator-product-categories-16__term-block",
+      "settings": {
+        "height": "auto",
+        "gap": "2rem",
+        "arrowBackground": {
+          "hex": "#f7f7f7",
+          "id": "wuzbbq",
+          "name": "Background"
+        },
+        "arrowSize": "1.5rem",
+        "arrowHeight": "35",
+        "arrowWidth": "35",
+        "prevArrow": {
+          "library": "themify",
+          "icon": "ti-angle-left"
+        },
+        "nextArrow": {
+          "library": "themify",
+          "icon": "ti-angle-right"
+        },
+        "arrowBorder": {
+          "radius": {
+            "top": "100",
+            "right": "100",
+            "bottom": "100",
+            "left": "100"
+          }
+        },
+        "arrowBackground:hover": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "arrowColor:hover": {
+          "hex": "#ffffff",
+          "id": "mlnzir",
+          "name": "White"
+        },
+        "arrowColor": {
+          "hex": "#202020",
+          "id": "mpeanq",
+          "name": "Primary Color"
+        },
+        "gap:tablet_portrait": "2rem",
+        "gap:mobile_landscape": "1rem",
+        "_cssCustom": ".migrator-product-categories-16__term-block .splide__arrow {\n    box-shadow: 0 2px 8px 0 rgba(99, 99, 99, 0.2);\n    opacity: 0;\n  transition: all .3s;\n}\n.migrator-product-categories-16__term-block:hover .splide__arrow {  \n  \topacity: 1;  \n}"
+      },
+      "modified": 1736968775,
+      "user_id": 2
+    },
+    {
+      "id": "rhdiwl",
+      "name": "migrator-product-categories-16__term-content",
+      "settings": []
+    },
+    {
+      "id": "wmwfjx",
+      "name": "migrator-product-categories-16__term-image",
+      "settings": {
+        "_width": "12rem",
+        "_border": {
+          "width": {
+            "top": "0.2rem",
+            "right": "0.2rem",
+            "bottom": "0.2rem",
+            "left": "0.2rem"
+          },
+          "style": "dotted",
+          "color": {
+            "hex": "#202020",
+            "id": "mpeanq",
+            "name": "Primary Color"
+          },
+          "radius": {
+            "top": "100",
+            "right": "100",
+            "bottom": "100",
+            "left": "100"
+          }
+        },
+        "_width:mobile_portrait": "10rem"
+      }
+    },
+    {
+      "id": "xrvnkb",
+      "name": "migrator-product-categories-16__term-name",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "clamp(1.400rem, 0.227vw + 1.309rem, 1.600rem);",
+          "font-weight": "600",
+          "line-height": "1.5"
+        },
+        "_typography:hover": {
+          "color": {
+            "hex": "#2c2c2c",
+            "id": "ayylcc",
+            "name": "Primary Hover"
+          }
+        },
+        "_padding": {
+          "top": "2rem"
+        }
+      }
+    },
+    {
+      "id": "crcheu",
+      "name": "migrator-product-categories-16__term-qty",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "1.4rem"
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

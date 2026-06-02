@@ -1,0 +1,416 @@
+{
+  "content": [
+    {
+      "id": "kyijbo",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "fckasn"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ghpwmo"
+        ]
+      },
+      "label": "Coming Soon 9"
+    },
+    {
+      "id": "fckasn",
+      "name": "container",
+      "parent": "kyijbo",
+      "children": [
+        "fwyfun",
+        "eorzva"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ntgcur"
+        ]
+      }
+    },
+    {
+      "id": "fwyfun",
+      "name": "block",
+      "parent": "fckasn",
+      "children": [
+        "vdwtva",
+        "sqhjvr",
+        "proosk"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "qjbmdx"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "vdwtva",
+      "name": "heading",
+      "parent": "fwyfun",
+      "children": [],
+      "settings": {
+        "text": "Our Website Is coming Soon",
+        "tag": "h1",
+        "_cssGlobalClasses": [
+          "pwrncq"
+        ]
+      }
+    },
+    {
+      "id": "sqhjvr",
+      "name": "text-basic",
+      "parent": "fwyfun",
+      "children": [],
+      "settings": {
+        "text": "This is just placeholder text. Don’t be alarmed, this is just here to fill up space since your finalized copy isn’t ready yet. Once we have your content finalized, we’ll replace this placeholder text with your real content.",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "ugkjrh"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "proosk",
+      "name": "countdown",
+      "parent": "fwyfun",
+      "children": [],
+      "settings": {
+        "date": "2025-09-30 12:00",
+        "fields": [
+          {
+            "id": "ilmsxz",
+            "format": "%D",
+            "suffix": "Days"
+          },
+          {
+            "format": "%H",
+            "id": "gvdceb",
+            "suffix": "Hours"
+          },
+          {
+            "format": "%M",
+            "id": "zptiso",
+            "suffix": "Minutes"
+          },
+          {
+            "format": "%S",
+            "id": "glpmju",
+            "suffix": "seconds"
+          }
+        ],
+        "action": "countdown",
+        "timezone": "UTC+06:00",
+        "_cssGlobalClasses": [
+          "dkziik"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "eorzva",
+      "name": "block",
+      "parent": "fckasn",
+      "children": [
+        "xdmkus"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fjsdbm"
+        ]
+      },
+      "label": "form warp"
+    },
+    {
+      "id": "xdmkus",
+      "name": "form",
+      "parent": "eorzva",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "id": "bdwqgu",
+            "width": "100",
+            "width:mobile_portrait": "100%"
+          },
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "trqnoi"
+          },
+          {
+            "type": "textarea",
+            "label": "Message",
+            "placeholder": "Your Message",
+            "id": "nogqvm"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonText": "Send",
+        "submitButtonSize": "lg",
+        "_cssGlobalClasses": [
+          "bwaawt"
+        ]
+      },
+      "label": "form",
+      "themeStyles": []
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://wireframe.brickstemplate.com",
+  "version": "1.12.5",
+  "globalClasses": [
+    {
+      "id": "ghpwmo",
+      "name": "migrator-coming-soon-9",
+      "settings": {
+        "_padding": {
+          "right": "2rem",
+          "left": "2rem",
+          "top": "10rem",
+          "bottom": "10rem"
+        },
+        "_justifyContent": "center"
+      },
+      "_exists": false
+    },
+    {
+      "id": "ntgcur",
+      "name": "migrator-coming-soon-9__container",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "5rem",
+        "_direction:tablet_portrait": "column-reverse",
+        "_flexWrap": "wrap",
+        "_rowGap:tablet_portrait": "5rem",
+        "_rowGap:mobile_landscape": "3rem"
+      },
+      "_exists": false
+    },
+    {
+      "id": "qjbmdx",
+      "name": "migrator-coming-soon-9__content-wrap",
+      "settings": {
+        "_rowGap": "3rem",
+        "_alignItems": "flex-start",
+        "_width": "50%",
+        "_flexGrow": "1",
+        "_width:tablet_portrait": "100%"
+      },
+      "_exists": false
+    },
+    {
+      "id": "pwrncq",
+      "name": "migrator-coming-soon-9__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-size": "5rem",
+          "font-family": "Inter",
+          "font-weight": "700",
+          "text-transform": "capitalize",
+          "line-height": "1.3",
+          "text-align": "left"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "4rem"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "3.6rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "ugkjrh",
+      "name": "migrator-coming-soon-9__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#62708a",
+            "id": "qatgpn",
+            "name": "Text"
+          },
+          "font-size": "1.6rem",
+          "line-height": "1.6",
+          "font-weight": "400",
+          "font-family": "Inter",
+          "text-align": "left"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "dkziik",
+      "name": "migrator-coming-soon-9__countdown",
+      "settings": {
+        "flexDirectionFields": "row",
+        "flexDirection": "column",
+        "typographySuffix": {
+          "font-size": "1.4rem",
+          "line-height": "1.1"
+        },
+        "typography": {
+          "font-size": "3rem",
+          "color": {
+            "hex": "#161616",
+            "id": "gktedp",
+            "name": "Heading"
+          },
+          "font-weight": "700",
+          "font-family": "Inter",
+          "line-height": "1.1"
+        },
+        "_background": {
+          "color": {
+            "hex": "#e6e6e6",
+            "id": "fdbvnf",
+            "name": "Subtile - BG"
+          }
+        },
+        "_padding": {
+          "top": "1rem",
+          "right": "2rem",
+          "bottom": "1rem",
+          "left": "2rem"
+        },
+        "gutter": {
+          "right": "1rem",
+          "left": "1rem"
+        },
+        "justifyContent": "center",
+        "_border": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "gutter:mobile_landscape": {
+          "bottom": "1rem",
+          "right": "0.5rem",
+          "left": "0.5rem"
+        },
+        "_padding:mobile_portrait": {
+          "right": "1.5rem",
+          "left": "1.5rem",
+          "bottom": "0.8rem",
+          "top": "0.8rem"
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "fjsdbm",
+      "name": "migrator-coming-soon-9__form-warp",
+      "settings": {
+        "_boxShadow": {
+          "values": {
+            "offsetX": "0",
+            "offsetY": "7",
+            "blur": "29",
+            "spread": "0"
+          },
+          "color": {
+            "hex": "#646464",
+            "rgb": "rgba(100, 100, 100, 0.2)",
+            "hsl": "hsla(0, 0%, 39%, 0.2)"
+          }
+        },
+        "_alignItems": "center",
+        "_padding": {
+          "top": "4rem",
+          "right": "4rem",
+          "bottom": "4rem",
+          "left": "4rem"
+        },
+        "_width": "40%",
+        "_width:tablet_portrait": "60%",
+        "_width:mobile_landscape": "100%",
+        "_border": {
+          "radius": {
+            "top": "1rem",
+            "right": "1rem",
+            "bottom": "1rem",
+            "left": "1rem"
+          }
+        }
+      },
+      "_exists": false
+    },
+    {
+      "id": "bwaawt",
+      "name": "migrator-coming-soon-9__form",
+      "settings": {
+        "submitButtonBackgroundColor": {
+          "hex": "#161616",
+          "id": "gktedp",
+          "name": "Heading"
+        },
+        "submitButtonTypography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "mlnzir",
+            "name": "White"
+          },
+          "font-size": "1.8rem",
+          "line-height": "1.3"
+        },
+        "submitButtonWidth": "100",
+        "fieldMargin:mobile_portrait": {
+          "left": "0",
+          "right": "0"
+        },
+        "fieldMargin": {
+          "bottom": "2rem"
+        },
+        "fieldPadding": {
+          "left": "2rem",
+          "right": "2rem",
+          "top": "0.2rem",
+          "bottom": "0.2rem"
+        },
+        "submitButtonBorder": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "0.5rem",
+            "right": "0.5rem",
+            "bottom": "0.5rem",
+            "left": "0.5rem"
+          }
+        },
+        "submitButtonWidth:mobile_portrait": "100",
+        "submitButtonWidth:mobile_landscape": "100",
+        "submitButtonBackgroundColor:hover": {
+          "hex": "#2c2c2c",
+          "id": "ayylcc",
+          "name": "Primary Hover"
+        }
+      },
+      "_exists": false
+    }
+  ],
+  "globalElements": []
+}

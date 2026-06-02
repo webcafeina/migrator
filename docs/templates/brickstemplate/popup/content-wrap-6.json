@@ -1,0 +1,277 @@
+{
+  "content": [
+    {
+      "id": "izjexd",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "nmrpyb"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "amlrym"
+        ]
+      }
+    },
+    {
+      "id": "nmrpyb",
+      "name": "container",
+      "parent": "izjexd",
+      "children": [
+        "jvkhib"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cictbt"
+        ]
+      }
+    },
+    {
+      "id": "jvkhib",
+      "name": "block",
+      "parent": "nmrpyb",
+      "children": [
+        "hjdbzw",
+        "oxuvkm",
+        "vjqkec",
+        "rxgwml"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "jqaciy"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "hjdbzw",
+      "name": "heading",
+      "parent": "jvkhib",
+      "children": [],
+      "settings": {
+        "text": "Subscribe To Our Newsletter and Get 50% OFF",
+        "_cssGlobalClasses": [
+          "erhyhi"
+        ]
+      }
+    },
+    {
+      "id": "oxuvkm",
+      "name": "text-basic",
+      "parent": "jvkhib",
+      "children": [],
+      "settings": {
+        "text": "Congue facilisis class vulputate eget molestie cubilia potenti sit morbi justo commodo posuere lectus mi aenean risus diam dictumst nullam conubia",
+        "_cssGlobalClasses": [
+          "qtxpzn"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "vjqkec",
+      "name": "form",
+      "parent": "jvkhib",
+      "children": [],
+      "settings": {
+        "fields": [
+          {
+            "type": "email",
+            "label": "Email",
+            "placeholder": "Your Email",
+            "required": true,
+            "id": "f9dfc7",
+            "width": "33.33",
+            "width:mobile_portrait": "100"
+          },
+          {
+            "type": "text",
+            "label": "Name",
+            "placeholder": "Your Name",
+            "id": "bmzghd",
+            "width": "33.33",
+            "width:mobile_portrait": "100"
+          }
+        ],
+        "submitButtonStyle": "primary",
+        "successMessage": "Message successfully sent. We will get back to you as soon as possible.",
+        "emailSubject": "Contact form request",
+        "emailTo": "admin_email",
+        "fromName": "PG Bricks",
+        "emailErrorMessage": "Submission failed. Please reload the page and try to submit the form again.",
+        "htmlEmail": true,
+        "mailchimpPendingMessage": "Please check your email to confirm your subscription.",
+        "mailchimpErrorMessage": "Sorry, but we could not subscribe you.",
+        "sendgridErrorMessage": "Sorry, but we could not subscribe you.",
+        "submitButtonSize": "xl",
+        "_cssGlobalClasses": [
+          "fyqwno"
+        ]
+      },
+      "themeStyles": []
+    },
+    {
+      "id": "rxgwml",
+      "name": "icon",
+      "parent": "jvkhib",
+      "children": [],
+      "settings": {
+        "icon": {
+          "library": "fontawesomeRegular",
+          "icon": "fa fa-circle-xmark"
+        },
+        "_interactions": [
+          {
+            "id": "lzxdcf",
+            "trigger": "click",
+            "action": "hide",
+            "target": "popup",
+            "templateId": "2778"
+          }
+        ],
+        "_cssGlobalClasses": [
+          "wktkbd"
+        ]
+      },
+      "themeStyles": [],
+      "label": "close"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.3",
+  "globalClasses": [
+    {
+      "id": "amlrym",
+      "name": "migrator-popup-v08",
+      "settings": []
+    },
+    {
+      "id": "cictbt",
+      "name": "migrator-popup-v08__container",
+      "settings": {
+        "_direction": "column"
+      }
+    },
+    {
+      "id": "jqaciy",
+      "name": "migrator-popup-v08__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_position": "relative",
+        "_rowGap": "20px",
+        "_rowGap:mobile_portrait": "10px"
+      }
+    },
+    {
+      "id": "erhyhi",
+      "name": "migrator-popup-v08__heading",
+      "settings": {
+        "_typography": {
+          "text-align": "center",
+          "font-size": "32px",
+          "line-height": "38px"
+        },
+        "_typography:tablet_portrait": {
+          "font-size": "28px",
+          "line-height": "32px"
+        },
+        "_typography:mobile_landscape": {
+          "font-size": "24px",
+          "line-height": "32px"
+        },
+        "_typography:mobile_portrait": {
+          "font-size": "22px",
+          "line-height": "28px"
+        }
+      }
+    },
+    {
+      "id": "qtxpzn",
+      "name": "migrator-popup-v08__text",
+      "settings": {
+        "_typography:tablet_portrait": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "fyqwno",
+      "name": "migrator-popup-v08__form",
+      "settings": {
+        "submitButtonWidth": "33.33",
+        "_width": "100%",
+        "fieldMargin": {
+          "right": "20px",
+          "left": "0"
+        },
+        "horizontalAlignFields": "flex-start",
+        "fieldPadding": {
+          "top": "5px",
+          "bottom": "5px"
+        },
+        "submitButtonBackgroundColor": {
+          "hex": "#8467d9"
+        },
+        "submitButtonTypography": {
+          "font-size": "18px",
+          "color": {
+            "hex": "#f5f5f5",
+            "id": "0e70ea",
+            "name": "Color #1"
+          },
+          "line-height": "22px"
+        },
+        "_width:mobile_landscape": "100%",
+        "submitButtonWidth:mobile_portrait": "70",
+        "fieldMargin:mobile_portrait": {
+          "bottom": "10px",
+          "right": "0",
+          "left": "0"
+        },
+        "fieldBorder:mobile_portrait": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldBorder": {
+          "radius": {
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "left": "6px"
+          }
+        },
+        "fieldMargin:mobile_landscape": {
+          "bottom": "10px",
+          "right": "10px"
+        },
+        "_typography": {
+          "text-align": "center"
+        }
+      }
+    },
+    {
+      "id": "wktkbd",
+      "name": "migrator-popup-v08__close",
+      "settings": {
+        "_position": "absolute",
+        "_top": "0",
+        "_right": "0",
+        "iconColor": {
+          "hex": "#000000"
+        },
+        "iconSize": "30px",
+        "_cursor": "pointer",
+        "iconSize:tablet_portrait": "25px",
+        "iconSize:mobile_portrait": "20px",
+        "_top:mobile_portrait": "-20",
+        "_top:mobile_landscape": "-20px"
+      }
+    }
+  ],
+  "globalElements": []
+}

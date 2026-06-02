@@ -1,0 +1,201 @@
+{
+  "content": [
+    {
+      "id": "0bcb04",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "944f5d"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "fireac"
+        ]
+      }
+    },
+    {
+      "id": "944f5d",
+      "name": "container",
+      "parent": "0bcb04",
+      "children": [
+        "a648e6"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "cvxujb"
+        ]
+      }
+    },
+    {
+      "id": "a648e6",
+      "name": "block",
+      "parent": "944f5d",
+      "children": [
+        "c67750",
+        "632a6b",
+        "a6c650"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tqexzk"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "c67750",
+      "name": "heading",
+      "parent": "a648e6",
+      "children": [],
+      "settings": {
+        "text": "Now You Can Have The FOOD Of Your Dreams – Cheaper/Faster Than You Ever Imagined",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "nmgvud"
+        ]
+      }
+    },
+    {
+      "id": "632a6b",
+      "name": "text",
+      "parent": "a648e6",
+      "children": [],
+      "settings": {
+        "text": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>",
+        "_cssGlobalClasses": [
+          "qzwfzd"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "a6c650",
+      "name": "button",
+      "parent": "a648e6",
+      "children": [],
+      "settings": {
+        "text": "I am a button",
+        "link": {
+          "type": "external",
+          "url": "#"
+        },
+        "_cssGlobalClasses": [
+          "rtiood"
+        ],
+        "style": "primary"
+      },
+      "label": "button"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "fireac",
+      "name": "migrator-hero-v05",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center",
+        "_height": "100vh",
+        "_background": {
+          "image": {
+            "id": 69,
+            "filename": "georgia-z-JG5lgvc57qE-unsplash.jpg",
+            "size": "large",
+            "full": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/georgia-z-JG5lgvc57qE-unsplash.jpg",
+            "url": "http://preview.brickstemplate.com/wp-content/uploads/2022/07/georgia-z-JG5lgvc57qE-unsplash-1024x683.jpg"
+          },
+          "position": "center right"
+        },
+        "_gradient": {
+          "applyTo": "overlay",
+          "colors": [
+            {
+              "id": "qnxwhr",
+              "color": {
+                "hex": "#2d3749",
+                "rgb": "rgba(45, 55, 73, 0.5)",
+                "hsl": "hsla(219, 24%, 23%, 0.5)"
+              }
+            }
+          ]
+        },
+        "_padding:mobile_landscape": {
+          "top": 0
+        }
+      }
+    },
+    {
+      "id": "cvxujb",
+      "name": "migrator-hero-v05__container",
+      "settings": []
+    },
+    {
+      "id": "tqexzk",
+      "name": "migrator-hero-v05__content-wrap",
+      "settings": {
+        "_padding:tablet_portrait": {
+          "right": 20,
+          "left": 20
+        },
+        "_rowGap": "20px",
+        "_padding": {
+          "right": "50%"
+        },
+        "_padding:mobile_landscape": {
+          "right": 20,
+          "left": 20
+        },
+        "_zIndex": "2"
+      }
+    },
+    {
+      "id": "nmgvud",
+      "name": "migrator-hero-v05__heading",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "qzwfzd",
+      "name": "migrator-hero-v05__text",
+      "settings": {
+        "_typography": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        }
+      }
+    },
+    {
+      "id": "rtiood",
+      "name": "migrator-hero-v05__button",
+      "settings": {
+        "style": "primary",
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_padding": {
+          "top": 10,
+          "right": 35,
+          "bottom": 10,
+          "left": 35
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}

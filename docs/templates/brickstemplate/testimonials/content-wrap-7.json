@@ -1,0 +1,670 @@
+{
+  "content": [
+    {
+      "id": "016636",
+      "name": "section",
+      "parent": 0,
+      "children": [
+        "de0853"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "ifpyjv"
+        ]
+      }
+    },
+    {
+      "id": "de0853",
+      "name": "container",
+      "parent": "016636",
+      "children": [
+        "06cb27",
+        "5aef13"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "iqiakb"
+        ]
+      }
+    },
+    {
+      "id": "06cb27",
+      "name": "block",
+      "parent": "de0853",
+      "children": [
+        "b2fb16",
+        "af8dd7"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "hkrzix"
+        ]
+      },
+      "label": "content wrap"
+    },
+    {
+      "id": "b2fb16",
+      "name": "heading",
+      "parent": "06cb27",
+      "children": [],
+      "settings": {
+        "text": "Testimonials Style 7",
+        "tag": "h2",
+        "_cssGlobalClasses": [
+          "iediqz"
+        ]
+      },
+      "label": "top heading"
+    },
+    {
+      "id": "af8dd7",
+      "name": "text-basic",
+      "parent": "06cb27",
+      "children": [],
+      "settings": {
+        "text": "Habitant mollis ut non velit hendrerit litora bibendum rhoncus eros montes torquent pellentesque aliquet inceptos nisi magnis at molestie euismod",
+        "tag": "p",
+        "_cssGlobalClasses": [
+          "mlmzzz"
+        ]
+      },
+      "label": "top text"
+    },
+    {
+      "id": "5aef13",
+      "name": "block",
+      "parent": "de0853",
+      "children": [
+        "daa66b",
+        "668a03",
+        "047704"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "gesddz"
+        ]
+      },
+      "label": "testimonials wrap"
+    },
+    {
+      "id": "daa66b",
+      "name": "block",
+      "parent": "5aef13",
+      "children": [
+        "9eeb29",
+        "c2fff8",
+        "259625",
+        "6cf1f6",
+        "b4d911"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "alwymf"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "9eeb29",
+      "name": "image",
+      "parent": "daa66b",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tsscjm"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/brooke-cagle-JBwcenOuRCg-unsplash.jpg",
+          "external": true,
+          "filename": "brooke-cagle-JBwcenOuRCg-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "c2fff8",
+      "name": "social-icons",
+      "parent": "daa66b",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "background": {
+              "hex": "#4cc2ff"
+            },
+            "id": "xcknlp",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "background": {
+              "hex": "#3b5998"
+            },
+            "id": "ylvxaj",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "background": {
+              "hex": "#4E433C"
+            },
+            "id": "rkojqx",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "sauhgn"
+        ]
+      },
+      "label": "social"
+    },
+    {
+      "id": "259625",
+      "name": "text-basic",
+      "parent": "daa66b",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "qndosz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "6cf1f6",
+      "name": "heading",
+      "parent": "daa66b",
+      "children": [],
+      "settings": {
+        "text": "Olivia",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nzwcjd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "b4d911",
+      "name": "text-basic",
+      "parent": "daa66b",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "ayqljs"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "668a03",
+      "name": "block",
+      "parent": "5aef13",
+      "children": [
+        "1590bd",
+        "df7229",
+        "b0b546",
+        "2256f6",
+        "7f3e34"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "alwymf"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "1590bd",
+      "name": "image",
+      "parent": "668a03",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tsscjm"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/tyler-nix-sh3LSNbyj7k-unsplash.jpg",
+          "external": true,
+          "filename": "tyler-nix-sh3LSNbyj7k-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "df7229",
+      "name": "social-icons",
+      "parent": "668a03",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "background": {
+              "hex": "#4cc2ff"
+            },
+            "id": "xcknlp",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "background": {
+              "hex": "#3b5998"
+            },
+            "id": "ylvxaj",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "background": {
+              "hex": "#4E433C"
+            },
+            "id": "rkojqx",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "sauhgn"
+        ]
+      },
+      "label": "social"
+    },
+    {
+      "id": "b0b546",
+      "name": "text-basic",
+      "parent": "668a03",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "qndosz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "2256f6",
+      "name": "heading",
+      "parent": "668a03",
+      "children": [],
+      "settings": {
+        "text": "Emma",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nzwcjd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "7f3e34",
+      "name": "text-basic",
+      "parent": "668a03",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "ayqljs"
+        ]
+      },
+      "label": "designation"
+    },
+    {
+      "id": "047704",
+      "name": "block",
+      "parent": "5aef13",
+      "children": [
+        "418f5e",
+        "22ae58",
+        "fefe47",
+        "c0804b",
+        "40a90c"
+      ],
+      "settings": {
+        "_cssGlobalClasses": [
+          "alwymf"
+        ]
+      },
+      "label": "testimonials item"
+    },
+    {
+      "id": "418f5e",
+      "name": "image",
+      "parent": "047704",
+      "children": [],
+      "settings": {
+        "_cssGlobalClasses": [
+          "tsscjm"
+        ],
+        "image": {
+          "url": "https://preview.brickstemplate.com/wp-content/uploads/2022/07/vinicius-wiesehofer-UOavP_Z38lE-unsplash.jpg",
+          "external": true,
+          "filename": "vinicius-wiesehofer-UOavP_Z38lE-unsplash.jpg"
+        }
+      }
+    },
+    {
+      "id": "22ae58",
+      "name": "social-icons",
+      "parent": "047704",
+      "children": [],
+      "settings": {
+        "icons": [
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-twitter"
+            },
+            "background": {
+              "hex": "#4cc2ff"
+            },
+            "id": "xcknlp",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-facebook-square"
+            },
+            "background": {
+              "hex": "#3b5998"
+            },
+            "id": "ylvxaj",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          },
+          {
+            "icon": {
+              "library": "fontawesomeBrands",
+              "icon": "fab fa-instagram"
+            },
+            "background": {
+              "hex": "#4E433C"
+            },
+            "id": "rkojqx",
+            "link": {
+              "type": "external",
+              "url": "#"
+            }
+          }
+        ],
+        "_cssGlobalClasses": [
+          "sauhgn"
+        ]
+      },
+      "label": "social"
+    },
+    {
+      "id": "fefe47",
+      "name": "text-basic",
+      "parent": "047704",
+      "children": [],
+      "settings": {
+        "text": "Facilisi sem eget montes dignissim massa magna letius iaculis nostra nullam lobortis nisl augue porta",
+        "_cssGlobalClasses": [
+          "qndosz"
+        ]
+      },
+      "label": "text"
+    },
+    {
+      "id": "c0804b",
+      "name": "heading",
+      "parent": "047704",
+      "children": [],
+      "settings": {
+        "text": "Sophia",
+        "tag": "h3",
+        "_cssGlobalClasses": [
+          "nzwcjd"
+        ]
+      },
+      "label": "name"
+    },
+    {
+      "id": "40a90c",
+      "name": "text-basic",
+      "parent": "047704",
+      "children": [],
+      "settings": {
+        "text": "Developer",
+        "_cssGlobalClasses": [
+          "ayqljs"
+        ]
+      },
+      "label": "designation"
+    }
+  ],
+  "source": "bricksCopiedElements",
+  "sourceUrl": "https://preview.brickstemplate.com",
+  "version": "1.9.1.1",
+  "globalClasses": [
+    {
+      "id": "ifpyjv",
+      "name": "migrator-testimonials-v07",
+      "settings": {
+        "_alignSelf": "stretch",
+        "_alignItems": "center",
+        "_justifyContent": "center"
+      }
+    },
+    {
+      "id": "iqiakb",
+      "name": "migrator-testimonials-v07__container",
+      "settings": {
+        "_padding": {
+          "top": 80,
+          "bottom": 80
+        },
+        "_alignItems": "center",
+        "_padding:tablet_portrait": {
+          "top": 70,
+          "right": 20,
+          "bottom": 70,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "hkrzix",
+      "name": "migrator-testimonials-v07__content-wrap",
+      "settings": {
+        "_alignItems": "center",
+        "_rowGap": "20px",
+        "_padding": {
+          "bottom": 40
+        }
+      }
+    },
+    {
+      "id": "iediqz",
+      "name": "migrator-testimonials-v07__top-heading",
+      "settings": []
+    },
+    {
+      "id": "mlmzzz",
+      "name": "migrator-testimonials-v07__top-text",
+      "settings": {
+        "_margin": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 20,
+          "left": 20,
+          "bottom": ""
+        },
+        "_typography": {
+          "text-align": "center"
+        },
+        "_margin:mobile_portrait": {
+          "unit": {
+            "right": "%",
+            "left": "%"
+          },
+          "right": 0,
+          "left": 0
+        }
+      }
+    },
+    {
+      "id": "gesddz",
+      "name": "migrator-testimonials-v07__testimonials-wrap",
+      "settings": {
+        "_direction": "row",
+        "_alignItems": "center",
+        "_columnGap": "20px",
+        "_margin": {
+          "top": 50
+        }
+      }
+    },
+    {
+      "id": "alwymf",
+      "name": "migrator-testimonials-v07__testimonials-item",
+      "settings": {
+        "_background": {
+          "color": {
+            "hex": "#ffffff",
+            "id": "rdwpct"
+          }
+        },
+        "_border": {
+          "radius": {
+            "top": 6,
+            "right": 6,
+            "bottom": 6,
+            "left": 6
+          }
+        },
+        "_boxShadow": {
+          "color": {
+            "hex": "#959da5",
+            "rgb": "rgba(149, 157, 165, 0.2)",
+            "hsl": "hsla(210, 8%, 62%, 0.2)"
+          },
+          "values": {
+            "offsetX": 0,
+            "offsetY": 8,
+            "blur": 24,
+            "spread": 0
+          }
+        },
+        "_margin:mobile_landscape": {
+          "bottom": 25
+        }
+      }
+    },
+    {
+      "id": "tsscjm",
+      "name": "migrator-testimonials-v07__image",
+      "settings": {
+        "_margin": {
+          "bottom": 0
+        }
+      }
+    },
+    {
+      "id": "sauhgn",
+      "name": "migrator-testimonials-v07__social",
+      "settings": {
+        "_padding": {
+          "top": 10,
+          "right": 10,
+          "bottom": 10,
+          "left": 10
+        },
+        "_typography": {
+          "color": {
+            "hex": "#ffffff"
+          }
+        },
+        "gap": "10px",
+        "_width": "100%",
+        "_alignSelf": "center",
+        "_margin": {
+          "top": 10,
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "qndosz",
+      "name": "migrator-testimonials-v07__text",
+      "settings": {
+        "_padding": {
+          "right": 20,
+          "left": 20,
+          "bottom": 20
+        }
+      }
+    },
+    {
+      "id": "nzwcjd",
+      "name": "migrator-testimonials-v07__name",
+      "settings": {
+        "_typography": {
+          "font-size": "24px"
+        },
+        "_padding": {
+          "right": 20,
+          "left": 20
+        }
+      }
+    },
+    {
+      "id": "ayqljs",
+      "name": "migrator-testimonials-v07__designation",
+      "settings": {
+        "_padding": {
+          "right": 20,
+          "left": 20,
+          "bottom": 20
+        }
+      }
+    }
+  ],
+  "globalElements": []
+}
