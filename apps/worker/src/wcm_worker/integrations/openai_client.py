@@ -42,6 +42,7 @@ import json
 import logging
 import os
 import random
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -675,6 +676,109 @@ TOOL_CHOOSE_TEMPLATE: dict[str, Any] = {
 }
 
 
+#: v0.29.0 — SYSTEM prompt para BriefSectionAggregator. El LLM reagrupa
+#: bloques HTML planos del extractor en secciones semánticas canónicas
+#: que matcheen el catálogo brickstemplate.
+SYSTEM_PROMPT_AGGREGATE_SECTIONS = """Eres un experto en arquitectura de \
+información de páginas web. Recibes una lista de BLOQUES HTML planos \
+(text, heading, image, grid, etc.) extraídos en ORDEN secuencial de UNA \
+página, y debes AGRUPARLOS en SECCIONES SEMÁNTICAS coherentes.
+
+Cada sección emitida debe:
+1. Tener un `type` de la TAXONOMÍA CANÓNICA proporcionada (hero, features, \
+cta, testimonials, pricing, faqs, contact_form, team, brands, products, \
+product_categories, post_grid, post_section, counter, footer, slider).
+2. Listar los `source_block_ids` (índices 0-based) de los bloques que \
+absorbe — los bloques deben quedar TODOS asignados a UNA sección \
+exactamente (sin solapes, sin huecos).
+3. Mantener el ORDEN original: las secciones aparecen en el mismo orden \
+que sus bloques.
+
+Reglas:
+- La PRIMERA sección, si combina imagen+titular+CTA prominente, suele ser \
+`hero`. Aparece como mucho una vez.
+- Bloques `text/heading/image` aislados se absorben en la sección \
+semántica más cercana — NUNCA se emiten como sección propia (no existe \
+sección 'text').
+- Una secuencia repetida (3+) de bloques similares (heading+text+image, \
+o grid items) suele ser `features`, `team`, `testimonials`, `products` o \
+`brands` según el contenido textual.
+- `footer` aparece como mucho una vez al final si hay datos de contacto/links.
+- Si la página tiene 1 bloque importante standalone (ej. solo una FAQ), \
+emitirlo como su tipo más probable — NO forzar a hero.
+
+Devuelve EXACTAMENTE la tool `emit_semantic_sections`. NUNCA inventes \
+tipos fuera de la taxonomía. NUNCA escribas texto fuera de la tool."""
+
+
+#: v0.29.0 — Tool del BriefSectionAggregator. La validación final del
+#: `type` contra `CANONICAL_SECTION_TYPES` se hace en el caller (no
+#: usamos `enum` aquí porque la lista vive en bricks-transpiler y
+#: openai_client no debería importar del package transpiler).
+TOOL_AGGREGATE_SECTIONS: dict[str, Any] = {
+    "type": "function",
+    "function": {
+        "name": "emit_semantic_sections",
+        "description": (
+            "Agrupa la lista de bloques HTML planos de una página en N "
+            "secciones semánticas. Cada sección referencia los IDs de los "
+            "bloques origen. Bloques deben cubrirse 100% sin solapes."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "sections": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": (
+                                    "Tipo semántico canónico (uno de los "
+                                    "16 documentados en el system prompt)."
+                                ),
+                            },
+                            "source_block_ids": {
+                                "type": "array",
+                                "items": {"type": "integer", "minimum": 0},
+                                "minItems": 1,
+                                "description": (
+                                    "Índices 0-based de los bloques origen "
+                                    "absorbidos por esta sección."
+                                ),
+                            },
+                            "headline": {
+                                "type": "string",
+                                "description": (
+                                    "Titular principal extraído (opcional)."
+                                ),
+                            },
+                            "subheadline": {"type": "string"},
+                            "summary": {
+                                "type": "string",
+                                "maxLength": 400,
+                                "description": (
+                                    "Resumen 1-2 líneas del contenido. Usado "
+                                    "por SectionPicker para matchear template."
+                                ),
+                            },
+                            "has_image": {"type": "boolean"},
+                            "has_cta": {"type": "boolean"},
+                        },
+                        "required": ["type", "source_block_ids"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            "required": ["sections"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
 class OpenAIClient:
     """Cliente async para function calling estructurado.
 
@@ -827,6 +931,47 @@ class OpenAIClient:
             user_msg=user_msg,
             tool=TOOL_BRIEF_REFINEMENT,
             tool_name="emit_brief_refinements",
+        )
+
+    async def aggregate_page_sections(
+        self,
+        *,
+        page_url: str,
+        page_intent: str | None,
+        blocks: list[dict[str, Any]],
+        business_sector: str | None = None,
+        canonical_taxonomy: dict[str, str] | None = None,
+    ) -> OpenAIResult:
+        """v0.29.0 — Reagrupa bloques HTML planos en secciones semánticas.
+
+        Toma los `ContentBlocks` planos del extractor (text/heading/image/
+        grid/...) y emite una lista ordenada de secciones canónicas
+        (hero/features/cta/...) referenciando los `source_block_ids`.
+
+        `canonical_taxonomy`: dict `{type: description}` con las 16
+        categorías canónicas. El caller (BriefSectionAggregator) inyecta
+        `SECTION_DESCRIPTIONS` del módulo `semantic_taxonomy`.
+
+        Modelo: `model_redesign` (default gpt-5.5). Coste estimado por
+        página típica (20-30 bloques): $0.005-0.015. Para mariya.design
+        (50 páginas, 1550 bloques): ~$0.30-0.80 total.
+
+        El caller valida `type ∈ CANONICAL_SECTION_TYPES` y que el
+        `source_block_ids` cubra TODOS los bloques sin solapes.
+        """
+        user_msg = self._build_aggregate_sections_user_message(
+            page_url=page_url,
+            page_intent=page_intent,
+            blocks=blocks,
+            business_sector=business_sector,
+            canonical_taxonomy=canonical_taxonomy or {},
+        )
+        return await self._call_with_retry(
+            model=self.model_redesign,
+            system=SYSTEM_PROMPT_AGGREGATE_SECTIONS,
+            user_msg=user_msg,
+            tool=TOOL_AGGREGATE_SECTIONS,
+            tool_name="emit_semantic_sections",
         )
 
     async def choose_template_for_section(
@@ -1188,6 +1333,62 @@ class OpenAIClient:
             "Propón 5-15 mejoras concretas en categorías copy/cta/design_method/reorder.",
             "Sé específico: cita el page_slug + section_index exactos.",
             "NO propongas añadir o eliminar secciones (fuera de scope).",
+        ]
+        return "\n".join(parts)
+
+    @staticmethod
+    def _build_aggregate_sections_user_message(
+        *,
+        page_url: str,
+        page_intent: str | None,
+        blocks: list[dict[str, Any]],
+        business_sector: str | None,
+        canonical_taxonomy: dict[str, str],
+    ) -> str:
+        """v0.29.0 — User message del BriefSectionAggregator.
+
+        Compacta cada bloque a `{id, type, snippet}` para que el LLM lea
+        ~30 bloques sin reventar tokens. El `snippet` es texto extraído
+        (sin HTML), capado a 120 chars.
+        """
+        compact_blocks: list[dict[str, Any]] = []
+        for i, b in enumerate(blocks):
+            cj = b.get("content_json") or {}
+            snippet = ""
+            if isinstance(cj, dict):
+                if "headline" in cj:
+                    snippet = str(cj["headline"])[:120]
+                elif "text" in cj:
+                    snippet = str(cj["text"])[:120]
+                elif "html" in cj:
+                    snippet = re.sub(r"<[^>]+>", " ", str(cj["html"]))
+                    snippet = re.sub(r"\s+", " ", snippet).strip()[:120]
+                elif "alt" in cj:
+                    snippet = f"[image] {str(cj.get('alt', ''))[:80]}"
+                elif "items" in cj and isinstance(cj["items"], list):
+                    snippet = f"[{len(cj['items'])} items]"
+                elif "cta_text" in cj:
+                    snippet = f"[CTA] {str(cj['cta_text'])[:80]}"
+            compact_blocks.append({
+                "id": i,
+                "type": b.get("block_type") or "?",
+                "snippet": snippet,
+            })
+
+        parts = [
+            "## Página",
+            f"URL: {page_url}",
+            f"Intent: {page_intent or '(no especificado)'}",
+            f"Sector del negocio: {business_sector or '(no especificado)'}",
+            "",
+            f"## Bloques HTML del extractor ({len(blocks)} en total, en orden)",
+            json.dumps(compact_blocks, ensure_ascii=False, indent=2)[:8000],
+            "",
+            "## Taxonomía canónica disponible",
+            json.dumps(canonical_taxonomy, ensure_ascii=False, indent=2),
+            "",
+            "Agrupa TODOS los bloques en secciones semánticas canónicas. "
+            "Devuelve exactamente la tool emit_semantic_sections.",
         ]
         return "\n".join(parts)
 

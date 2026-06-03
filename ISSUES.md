@@ -526,6 +526,16 @@ Si un TODO en código referencia uno de estos IDs, debe figurar como `# TODO(WCM
 
 ---
 
+### WCM-053 (CRÍTICO) — BriefGenerator emite secciones de bajo nivel; SectionPicker no matchea catálogo brickstemplate
+- **Tipo**: bug / **Fase**: v0.28.0 B8 (descubierto en E2E mariya.design 2026-06-02) / **Prioridad**: **P0**
+- **Estado**: OPEN — bloquea cierre v0.28.0 y E2E B8/B9.
+- **Contexto**: ejecutado E2E manual sobre mariya.design (proyecto 32) con design_method=hybrid. El pipeline llegó hasta `redesign_templates` pero solo resolvió **10/1550 secciones (0,6%)** y emitió **1540 residuals** `template_not_found_for_section`. Causa raíz: `BriefGenerator` crea una `Brief.section` por cada bloque HTML extraído (`content_extractor.blocks`). Distribución observada: text(1114), heading(275), image(85), grid(58), hero(10), form(6), accordion(1), tabs(1). El catálogo brickstemplate.com (482 templates) está categorizado en taxonomía semántica: hero(44), features(36), cta(34), header(46), footer(33), pricing(20), team(14), testimonials(15), faqs(12), etc. **Único cruce válido: `hero`** → 10 matches; el resto cae al fallback "skip + residual". Se gastaron ~$0.29 en gpt-image-2 para imágenes hero (sin Bricks render real porque `bricks_adapt` no llegó a correr con shape válido).
+- **Acción**: introducir nuevo agente `BriefSectionAggregator` entre `brief_generator` y `redesign_templates` que reagrupe los bloques de bajo nivel en secciones semánticas (hero, features, cta, footer, pricing, contact_form, faqs, products, header, gallery, testimonials, team, banner, brands) usando gpt-5.5 con tool_use forzado. Cache por `(page_id, blocks_hash)` para idempotencia y reentry. Coste objetivo <$0.50/proyecto. Sprint v0.29.0.
+- **Mitigación temporal**: ninguna — sin el agregador el pipeline Hybrid es inútil para origen real (Wix/Webflow producen miles de bloques planos).
+- **Dueño**: técnico — sprint v0.29.0.
+
+---
+
 ## Plantilla para nuevos issues
 
 ```

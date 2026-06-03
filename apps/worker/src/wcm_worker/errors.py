@@ -112,6 +112,18 @@ class BriefRefinementError(AgentError):
     blocks_pipeline = False
 
 
+class BriefAggregatorError(AgentError):
+    """v0.29.0 — Error de BriefSectionAggregator.
+
+    No bloquea pipeline: si el agregador falla en una página, esa página
+    mantiene sus secciones de bajo nivel (las que ya tenía el Brief) y se
+    emite warning. Las demás páginas siguen siendo agregadas. Si OpenAI no
+    está disponible globalmente, el pipeline continúa con el Brief
+    plano — RedesignTemplates emitirá residuals como en v0.28.0."""
+
+    blocks_pipeline = False
+
+
 class AiAssistError(AgentError):
     """No bloqueante: si la AI vision falla, los bloques se mapean
     como RAW_HTML o quedan como UNKNOWN. El pipeline sigue.

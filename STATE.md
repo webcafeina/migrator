@@ -29,13 +29,20 @@
 
 ## Sprint en curso
 
-**v0.28.0** (en curso desde 2026-06-01) — **Bricks shape verbatim + Adapter
+**v0.29.0** (abierto 2026-06-03) — **BriefSectionAggregator (gpt-5.5) entre
+brief_generator y redesign_templates**. Sprint reactivo tras E2E v0.28.0
+sobre mariya.design (project 32 borrado): `BriefGenerator` emitía 1 sección
+por bloque HTML del extractor (1114 text + 275 heading + 85 image + 58 grid
++ 10 hero) y `SectionPicker` solo matcheaba `hero` contra el catálogo
+brickstemplate (semantic categories) → 10/1550 secciones (0.6%) → 1540
+residuals. Bug raíz documentado en WCM-053. 8 bloques B0-B7, ~5.5 días.
+Absorbe el release pendiente de v0.28.0 en CHANGELOG + ADR-059.
+
+**v0.28.0** (CERRADO SIN RELEASE 2026-06-03) — Bricks shape verbatim + Adapter
 determinista + Validator + Catálogo fijo Global Classes (B.3) + Visual quality
-gate + Brickstemplate clipboard listener**. Sprint reactivo tras E2E v0.27.0
-(Mariya Design, project 30 borrado): destino salió texto plano sin estilos
-porque Bricks ignoraba silenciosamente `font_size` (snake_case) mientras
-espera `font-size` (kebab-case). 5 defensas en cascada para garantizar shape
-verbatim Bricks 2.1.4.
+gate + Brickstemplate clipboard listener (482 templates) + LLMSectionRanker.
+Código de B0-B7+B11-B14 mergeado en `main`. B8 (E2E) + B9 (release) absorbidos
+por v0.29.0. NO se revierte nada — se construye encima.
 
 **Cerrados (1407+ tests verdes por bloques, segfault flake combined):**
 - B0 — `packages/bricks-transpiler/src/wcm_bricks_transpiler/bricks_shape_v214.json` (12 elementos + 8 composite types + 6 anti-patterns)

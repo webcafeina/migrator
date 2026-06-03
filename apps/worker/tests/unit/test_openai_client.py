@@ -248,3 +248,141 @@ def test_page_redesign_user_msg_incluye_brief_y_page_spec() -> None:
     assert "Mariya" in msg
     assert "home" in msg
     assert "var(--bricks-color-" in msg  # instructiva
+
+
+# ---------- aggregate_page_sections (v0.29.0 B2) ----------
+
+
+@pytest.mark.asyncio
+async def test_aggregate_page_sections_happy_path() -> None:
+    """Devuelve {sections: [...]} con tipos canónicos + source_block_ids."""
+    fake_args = {
+        "sections": [
+            {
+                "type": "hero",
+                "source_block_ids": [0, 1, 2],
+                "headline": "Joyas únicas",
+                "subheadline": "Diseños artesanales en Madrid",
+                "summary": "Hero con imagen de modelo + CTA reservar cita",
+                "has_image": True,
+                "has_cta": True,
+            },
+            {
+                "type": "features",
+                "source_block_ids": [3, 4, 5, 6],
+                "summary": "3 servicios destacados con icono",
+                "has_image": False,
+                "has_cta": False,
+            },
+            {
+                "type": "footer",
+                "source_block_ids": [7],
+                "has_image": False,
+                "has_cta": False,
+            },
+        ]
+    }
+    client = OpenAIClient(api_key="sk-fake")
+    client._client = MagicMock()
+    client._client.chat.completions.create = AsyncMock(
+        return_value=_mock_response(
+            "emit_semantic_sections", fake_args,
+            prompt_tokens=1200, completion_tokens=350,
+        )
+    )
+    result = await client.aggregate_page_sections(
+        page_url="https://mariya.design/about",
+        page_intent="about",
+        blocks=[
+            {"block_type": "heading", "content_json": {"text": "Sobre"}},
+            {"block_type": "image", "content_json": {"alt": "team"}},
+            {"block_type": "cta", "content_json": {"cta_text": "Reservar"}},
+            {"block_type": "heading", "content_json": {"text": "Nuestros servicios"}},
+            {"block_type": "grid", "content_json": {"items": [1, 2, 3]}},
+            {"block_type": "text", "content_json": {"html": "<p>Servicio 1</p>"}},
+            {"block_type": "text", "content_json": {"html": "<p>Servicio 2</p>"}},
+            {"block_type": "text", "content_json": {"html": "<p>Footer info</p>"}},
+        ],
+        business_sector="luxury",
+        canonical_taxonomy={"hero": "first", "features": "3+ items", "footer": "last"},
+    )
+    assert isinstance(result, OpenAIResult)
+    assert len(result.data["sections"]) == 3
+    assert result.data["sections"][0]["type"] == "hero"
+    assert result.data["sections"][2]["type"] == "footer"
+    # source_block_ids cubren todos los bloques 0..7 sin huecos
+    all_ids = [
+        bid for s in result.data["sections"] for bid in s["source_block_ids"]
+    ]
+    assert sorted(all_ids) == list(range(8))
+    assert result.tokens_in == 1200
+    assert result.cost_usd > 0
+
+
+@pytest.mark.asyncio
+async def test_aggregate_page_sections_invalid_output_si_tool_no_invocada() -> None:
+    client = OpenAIClient(api_key="sk-fake")
+    fake_resp = MagicMock()
+    fake_resp.choices = [MagicMock()]
+    fake_resp.choices[0].message = MagicMock()
+    fake_resp.choices[0].message.tool_calls = []
+    fake_resp.usage = MagicMock(prompt_tokens=10, completion_tokens=10)
+    client._client = MagicMock()
+    client._client.chat.completions.create = AsyncMock(return_value=fake_resp)
+    with pytest.raises(OpenAIInvalidOutputError):
+        await client.aggregate_page_sections(
+            page_url="x", page_intent=None, blocks=[], business_sector=None,
+        )
+
+
+def test_aggregate_user_msg_compacta_bloques_con_snippet_limpio() -> None:
+    """El user message convierte HTML a texto plano + cap a 120 chars."""
+    long_html = "<p>" + ("Texto muy largo. " * 30) + "</p>"
+    msg = OpenAIClient._build_aggregate_sections_user_message(
+        page_url="https://example.com/",
+        page_intent="home",
+        blocks=[
+            {"block_type": "text", "content_json": {"html": long_html}},
+            {"block_type": "image", "content_json": {"alt": "logo big"}},
+            {"block_type": "cta", "content_json": {"cta_text": "Comprar"}},
+            {"block_type": "grid", "content_json": {"items": [1, 2, 3, 4]}},
+        ],
+        business_sector="ecommerce",
+        canonical_taxonomy={"hero": "first", "cta": "..."},
+    )
+    # No queda HTML en el snippet
+    assert "<p>" not in msg
+    assert "</p>" not in msg
+    # Cada snippet capado a 120 chars (verificable indirectamente)
+    assert "Texto muy largo" in msg
+    # Items grid se etiqueta como "[N items]"
+    assert "[4 items]" in msg
+    assert "[CTA] Comprar" in msg
+    assert "[image] logo big" in msg
+
+
+def test_aggregate_user_msg_incluye_taxonomy_completa() -> None:
+    msg = OpenAIClient._build_aggregate_sections_user_message(
+        page_url="x", page_intent="home", blocks=[],
+        business_sector=None,
+        canonical_taxonomy={
+            "hero": "first impact",
+            "features": "list of services",
+            "cta": "call to action",
+        },
+    )
+    assert "first impact" in msg
+    assert "list of services" in msg
+    assert "Taxonomía canónica" in msg
+
+
+def test_aggregate_user_msg_sector_opcional() -> None:
+    """Si business_sector es None, sigue funcionando."""
+    msg = OpenAIClient._build_aggregate_sections_user_message(
+        page_url="https://x.com",
+        page_intent=None,
+        blocks=[{"block_type": "heading", "content_json": {"text": "Hi"}}],
+        business_sector=None,
+        canonical_taxonomy={"hero": "x"},
+    )
+    assert "(no especificado)" in msg

@@ -107,6 +107,20 @@ class Project(Base, TimestampMixin):
     #: Shape: `{generated_at, model, cost_usd, proposals: [...]}`.
     #: Las propuestas individuales tienen `applied_at` para tracking.
     brief_refinement_proposals_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    #: v0.29.0 — Cache del BriefSectionAggregator. Shape:
+    #: `{page_blocks_sha: {sections, model, cost_usd, generated_at}}`.
+    #: Permite idempotencia entre re-runs sin re-llamar al LLM cuando
+    #: los bloques fuente de una página no han cambiado.
+    brief_aggregation_cache_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    #: v0.29.0 — Coste acumulado USD del BriefSectionAggregator en este
+    #: proyecto. Usado por el wizard `/projects/new` para mostrar el
+    #: coste real cuando el operador re-ejecuta.
+    brief_aggregation_cost_usd: Mapped[Decimal] = mapped_column(
+        Numeric(precision=8, scale=4),
+        nullable=False,
+        default=Decimal("0.0000"),
+        server_default="0.0000",
+    )
 
     visual_diff_ignore: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB)
     visual_diff_avg_score: Mapped[float | None] = mapped_column(Float)

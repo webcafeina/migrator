@@ -40,6 +40,7 @@ from wcm_worker.agents import (
     BricksAdaptAgent,
     BricksTranspilerAgent,
     BriefGeneratorAgent,
+    BriefSectionAggregator,
     ChecklistGeneratorAgent,
     ClickupSyncerAgent,
     ContentExtractorAgent,
@@ -108,6 +109,19 @@ _DEFAULT_PHASES: tuple[_PhaseSpec, ...] = (
     # blocks_pipeline=False): si OpenAI falla pero los campos están,
     # sigue. Si no, marca BLOCKED para que operador rellene en wizard.
     _PhaseSpec("brief_generator", BriefGeneratorAgent, required=False),
+    # v0.29.0 B4 — BriefSectionAggregator. Reagrupa los `sections[]` de bajo
+    # nivel (text/heading/image/grid) que emite BriefGenerator en secciones
+    # semánticas canónicas (hero/features/cta/...) usando gpt-5.5 con cache
+    # por blocks_sha. SectionPicker filtra por categoría brickstemplate, así
+    # que sin este paso el Hybrid resolvía 0.6% de secciones en origen real
+    # (WCM-053). required=False: sin OPENAI_API_KEY o si Brief no existe
+    # → SKIPPED y el pipeline sigue con el Brief plano (residuals como v0.28.0).
+    _PhaseSpec(
+        "brief_aggregate",
+        BriefSectionAggregator,
+        required=False,
+        condition_callable=lambda p: bool(getattr(p, "brief_json", None)),
+    ),
     # C.8 — síntesis de Theme Styles desde computed styles del origen.
     # v0.25.0 — degradado a informativo (ya no es input crítico del
     # pipeline de output; el Brief lleva brand.colors/fonts). Se mantiene

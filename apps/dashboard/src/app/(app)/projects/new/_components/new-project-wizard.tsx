@@ -9,7 +9,15 @@ import { eurToUsd, formatUsd } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import type { LeadRead, PreflightResult, ProjectRead } from "@/types/api";
 
+import { AggregationCostDialog } from "./aggregation-cost-dialog";
 import { PreflightDisplay } from "./preflight-display";
+
+/** v0.29.0 — Umbral de páginas a partir del cual mostramos el modal de
+ * confirmación del coste del BriefSectionAggregator. Páginas pequeñas
+ * (~20) cuestan ~$0.20 y se procesan sin preguntar; proyectos grandes
+ * piden confirm explícito para no quemar API silenciosamente. */
+const AGGREGATION_COST_CONFIRM_THRESHOLD = 20;
+const DEFAULT_MAX_PAGES_SCRAPE = 50;
 
 interface NewProjectWizardProps {
   /** Lead opcional para pre-rellenar URL + builder + nombre cliente. */
@@ -78,6 +86,15 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
   const [hasEcommerce, setHasEcommerce] = useState(false);
   const [isMultilang, setIsMultilang] = useState(false);
   const [preservePaths, setPreservePaths] = useState(true);
+  // v0.29.0 — Cap de páginas a procesar. Default 50 (env backend
+  // SCRAPE_MAX_PAGES_DEFAULT). Si > AGGREGATION_COST_CONFIRM_THRESHOLD,
+  // pedimos confirmación de coste antes de arrancar.
+  const [maxPagesScrape, setMaxPagesScrape] = useState<number>(
+    DEFAULT_MAX_PAGES_SCRAPE,
+  );
+
+  // v0.29.0 — modal de confirmación de coste del agregador.
+  const [showAggCostDialog, setShowAggCostDialog] = useState(false);
 
   // --- Paso 4: Preflight ---
   const [projectId, setProjectId] = useState<number | null>(null);
@@ -142,6 +159,14 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
           eurToUsd(budgetEurNum).toFixed(2),
         );
       }
+      // v0.29.0 — cap de páginas (1-500). Si es el default no lo enviamos
+      // para que el backend use SCRAPE_MAX_PAGES_DEFAULT.
+      if (
+        Number.isFinite(maxPagesScrape) &&
+        maxPagesScrape !== DEFAULT_MAX_PAGES_SCRAPE
+      ) {
+        body.max_pages_scrape = Math.min(Math.max(1, Math.floor(maxPagesScrape)), 500);
+      }
 
       const proj = await api.post<ProjectRead>("/api/v1/projects", body);
       setProjectId(proj.id);
@@ -180,6 +205,16 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
 
   function handleStart() {
     if (!projectId) return;
+    // v0.29.0 — si cap > 20, pedir confirmación del coste del agregador.
+    if (maxPagesScrape > AGGREGATION_COST_CONFIRM_THRESHOLD) {
+      setShowAggCostDialog(true);
+      return;
+    }
+    actuallyStartPipeline();
+  }
+
+  function actuallyStartPipeline() {
+    if (!projectId) return;
     setError(null);
     startTransition(async () => {
       try {
@@ -189,6 +224,8 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
         setError(
           err instanceof ApiError ? err.message : "Error arrancando pipeline",
         );
+      } finally {
+        setShowAggCostDialog(false);
       }
     });
   }
@@ -613,6 +650,34 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
               onChange={setPreservePaths}
               label="Preservar paths origen → destino (recomendado para SEO)"
             />
+            <div className="space-y-1 pt-2">
+              <label
+                htmlFor="w-max-pages"
+                className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+              >
+                Cap de páginas a procesar (1-500)
+              </label>
+              <input
+                id="w-max-pages"
+                type="number"
+                min={1}
+                max={500}
+                step={1}
+                value={maxPagesScrape}
+                onChange={(e) => {
+                  const v = Number.parseInt(e.target.value, 10);
+                  setMaxPagesScrape(
+                    Number.isFinite(v) ? Math.min(Math.max(1, v), 500) : DEFAULT_MAX_PAGES_SCRAPE,
+                  );
+                }}
+                className="h-8 w-32 rounded-sm border border-wcm-detail/70 bg-wcm-primary px-2 text-xs text-wcm-text focus:border-wcm-accent focus:outline-none"
+              />
+              <p className="text-[11px] text-wcm-text/60">
+                Default 50. El agregador semántico v0.29.0 (gpt-5.5) cuesta
+                ≈$0.01 por página. Si superas {AGGREGATION_COST_CONFIRM_THRESHOLD},
+                pediremos confirmación antes de arrancar.
+              </p>
+            </div>
           </div>
         )}
 
@@ -691,6 +756,15 @@ export function NewProjectWizard({ initialLead }: NewProjectWizardProps) {
         {error && (
           <p className="mt-3 text-[11.5px] text-wcm-danger">{error}</p>
         )}
+
+        {/* v0.29.0 — modal de confirmación del coste del agregador. */}
+        <AggregationCostDialog
+          open={showAggCostDialog}
+          maxPages={maxPagesScrape}
+          onConfirm={actuallyStartPipeline}
+          onCancel={() => setShowAggCostDialog(false)}
+          pending={pending}
+        />
       </div>
 
       {/* Navegación entre pasos. */}

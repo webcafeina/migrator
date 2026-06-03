@@ -72,6 +72,25 @@ DEFAULT_CATALOG_PROD = Path("docs/templates/brickstemplate")
 DEFAULT_CATALOG_MOCK = Path("docs/templates/brickstemplate-mock")
 
 
+def _find_repo_root(start: Path) -> Path | None:
+    """Sube desde `start` buscando un marcador del root del monorepo
+    (`pnpm-workspace.yaml`, `.git/`, o `STATE.md`). Devuelve la primera
+    coincidencia o None. Independiente del cwd — corrige el bug
+    operacional donde el worker arranca desde apps/worker/ y los paths
+    relativos al cwd no encuentran el catálogo."""
+    for parent in [start, *start.parents]:
+        if (parent / "pnpm-workspace.yaml").exists():
+            return parent
+        if (parent / "STATE.md").exists() and (parent / ".git").exists():
+            return parent
+    return None
+
+
+#: Root del repo detectado desde la ubicación de este módulo (apps/worker/
+#: src/wcm_worker/agents/redesign_templates.py → root está 5 niveles arriba).
+_REPO_ROOT = _find_repo_root(Path(__file__).resolve())
+
+
 class RedesignTemplatesAgent(BaseAgent):
     name = "redesign-templates"
     phase_name = "redesign_templates"
@@ -103,10 +122,22 @@ class RedesignTemplatesAgent(BaseAgent):
     @staticmethod
     def _resolve_default_catalog() -> Path:
         """Devuelve `prod` si existe, si no `mock` (para desarrollo).
-        Busca relativo al cwd y absoluto."""
+
+        v0.28.0 fix — usa `_REPO_ROOT` (detectado desde `__file__`) como
+        base estable. Antes era relativo al cwd, lo que rompía cuando el
+        worker arrancaba desde `apps/worker/` (caso operacional típico
+        en dev: `cd apps/worker && celery ...`).
+        """
         for candidate in (DEFAULT_CATALOG_PROD, DEFAULT_CATALOG_MOCK):
+            # 1) Relativo al cwd (caso desarrollo desde el root)
             if candidate.exists():
                 return candidate
+            # 2) Relativo al root del repo (independiente del cwd)
+            if _REPO_ROOT is not None:
+                abs_root = _REPO_ROOT / candidate
+                if abs_root.exists():
+                    return abs_root
+            # 3) Path.cwd() / candidate (compat)
             abs_cwd = Path.cwd() / candidate
             if abs_cwd.exists():
                 return abs_cwd
