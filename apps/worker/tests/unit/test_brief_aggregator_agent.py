@@ -20,7 +20,6 @@ from wcm_worker.errors import (
 )
 from wcm_worker.integrations.openai_client import OpenAIResult
 
-
 # ---------- helpers ----------
 
 
