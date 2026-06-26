@@ -29,44 +29,62 @@
 
 ## Sprint en curso
 
-**v0.29.0** (abierto 2026-06-03) — **BriefSectionAggregator (gpt-5.5) entre
-brief_generator y redesign_templates**. Sprint reactivo tras E2E v0.28.0
-sobre mariya.design (project 32 borrado): `BriefGenerator` emitía 1 sección
-por bloque HTML del extractor (1114 text + 275 heading + 85 image + 58 grid
-+ 10 hero) y `SectionPicker` solo matcheaba `hero` contra el catálogo
-brickstemplate (semantic categories) → 10/1550 secciones (0.6%) → 1540
-residuals. Bug raíz documentado en WCM-053. 8 bloques B0-B7, ~5.5 días.
-Absorbe el release pendiente de v0.28.0 en CHANGELOG + ADR-059.
+**v0.29.0** (abierto 2026-06-03, último avance 2026-06-26 — PAUSADO antes de B6)
+— **BriefSectionAggregator (gpt-5.5) entre brief_generator y redesign_templates**.
+Sprint reactivo tras E2E v0.28.0 sobre mariya.design (project 32 borrado):
+`BriefGenerator` emitía 1 sección por bloque HTML del extractor (1114 text +
+275 heading + 85 image + 58 grid + 10 hero) y `SectionPicker` solo matcheaba
+`hero` contra el catálogo brickstemplate → 10/1550 secciones (0.6%) → 1540
+residuals. Bug raíz documentado en WCM-053. Absorbe el release pendiente de
+v0.28.0 en CHANGELOG + ADR-059.
+
+**Cerrados (commit `912fcd7`, 16 archivos, +1789 LOC):**
+- B0 — Alembic 0024 (`brief_aggregation_cache_json` + `brief_aggregation_cost_usd` en `projects`). 18 tests db-schema verdes; downgrade roundtrip OK
+- B1 — Taxonomía semántica canónica `semantic_taxonomy.py` (16 tipos verificados contra el catálogo brickstemplate: hero, features, cta, testimonials, pricing, faqs, contact_form, team, brands, products, product_categories, post_grid, post_section, counter, footer, slider). 11 tests
+- B2 — `OpenAIClient.aggregate_page_sections()` con `TOOL_AGGREGATE_SECTIONS` (tool_use forzado `emit_semantic_sections`) + `SYSTEM_PROMPT_AGGREGATE_SECTIONS`. 5 tests nuevos (20 total openai_client)
+- B3 — `BriefSectionAggregator` agent + `BriefAggregatorError` (blocks_pipeline=False). Cache SHA256(blocks + intent). Fast-path determinista para páginas 0-1 bloques. Idempotente
+- B4 — Fase pipeline `brief_aggregate` posición 6 (entre `brief_generator` y `theme_styles`). Condicional `bool(project.brief_json)`. 10 tests pipeline
+- B5 — 19 tests unit aggregator (happy path, cache hit, validación type/source_block_ids, errores LLM, fast-path, SHA helper)
+- **B5.5 (extra)** — Modal de confirmación de coste en `/projects/new` (`aggregation-cost-dialog.tsx`). Nuevo input "Cap de páginas" en step features. Si `cap > 20` → modal con estimación `cap × $0.01` antes de arrancar. 303 vitest verdes, type-check + lint OK
+
+**Pendientes:**
+- B6 — E2E manual mariya.design lanzado por operador desde dashboard. Validar ratio matches ≥80%, coste real ≤$20, residuals ≤10% del total
+- B7 — Release v0.29.0 (CHANGELOG cubriendo v0.28.0+v0.29.0 + ADR-059 + tag + gh release)
+
+**Decisiones operador 2026-06-03:**
+- Coste OpenAI: híbrido. Silencioso si ≤20 páginas; modal si >20 (implementado en B5.5)
+- Re-E2E con mariya.design (lanzado por operador en dashboard, Claude monitoriza worker)
+
+**Estado al cierre 2026-06-26:**
+- Working tree limpio en commit `912fcd7` (rama `main`, sin push)
+- BD local: Alembic head `0024_v029_brief_aggregation`, sin proyectos
+- Stack apagado (puertos 8000 + 3000 libres)
+- Próxima acción: leer `docs/handoff-v0.29.0-pause.md`, relanzar stack, ejecutar B6
 
 **v0.28.0** (CERRADO SIN RELEASE 2026-06-03) — Bricks shape verbatim + Adapter
 determinista + Validator + Catálogo fijo Global Classes (B.3) + Visual quality
 gate + Brickstemplate clipboard listener (482 templates) + LLMSectionRanker.
 Código de B0-B7+B11-B14 mergeado en `main`. B8 (E2E) + B9 (release) absorbidos
-por v0.29.0. NO se revierte nada — se construye encima.
-
-**Cerrados (1407+ tests verdes por bloques, segfault flake combined):**
+por v0.29.0. NO se revierte nada — se construye encima. Detalle por bloque:
 - B0 — `packages/bricks-transpiler/src/wcm_bricks_transpiler/bricks_shape_v214.json` (12 elementos + 8 composite types + 6 anti-patterns)
 - B1 — Validator extendido settings shape (+13 tests). Detecta typography_underscore_key, spacing_shorthand_string, color_string_not_object, image_element_string, global_classes_object_item
 - B2 — `BricksAdapter` determinista (+21 tests). Idempotente. 95% cobertura
 - B3 — Whitespace fix en redesign_ai (+8 tests). Regex `[a-z]{2,}(?=[A-Z])` solo si texto ≥3 palabras
 - B4 — Prompt enriquecido con 7 ejemplos verbatim corpus h2b
-- B5 — Fase pipeline `bricks_adapt` posición 12 entre asset_uploader y pre_deploy_snapshot
-- B6 — `VisualQualityAgent` posición 19. Score 4 señales determinísticas. Threshold env-override
+- B5 — Fase pipeline `bricks_adapt` posición 13 (renombrada/movida en v0.29.0 al añadir `brief_aggregate`)
+- B6 — `VisualQualityAgent` posición 20. Score 4 señales determinísticas. Threshold env-override
 - B7 — `scripts/cleanup_duplicate_assets.py` (9 tests). Dry-run default. Mitigación WCM-039
 - B11 — Catálogo fijo `bricks_global_classes` derivado del theme (12 IDs canónicos: wcm-h1..h4, wcm-body*, wcm-btn-*, wcm-section-padding-*). `ThemeStylesAgent` lo persiste. LLM recibe lista cerrada y NO puede inventar otros. BricksAdapter filtra los desconocidos
 - B12 — `scripts/import_brickstemplate_clipboard.py` (18 tests). Brickstemplate confirmó que NO usa Remote Templates API → import manual asistido. Detecta `source: bricksCopiedElements` en clipboard, persiste en `docs/templates/brickstemplate/<category>/<slug>.json` con dedup SHA y `sections-index.json`
 - B13 — Integración pipeline Hybrid. **482 templates en 33 categorías descargados** (back-to-top..testimonials; landing-page y template-kits no disponibles). Script `scripts/enrich_brickstemplate_index.py` (17 tests) genera `slot_map` heurístico + mapping categorías (call-to-action→cta, contact-us→contact_form). `SectionPicker.get_candidates()` + `load_template_by_metadata()` exposed para flow externo. SlotMapper regenera IDs Bricks para evitar colisión entre templates en misma página
 - B14 — `LLMSectionRanker` (13 tests). Elige template entre N candidatos vía LLM (gpt-5.5 sin reasoning). Cache en `Project.template_choices_cache_json` (Alembic 0023). Fallback al hash determinista si LLM falla. Coste ~$0.01/sección, ~$3/proyecto. Pipeline corre tanto en Templates puro como en Hybrid
 
-**Pendientes:**
-- B8 — E2E manual mariya.design con stack completo. Coste estimado ~$13.50 (texto $6 + imagen $4.40 + ranker $3)
-- B9 — Release v0.28.0 (CHANGELOG + ADR-058 + tag + gh release)
-
-**Decisiones técnicas v0.28.0:**
+**Decisiones técnicas v0.28.0/v0.29.0 vigentes:**
 - `OPENAI_MODEL_REDESIGN=gpt-5.5` SIN reasoning_effort (no soportado con tool_use en chat.completions; migración a /v1/responses diferida)
 - Sub-opción B.3 catálogo fijo global classes (no B.1 inferir, no B.2 LLM emite defs)
 - Ranker LLM con cache + fallback determinista (opción A); coste +$3 aceptado por operador 2026-06-02
 - Catálogo brickstemplate manual via clipboard listener (no Remote Templates API)
+- Modal de coste en wizard si `cap_pages > 20` (v0.29.0 B5.5)
 
 **Issues activos:**
 - WCM-039 (P1) — Distributed lock por project_id en `wcm.orchestrator.run_project`. Race condition `task_acks_late=True` + restart worker. Mitigado parcialmente con UPSERT atómico en `_mark_phase` + script B7. Lock real diferido v0.29.0
